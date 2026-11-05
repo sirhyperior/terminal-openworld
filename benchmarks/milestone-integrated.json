@@ -1,0 +1,174 @@
+{
+  "python": "3.14.4",
+  "platform": "Windows",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "width": 120,
+  "height": 40,
+  "frames": 60,
+  "audio": true,
+  "scenarios": {
+    "indoors": {
+      "mean_ms": 20.493,
+      "p95_ms": 23.263,
+      "fps": 48.8,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 0,
+        "grass_drawn": 0,
+        "grass_chunks": 0,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": 43.1,
+      "p95_change_percent": 30.0
+    },
+    "courtyard": {
+      "mean_ms": 27.876,
+      "p95_ms": 36.713,
+      "fps": 35.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 246,
+        "grass_drawn": 0,
+        "grass_chunks": 17,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": 88.7,
+      "p95_change_percent": 105.2
+    },
+    "meadow": {
+      "mean_ms": 40.134,
+      "p95_ms": 48.276,
+      "fps": 24.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 392,
+        "grass_drawn": 221,
+        "grass_chunks": 15,
+        "tree_samples": 224,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": 73.7,
+      "p95_change_percent": 73.2
+    },
+    "grass_close": {
+      "mean_ms": 41.701,
+      "p95_ms": 46.687,
+      "fps": 24.0,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 466,
+        "grass_drawn": 355,
+        "grass_chunks": 17,
+        "tree_samples": 660,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": 86.0,
+      "p95_change_percent": 71.8
+    },
+    "bridge": {
+      "mean_ms": 34.641,
+      "p95_ms": 39.362,
+      "fps": 28.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 426,
+        "grass_drawn": 111,
+        "grass_chunks": 22,
+        "tree_samples": 983,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": 53.5,
+      "p95_change_percent": 41.9
+    },
+    "river": {
+      "mean_ms": 32.323,
+      "p95_ms": 37.61,
+      "fps": 30.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 200,
+        "grass_drawn": 50,
+        "grass_chunks": 19,
+        "tree_samples": 246,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": 49.5,
+      "p95_change_percent": 46.4
+    },
+    "ruins": {
+      "mean_ms": 30.248,
+      "p95_ms": 35.479,
+      "fps": 33.1,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 62,
+        "grass_drawn": 10,
+        "grass_chunks": 19,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "lodge": {
+      "mean_ms": 24.957,
+      "p95_ms": 33.047,
+      "fps": 40.1,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 80,
+        "grass_drawn": 12,
+        "grass_chunks": 16,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "east_bridge": {
+      "mean_ms": 26.894,
+      "p95_ms": 31.603,
+      "fps": 37.2,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 366,
+        "grass_drawn": 88,
+        "grass_chunks": 21,
+        "tree_samples": 1497,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "watchstones": {
+      "mean_ms": 27.184,
+      "p95_ms": 34.211,
+      "fps": 36.8,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 226,
+        "grass_drawn": 60,
+        "grass_chunks": 20,
+        "tree_samples": 982,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "training": {
+      "mean_ms": 30.181,
+      "p95_ms": 36.636,
+      "fps": 33.1,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 572,
+        "grass_drawn": 443,
+        "grass_chunks": 18,
+        "tree_samples": 1398,
+        "tree_pixel_budget": 12600
+      }
+    }
+  },
+  "audio_health": {
+    "buffers": 480,
+    "underruns": 0,
+    "max_write_gap_ms": 66.24,
+    "recoveries": 0,
+    "error": ""
+  }
+}

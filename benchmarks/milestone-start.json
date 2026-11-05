@@ -1,0 +1,97 @@
+{
+  "python": "3.14.4",
+  "platform": "Windows",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "width": 120,
+  "height": 40,
+  "frames": 60,
+  "audio": true,
+  "scenarios": {
+    "indoors": {
+      "mean_ms": 14.32,
+      "p95_ms": 17.9,
+      "fps": 69.8,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 0,
+        "grass_drawn": 0,
+        "grass_chunks": 0,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "courtyard": {
+      "mean_ms": 14.77,
+      "p95_ms": 17.892,
+      "fps": 67.7,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 246,
+        "grass_drawn": 0,
+        "grass_chunks": 17,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "meadow": {
+      "mean_ms": 23.104,
+      "p95_ms": 27.865,
+      "fps": 43.3,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 392,
+        "grass_drawn": 229,
+        "grass_chunks": 15,
+        "tree_samples": 156,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "grass_close": {
+      "mean_ms": 22.416,
+      "p95_ms": 27.173,
+      "fps": 44.6,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 466,
+        "grass_drawn": 362,
+        "grass_chunks": 17,
+        "tree_samples": 370,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "bridge": {
+      "mean_ms": 22.568,
+      "p95_ms": 27.737,
+      "fps": 44.3,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 408,
+        "grass_drawn": 109,
+        "grass_chunks": 22,
+        "tree_samples": 707,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "river": {
+      "mean_ms": 21.616,
+      "p95_ms": 25.682,
+      "fps": 46.3,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 200,
+        "grass_drawn": 46,
+        "grass_chunks": 19,
+        "tree_samples": 244,
+        "tree_pixel_budget": 12600
+      }
+    }
+  },
+  "audio_health": {
+    "buffers": 174,
+    "underruns": 0,
+    "max_write_gap_ms": 72.83,
+    "recoveries": 0,
+    "error": ""
+  }
+}

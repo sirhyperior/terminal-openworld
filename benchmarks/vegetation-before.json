@@ -1,0 +1,39 @@
+{
+  "python": "3.14.4",
+  "platform": "Windows",
+  "width": 120,
+  "height": 40,
+  "frames": 60,
+  "scenarios": {
+    "indoors": {
+      "mean_ms": 17.008,
+      "p95_ms": 21.974,
+      "fps": 58.8
+    },
+    "courtyard": {
+      "mean_ms": 20.761,
+      "p95_ms": 23.127,
+      "fps": 48.2
+    },
+    "meadow": {
+      "mean_ms": 39.237,
+      "p95_ms": 43.54,
+      "fps": 25.5
+    },
+    "grass_close": {
+      "mean_ms": 33.919,
+      "p95_ms": 40.846,
+      "fps": 29.5
+    },
+    "bridge": {
+      "mean_ms": 29.161,
+      "p95_ms": 32.303,
+      "fps": 34.3
+    },
+    "river": {
+      "mean_ms": 35.883,
+      "p95_ms": 40.666,
+      "fps": 27.9
+    }
+  }
+}
