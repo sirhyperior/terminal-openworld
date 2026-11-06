@@ -2,7 +2,9 @@
 
 import argparse
 from collections import deque
+from contextlib import ExitStack
 import math
+import os
 from pathlib import Path
 import sys
 import time
@@ -15,6 +17,7 @@ from .sound import Audio, SoundBank
 from .soundscape import Soundscape
 from .terminal import Terminal
 from .world import build_world
+from .map_expansion import INDOOR_SPAWN, OUTDOOR_SPAWN
 
 
 def positive_int(value: str) -> int:
@@ -25,7 +28,8 @@ def positive_int(value: str) -> int:
 
 
 def spawn_player(outside: bool = False) -> Player:
-    return Player(x=16.5, y=34.5, pitch=-0.06) if outside else Player()
+    x, y, z = OUTDOOR_SPAWN if outside else INDOOR_SPAWN
+    return Player(x=x, y=y, z=z, pitch=-0.06 if outside else 0.0)
 
 
 class FrameRateCounter:
@@ -53,7 +57,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--cell-aspect", type=float, default=0.5, help="font cell width / height (default: 0.5)")
     parser.add_argument("--benchmark", type=positive_int, metavar="FRAMES", help="render a turn without terminal output")
     parser.add_argument("--demo", action="store_true", help="automatically walk and turn; controls still work")
-    parser.add_argument("--outside", action="store_true", help="start in the meadow facing the river bridge")
+    parser.add_argument("--outside", action="store_true", help="start in the meadow facing the castle")
+    parser.add_argument("--keyboard-look", action="store_true",
+                        help="use arrows to look and Enter to attack instead of mouse capture")
     parser.add_argument("--max-cells", type=positive_int, default=4800,
                         help="live viewport character budget; larger costs more CPU (default: 4800)")
     parser.add_argument("--frames", type=positive_int, help="exit after this many frames")
@@ -62,6 +68,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--sound-preview", type=Path, metavar="WAV", help="export the original effects as a stereo WAV and exit")
     parser.add_argument("--audio-test", action="store_true", help="play river/effect audio and report playback health")
     args = parser.parse_args(argv)
+    keyboard_look = args.keyboard_look or os.name != "nt"
     if not 0.2 <= args.cell_aspect <= 1.5:
         parser.error("--cell-aspect must be between 0.2 and 1.5")
     if args.width > 300 or args.height > 120:
@@ -84,7 +91,7 @@ def main(argv: list[str] | None = None) -> int:
     renderer = Renderer(world, args.cell_aspect)
     soundscape = Soundscape(world)
     if args.snapshot:
-        print("\n".join(renderer.frame(player, args.width, args.height)))
+        print("\n".join(renderer.frame(player, args.width, args.height, keyboard_look=keyboard_look)))
         return 0
     if args.benchmark:
         start = time.perf_counter()
@@ -97,7 +104,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     try:
-        with Terminal(args.max_cells) as terminal, Audio(not args.mute, args.volume) as audio:
+        with ExitStack() as session:
+            terminal = session.enter_context(Terminal(args.max_cells))
+            audio = session.enter_context(Audio(not args.mute, args.volume))
+            # Release before audio drains, on frame limits and exceptions too.
+            session.callback(terminal.set_mouse_capture, False)
             show_map, help_open, paused = False, False, False
             previous = time.perf_counter()
             accumulator, frame_count, demo_time = 0.0, 0, 0.0
@@ -112,6 +123,7 @@ def main(argv: list[str] | None = None) -> int:
                 elapsed, previous = min(start - previous, 0.1), start
                 keys = terminal.keyboard.poll()
                 if "escape" in keys.pressed:
+                    terminal.set_mouse_capture(False)
                     audio.pause(True)
                     audio.emit(GameEvent("ui_exit"))
                     if audio.enabled:
@@ -125,10 +137,12 @@ def main(argv: list[str] | None = None) -> int:
                     help_open = not help_open
                     ui_events.append(GameEvent("ui_help"))
                 if "p" in keys.pressed:
-                    paused = not paused
+                    paused = False if help_open else not paused
+                    help_open = False
                     ui_events.append(GameEvent("ui_pause"))
                 if "blur" in keys.pressed:
                     paused = True
+                    help_open = False
                     ui_events.append(GameEvent("ui_pause"))
                 if "f" in keys.pressed:
                     audio.toggle()
@@ -142,6 +156,12 @@ def main(argv: list[str] | None = None) -> int:
 
                 width, height = terminal.size()
                 active = not paused and not help_open and width >= 60 and height >= 20
+                terminal.set_mouse_capture(active and not keyboard_look and not args.demo)
+                # Motion belongs to this rendered input frame, never to each
+                # catch-up physics step. UI/reset transitions discard old input.
+                input_transition = bool(keys.pressed & {"p", "h", "r"})
+                if active and not keyboard_look and not input_transition:
+                    player.look(keys.mouse_dx, keys.mouse_dy)
                 audio.pause(not active)
                 audio.listener = (player.x, player.y, player.yaw)
                 audio.ambient = soundscape.at(player.x, player.y, player.yaw)
@@ -149,16 +169,18 @@ def main(argv: list[str] | None = None) -> int:
                     audio.emit(event)
                 if active:
                     if "e" in keys.pressed:
-                        event = world.interact(player)
-                        audio.emit(event)
-                        if event.name == "interaction_miss":
-                            notice, notice_until = "Look at a nearby door or sword and press E", simulation_time + 1.5
-                        elif event.name == "sword_pickup":
-                            notice, notice_until = "Iron sword equipped - Q to attack", simulation_time + 2
+                        for event in world.interact(player):
+                            audio.emit(event)
+                            if event.name in ("sword_pickup", "staff_pickup"):
+                                name = world.combat.held_item.name.capitalize()
+                                attack_label = "Enter" if keyboard_look else "left click"
+                                notice, notice_until = f"{name} equipped - {attack_label} to attack", simulation_time + 2
                     jump_pending |= "space" in keys.pressed
-                    attack_pending |= "q" in keys.pressed
+                    attack_pending |= "attack" in keys.pressed and not input_transition
                     accumulator += elapsed
                     movement = set(keys.down)
+                    if not keyboard_look:
+                        movement.difference_update(("left", "right", "up", "down"))
                     if args.demo:
                         demo_time += elapsed
                         # Walk through the entrance, then circle in the court.
@@ -170,18 +192,29 @@ def main(argv: list[str] | None = None) -> int:
                             jump_pending = True
                         target = world.interaction_target(player)
                         if target and (not isinstance(target, Door) or not target.target_open):
-                            audio.emit(world.interact(player))
+                            for event in world.interact(player):
+                                audio.emit(event)
                     while accumulator >= step:
                         player.update(world, movement, step, jump=jump_pending)
                         for event in player.events:
                             audio.emit(event)
-                        for event in world.combat.update(step):
+                        for event in world.combat.update(step, world, player):
                             audio.emit(event)
+                        if player.hp <= 0:
+                            player = spawn_player(args.outside)
+                            audio.listener = (player.x, player.y, player.yaw)
+                            audio.emit(GameEvent("player_respawn", player.x, player.y))
+                            notice = "You fell to the Warden - restored at the entrance"
+                            notice_until = simulation_time + 3.0
+                            jump_pending = attack_pending = False
+                            accumulator = 0.0
+                            simulation_time += step
+                            break
                         if attack_pending:
                             for event in world.combat.attack(world, player):
                                 audio.emit(event)
                                 if event.name == "attack_empty":
-                                    notice, notice_until = "Find an iron sword and collect it with E", simulation_time + 2
+                                    notice, notice_until = "Collect a weapon with E, then attack", simulation_time + 2
                         for event in world.update_doors(player, step):
                             audio.emit(event)
                             if event.name == "door_blocked":
@@ -193,9 +226,12 @@ def main(argv: list[str] | None = None) -> int:
                     accumulator = 0.0
                     jump_pending = attack_pending = False
 
+                mouse_captured = terminal.mouse_captured if not keyboard_look and not args.demo else None
                 terminal.draw(renderer.frame(player, width, height, fps, show_map, help_open, paused,
                                               time_seconds=simulation_time,
-                                              notice=notice if simulation_time < notice_until else "", sound_on=audio.enabled))
+                                              notice=notice if simulation_time < notice_until else "", sound_on=audio.enabled,
+                                              keyboard_look=keyboard_look,
+                                              mouse_captured=mouse_captured))
                 frame_count += 1
                 if args.frames and frame_count >= args.frames:
                     break

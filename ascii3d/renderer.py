@@ -45,6 +45,9 @@ class Renderer:
         self._world_revision = -1
         self._chunk_tops = []
         self._empty_bounds = []
+        self._room_bounds = []
+        self._map_key = None
+        self._map_rows = []
 
     def _update_chunks(self):
         if self._world_revision == self.world.revision:
@@ -52,13 +55,16 @@ class Renderer:
         world = self.world
         chunks_x = (world.width + 1) // 2
         tops = [0] * (chunks_x * ((world.depth + 1) // 2))
+        occupied = [0] * len(tops)
         for z in range(world.height):
             for y in range(world.depth):
                 offset = (z * world.depth + y) * world.width
                 chunk_row = (y >> 1) * chunks_x
                 for x in range(world.width):
                     if world.cells[offset + x]:
-                        tops[chunk_row + (x >> 1)] = z + 1
+                        index = chunk_row + (x >> 1)
+                        tops[index] = z + 1
+                        occupied[index] |= 1 << z
         self._chunk_tops = tops
         # Merge clear 2x2 columns into rectangles at each integer height.
         # These are conservative empty volumes, derived only on voxel edits.
@@ -89,6 +95,44 @@ class Renderer:
                         bounds[level * len(tops) + row * chunks_x + x] = rectangle
                     left = right
         self._empty_bounds = bounds
+        # The same conservative 2x2 grid can also skip AIR below a roof.
+        # Every occupied voxel (including water) contributes a height bit.
+        # Merge only rows containing a below-roof gap; outdoor rays retain
+        # the original above-terrain cache and its cheaper lookup path.
+        rooms = [None] * len(bounds)
+        for level in range(world.height):
+            bit = 1 << level
+            for row in range(chunks_y):
+                left = 0
+                while left < chunks_x:
+                    if occupied[row * chunks_x + left] & bit:
+                        left += 1
+                        continue
+                    right = left + 1
+                    while right < chunks_x and not occupied[row * chunks_x + right] & bit:
+                        right += 1
+                    if any(tops[row * chunks_x + x] > level for x in range(left, right)):
+                        low, high = row, row + 1
+                        while low > 0 and all(not occupied[(low - 1) * chunks_x + x] & bit
+                                              for x in range(left, right)):
+                            low -= 1
+                        while high < chunks_y and all(not occupied[high * chunks_x + x] & bit
+                                                      for x in range(left, right)):
+                            high += 1
+                        mask = 0
+                        for y in range(low, high):
+                            for x in range(left, right):
+                                mask |= occupied[y * chunks_x + x]
+                        bottom = (mask & (bit - 1)).bit_length()
+                        above = mask >> (level + 1)
+                        ceiling = level + (above & -above).bit_length() if above else world.height
+                        rectangle = (left * 2, low * 2, right * 2, high * 2, bottom, ceiling)
+                        for x in range(left, right):
+                            index = row * chunks_x + x
+                            if tops[index] > level:
+                                rooms[level * len(tops) + index] = rectangle
+                    left = right
+        self._room_bounds = rooms
         self._world_revision = world.revision
 
     def scene(self, player: Player, width: int, height: int, time_seconds: float = 0.0) -> list[list[str]]:
@@ -107,6 +151,7 @@ class Renderer:
         self._update_chunks()
         chunk_tops, chunks_x = self._chunk_tops, (world.width + 1) // 2
         empty_bounds, chunk_count = self._empty_bounds, len(chunk_tops)
+        room_bounds = self._room_bounds
         skip_empty = self.skip_empty_space
         floor = math.floor
         cells, ww, wd, wh = world.cells, world.width, world.depth, world.height
@@ -171,18 +216,25 @@ class Renderer:
                 for _ in range(110):
                     chunk_index = (y >> 1) * chunks_x + (x >> 1)
                     top = chunk_tops[chunk_index] if skip_empty else wh
-                    if z >= top:
+                    room = room_bounds[z * chunk_count + chunk_index] if skip_empty and z < top else None
+                    skip_volume = z >= top or room is not None
+                    if skip_volume:
                         # A column's space above its highest voxel is empty.
                         # Jump to its boundary or floor plane, then resume exact
-                        # traversal. Courtyard walls/roofs still use full DDA.
+                        # traversal. Below roofs, cached AIR prisms additionally
+                        # supply a conservative floor and ceiling boundary.
                         # Downward rays prefer a region at the local terrain
                         # height, avoiding repeated descents past unrelated
                         # taller columns elsewhere in a larger rectangle.
-                        level = top if step_z < 0 else z
-                        low_x, low_y, high_x, high_y, top = empty_bounds[level * chunk_count + chunk_index]
+                        if room is None:
+                            level = top if step_z < 0 else z
+                            low_x, low_y, high_x, high_y, top = empty_bounds[level * chunk_count + chunk_index]
+                            end_z = (pz - top) * delta_z if step_z < 0 else 1e30
+                        else:
+                            low_x, low_y, high_x, high_y, bottom, ceiling = room
+                            end_z = ((ceiling - pz) if step_z > 0 else (pz - bottom)) * delta_z
                         end_x = ((high_x if step_x > 0 else low_x) - px) * step_x * delta_x
                         end_y = ((high_y if step_y > 0 else low_y) - py) * step_y * delta_y
-                        end_z = (pz - top) * delta_z if step_z < 0 else 1e30
                         if end_x <= end_y and end_x <= end_z:
                             distance, axis = end_x, 0
                         elif end_y <= end_z:
@@ -191,6 +243,17 @@ class Renderer:
                             distance, axis = end_z, 2
                         if distance > ray_limit:
                             break
+                        if room is not None and ((axis != 0 and abs(dx) > 1e-12
+                                                  and abs(px + dx * distance - round(px + dx * distance)) < 1e-7)
+                                                 or (axis != 1 and abs(dy) > 1e-12
+                                                     and abs(py + dy * distance - round(py + dy * distance)) < 1e-7)
+                                                 or (axis != 2 and abs(dz) > 1e-12
+                                                     and abs(pz + dz * distance - round(pz + dz * distance)) < 1e-7)):
+                            # At exact room corners, accumulated DDA rounding
+                            # determines which touching face wins. Preserve its
+                            # ordinary stepping for those few boundary rays.
+                            skip_volume = False
+                    if skip_volume:
                         advance = distance + 1e-7
                         x, y, z = floor(px + dx * advance), floor(py + dy * advance), floor(pz + dz * advance)
                         if not (0 <= x < ww and 0 <= y < wd and 0 <= z < wh):
@@ -322,7 +385,8 @@ class Renderer:
 
     def frame(self, player: Player, width: int, height: int, fps: float = 0.0,
               show_map: bool = False, help_open: bool = False, paused: bool = False,
-              time_seconds: float = 0.0, notice: str = "", sound_on: bool | None = None) -> list[str]:
+              time_seconds: float = 0.0, notice: str = "", sound_on: bool | None = None,
+              keyboard_look: bool = False, mouse_captured: bool | None = None) -> list[str]:
         width, height = max(1, width), max(1, height)
         if width < 60 or height < 20:
             lines = ["MONOLITH / TERMINAL 3D", "", "Enlarge the terminal to at least 60 x 20.",
@@ -339,17 +403,26 @@ class Renderer:
         if not prompt and target:
             action = ("Close" if target.target_open else "Open") if isinstance(target, Door) else "Collect"
             prompt = f"[E] {action} {target.name}"
+            if not isinstance(target, Door) and self.world.combat.held_item is not None:
+                prompt += f" (drop {self.world.combat.held_item.name})"
         if prompt and not help_open and not paused:
             prompt = "  " + prompt[:width - 6] + "  "
             self._write(pixels, (width - len(prompt)) // 2, view_height - 2, prompt)
-        if help_open or paused:
-            title = "PAUSED" if paused else "FIELD GUIDE"
-            lines = [title, "", "W A S D      walk / strafe", "SHIFT / SPACE sprint / jump",
-                     "ARROWS       turn / look up and down", "E            use door / collect sword",
-                     "Q            attack with equipped sword", "F / M / TAB  sound / map / map",
-                     "H / P        guide / pause", "R / ESC      return to entrance / exit",
-                     "TRAINING     dummy east of meadow start",
-                     "NORTH GATE   river, trails and ruins"]
+        if help_open:
+            look = "ARROWS        look / aim" if keyboard_look else "MOUSE         look / aim"
+            attack = "ENTER         attack" if keyboard_look else "LEFT CLICK    attack"
+            lines = ["CONTROLS", "", "WASD          move / strafe",
+                     "SHIFT / SPACE sprint / jump", look, attack,
+                     "E             open / use / collect",
+                     "One held item; collect another to swap.",
+                     "M / TAB       map       F sound",
+                     "R             return to entrance",
+                     "H back        P resume  ESC quit"]
+            if not keyboard_look:
+                lines.insert(6, "Click terminal to capture; P releases mouse.")
+            self._panel(pixels, lines)
+        elif paused:
+            lines = ["PAUSED", "", "P    resume", "H    controls", "ESC  quit"]
             self._panel(pixels, lines)
 
         heading = (90 - math.degrees(player.yaw)) % 360
@@ -360,8 +433,13 @@ class Renderer:
             state = "AIRBORNE"
         else:
             state = "SPRINT" if player.running else "WALK"
-        equipment = "IRON SWORD" if self.world.combat.has_sword else "UNARMED"
-        title = "  M O N O L I T H  /  " + equipment
+        held = self.world.combat.held_item
+        equipment = held.name.upper() if held is not None else "UNARMED"
+        maximum = max(1, player.max_hp)
+        health = max(0, min(player.hp, maximum))
+        filled = math.ceil(health * 10 / maximum)
+        bar = "#" * filled + "-" * (10 - filled)
+        title = f"  HP [{bar}] {health}/{maximum} / " + equipment
         rate = f"{fps:4.0f} FPS  "
         if sound_on is not None:
             rate = ("SND ON  " if sound_on else "SND OFF  ") + rate
@@ -369,10 +447,18 @@ class Renderer:
         status = f"  {self.world.area(player.x, player.y)}   /   {compass} {heading:03.0f}   /   {state}"
         position = f"{player.x:04.1f}, {player.y:04.1f}  "
         status += " " * max(1, width - len(status) - len(position)) + position
-        if width >= 100:
-            controls = "  WASD move  SHIFT run  SPACE jump  ARROWS look  E use  Q attack  F sound  M map  H help  ESC exit"
+        if help_open:
+            controls = "  H back  P resume  ESC quit"
+        elif paused:
+            controls = "  P resume  H controls  ESC quit"
+        elif not keyboard_look and mouse_captured is False:
+            controls = " Click to capture mouse  E interact  H controls  P pause"
+        elif width >= 100:
+            look, attack = ("ARROWS", "ENTER") if keyboard_look else ("MOUSE", "LEFT CLICK")
+            controls = f"  WASD move  {look} look  {attack} attack  E interact  M map  H controls  P pause"
         else:
-            controls = " WASD move ARROWS look E use Q attack SPACE jump H help ESC"
+            look, attack = ("ARROWS", "ENTER") if keyboard_look else ("MOUSE", "LMB")
+            controls = f" WASD move {look} look {attack} attack E use H help P pause"
         lines = [top, "-" * width] + ["".join(row) for row in pixels]
         lines += ["-" * width, status, controls]
         return [line[:width].ljust(width) for line in lines]
@@ -388,33 +474,39 @@ class Renderer:
         map_height = math.ceil(self.world.depth / (2 * scale))
         left, top = len(pixels[0]) - map_width - 3, 1
         self._write(pixels, left, top, "+" + "-" * map_width + "+")
-        for row in range(map_height):
-            y0 = self.world.depth - 1 - int(row * 2 * scale)
-            y1 = max(0, self.world.depth - int((row + 1) * 2 * scale))
-            chars = []
-            for column in range(map_width):
-                x0, x1 = int(column * scale), min(self.world.width, math.ceil((column + 1) * scale))
-                priority, char = 0, " "
-                for y in range(y1, y0 + 1):
-                    for x in range(x0, x1):
-                        material = self.world.get(x, y, 0)
-                        obstacle = self.world.get(x, y, 1) or (x, y) in self.world.trees
-                        if obstacle:
-                            rank, symbol = 5, "#"
-                        elif material == BRIDGE:
-                            rank, symbol = 4, "="
-                        elif material == WATER:
-                            rank, symbol = 3, "~"
-                        elif material == PATH:
-                            rank, symbol = 2, "."
-                        elif material == GRASS:
-                            rank, symbol = 1, ","
-                        else:
-                            rank, symbol = 0, " "
-                        if rank >= priority:
-                            priority, char = rank, symbol
-                chars.append(char)
-            self._write(pixels, left, top + row + 1, "|" + "".join(chars) + "|")
+        key = (self.world.revision, len(pixels[0]), len(pixels), len(self.world.trees))
+        if key != self._map_key:
+            rows = []
+            for row in range(map_height):
+                y0 = self.world.depth - 1 - int(row * 2 * scale)
+                y1 = max(0, self.world.depth - int((row + 1) * 2 * scale))
+                chars = []
+                for column in range(map_width):
+                    x0, x1 = int(column * scale), min(self.world.width, math.ceil((column + 1) * scale))
+                    priority, char = 0, " "
+                    for y in range(y1, y0 + 1):
+                        for x in range(x0, x1):
+                            material = self.world.get(x, y, 0)
+                            obstacle = self.world.get(x, y, 1) or (x, y) in self.world.trees
+                            if obstacle:
+                                rank, symbol = 5, "#"
+                            elif material == BRIDGE:
+                                rank, symbol = 4, "="
+                            elif material == WATER:
+                                rank, symbol = 3, "~"
+                            elif material == PATH:
+                                rank, symbol = 2, "."
+                            elif material == GRASS:
+                                rank, symbol = 1, ","
+                            else:
+                                rank, symbol = 0, " "
+                            if rank >= priority:
+                                priority, char = rank, symbol
+                    chars.append(char)
+                rows.append("|" + "".join(chars) + "|")
+            self._map_rows, self._map_key = rows, key
+        for row, line in enumerate(self._map_rows):
+            self._write(pixels, left, top + row + 1, line)
         marker_x = left + 1 + min(map_width - 1, max(0, int(player.x / scale)))
         marker_y = top + 1 + min(map_height - 1, max(0, int((self.world.depth - 1 - player.y) / (2 * scale))))
         direction = (">", "^", "<", "v")[int((player.yaw + math.pi / 4) / (math.pi / 2)) % 4]

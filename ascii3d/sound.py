@@ -28,7 +28,14 @@ EFFECTS = {
     "door_open": 0.70, "door_close": 0.65, "door_blocked": 0.18,
     "sword_pickup": 0.42, "sword_swing": 0.29, "sword_hit": 0.34,
     "sword_miss": 0.18, "attack_empty": 0.15,
+    "staff_pickup": 0.48, "item_drop": 0.24,
+    "fireball_cast": 0.65, "fireball_hit": 0.42,
+    "fireball_impact": 0.38, "fireball_fizzle": 0.24,
     "dummy_down": 0.58, "dummy_reset": 0.48,
+    "enemy_alert": 0.65, "enemy_step": 0.24, "enemy_attack": 0.42,
+    "enemy_miss": 0.22, "enemy_hurt": 0.28,
+    "enemy_down": 0.85, "enemy_respawn": 0.90,
+    "player_hurt": 0.30, "player_down": 0.80, "player_respawn": 0.60,
     "interaction_miss": 0.10, "ui_map": 0.13, "ui_help": 0.14,
     "ui_pause": 0.16, "ui_reset": 0.25, "ui_exit": 0.18, "ui_toggle": 0.10,
 }
@@ -105,7 +112,13 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
         low += (noise - low) * 0.17
         slow += (noise - slow) * 0.008
         if name == "wind":
-            value = (low * 0.48 + slow * 3.0) * (0.75 + 0.15 * math.sin(math.tau * t / duration))
+            # Soft broad gusts with a little grass rustle remain audible on
+            # small speakers, without a whistle or a constant bright hiss.
+            gust = (0.70 + 0.18 * math.sin(math.tau * t / duration)
+                    + 0.12 * math.sin(math.tau * t * 3 / duration + 1.1))
+            rustle = max(0.0, math.sin(math.tau * t * 2 / duration + 0.4)) ** 3
+            value = (low * 0.65 + slow * 2.6
+                     + (noise - low) * rustle * 0.07) * gust
         elif name == "river":
             # Layered rushing/babbling noise, without the old steady tonal hum.
             flow = 0.85 + 0.10 * math.sin(math.tau * t / duration) + 0.05 * math.sin(math.tau * t * 3 / duration)
@@ -154,6 +167,25 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
         elif name == "sword_pickup":
             ring = math.sin(math.tau * t * 615) * 0.2 + math.sin(math.tau * t * 1013) * 0.10
             value = ring * math.exp(-t * 11) + low * math.exp(-t * 28) * 0.7 + noise * math.exp(-t * 60) * 0.2
+        elif name == "staff_pickup":
+            shimmer = (math.sin(math.tau * t * 523 * pitch) * 0.32
+                       + math.sin(math.tau * t * 784 * pitch) * 0.18)
+            value = shimmer * math.exp(-t * 8) + low * math.exp(-t * 22) * 0.5
+        elif name == "item_drop":
+            value = (math.sin(math.tau * t * 117 * pitch) * 0.65
+                     + low * 1.1 + noise * 0.12) * math.exp(-t * 28)
+        elif name == "fireball_cast":
+            # Ignition crack, rushing flame and a short falling fiery tail.
+            rush = math.sin(math.pi * min(1, t / 0.38)) ** 1.5 if t < 0.38 else 0
+            value = (low * 1.4 + (noise - low) * 0.20) * (rush + math.exp(-t * 25) * 0.5)
+            value += math.sin(math.tau * pitch * (210 * t - 100 * t * t)) * math.exp(-t * 9) * 0.45
+        elif name in ("fireball_hit", "fireball_impact"):
+            value = (low * 1.6 + noise * 0.25) * math.exp(-t * 15)
+            value += math.sin(math.tau * t * 69 * pitch) * math.exp(-t * 20) * 0.9
+            if name == "fireball_hit":
+                value += (noise - low) * math.exp(-t * 70) * 0.8
+        elif name == "fireball_fizzle":
+            value = (noise - low) * math.sin(math.pi * t / duration) * math.exp(-t * 12) * 0.65
         elif name in ("sword_swing", "sword_miss"):
             sweep = math.sin(math.pi * t / duration) ** (2 if name == "sword_swing" else 1.2)
             value = ((noise - low) * 0.25 + low * 0.8) * sweep
@@ -173,6 +205,47 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
             creak = math.sin(math.tau * (119 * t + 6 * math.sin(t * 23))) * 0.18
             value = (low * 1.1 + math.sin(math.tau * t * 83) * 0.6) * pulse
             value += creak * math.sin(math.pi * t / duration) + noise * pulse * 0.13
+        elif name == "enemy_step":
+            # The guardian's weight adds a low stone knock under the scrape.
+            value = (math.sin(math.tau * t * 73 * pitch) * 0.85
+                     + low * 1.0) * math.exp(-t * 30)
+            value += (noise - low) * math.exp(-t * 20) * 0.20
+        elif name in ("enemy_alert", "enemy_respawn"):
+            rising = name == "enemy_respawn"
+            envelope = math.sin(math.pi * t / duration) ** (1.5 if rising else 0.8)
+            rumble = math.sin(math.tau * pitch * (61 * t + 9 * t * t))
+            resonance = math.sin(math.tau * t * 183 * pitch) * 0.22
+            value = (rumble * 0.65 + resonance + slow * 2.2) * envelope
+            value += low * (0.35 if rising else 0.65) * math.exp(-t * 12)
+        elif name == "enemy_attack":
+            # A rising stone grind telegraphs the strike, leaving time to dodge.
+            progress = t / duration
+            grind = (low * 1.3 + (noise - low) * 0.18)
+            tension = math.sin(math.tau * pitch * (97 * t + 130 * t * t)) * 0.35
+            value = (grind + tension) * math.sin(math.pi * progress) ** 0.8
+        elif name == "enemy_miss":
+            value = (low * 1.4 + noise * 0.15) * math.exp(-t * 24)
+            value += math.sin(math.tau * t * 87 * pitch) * math.exp(-t * 26) * 0.65
+        elif name == "enemy_hurt":
+            value = (noise * 0.30 + low * 1.1) * math.exp(-t * 32)
+            value += (math.sin(math.tau * t * 307 * pitch) * 0.45
+                      + math.sin(math.tau * t * 479 * pitch) * 0.20) * math.exp(-t * 21)
+        elif name == "enemy_down":
+            collapse = math.exp(-t * 9) + 0.55 * math.exp(-abs(t - 0.19) * 38)
+            value = (low * 1.5 + noise * 0.14) * collapse
+            value += math.sin(math.tau * pitch * (81 * t - 18 * t * t)) * math.exp(-t * 8) * 0.65
+        elif name == "player_hurt":
+            value = (math.sin(math.tau * t * 61 * pitch) * 0.9
+                     + low * 1.1 + noise * 0.10) * math.exp(-t * 22)
+            value += (noise - low) * math.exp(-t * 55) * 0.4
+        elif name == "player_down":
+            falling = math.sin(math.tau * pitch * (106 * t - 45 * t * t))
+            value = (falling * 0.65 + slow * 2.4) * math.sin(math.pi * t / duration) * math.exp(-t * 3)
+        elif name == "player_respawn":
+            rise = math.sin(math.pi * t / duration) ** 1.5
+            value = (math.sin(math.tau * t * 262 * pitch) * 0.25
+                     + math.sin(math.tau * t * 393 * pitch) * 0.16
+                     + low * 0.65) * rise
         elif name == "attack_empty":
             value = low * math.exp(-t * 25) * 0.8 + (noise - low) * math.sin(math.pi * t / duration) ** 2 * 0.16
         else:
@@ -208,9 +281,13 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
             result[index] = round(result[index] * amount)
             result[-1 - index] = round(result[-1 - index] * amount)
     rms = math.sqrt(sum(sample * sample for sample in result) / max(1, len(result)))
-    target_db = (-17 if name == "river" else -23) if ambient else (-28 if name.startswith("ui_") or name in ("interaction_miss", "attack_empty", "sword_miss") else -21)
+    target_db = (-17 if name == "river" else -19) if ambient else (-28 if name.startswith("ui_") or name in ("interaction_miss", "attack_empty", "sword_miss") else -21)
     if name == "sword_hit":
         target_db = -18  # Contact must remain clear over its simultaneous whoosh.
+    elif name in ("player_hurt", "enemy_attack"):
+        target_db = -19
+    elif name in ("enemy_step", "enemy_hurt"):
+        target_db = -24
     gain = min(3.0, 32768 * 10 ** (target_db / 20) / max(1, rms),
                27000 / max(1, max(map(abs, result))))
     result = array("h", (round(sample * gain) for sample in result))
@@ -219,7 +296,9 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
 
 class SoundBank:
     def __init__(self):
-        varied = {"sword_swing", "sword_hit", *_DOOR_STRAINS}
+        varied = {"sword_swing", "sword_hit", "fireball_cast", "fireball_hit",
+                  "fireball_impact", "enemy_step", "enemy_hurt", "enemy_attack",
+                  *_DOOR_STRAINS}
         self.clips = {name: tuple(synthesize(name, v)
                                  for v in range(3 if name.startswith("step_") or name in varied else 1))
                       for name in EFFECTS}
@@ -309,13 +388,20 @@ class Mixer:
         samples = choices[self._variation % len(choices)]
         self._variation += 1
         gain, pan = event.strength, 0.0
-        if event.x is not None and event.y is not None:
+        # Personal feedback stays centered even if an entrance respawn moves
+        # the listener before the asynchronous worker consumes the event.
+        personal = event.name in ("player_hurt", "player_down", "player_respawn")
+        if not personal and event.x is not None and event.y is not None:
             dx, dy = event.x - listener[0], event.y - listener[1]
             distance = math.hypot(dx, dy)
             gain /= 1 + distance * 0.16
             pan = max(-0.85, min(0.85, (dx * math.sin(listener[2]) - dy * math.cos(listener[2])) / max(2.0, distance)))
-        priority = (2 if event.name == "sword_hit" or event.name.startswith("door_")
-                    else (0 if event.name.startswith("step_") else 1))
+        priority = (3 if event.name in ("player_hurt", "player_down")
+                    else 2 if event.name in ("sword_hit", "fireball_hit", "fireball_impact",
+                                             "enemy_attack", "enemy_down", "player_respawn")
+                    or event.name.startswith("door_")
+                    else 0 if event.name.startswith("step_") or event.name == "enemy_step"
+                    else 1)
         if len(self.voices) >= self.MAX_VOICES:
             oldest = min(self.voices, key=lambda voice: voice.priority)
             if priority < oldest.priority:

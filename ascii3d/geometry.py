@@ -109,6 +109,52 @@ class Camera:
                 if depth <= depths[y][x] + 0.01:
                     pixels[y][x], depths[y][x] = char, depth
 
+    def quad(self, pixels, depths, a, b, c, d, char="#"):
+        """Fill a convex planar face by spans with perspective-correct depth.
+
+        Closed enemy blocks reuse each projected vertex and visit their face
+        pixels once, avoiding two overlapping triangle bounding-box scans.
+        """
+        if any(point is None for point in (a, b, c, d)):
+            self.triangle(pixels, depths, a, b, c, char)
+            self.triangle(pixels, depths, a, c, d, char)
+            return
+        ax, ay, az = a
+        bx, by, bz = b
+        cx, cy, cz = c
+        denominator = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy)
+        if abs(denominator) < 1e-9:
+            return
+        inverse_x = ((by - cy) / az + (cy - ay) / bz + (ay - by) / cz) / denominator
+        inverse_y = ((cx - bx) / az + (ax - cx) / bz + (bx - ax) / cz) / denominator
+        inverse_zero = 1 / az - inverse_x * ax - inverse_y * ay
+        points = (a, b, c, d)
+        edges = []
+        for i, start in enumerate(points):
+            end = points[(i + 1) % 4]
+            if abs(end[1] - start[1]) > 1e-10:
+                edges.append((min(start[1], end[1]), max(start[1], end[1]),
+                              start[0], start[1],
+                              (end[0] - start[0]) / (end[1] - start[1])))
+        y0 = max(0, math.ceil(min(point[1] for point in points)))
+        y1 = min(self.height - 1, math.floor(max(point[1] for point in points)))
+        for y in range(y0, y1 + 1):
+            crossings = [x + (y - start_y) * slope
+                         for low, high, x, start_y, slope in edges if low <= y <= high]
+            if len(crossings) < 2:
+                continue
+            x0 = max(0, math.ceil(min(crossings) - 1e-7))
+            x1 = min(self.width - 1, math.floor(max(crossings) + 1e-7))
+            row, zrow = pixels[y], depths[y]
+            inverse_row = inverse_y * y + inverse_zero
+            for x in range(x0, x1 + 1):
+                inverse = inverse_x * x + inverse_row
+                if inverse <= 0:
+                    continue
+                depth = 1 / inverse
+                if depth <= zrow[x] + 0.01:
+                    row[x], zrow[x] = char, depth
+
     def stroke(self, pixels, depths, start, end, radius=0.0, char=None):
         if start is None or end is None:
             return False

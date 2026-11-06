@@ -5,14 +5,14 @@ import math
 
 from .events import GameEvent
 from .sound_surfaces import surface_kind
-from .world import World
+from .world import INDOOR_SPAWN, World
 
 
 @dataclass
 class Player:
-    x: float = 14.5
-    y: float = 4.5
-    z: float = 1.0
+    x: float = INDOOR_SPAWN[0]
+    y: float = INDOOR_SPAWN[1]
+    z: float = INDOOR_SPAWN[2]
     yaw: float = math.pi / 2
     pitch: float = 0.0
     vertical_speed: float = 0.0
@@ -21,6 +21,8 @@ class Player:
     moving: bool = False
     running: bool = False
     in_water: bool = False
+    max_hp: int = 10
+    hp: int = 10
     events: list[GameEvent] = field(default_factory=list, repr=False)
     _step_distance: float = field(default=0.0, repr=False)
 
@@ -32,10 +34,27 @@ class Player:
     GRAVITY = 19.0
     JUMP_SPEED = 7.1
 
+    def take_damage(self, amount: int) -> list[GameEvent]:
+        """Apply one confirmed hit and report feedback once per living player."""
+        if amount <= 0 or self.hp <= 0:
+            return []
+        self.hp = max(0, self.hp - amount)
+        events = [GameEvent("player_hurt", self.x, self.y)]
+        if self.hp == 0:
+            events.append(GameEvent("player_down", self.x, self.y))
+        return events
+
     @property
     def eye_z(self) -> float:
         bob = math.sin(self.stride) * 0.025 if self.grounded and self.moving else 0.0
         return self.z + self.EYE + bob
+
+    def look(self, dx: float, dy: float, sensitivity: float = 0.0025) -> None:
+        """Apply one frame of relative mouse motion, independent of physics dt."""
+        if not all(math.isfinite(value) for value in (dx, dy, sensitivity)) or sensitivity <= 0:
+            return
+        self.yaw = (self.yaw - dx * sensitivity) % math.tau
+        self.pitch = max(-0.65, min(0.65, self.pitch - dy * sensitivity))
 
     def update(self, world: World, keys: set[str], dt: float, jump: bool = False) -> None:
         dt = max(0.0, min(dt, 0.1))

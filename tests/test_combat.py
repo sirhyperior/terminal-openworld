@@ -4,7 +4,7 @@ import math
 import unittest
 
 from ascii3d.combat import (ATTACK_COOLDOWN, ATTACK_REACH, CombatState, Enemy,
-                            SwordPickup)
+                            WeaponPickup)
 from ascii3d.doors import Door
 from ascii3d.player import Player
 from ascii3d.sound import EFFECTS
@@ -14,7 +14,8 @@ from ascii3d.world import FLOOR, WATER, Tree, World, build_world
 def training_world():
     world = World.empty(20, 20, 10)
     world.box(0, 0, 0, 20, 20, 1, FLOOR)
-    world.combat = CombatState(pickups=[SwordPickup(8.5, 6.5), SwordPickup(2.5, 2.5)],
+    world.combat = CombatState(pickups=[WeaponPickup(8.5, 6.5, group="starter"),
+                                      WeaponPickup(2.5, 2.5, group="starter")],
                                enemies=[Enemy("Training dummy", 8.5, 8.5)])
     return world
 
@@ -28,27 +29,27 @@ class CombatTests(unittest.TestCase):
 
     def test_fixture_worlds_have_independent_empty_combat(self):
         first, second = World.empty(2, 2, 2), World.empty(2, 2, 2)
-        first.combat.pickups.append(SwordPickup(1, 1))
+        first.combat.pickups.append(WeaponPickup(1, 1))
         self.assertFalse(second.combat.pickups)
         self.assertFalse(second.combat.enemies)
 
     def test_e_collects_one_shared_sword_and_emits_feedback(self):
         self.assertIs(self.world.interaction_target(self.player), self.combat.pickups[0])
-        self.assertEqual(self.world.interact(self.player).name, "sword_pickup")
-        self.assertTrue(self.combat.has_sword)
+        self.assertEqual(self.world.interact(self.player)[0].name, "sword_pickup")
+        self.assertIsNotNone(self.combat.held_item)
         self.assertTrue(all(item.collected for item in self.combat.pickups))
-        self.assertEqual(self.world.interact(self.player).name, "interaction_miss")
+        self.assertEqual(self.world.interact(self.player)[0].name, "interaction_miss")
 
     def test_collection_requires_reach_aim_and_voxel_line_of_sight(self):
         for y, yaw, pitch in ((2.0, math.pi / 2, 0), (4.5, 0, 0),
                                (4.5, math.pi / 2, 0.65)):
             with self.subTest(y=y, yaw=yaw, pitch=pitch):
                 self.player.y, self.player.yaw, self.player.pitch = y, yaw, pitch
-                self.assertEqual(self.world.interact(self.player).name, "interaction_miss")
+                self.assertEqual(self.world.interact(self.player)[0].name, "interaction_miss")
         self.player.y, self.player.yaw, self.player.pitch = 4.5, math.pi / 2, 0
         self.world.box(8, 5, 1, 9, 6, 4)
-        self.assertEqual(self.world.interact(self.player).name, "interaction_miss")
-        self.assertFalse(self.combat.has_sword)
+        self.assertEqual(self.world.interact(self.player)[0].name, "interaction_miss")
+        self.assertIsNone(self.combat.held_item)
 
     def test_nearest_door_wins_and_its_leaf_blocks_pickup_and_attack(self):
         door = Door("test door", 7.5, 5.5, 2)
@@ -90,26 +91,26 @@ class CombatTests(unittest.TestCase):
         self.assertEqual(self.player.yaw, yaw)
         self.assertEqual([e.name for e in self.combat.attack(self.world, self.player)], ["attack_empty"])
         self.assertEqual(self.combat.attack(self.world, self.player), [])
-        self.combat.update(0.30)
+        self.combat.update(0.30, self.world)
         self.assertEqual(self.combat.attack(self.world, self.player)[0].name, "attack_empty")
 
     def test_attacks_require_range_and_aim_and_emit_miss_feedback(self):
-        self.combat.has_sword = True
+        self.combat.held_item = WeaponPickup(0, 0)
         self.assertEqual([e.name for e in self.combat.attack(self.world, self.player)],
                          ["sword_swing", "sword_miss"])
         self.assertEqual(self.enemy.hp, 3)
         self.player.y = self.enemy.y - self.enemy.radius - ATTACK_REACH - 0.01
-        self.combat.update(ATTACK_COOLDOWN)
+        self.combat.update(ATTACK_COOLDOWN, self.world)
         self.assertEqual(self.combat.attack(self.world, self.player)[-1].name, "sword_miss")
         self.player.y += 0.02
-        self.combat.update(ATTACK_COOLDOWN)
+        self.combat.update(ATTACK_COOLDOWN, self.world)
         self.assertEqual(self.combat.attack(self.world, self.player)[-1].name, "sword_hit")
-        self.combat.update(ATTACK_COOLDOWN)
+        self.combat.update(ATTACK_COOLDOWN, self.world)
         self.player.pitch = 0.65
         self.assertEqual(self.combat.attack(self.world, self.player)[-1].name, "sword_miss")
 
     def test_attack_cooldown_down_and_reset_emit_once_with_matching_sounds(self):
-        self.combat.has_sword = True
+        self.combat.held_item = WeaponPickup(0, 0)
         self.player.y = 6.5
         events = []
         for hp in (2, 1, 0):
@@ -117,24 +118,24 @@ class CombatTests(unittest.TestCase):
             self.assertEqual(self.enemy.hp, hp)
             self.assertEqual(self.combat.attack(self.world, self.player), [])
             if hp:
-                self.combat.update(ATTACK_COOLDOWN)
+                self.combat.update(ATTACK_COOLDOWN, self.world)
         self.assertEqual(sum(e.name == "dummy_down" for e in events), 1)
         self.assertIsNone(self.combat.aimed_enemy(self.world, self.player))
-        self.assertEqual(self.combat.update(3.99), [])
-        events.extend(self.combat.update(0.01))
+        self.assertEqual(self.combat.update(3.99, self.world), [])
+        events.extend(self.combat.update(0.01, self.world))
         self.assertEqual(events[-1].name, "dummy_reset")
         self.assertEqual(self.enemy.hp, self.enemy.max_hp)
-        self.assertEqual(self.combat.update(10), [])
+        self.assertEqual(self.combat.update(10, self.world), [])
         self.assertTrue(all(event.name in EFFECTS for event in events))
 
     def test_enemy_hit_has_local_impact_and_a_quieter_whoosh_than_a_miss(self):
-        self.combat.has_sword = True
+        self.combat.held_item = WeaponPickup(0, 0)
         self.player.y = 6.5
         hit = self.combat.attack(self.world, self.player)
         self.assertEqual([event.name for event in hit], ["sword_swing", "sword_hit"])
         self.assertEqual((hit[1].x, hit[1].y), (self.enemy.x, self.enemy.y))
         self.assertEqual(self.enemy.hp, 2)
-        self.combat.update(ATTACK_COOLDOWN)
+        self.combat.update(ATTACK_COOLDOWN, self.world)
         self.player.yaw = 0
         miss = self.combat.attack(self.world, self.player)
         self.assertEqual([event.name for event in miss], ["sword_swing", "sword_miss"])
@@ -142,14 +143,14 @@ class CombatTests(unittest.TestCase):
         self.assertEqual(miss[0].strength, 1)
 
     def test_pause_sized_zero_updates_do_not_advance_state(self):
-        self.combat.has_sword = True
+        self.combat.held_item = WeaponPickup(0, 0)
         self.player.y = 6.5
         self.combat.attack(self.world, self.player)
         self.enemy.hp, self.enemy.down_remaining = 0, 4
         before = (self.combat.cooldown, self.combat.swing_remaining,
                   self.enemy.down_remaining, self.enemy.hit_remaining)
         for _ in range(100):
-            self.assertEqual(self.combat.update(0), [])
+            self.assertEqual(self.combat.update(0, self.world), [])
         self.assertEqual(before, (self.combat.cooldown, self.combat.swing_remaining,
                                   self.enemy.down_remaining, self.enemy.hit_remaining))
 
@@ -167,21 +168,22 @@ class CombatTests(unittest.TestCase):
         farther = Enemy("Far target", 8.5, 11)
         self.combat.enemies.insert(0, farther)
         self.assertIs(self.combat.aimed_enemy(self.world, self.player), self.enemy)
-        self.combat.has_sword = True
+        self.combat.held_item = WeaponPickup(0, 0)
         self.player.y = 6.5
         self.combat.attack(self.world, self.player)
         self.assertEqual((self.enemy.hp, farther.hp), (2, 3))
         self.world.box(8, 7, 1, 9, 8, 4)
-        self.combat.update(ATTACK_COOLDOWN)
+        self.combat.update(ATTACK_COOLDOWN, self.world)
         self.assertEqual(self.combat.attack(self.world, self.player)[-1].name, "sword_miss")
 
     def test_live_map_has_both_start_pickups_and_training_dummy(self):
         world = build_world()
-        self.assertEqual(len(world.combat.pickups), 2)
-        self.assertEqual(len(world.combat.enemies), 1)
+        self.assertEqual(len(world.combat.pickups), 3)
+        self.assertEqual(sum(enemy.behavior is None for enemy in world.combat.enemies), 3)
+        self.assertEqual(sum(enemy.behavior is not None for enemy in world.combat.enemies), 1)
         self.assertIsNotNone(world.interaction_target(Player()))
-        self.assertFalse(world.collides(16.5, 34.5, 1))
-        self.assertTrue(world.collides(20.5, 36.5, 1))
+        self.assertFalse(world.collides(55.5, 20.5, 1))
+        self.assertTrue(world.collides(42.5, 48.5, 1))
 
 
 if __name__ == "__main__":

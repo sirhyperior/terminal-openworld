@@ -1,21 +1,44 @@
 # MONOLITH
 
 A first-person 3D playground drawn entirely with **white ASCII text on black**.
-Walk through a stone courtyard, covered corridors, windowed walls, and a pillar
-hall. Jump onto crates and low walls, or explore underneath the overhead arches.
-Wooden doors at the courtyard, cloister, and north gallery swing open and closed
-with **E**. Approach and look at a doorway to see its interaction prompt. Doors
-stop or reopen if a leaf would hit you; step clear of the swing before closing.
-The north gate opens onto a grassy meadow with trees and a meandering river.
-Two wooden bridges connect its banks; gravel trails lead to northern ruins,
-watchstones, and an eastern lodge with the same swinging doors.
+Explore a **castle surrounded by meadow** in a 112 by 112 world. Four towers and
+battlements frame an open courtyard, a roofed gatehouse, a great hall, a west
+cloister and a garden. Jump up the west steps to reach the cloister roof and
+nearby wall walk. Gravel trails circle the castle and lead to two bridges over
+the northern river, ruined chapel, watchstones and an eastern lodge.
 
-Collect the upright **iron sword with E** near either starting entrance. Press
-**Q** to attack the passive training dummy east of the meadow start. Aim at it
-to see its name and health; stand within about 2.5 units to land a hit. Three
-hits knock it down, and it resets after four seconds. The fixed support remains
-solid while it is down. R returns you to the entrance with your sword and the
-world's door/target state preserved.
+Seven wooden doors share **E** interaction, swinging animation and collision.
+Approach and look at a doorway to see its prompt. Doors stop or reopen if a leaf
+would hit you; step clear of the swing before closing.
+
+Collect the upright **iron sword with E** near either starting entrance. Find
+the **fire staff** on the western timber floor inside the northern ruins
+(`53.5, 103.5`). Cross either river bridge, follow the north-bank trail toward
+the chapel and enter its south doors, then head left. **You can hold only one item**: collecting another drops your
+current item nearby, where you can collect it again. The E prompt shows which
+item will be dropped.
+
+Press **left click** to swing the sword or shoot a fireball with the staff. Aim
+at the three passive dummies in the western training yard (`42.5-50.5, 48.5`)
+to see each target's name and health.
+Sword strikes need about 2.5 units of reach. Fireballs follow your aim, travel
+up to 28 units, and stop on walls, doors, tree trunks or the first target hit.
+The staff fires once per click with a 0.65-second cooldown and no ammo limit.
+Either weapon deals one damage; three hits knock the dummy down, and it resets
+after four seconds. The fixed support remains solid while it is down. R returns
+you to the entrance with your held item and world state preserved.
+
+A **Watchstone Warden** guards the western watchstones (`12-24, 99-106`),
+across the river from the castle. This four-HP stone guardian notices players
+inside its grounds within 7.5 units, follows them, and raises its fists before
+slamming the ground at close range. Step away during its warning to dodge. It stays inside
+the watchstones and returns home when you leave. Defeat it with either weapon;
+it respawns at its original position after 12 seconds, waiting longer if the
+spot is occupied. The three training dummies remain passive.
+
+The upper HUD shows your **10-point health bar**. A Warden hit costs two health.
+Defeat returns you to your starting entrance with full health, keeping your
+held item and world state. R also restores health when returning to the entrance.
 
 The renderer casts a real 3D ray through a voxel world for every character. The
 camera has perspective, pitch, height, textured surfaces, face lighting, and
@@ -30,19 +53,16 @@ Requires **Python 3.10 or newer**, with **no extra packages**.
 python main.py
 ```
 
-To start outside facing the bridge:
+To start in the southern meadow facing the castle:
 
 ```powershell
 python main.py --outside
 ```
 
-You can also reach the meadow through the original map's **north gate**, at the
-far end of the north gallery. Press M to see the route.
-
-Cross the original bridge and continue north to the gravel trail. Its western
-branch reaches the watchstones and its middle branch enters the ruins. Follow
-the trail east, then south across the second bridge to reach the lodge. The live
-map is 65 by 86 ground cells; both original starting positions are preserved.
+The indoor start is the south gatehouse (`55.5, 30.5`); the outdoor start is
+`55.5, 20.5`. The courtyard connects to meadow gates on all four sides. Continue
+north through the great hall and north gate, then follow the trail west or east
+to a bridge. The lodge lies east of the castle. Press M to see the whole map.
 
 Short grass covers the outdoor ground, including the bridge approaches. Nearby
 blades are 0.09-0.24 world units tall, with a continuous turf texture filling in
@@ -68,22 +88,28 @@ when the terminal is resized. It needs at least 60 columns by 21 terminal rows.
 | A / D | Strafe left / right |
 | Hold Shift | Sprint |
 | Space | Jump; you can land on low walls and crates |
-| Left / Right | Turn |
-| Up / Down | Look up / down |
-| E | Open / close a door, or collect the sword you are facing |
-| Q | Attack with the equipped sword; arrows still control turning |
+| Mouse movement | Turn and look up / down on Windows |
+| E | Open / close a door, or collect an item and drop your held item |
+| Left click | Swing the sword or shoot a fireball with the held staff |
 | F | Mute / unmute sound |
 | M or Tab | Show / hide the overhead map |
 | H | Open / close the control guide |
 | P | Pause / resume |
-| R | Return to the starting entrance; preserve inventory and world state |
+| R | Return to the starting entrance with full health; preserve inventory and world state |
 | Esc or Ctrl+C | Exit |
 
-Windows input reads native key-down and key-up events, so movement, turning,
-jumping, and Shift can be held together. A fallback for Linux / macOS terminals
-uses key-repeat timing to approximate held keys; Shift+WASD sends uppercase
-letters for sprinting. Those terminals cannot usually report key releases, so
-movement there is less precise and depends on your keyboard repeat settings.
+On Windows, **click inside the terminal to capture mouse look**. The capture
+click does not attack. Turning continues beyond screen edges; P, H, focus loss
+and exit release the pointer. Resume with P. Native key-down/up events preserve
+simultaneous WASD, Shift and jumping. Q is no longer an attack control.
+Pointer hiding is best effort: Windows Terminal and other external console
+hosts may keep the mouse pointer visible during capture.
+
+For keyboard controls, run `python main.py --keyboard-look`: arrows look and
+**Enter** attacks. This mode is automatic on Linux/macOS, where mouse capture
+is unavailable. POSIX key-repeat timing approximates held movement; uppercase
+WASD supplies sprinting. Moving a captured game tab into a different terminal
+window requires restarting the game or using keyboard mode.
 
 The game uses the alternate terminal screen and restores console modes, cursor,
 and colors when it exits. Focus loss pauses play on Windows; press P to resume.
@@ -92,7 +118,8 @@ and colors when it exits. Focus loss pauses play on Windows; press P to resume.
 
 ```powershell
 python main.py --demo                # Automatic walk; Esc still exits
-python main.py --outside             # Start by the river and wooden bridge
+python main.py --outside             # Southern meadow facing the castle
+python main.py --keyboard-look       # Arrows to look; Enter to attack
 python main.py --fps 30              # Lower the frame-rate cap
 python main.py --mute                # Start silently; F enables sound
 python main.py --volume 0.35         # Master sound level, 0 to 1
@@ -124,9 +151,12 @@ changes it). Headless benchmark FPS excludes terminal output and cap waits.
 Original fantasy-style Foley adds uneven wooden door creaks and quiet latches,
 distinct stone, grass, wood, water, gravel and metal footsteps and landings,
 cloth-like jumps,
-splashes, sword pickup tones, blade whooshes, sharp impacts on enemies, dummy
+splashes, weapon pickup tones, dropped-item thuds, blade whooshes,
+fireball ignition/rush, impacts and fading embers, sharp sword impacts on enemies, dummy
 feedback and quiet interface
-cues. Footsteps and landings use the supporting surface, including raised crate
+cues. Meadow wind includes gentle gusts and grass rustle. The Warden has stone
+footsteps, an alert, an attack warning, hit/defeat and respawn feedback; player
+damage and entrance respawn have their own cues. Footsteps and landings use the supporting surface, including raised crate
 and bridge tops. Wind and river ambience change as you explore. Effects
 overlap, with distance attenuation and stereo positioning for nearby doors.
 Door opening, closing and obstruction cues each have three variations.
@@ -157,7 +187,8 @@ Immediate-return virtual sinks retain a safety rate cap. Effect ends and ambient
 loop seams are smoothed, and overlapping peaks use a soft limiter.
 
 To check reported crackling/cutouts, run `python main.py --audio-test`: its
-11-second sequence plays the river, surface Foley, doors and combat effects,
+18-second sequence plays meadow wind, the river, surface Foley, doors, both
+weapons and Warden/player effects,
 and reports empty-queue events, maximum refill
 interval, and output recoveries. Zero empty-queue events verifies buffer
 continuity during that run; it does not measure the speakers or headphones.
@@ -169,21 +200,24 @@ contributor requirement in `AGENTS.md`.
 Clear 2x2 terrain columns are merged into cached empty rectangles during voxel
 edits. Rays skip these empty volumes while preserving exact hits; the larger
 bounds accelerate open sightlines.
+Conservative AIR volumes below roofs also skip empty room interiors, stopping
+at floors, ceilings and walls. Corner crossings preserve ordinary voxel order.
 Grass uses
 spatial chunks, distance-based detail, cached wind, and a per-frame blade budget.
 Far grass remains visible as animated turf. Tree detail also has a pixel budget.
 These limits keep scenery work bounded as the map expands.
+The overhead map caches its static background until voxel edits or resizing.
+River audio checks only nearby water buckets within its fixed 18-unit radius.
 
 Use the same machine, Python version, resolution, and frame count to compare:
 
 ```powershell
 python tools/benchmark.py --frames 60 --compare benchmarks/vegetation-current.json
 python tools/benchmark.py --frames 60 --save benchmarks/my-run.json
-python tools/benchmark.py --frames 60 --audio --compare benchmarks/doors-audio-current.json
-python tools/benchmark.py --frames 60 --audio --extra-scenes --compare benchmarks/milestone-start.json
+python tools/benchmark.py --frames 60 --audio --extra-scenes --compare benchmarks/castle-milestone-before-live.json
 ```
 
-This checks six fixed indoor/outdoor cameras and reports mean and p95 frame
+This checks six indoor/outdoor camera roles and reports mean and p95 frame
 times, excluding terminal output. Comparison exits with an error if either frame
 time grows more than 15% in any scene; `--max-regression` adjusts that threshold.
 Timing varies with background load. Review unexpected results before replacing
@@ -193,10 +227,15 @@ The `--audio` run includes live ambience/effect mixing and needs a Windows audio
 device. `doors-audio-current.json` records that mode with the interactive doors;
 new baselines must use the same audio mode. Door panels supply early ray limits,
 so static geometry hidden behind a closed door is not traversed.
-`--extra-scenes` adds ruins, lodge, east bridge, watchstones, equipped sword
-combat, close trees, and oblique/upstream river views. New scenes without a
-matching reference are measured without a percent comparison; the original six
-still use the saved reference and 15% limit.
+`--extra-scenes` adds ruins, lodge, east bridge, watchstones, an active Warden, equipped sword
+combat, the staff pickup, live fireballs, the map overlay, close trees, river
+angles, castle exterior, great hall and roof views. Audio-enabled measurements
+include actual listener-position river/wind sampling. Saved camera coordinates
+and world dimensions identify each layout; old and new map views represent
+similar scene types rather than identical geometry. New scenes without a
+reference have no percentage comparison; existing comparisons retain the 15%
+mean/p95 limit. Historical benchmarks remain on disk and are not replaced by
+measurements of the rebuilt castle.
 Audio-enabled runs also report playback health and fail on buffer underruns or
 output errors. `audio-repair-measurement.json` records the latest repaired-audio
 run; the historical frame-time check still flags slower scenes, so that report

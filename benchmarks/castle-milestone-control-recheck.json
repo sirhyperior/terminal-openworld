@@ -1,0 +1,368 @@
+{
+  "python": "3.14.4",
+  "platform": "Windows",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "width": 120,
+  "height": 40,
+  "frames": 60,
+  "audio": true,
+  "ambient_sampling": "world",
+  "world_size": [
+    65,
+    86,
+    10
+  ],
+  "cameras": {
+    "indoors": {
+      "x": 14.5,
+      "y": 4.5,
+      "yaw": 1.5707963267948966
+    },
+    "courtyard": {
+      "x": 16.5,
+      "y": 20.5,
+      "yaw": 1.5707963267948966
+    },
+    "meadow": {
+      "x": 10.5,
+      "y": 37.0,
+      "yaw": 1.03,
+      "pitch": -0.06
+    },
+    "grass_close": {
+      "x": 24.5,
+      "y": 34.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.35
+    },
+    "bridge": {
+      "x": 16.5,
+      "y": 46.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.1
+    },
+    "river": {
+      "x": 7.5,
+      "y": 46.5,
+      "z": 0.12,
+      "yaw": 0.0,
+      "pitch": -0.1
+    },
+    "ruins": {
+      "x": 37.5,
+      "y": 67,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06
+    },
+    "lodge": {
+      "x": 52.5,
+      "y": 12,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06
+    },
+    "east_bridge": {
+      "x": 51.5,
+      "y": 46.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.1
+    },
+    "watchstones": {
+      "x": 15.5,
+      "y": 73,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06
+    },
+    "staff": {
+      "x": 33.5,
+      "y": 75.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06
+    },
+    "fireballs": {
+      "x": 18.2,
+      "y": 36.5,
+      "yaw": 0
+    },
+    "map": {
+      "x": 16.5,
+      "y": 20.5,
+      "yaw": 1.5707963267948966
+    },
+    "training": {
+      "x": 18.2,
+      "y": 36.5,
+      "yaw": 0
+    },
+    "tree_close": {
+      "x": 5.5,
+      "y": 34.0,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.35
+    },
+    "tree_canopy": {
+      "x": 5.5,
+      "y": 33.95,
+      "z": 2.25,
+      "yaw": 1.5707963267948966,
+      "pitch": 0.65
+    },
+    "river_diagonal": {
+      "x": 32.5,
+      "y": 44.772473451143874,
+      "z": 0.12,
+      "yaw": 0.7853981633974483,
+      "pitch": -0.25
+    },
+    "river_upstream": {
+      "x": 32.5,
+      "y": 44.772473451143874,
+      "z": 0.12,
+      "yaw": 3.141592653589793,
+      "pitch": -0.25
+    }
+  },
+  "scenarios": {
+    "indoors": {
+      "mean_ms": 12.68,
+      "p95_ms": 14.251,
+      "fps": 78.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 0,
+        "grass_drawn": 0,
+        "grass_chunks": 0,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "courtyard": {
+      "mean_ms": 15.752,
+      "p95_ms": 20.669,
+      "fps": 63.5,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 246,
+        "grass_drawn": 0,
+        "grass_chunks": 17,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "meadow": {
+      "mean_ms": 28.556,
+      "p95_ms": 31.913,
+      "fps": 35.0,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 392,
+        "grass_drawn": 221,
+        "grass_chunks": 15,
+        "tree_samples": 224,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "grass_close": {
+      "mean_ms": 22.62,
+      "p95_ms": 28.116,
+      "fps": 44.2,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 466,
+        "grass_drawn": 355,
+        "grass_chunks": 17,
+        "tree_samples": 660,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "bridge": {
+      "mean_ms": 14.081,
+      "p95_ms": 16.853,
+      "fps": 71.0,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 426,
+        "grass_drawn": 111,
+        "grass_chunks": 22,
+        "tree_samples": 983,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "river": {
+      "mean_ms": 13.916,
+      "p95_ms": 16.044,
+      "fps": 71.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 200,
+        "grass_drawn": 50,
+        "grass_chunks": 19,
+        "tree_samples": 246,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "ruins": {
+      "mean_ms": 13.145,
+      "p95_ms": 14.681,
+      "fps": 76.1,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 62,
+        "grass_drawn": 10,
+        "grass_chunks": 19,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "lodge": {
+      "mean_ms": 10.45,
+      "p95_ms": 11.252,
+      "fps": 95.7,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 80,
+        "grass_drawn": 12,
+        "grass_chunks": 16,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "east_bridge": {
+      "mean_ms": 13.72,
+      "p95_ms": 15.278,
+      "fps": 72.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 366,
+        "grass_drawn": 88,
+        "grass_chunks": 21,
+        "tree_samples": 1497,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "watchstones": {
+      "mean_ms": 13.546,
+      "p95_ms": 16.069,
+      "fps": 73.8,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 226,
+        "grass_drawn": 60,
+        "grass_chunks": 20,
+        "tree_samples": 982,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "staff": {
+      "mean_ms": 22.91,
+      "p95_ms": 26.755,
+      "fps": 43.6,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 124,
+        "grass_drawn": 29,
+        "grass_chunks": 14,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "fireballs": {
+      "mean_ms": 26.616,
+      "p95_ms": 33.649,
+      "fps": 37.6,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 572,
+        "grass_drawn": 443,
+        "grass_chunks": 18,
+        "tree_samples": 1398,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "map": {
+      "mean_ms": 25.727,
+      "p95_ms": 29.755,
+      "fps": 38.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 246,
+        "grass_drawn": 0,
+        "grass_chunks": 17,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "training": {
+      "mean_ms": 24.631,
+      "p95_ms": 30.021,
+      "fps": 40.6,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 572,
+        "grass_drawn": 443,
+        "grass_chunks": 18,
+        "tree_samples": 1398,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "tree_close": {
+      "mean_ms": 21.919,
+      "p95_ms": 24.439,
+      "fps": 45.6,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 520,
+        "grass_drawn": 357,
+        "grass_chunks": 16,
+        "tree_samples": 253,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "tree_canopy": {
+      "mean_ms": 20.97,
+      "p95_ms": 23.008,
+      "fps": 47.7,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 0,
+        "grass_drawn": 0,
+        "grass_chunks": 16,
+        "tree_samples": 12600,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "river_diagonal": {
+      "mean_ms": 25.958,
+      "p95_ms": 27.886,
+      "fps": 38.5,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 332,
+        "grass_drawn": 167,
+        "grass_chunks": 19,
+        "tree_samples": 673,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "river_upstream": {
+      "mean_ms": 23.296,
+      "p95_ms": 24.532,
+      "fps": 42.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 362,
+        "grass_drawn": 199,
+        "grass_chunks": 20,
+        "tree_samples": 298,
+        "tree_pixel_budget": 12600
+      }
+    }
+  },
+  "audio_health": {
+    "buffers": 499,
+    "underruns": 0,
+    "max_write_gap_ms": 72.08,
+    "recoveries": 0,
+    "error": ""
+  }
+}

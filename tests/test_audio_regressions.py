@@ -270,7 +270,7 @@ class RiverAudioTests(unittest.TestCase):
 
     def test_bridge_and_banks_have_audible_continuous_flow_without_footsteps(self):
         scene = Soundscape(build_world())
-        wind, river, pan = scene.at(16.5, 46.5, math.pi / 2)
+        wind, river, pan = scene.at(24.5, 86.5, math.pi / 2)
         self.assertGreater(river, 0.3)
         mixer = Mixer(SoundBank())
         pcm = array("h")

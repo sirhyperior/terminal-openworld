@@ -1,393 +1,283 @@
 # Project Status
 
-Last reviewed: **2026-11-05**. Read this before development, then
-[AGENTS.md](AGENTS.md) and relevant source/tests. This is the session handoff.
+Last reviewed: **2026-11-06**. Read this before development, then
+[AGENTS.md](AGENTS.md), [README.md](README.md) and the relevant source/tests.
 
 ## Current State
 
-MONOLITH is a playable white-on-black ASCII terminal exploration sandbox using
-Python 3.10+ and the standard library. Verified with Python 3.14.4 on Windows.
-Run `python main.py` or `python main.py --outside`. There is no build step,
-package dependency or CI configuration. Git was initialized on 2026-11-05 and
-the starting project state was committed; see `AGENTS.md` for the ongoing
-commit-after-success and Git-based undo workflow.
+MONOLITH uses Python 3.10+ and the standard library, verified on Windows with
+Python 3.14.4. The current milestone adds the first active enemy and player
+health to the castle/grounds engine, removes the empty-E instruction notice,
+and improves meadow wind. No dependencies or engine rewrite were introduced.
+The earlier castle, input and fire-staff implementation remains integrated.
 
-The saved surface-audio, map-expansion and sword/dummy modules are now integrated
-into live play. The live map is **65x86x10** with five standard swinging doors,
-two bridges, northern ruins, watchstones, an eastern lodge and gravel trails.
-Original fortress geometry and spawns remain intact: indoor `(14.5,4.5,1)` and
-outdoor `(16.5,34.5,1)`.
+The world is **112x112x12**, versus 65x86x10 before this milestone (2.24 times the
+ground area). A central castle has four hollow towers, crenellated curtain walls,
+a south gatehouse, great hall, west cloister, training yard and garden. Meadow
+surrounds it on all four sides. The northern river, two dry bridges, ruined
+chapel, watchstones, eastern lodge and connecting gravel trails remain explorable.
 
-**Gameplay integration and visibility changes are implemented and tested.
-The frame-time acceptance check remains open. Do not claim preserved FPS or
-replace approved benchmarks.** See validation/performance below.
+- Indoor spawn: `(55.5,30.5,1)`; outdoor spawn: `(55.5,20.5,1)`, facing north.
+- Sword aliases: `(55.5,32.5)` and `(55.5,22.5)`. They represent one item.
+- Fire staff: `(53.5,103.5,1)`, on the western timber floor in the northern ruins.
+- Three passive dummies: `(42.5,48.5)`, `(46.5,48.5)`, `(50.5,48.5)`.
+- One active **Watchstone Warden**: home `(18.5,103,1)`, confined by its body
+  radius to watchstones bounds `(12,99)-(24,106)`. It acquires players inside
+  those grounds within 7.5 units with clear sight, follows at 1.55 units/second,
+  and returns home when they leave. A radial ground slam has 1.35-unit reach,
+  a 0.55-second warning and 1.2-second recovery, dealing two health. Leaving
+  reach/grounds, jumping above the hit height or breaking sight dodges the slam.
+  Four weapon hits defeat it; it respawns at home after 12 simulation seconds,
+  waiting for clear, supported ground and no player overlap. Dead Wardens have
+  no solid support or lingering body; passive dummy supports stay unchanged.
+- The upper HUD replaces the title with a ten-point health bar. Defeat returns
+  the player to the selected entrance at full health, retaining items/world
+  state; R also restores health. Empty E retains its quiet sound but no notice.
+- Bridge decks: `(22,80)-(27,94)` and `(84,80)-(89,94)`, exclusive upper bounds.
+- Seven standard doors: south/north/east/west castle gates, hall, ruins and lodge.
+- E operates doors and collects/swaps items. Only one item can be held; the
+  previous instance drops nearby and can be collected again without duplication.
+- Left click attacks on Windows; mouse motion looks/aims. WASD, Shift and Space
+  still move, sprint and jump. Q is unbound. `--keyboard-look` enables arrows
+  and Enter; this fallback is automatic on non-Windows systems.
+- Pause is a small resume/controls/quit card. Help is a separate concise controls
+  card. H can open help over pause and return to it; P closes help and resumes.
+  Pause/help/small terminals freeze physics, scenery, combat and projectiles.
+- R resets the player and health while preserving held/dropped items, doors and target state.
+  West steps can be jumped to reach the cloister roof and west wall walk. The
+  taller corner towers interrupt the walk; there is no verified full roof circuit.
 
-## Completed Playable Features
+## Mouse Ownership and Lifecycle
 
-- Perspective voxel ray casting, textured surfaces, depth buffering and pitch.
-- WASD movement, Shift sprint, Space jump, arrow turning, cylinder collision,
-  wall sliding, gravity, head collision and obstacle landing.
-- Courtyard/corridors/gallery, crates, arches, meadow, rounded trees, wind-reactive
-  short grass, flowing river, wading/current and two wooden bridges.
-- Five E-operated standard doors with shared aim/reach/occlusion checks, prompts,
-  animation, collision, obstruction protection and sound.
-- E collects the iron sword near either spawn; the two placements represent one
-  inventory item and disappear together. Q attacks and no longer turns left.
-- A passive 3-HP training dummy at `(20.5,36.5)`: 2.55-unit attack reach,
-  0.48-second cooldown, 0.30-second swing and four-second reset. Aimed names/health
-  appear within ten units when the body has a clear line of sight.
-- Pause/help/too-small terminals freeze combat and scenery. R resets the player
-  while preserving inventory, door state and target state. Demo interaction now
-  handles both doors and pickups without assuming every target is a door.
-- Help, pause, map, reset, focus-loss pause, resizing, terminal cleanup, snapshots,
-  finite demos, viewport limits and rendering benchmarks.
-- Original synthesized movement/door/UI/combat sound, wind and stereo river
-  ambience; six surfaces (stone, grass, wood, water, gravel, metal) have distinct
-  footsteps and landing cues. Ground contact includes raised crates/bridges and
-  wooden door tops. Generic `land` events carry optional surface metadata.
-- F mute, CLI volume/mute, WAV export, no-device fallback and silent headless
-  modes remain. Native audio still uses an isolated process, primed completion-
-  driven buffers, fades, bounded mixing and device recovery.
+`terminal.Keys` adds pixel `mouse_dx/mouse_dy` and the semantic `attack` press.
+`Player.look()` consumes motion once per rendered frame, independent of fixed
+physics catch-up. Default sensitivity is 0.0025 radians/pixel; yaw wraps and
+pitch retains the existing +/-0.65 limit. Arrow input is filtered in mouse mode.
 
-## River Animation Orientation Fix
+Windows uses native console button records and Win32 pointer recentering for
+continuous turning beyond screen edges. Click the terminal to capture; the first
+capture click does not attack. Modern Terminal hosts require a fresh own-console
+click with the physical button held and cursor inside the foreground host.
+Focus records alone cannot identify a host. Its verified HWND survives pause and
+blur rather than silently rebinding to another terminal window.
 
-The user reported river lines remaining parallel to terminal X while turning.
-World-position sampling was already present, but the near and distant shaders
-always chose horizontal `-`, `~` or `=` glyphs.
+Capture activation flushes stale console records, then resamples physical held
+keys so WASD/Shift remain responsive and held menu/attack keys cannot repeat as
+fresh actions. Pause, help, blur, minimize, small viewports, exit and exceptions
+release the pointer. `app.py` uses `ExitStack` to release capture before audio
+drains, including finite frame limits and rendering errors. Clip/visibility
+restoration avoids overwriting a different foreground application's ownership.
+Moving the game tab into another terminal window requires restarting or using
+keyboard mode. Physical mouse feel still needs user play review; native record
+and mocked ownership tests do not measure the user's hand/speakers.
 
-- `renderer._river_ripple()` now makes elongated streaks in river coordinates
-  (`x - 0.9 * simulation_time`, `y - river_center(x)`). They follow bends and
-  advect downstream without camera-dependent phase or wall-clock animation.
-- Water strokes use the perspective derivative of `World.current()` at each
-  visible hit, including yaw, pitch, screen position and terminal cell aspect.
-  `_flow_glyph()` chooses horizontal, vertical or diagonal strokes; distant
-  simplification retains direction. Foam uses small isotropic glints.
-- Only directional streaks calculate current/projection; plain points and foam
-  skip that work, and water skips solid-material UV/lighting setup. Collision,
-  the water level, depth/bridge occlusion and existing river audio are unchanged.
-- Seven new outdoor regressions cover camera rotation, convergence, distance,
-  actual current direction, advection around bends, longitudinal streak shape,
-  frozen-time repeatability and wall occlusion. The complete native-console
-  suite passed **153/153**, zero skips, including exact-ray comparisons.
-- Added `river_diagonal` and `river_upstream` extra benchmark views (15 total).
-  Inspected indoor/outdoor and along/across/oblique river text views; no previews
-  were retained. README explains the world-aligned streaks.
-- The first full measurement is preserved as `benchmarks/river-flow-initial.json`:
-  large stalls included indoors (105.09 ms mean) and audio (3 underruns, 759.1 ms
-  maximum refill interval). Do not hide that failure or attribute it solely to
-  water work. A subsequent isolated native `--audio-test` passed with 244 buffers,
-  zero underruns/recoveries and a 69.2 ms maximum refill interval.
-- An audio-off interleaved old/new shader check before the final work-skipping
-  optimization isolated about 1.8-4.0 ms added mean cost in water-heavy views;
-  indoors stayed approximately 18.3/18.6 ms. The optimized full measurement is
-  `benchmarks/river-flow.json`, compared with `sword-hit.json` at matching
-  60-frame/120x40/audio settings. All 13 comparable scenes passed the 15% mean
-  and p95 limit; the two new views have no previous comparison. River measured
-  29.53/35.60 ms mean/p95, oblique 27.39/30.42 ms, upstream 25.14/28.44 ms.
-  Final playback had zero underruns/recoveries and a 96.2 ms maximum refill
-  interval. Historical milestone-wide baseline acceptance remains open.
+Cursor hiding remains **best effort, not resolved for external console hosts**.
+Win32 `ShowCursor` changes the calling GUI thread's count; Windows Terminal and
+conhost own another thread's visible pointer. A native two-thread experiment
+showed counts `0/0 -> -1/-1` while attached, returning to `-1/0` after detach.
+Persistent host input attachment can stall the host; global cursor replacement
+affects other apps. Neither was introduced. Existing balanced hide/show and
+capture release behavior is preserved, with the limitation recorded in
+`terminal.py`. A future host/UI ownership change needs architectural approval.
+
+**Standing mouse issues, reported by the user on 2026-11-06:** the cursor still
+does not disappear while locked into the terminal, and clicks appear not to
+register while the mouse is moving. Both need review and fixing. The click-loss
+behavior has not yet been reproduced or diagnosed; passing native-record and
+mocked capture tests does not establish correct simultaneous motion/click input
+in the user's terminal host. Resume investigation in `terminal.py`
+(`WindowsKeyboard.poll()` and `WindowsMouse`) and `app.py` attack dispatch,
+with regressions in `tests/test_mouse_input.py`, `tests/test_terminal.py` and
+`tests/test_game_loop.py`. Verify real captured movement plus repeated clicks,
+along with pause/blur/exit restoration; preserve `--keyboard-look` as a fallback.
+
+## Implementation Boundaries
+
+- `map_expansion.py` owns static castle/grounds geometry, exported spawn/weapon/
+  bridge/target constants and standard Door placements. `world.py` builds meadow
+  and river before applying it. Player defaults and app spawning share those data.
+- X/Y are ground, Z is height. Keep 120 Hz physics, seeded scenery, simulation-
+  time animation, independent collision and nonblocking bounded input.
+- `World.combat` defaults to an independent empty state for fixture worlds.
+  Only `build_world()` installs gameplay items and targets.
+- `CombatState.held_item` holds a `WeaponPickup` instance. Weapon configuration
+  supplies names, pickup cues and cooldowns. Explicit starter alias groups hide
+  together; drops reuse the held object and never resurrect an alias.
+- `World.interact()` returns event lists, so a swap emits both drop and pickup.
+  `CombatState.update(dt, world)` advances fireballs. Swapping preserves cooldown;
+  drop placement checks support and line of sight, including thin doors.
+- Sword: 2.55 reach, 0.48-second cooldown, 0.30-second animation. Staff: one shot
+  per press, 0.65-second cooldown, 12 units/second, 28-unit range, no ammo limit.
+  Either weapon deals one direct damage; dummies have three HP and four-second
+  resets. No splash damage or world destruction.
+- `EnemyBehavior` in `combat.py` supplies shared territorial movement/melee
+  tuning; `Enemy.behavior=None` preserves passive targets. Placements are data
+  from `map_expansion.py`. `CombatState.update(dt, world, player=None)` accepts
+  the live player; the app supplies it on each fixed step. Collision excludes
+  only the enemy being moved through `World.collides(ignore_enemy=...)`.
+  Five support samples, at most six steering headings and 0.08-unit substeps
+  with a 0.1-second AI cap bound work; a short remembered detour prevents
+  oscillation at pillar faces. This is local steering, not global pathfinding.
+  `Player.take_damage()` owns health clamping and hurt/defeat events; app owns
+  entrance respawn. Pauses/help/small terminals freeze all of this.
+- Fireballs sweep their centers continuously using shared `World.solid_hit()`
+  queries (exact voxels, panels, trunks), stopping at the first live target or
+  solid. Water is transparent. Flight and impact bursts each cap at eight.
+- Items/enemies use opaque depth-tested shapes and restrained pickup markers;
+  enemy names/HP appear only when aimed at within ten units with clear sight.
+- Warden blocks project each vertex once, cull hidden faces and fill convex
+  planar faces with `Camera.quad()` spans. Camera/near-plane crossings retain
+  the triangle fallback. A 192-frame pose/view probe exactly matched the initial
+  triangle renderer; a permanent reference comparison tests perspective depth,
+  foreground occlusion, clipping and near-plane fallback.
+- Rendering keeps the 48-depth ray limit, 110 traversal iterations, 4,800-cell
+  default viewport and 180x64 maximum. Grass uses 81 nearby chunks, radius 14 and
+  candidates <= pixels / 3. Tree crown samples remain <= 3 * pixels.
+- The overhead map caches static rows by world revision and viewport size and
+  overlays the moving player marker separately. `Soundscape` buckets water in
+  8x8 chunks and queries only its existing 18-unit influence radius. Exact
+  full-scan equivalence is tested at banks, bridges, edges and after voxel edits.
+- Renderer terrain caches remain on a conservative 2x2 grid and invalidate via
+  `World.box()` revisions. The current optimization adds AIR-only below-roof
+  volumes to the existing above-terrain skip path; exact-ray checks are required.
+  Recreate Renderer when tree layout changes.
+- Audio synthesis/device I/O stays outside simulation/rendering. Semantic events,
+  prewarmed original Foley, isolated native process, completion callbacks, primed
+  buffers, fades, bounded mixing, mute/volume/pause and silent headless modes remain.
+  All seven doors share operation, obstruction protection and wooden creaks.
+  Warden and player events have original synthesized cues. Player hurt/defeat/
+  respawn sounds stay centered even if queued before a listener teleport.
+  Meadow wind has gentle gust/rustle and a -19 dB source target (previously
+  -23 dB); spatial gains and exact river buckets are unchanged.
+
+## Validation and Performance
+
+Latest native-console suite: **241/241 tests passed, zero skips**, Python 3.14.4.
+The 25 added tests cover active AI/attacks/territory/respawn, health/HUD, app
+defeat/empty-E routing, opaque Warden rendering and audio coverage/spatialization.
+The native 18-second audio diagnostic passed: 395 buffers, zero empty-queue
+events/recoveries, 73.0 ms maximum refill interval. Visual ASCII checks reviewed
+the Warden idle/raised-fist poses and health HUD; automated tests cover all four
+body views, wall occlusion, aimed-only labels and minimum HUD width.
+Final 100-frame native-audio demos passed indoors/outdoors at 120x29, restored
+console modes and measured 39.38/38.14 FPS against the 40 FPS cap. Both had zero
+underruns/recoveries; maximum refill intervals were 80.27/72.43 ms. The temporary
+native suite runner needed a multiprocessing `__main__` guard; its initial
+unguarded run timed out audio workers. The guarded final suite passed in 29.01s.
+
+Previous castle native-console suite: **216/216 tests passed, zero skips**.
+This includes nine native input tests, 17 mouse ownership/look tests, separate
+menu checks, castle routes/placement, app-loop dispatch/cleanup, sound coverage,
+fixed vegetation budgets and exact-render comparisons at every benchmark camera.
+Seven room-cache regressions cover ceilings, tunnels, holes, raised floors,
+water/bridges, moving doors, odd edge chunks and voxel-edit invalidation.
+
+Both 100-frame native-audio demos passed, restored console modes, and measured
+**39.60/39.53 FPS** indoors/outdoors against the 40 FPS cap at a 120x29 live viewport.
+Both had zero underruns/recoveries; maximum refill intervals were 71.9/72.5 ms.
+The live counter includes input/output/cap waits; headless benchmark FPS does not.
+Windows mouse records and ownership were tested, but physical mouse feel still
+needs user play review. Piped suites skip console-only tests; sandbox PTYs can
+reject injection, so use a hidden native process to exercise all input tests.
+Workspace-local temporary storage avoids sandbox default-temp WAV permissions.
+
+The room-cache extension keeps conservative AIR-only volumes, exact voxel hits
+and existing work limits. Boundary rays that land on multiple integer planes
+use ordinary DDA to preserve face/material ordering. Over 30 warmed gatehouse
+frames, traversal iterations fell from 1,381,086 to 432,341. A focused interleaved
+probe improved gatehouse mean/p95 from 22.42/24.62 to 19.31/21.91 ms; other sampled
+views showed some overhead. This is not a full acceptance claim.
+
+The watchstone increment passed a **24-scene, per-frame ABBA comparison** against
+the frozen pre-feature working tree at 120x40: 60 measured frames per variant,
+five warmup frames, three 120 Hz combat steps per rendered frame and live native
+audio. Both versions sampled their actual Soundscape; the native mixer was
+shared. `watchstone-interleaved.json` records final results: maximum mean/p95
+increases **4.23%/11.91%**, within the unchanged 15% limit. The active Warden
+scene changed from **16.464/20.265 to 17.136/18.884 ms** mean/p95 (+4.08%/-6.81%).
+Audio had zero underruns/recoveries and 72.97 ms maximum refill interval.
+
+Keep failed phases: `watchstone-interleaved-first.json` flagged Warden mean
++15.14%; `watchstone-interleaved-culling.json` still flagged its p95 +19.47%.
+The convex face span change fixed the final comparison without lowering detail
+or changing pixels in the 192-view probe. `watchstone-before.json` is the initial
+23-scene audio snapshot using the older benchmark loop, not an approved baseline.
+Reports include camera/platform metadata and hashes of frozen source inputs.
+These comparisons cover the incremental feature cost, not absolute 40 FPS or
+the older castle-wide acceptance. Timings still vary between runs; no cause for
+that variation has been established.
+
+**The earlier castle-wide frame-time acceptance remains open. Do not promote
+new measurements to approved baselines.** All measurements below are retained:
+
+- `castle-milestone-before.json`: initial pre-change 17-scene run with the old
+  ambient proxy. `castle-milestone-first.json` is diagnostic only: its first
+  second overlapped a visual-render probe, invalidating acceptance.
+- `castle-milestone-before-live.json`: frozen pre-milestone working-tree code,
+  60 frames/120x40/audio, actual old Soundscape sampling and map overlay.
+- `castle-milestone-live.json`: isolated rebuilt castle before room optimization.
+  Gatehouse 20.95/22.95 ms mean/p95 and ruins 15.23/19.41 ms flagged; other comparable
+  roles stayed within 15%. Audio: zero underruns/recoveries, 72.7 ms max refill.
+- `castle-milestone-optimized.json`: final 23-camera/audio run, including open
+  meadow sides, exterior, hall, roof, combat, map and river. It flagged 16/18
+  comparable roles against the fresh old-map run. Gatehouse 17.68/19.84 ms;
+  river 26.51/34.91 ms; fireballs 29.23/34.20 ms. Audio: zero underruns/recoveries,
+  73.0 ms max refill. Preserve this failure rather than selecting a favorable run.
+- `castle-milestone-control-recheck.json`: untouched frozen old code also varied
+  substantially: meadow 17.61->28.56 ms mean, staff 13.08->22.91 ms, while other
+  roles stayed close. Timing variation cannot be attributed solely to this code
+  change. Its cause is unverified; do not invent a hardware/background-load cause.
+- `castle-size-scaling.json`: per-frame ABBA control, audio off, same castle and
+  pixel-identical visible scenes padded from 112x112 into 160x160 storage. Across
+  gatehouse, court, close grass and river, added cost was <=1.0% mean and <=1.6%
+  p95. This isolates storage-size overhead; it does not approve the full map's
+  geometry costs or replace audio-enabled whole-scene measurements.
+
+Camera coordinates and dimensions are saved in new reports. Old/new world
+comparisons concern scene roles rather than identical geometry. Historical
+`milestone-start.json` remains the original pre-milestone reference; its earlier
+milestone-wide 15% mean/p95 acceptance was unresolved before this work. Preserve
+staff, river-flow, door-creak and tree records, including failed/concurrent runs.
+`river-flow-initial.json` records a real stalled run with three audio underruns;
+later successes do not erase it. Never relax thresholds or cherry-pick results.
+
+## Resume / Next Steps
 
 ```powershell
-python -B -m unittest discover -s tests -p test_outdoors.py -v
-python -B tools/benchmark.py --frames 60 --audio --extra-scenes --compare benchmarks/sword-hit.json --save benchmarks/river-flow.json
-```
-
-## Distinct Sword Impacts on Enemies
-
-The user requested a different sword sound on enemy contact. A `sword_hit` event
-already existed, but competed with a full-volume swing. Contact feedback is now
-more distinct while keeping the same combat targeting/damage rules.
-
-- `sound.synthesize()` gives `sword_hit` a sharp crack, solid impact body and
-  brief metallic blade bite, with the existing three variations and 0.34-second
-  duration. Its loudness target is -18 dBFS, subject to the existing peak limit.
-  Signal checks found 1.26-1.32x the air-swing RMS and 98% of hit energy in the
-  first 80 ms; the swing retains its slower airy envelope.
-- `CombatState.attack()` emits a 0.55-strength `sword_swing` alongside confirmed
-  hits, and the full 1.0-strength whoosh on misses. `sword_hit` stays positioned
-  at the enemy. Cooldown, reach, aim, line of sight and damage are unchanged;
-  blocked/out-of-range/unarmed attacks do not gain hit feedback.
-- `Mixer.add()` gives confirmed impacts priority 2, alongside doors, so normal
-  whooshes/footsteps cannot displace them in a full queue. The eight-voice limit,
-  bounded release tails, mute/volume/pause, headless modes and isolated output
-  architecture remain.
-- Three new regressions cover hit/miss event routing and relative whoosh gain,
-  impact loudness/attack envelope, and impact retention at the voice limit.
-  The complete native-console suite passed **146/146**, zero skips.
-- A temporary guarded native probe used real `CombatState.attack()` events and
-  meadow ambience: miss, enemy hit, miss, enemy hit. It confirmed event strengths
-  1.0/0.55 for miss/hit whooshes and dummy HP 3 -> 1. Playback completed with
-  77 buffers, zero underruns/recoveries and a 62.4 ms maximum refill interval.
-  The probe was removed; no preview audio files were retained.
-- `benchmarks/sword-hit.json` records the audio-enabled 60-frame/120x40 run with
-  all 13 scenes. Mean/p95 comparisons passed for the six scenes shared with
-  `door-creaks.json`; the seven extra scenes were measured without a matching
-  comparison. Training averaged 24.77 ms, p95 27.75 ms. Audio had zero underruns/
-  recoveries and a 92.3 ms maximum refill interval. This does not approve a new
-  baseline or resolve the historical milestone-wide frame-time acceptance.
-
-Restart the running game to load the prewarmed hit clips. Validation commands:
-
-```powershell
-python -B -m unittest discover -s tests -p test_combat.py -v
-python -B -m unittest discover -s tests -p test_sound.py -v
+$env:TMP=$PWD.Path; $env:TEMP=$PWD.Path
+python -B -m unittest discover -s tests -v
+python -B main.py --demo --frames 100
+python -B main.py --outside --demo --frames 100
+python -B main.py --keyboard-look
 python -B main.py --audio-test
-python -B tools/benchmark.py --frames 60 --audio --extra-scenes --compare benchmarks/door-creaks.json --save benchmarks/sword-hit.json
+python -B tools/benchmark.py --frames 60 --audio --extra-scenes --compare benchmarks/castle-milestone-before-live.json --save benchmarks/castle-review.json
 ```
 
-## Door Creak Replacement
+Use a native console for the nine input cases; piped test runs skip them. The
+normal benchmark now includes a `warden` camera and three fixed combat steps
+for active/combat scenes. Keep comparison frame counts/audio modes matched.
 
-The user requested wooden creaks instead of the whirring door sounds. Replaced
-the opening/closing pitch-sweep recipe and the blocked-door thud in `sound.py`.
+1. Review and fix the standing mouse issues: the pointer remains visible during
+   capture, and clicks appear to be lost while moving the mouse. Reproduce in
+   the user's terminal host and test simultaneous motion/click delivery; the
+   root cause and fix remain open.
+2. Resolve the earlier castle-wide matched comparison before claiming its
+   preserved frame times. The watchstone increment passed its own matched check.
+   Use interleaved controls and retain mean/p95 wall times; CPU-time
+   observations may help investigate variability but must not replace wall time.
+   Profile `Renderer.scene()` gatehouse/water/combat paths, preserve exact-ray
+   equality, ray distances and detail budgets. Do not change the baseline/limit.
+3. User play review: mouse feel/capture, menu clarity, castle navigation, weapon
+   drops and dummy readability. Physical speakers, device unplug/replug, POSIX
+   key holds and minimum Python 3.10 remain unverified. No save/load or objectives
+   have been added. Warden combat, player health and respawn need user play review.
 
-- `_door_creak()` is the shared synthesis model for `door_open`, `door_close`
-  and `door_blocked`; `_DOOR_STRAINS` configures their strain/release timing.
-  Irregular friction impulses excite three damped wood/hinge resonances with
-  short rough scrape layers and a subdued latch/stop. The old repeating sweep
-  and door-specific short echoes were removed.
-- All three cues now have three deterministic variations, prewarmed in
-  `SoundBank`. Existing durations (0.70/0.65/0.18 seconds), loudness target,
-  semantic events, spatial mixing, eight-voice limit and native playback
-  architecture remain. All five doors use these shared cues; door mechanics,
-  mute/volume/pause and headless behavior are unchanged.
-- Two new sound regressions verify internal friction/release gaps (rather than
-  a continuously sustained tone), three distinct/reproducible variants per cue,
-  clean endpoints and safe peaks. The full suite passed **143/143**, zero skips,
-  in a live Windows console. Signal checks verify the intended structure, not
-  the user's subjective perception on their speakers/headphones.
-- `--audio-test` now also exercises `door_blocked`. Native playback passed:
-  244 buffers, zero empty-queue events/recoveries, 65.2 ms maximum refill interval.
-  No audio previews were retained, following the folder-cleanup preference.
-- The audio-enabled six-scene measurement is saved in
-  `benchmarks/door-creaks.json`, compared against `trees-near-after.json` with
-  matching 60-frame/120x40/platform/audio settings. It is a measurement, not an
-  approved replacement baseline. River still flagged +15.9% mean/+22.7% p95;
-  the other five scenes stayed within 15%. Audio had zero underruns/recoveries
-  and a 64.2 ms maximum refill interval. Existing graphics acceptance remains open.
-
-Restart a running game to load the new prewarmed clips. To verify:
-
-```powershell
-python -B -m unittest discover -s tests -p test_sound.py -v
-python -B main.py --audio-test
-python -B tools/benchmark.py --frames 60 --audio --compare benchmarks/trees-near-after.json --save benchmarks/door-creaks.json
-```
-
-## Close-Tree Disappearance Fix
-
-The user reported trees disappearing when approached. Reproduced with a downward
-pitch of -0.35: an isolated tree rendered 364 cells at distance 1.0, then zero at
-0.75 and closer. Its root/fork projections straddled the camera's near plane;
-the entire line was discarded when either endpoint could not be projected.
-Foliage also disappeared from inside a crown because only the entry intersection
-was considered, even when that intersection lay behind the camera.
-
-- `Camera.stroke_world()` clips tree trunk/branch segments against the near
-  plane before projecting them. It then clips projected segments to a padded
-  viewport with perspective-correct depth, preserving continuous close lines
-  and the existing 512-sample stroke limit. Grass keeps its projected fast path.
-- `Camera.NEAR` shares the existing 0.18-unit camera cutoff. `Trees._crown()`
-  uses the forward exit surface when the entry is clipped or behind the camera.
-  Voxel/door occlusion and the three-times-view-pixels crown budget remain.
-- Six new vegetation checks cover close approaches from all four sides while
-  looking up/down, analytic exit depths from inside a crown, foreground
-  occlusion, near-plane crossing, a jump into the live canopy and hidden trees
-  behind the camera. Inspected indoor/outdoor and both close-up text views;
-  no preview files were retained.
-- `--extra-scenes` now includes `tree_close` and `tree_canopy` (13 total cameras).
-  Exact-ray comparison tests include these views as well.
-- Matched 60-frame, 120x40, audio-enabled measurements are in
-  `benchmarks/trees-near-before.json` and `benchmarks/trees-near-after.json`.
-  All original six scenes stayed within 15% of this fresh pre-fix measurement.
-  The complete 13-scene comparison still failed for lodge, east bridge,
-  watchstones, training and inside-canopy views; do not describe it as a full
-  performance pass. Audio had zero underruns/recoveries in both runs, with
-  maximum refill intervals 63.8/67.3 ms respectively.
-- An interleaved, audio-off trunk-clipping probe showed negligible added cost in
-  ordinary expansion views. A separate 60-frame interleaved probe isolated the
-  corrected crown exit rendering: inside-canopy mean 13.40 -> 16.93 ms, p95
-  17.58 -> 21.71 ms, with clipped trunks in both versions. The additional cost
-  draws previously missing foliage and remains within the fixed sample budget.
-  These probes do not replace the audio-enabled comparison or historical
-  references. The existing milestone-wide frame-time acceptance remains open.
-
-Resume/render-validation commands:
-
-```powershell
-python -B -m unittest discover -s tests -p test_vegetation.py -v
-python -B tools/benchmark.py --frames 60 --audio --extra-scenes --compare benchmarks/trees-near-before.json --save benchmarks/trees-near-after.json
-```
-
-## FPS Counter Check
-
-The user requested confirmation that the terminal counter is accurate and live.
-It was already refreshed per frame and included cap waits/terminal output, but
-its exponential average of instantaneous FPS could overreport uneven frames
-(alternating 25/50 ms frames averaged to 30 FPS instead of 26.67).
-
-- `app.FrameRateCounter` now counts completed start-to-start intervals over a
-  rolling window of roughly one second, using the existing monotonic clock read.
-  This includes input, simulation, render, terminal write/flush, scheduler stalls
-  and cap waits. FPS timing is separate from the 100 ms physics catch-up clamp.
-- The HUD refreshes every frame, rounded to an integer; the initial 0 indicates
-  that no complete frame has yet been timed. It also remains live while paused.
-- Five new checks in `tests/test_game_loop.py` cover steady/uneven rates, long
-  stalls, response to rate changes and actual app-loop cap/output accounting.
-- A native, audio-enabled 45-frame run at `--fps 20` ended at **20 FPS** in the
-  HUD; independently timed terminal writes measured **20.15 FPS** across that
-  short run. The temporary probe needed a Windows multiprocessing main guard;
-  the corrected probe passed and was removed. Counter overhead was measured at
-  0.312 microseconds/update with 41 retained timestamps at 40 FPS.
-- This HUD-only change does not resolve or replace the existing renderer
-  benchmark failure below. README now distinguishes live and headless FPS.
-
-## Folder Cleanup
-
-On 2026-11-05, the user requested removal of unnecessary previews. Removed the
-generated `previews/` directory (PNG/text frames and pose/frame JSON), root image
-and WAV previews, and Python bytecode caches. README no longer links to removed
-artifacts; audio previews can still be exported with `--sound-preview`.
-Source, tests, launchers and benchmark records were retained. Keep future review
-exports temporary unless the user asks to preserve them.
-Initial cleanup removed 40 generated files (2.79 MiB), including all 16 preview
-assets. SHA-256 checks confirmed all 42 source/test/tool/benchmark files unchanged;
-indoor/outdoor `-B --snapshot` checks passed at 120x40 and README links resolve.
-Bytecode caches recreated by a concurrent Python run were removed again; normal
-Python runs may regenerate these ignored caches.
-
-## Visibility Request
-
-The user asked for items and enemies to stand out without obscuring the setting,
-and reported that the sword blade was see-through.
-
-- `geometry.Camera.triangle()` fills opaque faces with perspective-correct depth
-  and viewport clipping. Both pickup and held sword blades now have filled faces.
-- `combat_render.py` gives pickups a small shared ground diamond and one glint.
-  Preserve/reuse this local presentation when future item types are added; keep
-  names/instructions in the shared E prompt rather than permanent floating text.
-- The dummy has an opaque faceted straw torso and head, readable from four sides.
-  Its name/HP remains aim-only. All geometry and markers respect scene depth.
-- The fixed support stays visible and retains its standing collision cylinder
-  while the straw body is down. This prevents a four-second reset from spawning
-  inside the player. Further play review can revisit this documented choice.
-- Sword/pickup/dummy screenshots and eight text frames were inspected during
-  integration, then removed in the user-requested folder cleanup. They were
-  review artifacts, not runtime assets.
-
-## Important Implementation Boundaries
-
-- `World.combat` defaults to an independent empty `CombatState` for fixture worlds;
-  only `build_world()` installs the starter sword placements and training dummy.
-- `targeting.py` shares normalized view rays and finite cylinder intersection
-  between interaction/combat/trunk occlusion. `World.line_clear()` uses exact
-  voxel traversal plus analytic door-panel/trunk checks. E targeting returns
-  original target objects and dispatches by their concrete type. A door ignores
-  its own leaves only while being operated; other targets see them as opaque.
-- `app.py` queues Q presses until a fixed physics step, advances combat only when
-  active, and routes its returned semantic events to the unchanged audio backend.
-- `events.py` appends `surface: str | None = None` after the original positional
-  fields. `Player` queries `sound_surfaces.surface_kind()` only on steps/landings.
-- `world.py` calls `map_expansion.expand_world()` after original construction and
-  doors; its area names defer to extension landmarks first. Full-map route tests
-  now include traversal from the original spawn and the second bridge.
-- `renderer.py` merges clear **2x2 terrain columns** into cached empty rectangles
-  at each integer height. This extends the existing empty-space optimization;
-  it does not approximate rays or reduce drawing distances. Downward rays use
-  local terrain height; completed hits/sky exits avoid rebuilding DDA crossings.
-  The finer columns allow bridge interiors to skip past nearby thin railings.
-  `World.box()` revisions invalidate all these bounds.
-- Keep X/Y ground, Z height, 120 Hz physics, seeded scenery and simulation-time
-  animation. Live render cap is 40 FPS, viewport 4,800 cells, maximum 180x64.
-  Grass remains chunked with radius 14, candidates <= view pixels / 3; tree
-  intersection work remains <= 3x view pixels. Recreate Renderer on tree changes.
-- Keep standard-library dependencies and shared Door/Panel behavior. No major
-  architecture change was requested or approved. Ask before undertaking one.
-
-## Validation
-
-Latest complete suite: **153/153 tests passed, zero skipped**, in a live Windows
-console on Python 3.14.4:
-
-```powershell
-python -B -m unittest discover -s tests
-```
-
-New tests cover collection/one-item inventory, reach/aim/wall/door/trunk occlusion,
-exact short corner crossings, cooldown, hit/miss/down/reset sound coverage, dummy
-collision, Q without turning, real app-loop pause/help/reset/event dispatch, demo
-pickup handling, depth/labels/opaque blade interiors/four-sided dummy readability,
-minimum-size help, complete-map connectivity and six-surface Player metadata.
-Exact-render comparisons cover all fifteen benchmark cameras and partial
-chunks/raised surfaces at multiple pitches. Native keyboard tests require a live
-console; a piped run skips six tests as expected.
-
-Also passed:
-
-- Indoor and outdoor snapshots; reviewed sword/dummy PNGs and extension text
-  frames. Frame outputs remain rectangular printable ASCII.
-- `python -B main.py --demo --frames 100` and the same with `--outside`, each
-  completed with native audio and terminal cleanup.
-- `python -B main.py --audio-test`: 244 buffers, **0 empty-queue events,
-  0 recoveries**, 69.2 ms maximum refill interval on the latest standalone check.
-  The diagnostic plays an
-  11-second river/surface/door/combat sequence. These are queue-health observations,
-  not a perceptual recording of the user's speakers/headphones.
-- Verified WAV export with all current cues and ambient layers; the generated
-  preview was removed during cleanup. Regenerate when needed with
-  `python -B main.py --sound-preview effects.wav`.
-
-## Performance: Acceptance Still Open
-
-`benchmarks/milestone-start.json` remains the fresh pre-milestone reference from
-this hardware: 60 frames/scene, 120x40, audio on. Its means/p95s in milliseconds:
-indoors 14.32/17.90, courtyard 14.77/17.89, meadow 23.10/27.87, close grass
-22.42/27.17, bridge 22.57/27.74, river 21.62/25.68. It had zero underruns and
-recoveries. Historical `doors-audio-current.json`, `vegetation-current.json` and
-`audio-repair-measurement.json` remain unchanged; the historical failed comparison
-has not been erased or promoted to an approved reference.
-
-Run and inspect:
-
-```powershell
-python -B tools/benchmark.py --frames 60 --audio --extra-scenes --compare benchmarks/milestone-start.json --save benchmarks/milestone-integrated.json
-```
-
-`milestone-integrated.json` records the integrated renderer, **not an approved
-replacement baseline**. The 15% mean/p95 comparison still fails. Timings varied
-substantially between runs, including indoors. Initial expanded-map outdoor means
-were roughly 49-59 ms. Empty-rectangle/early-exit optimization reduced several
-measured scenes toward 25-31 ms; subsequent runs were variable and still failed.
-Do not select a favorable run to claim the threshold passed.
-
-Profiling identified voxel traversal on newly extended clear sightlines, followed
-by conservative column bounds around bridge rails. In an interleaved same-process
-probe, 2x2 bounds reduced bridge median from 29.42 to 22.66 ms versus 4x4 merged
-bounds, river from 25.48 to 23.97 ms, close grass from 17.25 to 16.31 ms; indoors
-changed 12.90 to 13.54 ms. This supports the optimization but does not substitute
-for the full matched audio-enabled acceptance check. All exact-ray tests passed.
-
-`--extra-scenes` adds ruins, lodge, east bridge, watchstones, equipped combat,
-close-trunk, inside-canopy, diagonal-river and upstream-river views.
-They are measured without historical percent comparisons when absent from the
-reference; the original six keep their unchanged comparison. Recent final runs
-reported zero underruns/recoveries; `river-flow-initial.json` preserves a stalled
-run with three underruns. Consult the JSON for the latest
-mean, p95, FPS and queue-health results. Benchmarks exclude terminal output.
-
-## Remaining Work / Resume Here
-
-1. Resolve the remaining matched benchmark failure before claiming preserved FPS.
-   Profile `Renderer.scene()` on close grass, bridge, river and the extension
-   views; distinguish code cost from timing variability. Keep the 15% threshold,
-   exact-ray equivalence and existing vegetation/audio bounds. Do not change the
-   baseline or relax the threshold to hide regressions.
-2. User play review of pickup/dummy readability, sword feel and fixed downed
-   support collision is still useful. The implemented visibility request is
-   covered by tests and completed visual review; no further feature scope is
-   implied.
-3. Enemies remain passive; no player damage, save/load or objective system exists.
-   POSIX key holds and Python 3.10 minimum remain unverified (3.14.4 checked).
-   Broader audio gaps: device unplug/replug and subjective listening.
-
-No unfinished delegated agents are required. Integration work, tests, benchmark
-evidence and resume commands are on disk; temporary review previews were removed.
+Current parallel ownership was enemy simulation/tests, wind/creature/player
+audio, and cursor investigation/review; root integrated player health, HUD/body
+rendering, world collision, app behavior, tests, documentation and measurements.
+The cursor investigation found no safe host-independent hiding change. All
+delegated work is finished. Temporary source copies, probes
+and previews are removed after review; benchmark JSON is retained. This checkpoint
+also includes the earlier castle and staff implementation. The user authorized
+committing the current state with the standing mouse issues documented; this
+does not mark those issues as resolved.

@@ -3,6 +3,7 @@
 import os
 import sys
 import unittest
+from unittest.mock import Mock
 
 
 @unittest.skipUnless(os.name == "nt" and sys.stdin.isatty() and sys.stdout.isatty(),
@@ -44,6 +45,66 @@ class WindowsInputTests(unittest.TestCase):
     def test_native_structure_layout(self):
         self.assertEqual(self.ctypes.sizeof(self.record_type), 20)
         self.assertEqual(self.ctypes.sizeof(self.keyboard.records[0].Event.KeyEvent), 16)
+        self.assertEqual(self.ctypes.sizeof(self.keyboard.records[0].Event.MouseEvent), 16)
+
+    def test_enter_attacks_and_q_is_unassigned(self):
+        self.inject(ord("Q"), True)
+        self.assertNotIn("q", self.keyboard.poll().pressed)
+        self.inject(0x0D, True)
+        self.assertIn("attack", self.keyboard.poll().pressed)
+        self.inject(0x0D, True)
+        self.assertNotIn("attack", self.keyboard.poll().pressed)
+
+    def test_native_left_click_record_emits_once_per_button_down(self):
+        from ascii3d.terminal import WindowsMouse
+        pointer = Mock(console_window=1)
+        pointer.foreground.return_value = 1
+        pointer.is_terminal.return_value = True
+        pointer.minimized.return_value = False
+        pointer.rect.return_value = (0, 0, 1000, 800)
+        pointer.cursor.return_value = (500, 400)
+        pointer.clip.return_value = (0, 0, 1000, 800)
+        pointer.set_clip.return_value = pointer.move.return_value = True
+        pointer.hide.return_value = 1
+        pointer.button_down.return_value = False
+        pointer.key_down.return_value = False
+        self.keyboard.mouse = WindowsMouse(pointer)
+        self.keyboard.mouse.set_capture(True)
+        for down, expected in ((True, True), (True, False), (False, False), (True, True)):
+            record = self.record_type()
+            record.EventType = 0x2
+            record.Event.MouseEvent.dwButtonState = int(down)
+            written = self.wt.DWORD()
+            self.assertTrue(self.keyboard.api.WriteConsoleInputW(self.keyboard.handle, self.ctypes.byref(record),
+                                                                1, self.ctypes.byref(written)))
+            self.assertEqual("attack" in self.keyboard.poll().pressed, expected)
+
+    def test_activation_discards_queued_mouse_and_focus_before_binding_modern_host(self):
+        from ascii3d.terminal import WindowsMouse
+        pointer = Mock(console_window=1)
+        pointer.foreground.return_value = 2
+        pointer.is_terminal.return_value = True
+        pointer.minimized.return_value = False
+        pointer.rect.return_value = (0, 0, 1000, 800)
+        pointer.cursor.return_value = (500, 400)
+        pointer.button_down.return_value = True
+        pointer.key_down.return_value = False
+        self.keyboard.mouse = WindowsMouse(pointer)
+        for kind in (0x10, 0x2):
+            record = self.record_type()
+            record.EventType = kind
+            if kind == 0x10:
+                record.Event.FocusEvent = True
+            else:
+                record.Event.MouseEvent.dwButtonState = 1
+            written = self.wt.DWORD()
+            self.assertTrue(self.keyboard.api.WriteConsoleInputW(self.keyboard.handle, self.ctypes.byref(record),
+                                                                1, self.ctypes.byref(written)))
+        self.keyboard.set_mouse_capture(True)
+        self.assertNotIn("attack", self.keyboard.poll().pressed)
+        self.assertIsNone(self.keyboard.mouse.window)
+        self.assertFalse(self.keyboard.mouse.captured)
+        pointer.move.assert_not_called()
 
     def test_simultaneous_movement_sprint_jump_and_release(self):
         self.inject(0x10, True, 0x10)

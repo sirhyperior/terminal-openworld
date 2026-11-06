@@ -1,0 +1,90 @@
+{
+  "dimensions": [
+    112,
+    160
+  ],
+  "audio": false,
+  "identical_scenes": true,
+  "ordering": "per-frame ABBA",
+  "scenarios": {
+    "indoors": [
+      {
+        "mean_ms": 19.604,
+        "p95_ms": 22.869,
+        "cpu_mean_ms": 19.271
+      },
+      {
+        "mean_ms": 19.794,
+        "p95_ms": 23.23,
+        "cpu_mean_ms": 19.792
+      }
+    ],
+    "courtyard": [
+      {
+        "mean_ms": 9.63,
+        "p95_ms": 11.868,
+        "cpu_mean_ms": 9.375
+      },
+      {
+        "mean_ms": 9.442,
+        "p95_ms": 10.947,
+        "cpu_mean_ms": 9.245
+      }
+    ],
+    "grass_close": [
+      {
+        "mean_ms": 10.137,
+        "p95_ms": 11.268,
+        "cpu_mean_ms": 10.156
+      },
+      {
+        "mean_ms": 10.094,
+        "p95_ms": 11.298,
+        "cpu_mean_ms": 9.766
+      }
+    ],
+    "river": [
+      {
+        "mean_ms": 14.356,
+        "p95_ms": 17.735,
+        "cpu_mean_ms": 13.932
+      },
+      {
+        "mean_ms": 14.352,
+        "p95_ms": 17.723,
+        "cpu_mean_ms": 14.453
+      }
+    ]
+  },
+  "timesteps": 60,
+  "measured_frames_per_dimension": 120,
+  "viewport": [
+    120,
+    40
+  ],
+  "cameras": {
+    "indoors": {
+      "x": 55.5,
+      "y": 30.5,
+      "yaw": 1.5707963267948966
+    },
+    "courtyard": {
+      "x": 55.5,
+      "y": 42.5,
+      "yaw": 1.5707963267948966
+    },
+    "grass_close": {
+      "x": 12.5,
+      "y": 31.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.35
+    },
+    "river": {
+      "x": 8.5,
+      "y": 87.37765204487795,
+      "z": 0.12,
+      "yaw": 0,
+      "pitch": -0.1
+    }
+  }
+}

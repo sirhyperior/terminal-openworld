@@ -26,8 +26,9 @@ Prefer Python's standard library; justify any new dependency.
   between targeting, state, simulation, collision, rendering, and sound events.
   Extend the common interaction path as new mechanism types are actually added;
   keep abstractions proportional to concrete needs and preserve work budgets.
-- Q is assigned to attacks. Keep E as the shared environment interaction key;
-  remove legacy Q turning when integrating combat (see `PROJECT_STATUS.md`).
+- Mouse movement controls the view and left click attacks on Windows. Q has no
+  attack binding. Preserve `--keyboard-look` (arrows/Enter) for accessibility and
+  platforms without mouse capture. Keep E as the shared environment interaction key.
 - Ask the user for approval before major architectural changes. Routine additive
   features within the existing engine do not require another approval.
 
@@ -68,14 +69,15 @@ Source lives in `ascii3d/`:
 - `renderer.py`, `scenery.py`: voxel ray casting, HUD/map, depth-tested grass, wind.
 - `geometry.py`, `trees.py`: shared projection/strokes and rounded tree rendering.
 - `targeting.py`: shared view rays and solid-cylinder targeting queries.
-- `terminal.py`: platform input and terminal lifecycle.
+- `terminal.py`: platform keyboard/mouse input, capture and terminal lifecycle.
 - `doors.py`, `door_render.py`: shared swinging panels, collision, and rendering.
 - `events.py`, `sound.py`: gameplay feedback events, original Foley, and audio output.
 - `audio_output.py`, `audio_process.py`: native buffers and isolated playback.
 - `soundscape.py`, `audio_check.py`: shared environmental sources and diagnostics.
 - `sound_surfaces.py`: deterministic ground-contact classification for Foley.
-- `map_expansion.py`: northern/eastern landmarks, trails and standard doors.
-- `combat.py`, `combat_render.py`: sword inventory, passive targets and shared
+- `map_expansion.py`: central castle, surrounding grounds, landmarks and standard doors.
+- `combat.py`, `combat_render.py`: single-item holding, sword/staff attacks,
+  fireballs, passive targets and shared
   depth-tested item/enemy rendering; check `PROJECT_STATUS.md` for validation.
 
 `tests/` contains `unittest` suites. Generated PNG/WAV/text previews are temporary
@@ -94,7 +96,7 @@ python main.py --demo --frames 100       # Interactive smoke test
 python main.py --audio-test             # Audible river/effects and queue health
 python -m unittest discover -s tests -v  # Test suite
 python tools/benchmark.py --frames 60 --compare benchmarks/vegetation-current.json
-python tools/benchmark.py --frames 60 --audio --compare benchmarks/doors-audio-current.json
+python tools/benchmark.py --frames 60 --audio --extra-scenes --compare benchmarks/castle-milestone-before-live.json
 ```
 
 ## Coding Style & Naming Conventions
@@ -113,7 +115,8 @@ Keep vegetation work bounded by visibility/detail budgets and retain exact-ray
 comparison tests. Edit voxels through `World.box()` to invalidate render caches.
 Compare both mean and p95 timings on the same hardware before updating baselines.
 Use the audio-enabled benchmark for gameplay changes when a Windows output
-device is available. E is reserved for interaction; arrows control turning.
+device is available. E is reserved for interaction; mouse look is the Windows
+default and arrow look is available in explicit keyboard mode.
 
 ## Testing Guidelines
 

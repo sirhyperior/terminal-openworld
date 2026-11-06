@@ -44,7 +44,7 @@ class VegetationTests(unittest.TestCase):
         self.assertEqual(still, renderer.scene(player, 100, 36, time_seconds=2))
 
     def test_trunk_collision_is_circular_and_foliage_is_soft(self):
-        tree = self.world.trees[5, 34]
+        tree = self.world.trees[12, 34]
         self.assertTrue(self.world.collides(tree.x, tree.y, 1))
         self.assertFalse(self.world.collides(tree.x + 0.4, tree.y + 0.4, 1))
         self.assertFalse(self.world.collides(tree.x + 1, tree.y, tree.height + 0.2))
@@ -111,7 +111,7 @@ class VegetationTests(unittest.TestCase):
         self.assertTrue(all(char == "#" for row in foreground for char in row))
 
     def test_jump_into_live_canopy_stays_visible_within_sample_budget(self):
-        player = Player(x=5.5, y=33.95, z=2.25, pitch=0.65)
+        player = Player(x=12.5, y=33.95, z=2.25, pitch=0.65)
         self.assertFalse(self.world.collides(player.x, player.y, player.z))
         renderer = Renderer(self.world)
         pixels = renderer.scene(player, 100, 35)
@@ -159,7 +159,7 @@ class VegetationTests(unittest.TestCase):
         self.assertEqual(plain, Renderer(world).scene(player, 90, 30))
 
     def test_larger_maps_keep_visible_vegetation_work_within_pixel_budgets(self):
-        for size in (40, 64):
+        for size in (40, 64, 112):
             world = World.empty(size, size, 10)
             world.outdoor_bounds = (1, 1, size - 1, size - 1)
             world.box(0, 0, 0, size, size, 1, GRASS)

@@ -1,8 +1,9 @@
-"""Bounded, depth-tested ASCII geometry for pickups and training targets."""
+"""Bounded, depth-tested ASCII geometry for pickups and fantasy enemies."""
 
 import math
 
-from .combat import CombatState, Enemy, NAME_REACH, SWING_DURATION
+from .combat import (BURST_DURATION, FIRE_STAFF, MAX_FIREBALLS, CombatState,
+                     Enemy, NAME_REACH, SWING_DURATION)
 from .geometry import Camera
 
 
@@ -55,6 +56,11 @@ def _pickup_marker(pickup, cam, pixels, depths):
 
 def _draw_pickup(pickup, cam, pixels, depths, time_seconds):
     x, y, z = pickup.x, pickup.y, pickup.z
+    if pickup.weapon == FIRE_STAFF:
+        _staff_shape(cam, pixels, depths, lambda right, up, forward:
+                     (x + right, y + forward, z + up))
+        _pickup_marker(pickup, cam, pixels, depths)
+        return
     angle = time_seconds * 0.55
     ux, uy = math.cos(angle), math.sin(angle)
     # Upright blade with a turning flat, guard, grip and small ground marker.
@@ -75,7 +81,50 @@ def _draw_pickup(pickup, cam, pixels, depths, time_seconds):
     _pickup_marker(pickup, cam, pixels, depths)
 
 
+def _staff_shape(cam, pixels, depths, point, casting=0.0):
+    # A solid wooden shaft and a faceted ember in a forked crown. The same
+    # geometry supplies the world pickup and the camera-relative held staff.
+    corners = [(-0.032, -0.032), (0.032, -0.032),
+               (0.032, 0.032), (-0.032, 0.032)]
+    for i, (x, y) in enumerate(corners):
+        nx, ny = corners[(i + 1) % 4]
+        a, b = point(x, 0.08, y), point(nx, 0.08, ny)
+        c, d = point(nx, 1.18, ny), point(x, 1.18, y)
+        _face(cam, pixels, depths, a, b, c, "#")
+        _face(cam, pixels, depths, a, c, d, "#")
+    for side in (-1, 1):
+        _stroke(cam, pixels, depths, point(side * 0.03, 1.04, 0),
+                point(side * 0.18, 1.38, 0), "/" if side > 0 else "\\")
+    ring = [point(0.13, 1.37, 0), point(0, 1.37, 0.13),
+            point(-0.13, 1.37, 0), point(0, 1.37, -0.13)]
+    for i in range(4):
+        for up in (1.20, 1.55):
+            _face(cam, pixels, depths, ring[i], ring[(i + 1) % 4], point(0, up, 0), "@")
+    if casting:
+        tip = point(0, 1.60 + casting * 0.12, 0)
+        _stroke(cam, pixels, depths, tip, tip, "*")
+
+
+def _draw_flame(flame, cam, pixels, depths, radius, direction=None):
+    x, y, z = flame.x, flame.y, flame.z
+    ring = [(x + radius, y, z), (x, y + radius, z),
+            (x - radius, y, z), (x, y - radius, z)]
+    for i in range(4):
+        for side in (-1, 1):
+            _face(cam, pixels, depths, ring[i], ring[(i + 1) % 4],
+                  (x, y, z + side * radius), "@" if side < 0 else "*")
+    center = cam.project(x, y, z)
+    cam.stroke(pixels, depths, center, center, char="*")
+    if direction is not None:
+        tail = tuple(value - component * 0.45 for value, component in zip((x, y, z), direction))
+        cam.stroke_world(pixels, depths, tail, (x, y, z), char=".")
+
+
 def _draw_enemy(enemy: Enemy, cam, pixels, depths):
+    if enemy.behavior is not None:
+        if enemy.alive:
+            _draw_warden(enemy, cam, pixels, depths)
+        return
     x, y, z = enemy.x, enemy.y, enemy.z
     # The fixed stake stays visible and solid after the straw body falls.
     support_height = 1.25 if enemy.alive else enemy.height
@@ -112,6 +161,65 @@ def _draw_enemy(enemy: Enemy, cam, pixels, depths):
                 (x + side * 0.70, y, z + 1.22), "=", 0.04)
 
 
+def _draw_warden(enemy, cam, pixels, depths):
+    """An opaque stone knight; joint motion uses simulation state only."""
+    cosine, sine = math.cos(enemy.facing), math.sin(enemy.facing)
+    recoil = math.sin(enemy.hit_remaining * 35) * enemy.hit_remaining * 0.20
+    stride = math.sin(enemy.walk_phase) * 0.13
+    raised = (1 - enemy.attack_remaining / enemy.behavior.windup
+              if enemy.state == "windup" else 0.0)
+    dx, dy = cam.x - enemy.x, cam.y - enemy.y
+    camera_right = dx * sine - dy * cosine
+    camera_forward = dx * cosine + dy * sine + recoil
+    camera_up = cam.z - enemy.z
+
+    def point(right, forward, up):
+        return (enemy.x + cosine * (forward - recoil) + sine * right,
+                enemy.y + sine * (forward - recoil) - cosine * right,
+                enemy.z + up)
+
+    def block(right, forward, bottom, half_width, half_depth, top, char):
+        lower = [point(right + rx * half_width, forward + fy * half_depth, bottom)
+                 for rx, fy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+        upper = [point(right + rx * half_width, forward + fy * half_depth, top)
+                 for rx, fy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+        lower = [cam.project(*vertex) for vertex in lower]
+        upper = [cam.project(*vertex) for vertex in upper]
+        # Closed opaque blocks only expose faces toward the camera. Project
+        # vertices once and skip hidden face fills; retain all faces for
+        # a camera inside a block, including close camera-plane crossings.
+        sides = (camera_forward <= forward - half_depth,
+                 camera_right >= right + half_width,
+                 camera_forward >= forward + half_depth,
+                 camera_right <= right - half_width)
+        above, below = camera_up >= top, camera_up <= bottom
+        inside = (not (any(sides) or above or below)
+                  or any(vertex is None for vertex in (*lower, *upper)))
+        for i in range(4):
+            if not (inside or sides[i]):
+                continue
+            j = (i + 1) % 4
+            cam.quad(pixels, depths, lower[i], upper[i], upper[j], lower[j], char)
+        if inside or above:
+            cam.quad(pixels, depths, *upper, char)
+        if inside or below:
+            cam.quad(pixels, depths, *lower, char)
+
+    for side in (-1, 1):
+        block(side * 0.22, side * stride, 0.04, 0.14, 0.18, 0.88, "#")
+    block(0, 0, 0.82, 0.40, 0.24, 1.60, "#")
+    block(0, 0, 1.61, 0.24, 0.22, 2.08, "@")
+    # The carved visor faces the target; raised stone fists telegraph a strike.
+    _stroke(cam, pixels, depths, point(-0.17, 0.225, 1.85),
+            point(0.17, 0.225, 1.85), "=")
+    for side in (-1, 1):
+        up = 1.12 + raised * 0.75
+        forward = 0.15 + raised * 0.18 - side * stride
+        _stroke(cam, pixels, depths, point(side * 0.43, 0, 1.48),
+                point(side * 0.50, forward, up), "#", 0.08)
+        block(side * 0.50, forward, up - 0.12, 0.12, 0.13, up + 0.12, "%")
+
+
 def _draw_name(enemy, cam, pixels, depths):
     projected = cam.project(enemy.x, enemy.y, enemy.z + enemy.height + 0.24)
     if projected is None:
@@ -138,6 +246,14 @@ def _draw_equipped(combat, cam, pixels, depths, player):
                 cam.y + cam.sy * cam.cp * depth - cam.cy * right - cam.sy * cam.sp * up,
                 cam.z + cam.sp * depth + cam.cp * up)
 
+    if combat.held_item.weapon == FIRE_STAFF:
+        def staff_point(right, up, forward):
+            return point(0.38 + right * 0.70 - arc * 0.06,
+                         -0.70 + up * 0.70 + bob - arc * 0.05,
+                         0.95 + forward * 0.70 + arc * 0.12)
+        _staff_shape(cam, pixels, depths, staff_point, arc)
+        return
+
     grip = (0.34 - arc * 0.45, -0.45 + bob, 0.90)
     guard = (grip[0] + 0.025, grip[1] + 0.18, 0.98)
     tip = (0.48 - arc * 1.20, 0.20 + arc * 0.25 + bob, 1.10)
@@ -157,7 +273,8 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
                 focal, aspect, time_seconds):
     if not pixels or not pixels[0]:
         return
-    if not combat.pickups and not combat.enemies and not combat.has_sword:
+    if not (combat.pickups or combat.enemies or combat.held_item
+            or combat.fireballs or combat.bursts):
         return
     height, width = len(pixels), len(pixels[0])
     cam = Camera(player, width, height, focal, aspect)
@@ -180,5 +297,12 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
     aimed = combat.aimed_enemy(world, player, NAME_REACH)
     if aimed is not None:
         _draw_name(aimed, cam, pixels, depths)
-    if combat.has_sword:
+    for ball in combat.fireballs[:MAX_FIREBALLS]:
+        if _visible(cam, ball.x, ball.y, ball.z, 0.20):
+            _draw_flame(ball, cam, pixels, depths, 0.14, ball.direction)
+    for burst in combat.bursts[:MAX_FIREBALLS]:
+        if _visible(cam, burst.x, burst.y, burst.z, 0.35):
+            progress = 1 - burst.remaining / BURST_DURATION
+            _draw_flame(burst, cam, pixels, depths, 0.14 + progress * 0.20)
+    if combat.held_item is not None:
         _draw_equipped(combat, cam, pixels, depths, player)

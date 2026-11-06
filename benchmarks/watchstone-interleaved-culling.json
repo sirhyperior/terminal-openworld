@@ -1,0 +1,491 @@
+{
+  "method": "Per-frame ABBA, 60 measured frames per variant per scene; 5 warmup frames; 3x120Hz combat steps/frame; shared native audio engine with each variant actual soundscape and semantic events",
+  "width": 120,
+  "height": 40,
+  "frames": 60,
+  "audio": true,
+  "scenarios": {
+    "indoors": {
+      "before": {
+        "mean_ms": 20.717,
+        "p95_ms": 24.789
+      },
+      "after": {
+        "mean_ms": 20.77,
+        "p95_ms": 25.313
+      },
+      "mean_ms_change_percent": 0.26,
+      "p95_ms_change_percent": 2.11
+    },
+    "courtyard": {
+      "before": {
+        "mean_ms": 10.997,
+        "p95_ms": 13.177
+      },
+      "after": {
+        "mean_ms": 11.023,
+        "p95_ms": 13.311
+      },
+      "mean_ms_change_percent": 0.24,
+      "p95_ms_change_percent": 1.02
+    },
+    "meadow": {
+      "before": {
+        "mean_ms": 13.95,
+        "p95_ms": 17.794
+      },
+      "after": {
+        "mean_ms": 13.627,
+        "p95_ms": 17.026
+      },
+      "mean_ms_change_percent": -2.32,
+      "p95_ms_change_percent": -4.32
+    },
+    "grass_close": {
+      "before": {
+        "mean_ms": 12.639,
+        "p95_ms": 15.833
+      },
+      "after": {
+        "mean_ms": 12.138,
+        "p95_ms": 14.936
+      },
+      "mean_ms_change_percent": -3.96,
+      "p95_ms_change_percent": -5.67
+    },
+    "bridge": {
+      "before": {
+        "mean_ms": 14.904,
+        "p95_ms": 18.035
+      },
+      "after": {
+        "mean_ms": 15.337,
+        "p95_ms": 18.796
+      },
+      "mean_ms_change_percent": 2.91,
+      "p95_ms_change_percent": 4.22
+    },
+    "river": {
+      "before": {
+        "mean_ms": 14.718,
+        "p95_ms": 18.568
+      },
+      "after": {
+        "mean_ms": 14.825,
+        "p95_ms": 18.233
+      },
+      "mean_ms_change_percent": 0.73,
+      "p95_ms_change_percent": -1.8
+    },
+    "ruins": {
+      "before": {
+        "mean_ms": 12.627,
+        "p95_ms": 15.114
+      },
+      "after": {
+        "mean_ms": 12.624,
+        "p95_ms": 15.545
+      },
+      "mean_ms_change_percent": -0.02,
+      "p95_ms_change_percent": 2.85
+    },
+    "lodge": {
+      "before": {
+        "mean_ms": 13.281,
+        "p95_ms": 17.675
+      },
+      "after": {
+        "mean_ms": 12.843,
+        "p95_ms": 17.62
+      },
+      "mean_ms_change_percent": -3.3,
+      "p95_ms_change_percent": -0.31
+    },
+    "east_bridge": {
+      "before": {
+        "mean_ms": 15.872,
+        "p95_ms": 20.472
+      },
+      "after": {
+        "mean_ms": 15.707,
+        "p95_ms": 20.246
+      },
+      "mean_ms_change_percent": -1.04,
+      "p95_ms_change_percent": -1.1
+    },
+    "watchstones": {
+      "before": {
+        "mean_ms": 14.832,
+        "p95_ms": 18.884
+      },
+      "after": {
+        "mean_ms": 15.1,
+        "p95_ms": 18.354
+      },
+      "mean_ms_change_percent": 1.81,
+      "p95_ms_change_percent": -2.81
+    },
+    "warden": {
+      "before": {
+        "mean_ms": 10.061,
+        "p95_ms": 12.025
+      },
+      "after": {
+        "mean_ms": 11.361,
+        "p95_ms": 14.366
+      },
+      "mean_ms_change_percent": 12.92,
+      "p95_ms_change_percent": 19.47
+    },
+    "staff": {
+      "before": {
+        "mean_ms": 14.381,
+        "p95_ms": 17.284
+      },
+      "after": {
+        "mean_ms": 14.241,
+        "p95_ms": 16.984
+      },
+      "mean_ms_change_percent": -0.97,
+      "p95_ms_change_percent": -1.74
+    },
+    "fireballs": {
+      "before": {
+        "mean_ms": 18.162,
+        "p95_ms": 22.06
+      },
+      "after": {
+        "mean_ms": 17.876,
+        "p95_ms": 20.859
+      },
+      "mean_ms_change_percent": -1.57,
+      "p95_ms_change_percent": -5.44
+    },
+    "map": {
+      "before": {
+        "mean_ms": 10.557,
+        "p95_ms": 12.925
+      },
+      "after": {
+        "mean_ms": 10.433,
+        "p95_ms": 12.654
+      },
+      "mean_ms_change_percent": -1.17,
+      "p95_ms_change_percent": -2.1
+    },
+    "training": {
+      "before": {
+        "mean_ms": 18.255,
+        "p95_ms": 23.531
+      },
+      "after": {
+        "mean_ms": 18.47,
+        "p95_ms": 23.234
+      },
+      "mean_ms_change_percent": 1.18,
+      "p95_ms_change_percent": -1.26
+    },
+    "tree_close": {
+      "before": {
+        "mean_ms": 11.53,
+        "p95_ms": 13.508
+      },
+      "after": {
+        "mean_ms": 11.601,
+        "p95_ms": 14.193
+      },
+      "mean_ms_change_percent": 0.62,
+      "p95_ms_change_percent": 5.07
+    },
+    "tree_canopy": {
+      "before": {
+        "mean_ms": 14.613,
+        "p95_ms": 16.722
+      },
+      "after": {
+        "mean_ms": 14.49,
+        "p95_ms": 16.79
+      },
+      "mean_ms_change_percent": -0.84,
+      "p95_ms_change_percent": 0.41
+    },
+    "river_diagonal": {
+      "before": {
+        "mean_ms": 14.328,
+        "p95_ms": 17.165
+      },
+      "after": {
+        "mean_ms": 14.273,
+        "p95_ms": 16.655
+      },
+      "mean_ms_change_percent": -0.38,
+      "p95_ms_change_percent": -2.97
+    },
+    "river_upstream": {
+      "before": {
+        "mean_ms": 15.061,
+        "p95_ms": 18.022
+      },
+      "after": {
+        "mean_ms": 15.322,
+        "p95_ms": 18.919
+      },
+      "mean_ms_change_percent": 1.73,
+      "p95_ms_change_percent": 4.98
+    },
+    "castle_exterior": {
+      "before": {
+        "mean_ms": 12.616,
+        "p95_ms": 15.306
+      },
+      "after": {
+        "mean_ms": 12.546,
+        "p95_ms": 15.332
+      },
+      "mean_ms_change_percent": -0.55,
+      "p95_ms_change_percent": 0.17
+    },
+    "great_hall": {
+      "before": {
+        "mean_ms": 17.25,
+        "p95_ms": 21.155
+      },
+      "after": {
+        "mean_ms": 17.605,
+        "p95_ms": 21.373
+      },
+      "mean_ms_change_percent": 2.06,
+      "p95_ms_change_percent": 1.03
+    },
+    "wall_walk": {
+      "before": {
+        "mean_ms": 14.053,
+        "p95_ms": 19.749
+      },
+      "after": {
+        "mean_ms": 14.251,
+        "p95_ms": 20.712
+      },
+      "mean_ms_change_percent": 1.41,
+      "p95_ms_change_percent": 4.88
+    },
+    "west_meadow": {
+      "before": {
+        "mean_ms": 13.439,
+        "p95_ms": 15.796
+      },
+      "after": {
+        "mean_ms": 13.452,
+        "p95_ms": 15.633
+      },
+      "mean_ms_change_percent": 0.1,
+      "p95_ms_change_percent": -1.03
+    },
+    "east_meadow": {
+      "before": {
+        "mean_ms": 13.759,
+        "p95_ms": 15.037
+      },
+      "after": {
+        "mean_ms": 13.73,
+        "p95_ms": 15.693
+      },
+      "mean_ms_change_percent": -0.21,
+      "p95_ms_change_percent": 4.36
+    }
+  },
+  "audio_health": {
+    "underruns": 0,
+    "recoveries": 0,
+    "max_write_gap_ms": 72.47,
+    "error": ""
+  },
+  "python": "3.14.4",
+  "platform": "Windows",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "world_size": [
+    112,
+    112,
+    12
+  ],
+  "review_date": "2026-11-06",
+  "phase": "Hidden-face culling and shared projection, triangle fills",
+  "cameras": {
+    "indoors": {
+      "x": 55.5,
+      "y": 30.5,
+      "yaw": 1.5707963267948966
+    },
+    "courtyard": {
+      "x": 55.5,
+      "y": 42.5,
+      "yaw": 1.5707963267948966
+    },
+    "meadow": {
+      "x": 55.5,
+      "y": 18.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06
+    },
+    "grass_close": {
+      "x": 12.5,
+      "y": 31.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.35
+    },
+    "bridge": {
+      "x": 24.5,
+      "y": 86.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.1
+    },
+    "river": {
+      "x": 8.5,
+      "y": 87.37765204487795,
+      "z": 0.12,
+      "yaw": 0,
+      "pitch": -0.1
+    },
+    "ruins": {
+      "x": 56.5,
+      "y": 95,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06
+    },
+    "lodge": {
+      "x": 90,
+      "y": 47.5,
+      "yaw": 0,
+      "pitch": -0.06
+    },
+    "east_bridge": {
+      "x": 86.5,
+      "y": 86.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.1
+    },
+    "watchstones": {
+      "x": 18.5,
+      "y": 97,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06
+    },
+    "warden": {
+      "x": 18.5,
+      "y": 99.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06
+    },
+    "staff": {
+      "x": 53.5,
+      "y": 101.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06
+    },
+    "fireballs": {
+      "x": 42.5,
+      "y": 40.5,
+      "yaw": 1.5707963267948966
+    },
+    "map": {
+      "x": 55.5,
+      "y": 42.5,
+      "yaw": 1.5707963267948966
+    },
+    "training": {
+      "x": 42.5,
+      "y": 46.2,
+      "yaw": 1.5707963267948966
+    },
+    "tree_close": {
+      "x": 12.5,
+      "y": 34.0,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.35
+    },
+    "tree_canopy": {
+      "x": 12.5,
+      "y": 33.95,
+      "z": 2.25,
+      "yaw": 1.5707963267948966,
+      "pitch": 0.65
+    },
+    "river_diagonal": {
+      "x": 70.5,
+      "y": 85.79607125138699,
+      "z": 0.12,
+      "yaw": 0.7853981633974483,
+      "pitch": -0.25
+    },
+    "river_upstream": {
+      "x": 70.5,
+      "y": 85.79607125138699,
+      "z": 0.12,
+      "yaw": 3.141592653589793,
+      "pitch": -0.25
+    },
+    "castle_exterior": {
+      "x": 20.5,
+      "y": 16.5,
+      "yaw": 0.6,
+      "pitch": 0.08
+    },
+    "great_hall": {
+      "x": 55.5,
+      "y": 65.5,
+      "yaw": 1.5707963267948966,
+      "pitch": 0.12
+    },
+    "wall_walk": {
+      "x": 35.5,
+      "y": 45.5,
+      "z": 6,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.15
+    },
+    "west_meadow": {
+      "x": 12.5,
+      "y": 58.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.1
+    },
+    "east_meadow": {
+      "x": 100.5,
+      "y": 68.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.1
+    }
+  },
+  "physics_hz": 120,
+  "simulation_frame_seconds": 0.025,
+  "acceptance_limit_percent": 15,
+  "source_before_sha256": {
+    "app.py": "eb1d8a8aeef9a61767c63c6094c0b03cbe9a691c62244459747312b9b7a0ea16",
+    "audio_check.py": "dd359dbc1bceb615133ec9c8cabc9799310dba815d40c15b6afcfceb3d7861d1",
+    "audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "combat.py": "420fa1c004a73c5c795a0ee2e24bb4f1214d106ddcbbac050501cfd5746a3fe8",
+    "combat_render.py": "769e88b651167d51d52f70d786103127001e87857e566d0750caac803d0f7e6b",
+    "doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "door_render.py": "d8a80b3cedf902131598cd655aa96123d6f078a01c6d7f6a38c4ddb57fd4da52",
+    "events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "geometry.py": "b3c9947fdc89b68a1f001fafca022a7c36bb6302550044137a2990972e39772b",
+    "map_expansion.py": "f0720123de04b6dce0aa7c4a3da46bbcf0662d0c01b62d45c4b6363bbda3947c",
+    "player.py": "e35c95cd1ef001b09e0fc200296bea3308ae05182530820c38be6d8074e5ba69",
+    "renderer.py": "93e732f9beae39196b2988b39a849c5c217218215b14b8589b152686f6701995",
+    "scenery.py": "182ac5ddd87014689c47f87259c8b4ffecdff8fde910453017969b7ac119d01a",
+    "sound.py": "c3385cde612d60251002dc03f2678e44a606ab03d6c5658948fc76bd75dc6224",
+    "soundscape.py": "3180d2de2f3a25d90fafc56c436ec693784e039b8e1b418f7113ae3c4b736daf",
+    "sound_surfaces.py": "f36b4b0c6ab45e2adaf4f64af895b4b792a84a24301d3bc391f96a1d238da417",
+    "targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "terminal.py": "ae9f8ae5ae58d28199db2b5a71fb3219ad92692f805ce0fc1c4562c657ff18b3",
+    "trees.py": "4672b25313900aa555aa01301c3155f2ebccec88fab57bdd285b1bb651118435",
+    "world.py": "6cbcba164296050045832e9df410163f79e79fb5af86f88c7770cd097b4d678c",
+    "__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db"
+  },
+  "failed_scenes": [
+    "warden"
+  ]
+}

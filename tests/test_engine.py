@@ -123,15 +123,15 @@ class WorldAndRenderingTests(unittest.TestCase):
         for door in self.world.doors:
             door.openness = 1.0
             door.target_open = True
-        for x, y in ((14.5, 10.5), (10.5, 13.5), (21.5, 13.5), (15.5, 23.5)):
+        for x, y in ((55.5, 26.5), (55.5, 73.5), (30.5, 47.5), (79.5, 47.5), (55.5, 61.5)):
             with self.subTest(door=(x, y)):
                 self.assertFalse(self.world.collides(x, y, 1))
-        self.assertTrue(self.world.collides(11.5, 10.5, 1))
+        self.assertTrue(self.world.collides(30.5, 30.5, 1))
 
     def test_arch_and_roof_exist_above_walkable_space(self):
-        self.assertEqual(self.world.get(14, 10, 2), AIR)
-        self.assertNotEqual(self.world.get(14, 10, 4), AIR)
-        self.assertNotEqual(self.world.get(5, 15, 6), AIR)
+        self.assertEqual(self.world.get(55, 26, 2), AIR)
+        self.assertNotEqual(self.world.get(55, 26, 4), AIR)
+        self.assertNotEqual(self.world.get(55, 30, 5), AIR)
 
     def test_default_frame_is_rectangular_plain_ascii(self):
         frame = self.renderer.frame(Player(), 120, 40)
@@ -146,8 +146,8 @@ class WorldAndRenderingTests(unittest.TestCase):
         player.z += 1.0
         airborne = self.renderer.scene(player, 90, 30)
         self.assertNotEqual(grounded, airborne)
-        # An overhead lintel appears in the higher camera's sight line.
-        self.assertNotEqual(grounded[12], airborne[12])
+        # Gatehouse roof and castle walls retain vertical parallax.
+        self.assertNotEqual(grounded[:15], airborne[:15])
 
     def test_pitch_and_yaw_change_view(self):
         player = Player()

@@ -9,6 +9,7 @@ import wave
 from ascii3d.events import GameEvent
 from ascii3d.player import Player
 from ascii3d.sound import Audio, EFFECTS, Mixer, SAMPLE_RATE, SoundBank, synthesize
+from ascii3d.soundscape import Soundscape
 from ascii3d.world import BRIDGE, FLOOR, GRASS, WATER, World
 
 
@@ -76,6 +77,78 @@ class SoundTests(unittest.TestCase):
         pcm = array("h", mixer.render(512))
         self.assertLessEqual(max(map(abs, pcm)), 32760)
 
+    def test_staff_drop_and_fireball_cues_are_distinct_repeatable_and_click_free(self):
+        cues = ("staff_pickup", "item_drop", "fireball_cast", "fireball_hit",
+                "fireball_impact", "fireball_fizzle")
+        self.assertEqual(len({self.bank.clips[name][0].tobytes() for name in cues}), len(cues))
+        for name in cues:
+            for variation, clip in enumerate(self.bank.clips[name]):
+                self.assertEqual(clip, synthesize(name, variation))
+                self.assertEqual((clip[0], clip[-1]), (0, 0))
+                self.assertLessEqual(max(map(abs, clip)), 27000)
+        mixer = Mixer(self.bank)
+        for _ in range(Mixer.MAX_VOICES):
+            mixer.add(GameEvent("door_open"))
+        mixer.add(GameEvent("fireball_hit"))
+        impact = mixer.voices[-1]
+        for _ in range(12):
+            mixer.add(GameEvent("fireball_cast"))
+        self.assertIn(impact, mixer.voices)
+        self.assertEqual(len(mixer.voices), Mixer.MAX_VOICES)
+
+    def test_creature_and_player_cues_are_registered_distinct_and_click_free(self):
+        cues = ("enemy_alert", "enemy_step", "enemy_attack", "enemy_miss",
+                "enemy_hurt", "enemy_down", "enemy_respawn",
+                "player_hurt", "player_down", "player_respawn")
+        self.assertEqual(len({self.bank.clips[name][0].tobytes() for name in cues}), len(cues))
+        for name in cues:
+            with self.subTest(cue=name):
+                self.assertIn(name, EFFECTS)
+                for variation, clip in enumerate(self.bank.clips[name]):
+                    self.assertEqual(clip, synthesize(name, variation))
+                    self.assertEqual((clip[0], clip[-1]), (0, 0))
+                    rms = math.sqrt(sum(sample * sample for sample in clip) / len(clip))
+                    self.assertGreater(rms, 500)
+                    self.assertLessEqual(max(map(abs, clip)), 27000)
+
+    def test_player_damage_and_enemy_attack_survive_low_priority_footfalls(self):
+        mixer = Mixer(self.bank)
+        for _ in range(Mixer.MAX_VOICES):
+            mixer.add(GameEvent("enemy_step", surface="grass"))
+        mixer.add(GameEvent("enemy_attack"))
+        attack = mixer.voices[-1]
+        mixer.add(GameEvent("player_hurt"))
+        hurt = mixer.voices[-1]
+        for _ in range(30):
+            mixer.add(GameEvent("enemy_step"))
+            mixer.add(GameEvent("step_grass"))
+        self.assertIn(attack, mixer.voices)
+        self.assertIn(hurt, mixer.voices)
+        self.assertEqual(len(mixer.voices), Mixer.MAX_VOICES)
+        pcm = array("h", mixer.render(512))
+        self.assertLessEqual(max(map(abs, pcm)), 32760)
+
+    def test_meadow_wind_is_a_quiet_continuous_layer_without_player_actions(self):
+        world = World.empty(8, 8, 6)
+        world.box(0, 0, 0, 8, 8, 1, GRASS)
+        scene = Soundscape(world)
+        meadow = scene.at(3.5, 3.5, 0)
+        world.box(0, 0, 0, 8, 8, 1, FLOOR)
+        indoor = scene.at(3.5, 3.5, 0)
+
+        def idle_level(ambient):
+            mixer = Mixer(self.bank)
+            pcm = array("h")
+            for _ in range(40):
+                pcm.extend(array("h", mixer.render(512, ambient)))
+            self.assertFalse(mixer.voices)
+            return math.sqrt(sum(sample * sample for sample in pcm) / len(pcm))
+
+        outdoor_level, indoor_level = idle_level(meadow), idle_level(indoor)
+        self.assertGreater(outdoor_level, 150)
+        self.assertLess(outdoor_level, 500)
+        self.assertLess(indoor_level, outdoor_level * 0.2)
+
     def test_mix_overlaps_effects_with_safe_stereo_clipping_and_bounded_voices(self):
         mixer = Mixer(self.bank)
         for _ in range(30):
@@ -93,6 +166,19 @@ class SoundTests(unittest.TestCase):
         self.assertGreater(voice.right, voice.left)
         mixer.add(GameEvent("door_open", 20, 0), (0, 0, math.pi / 2))
         self.assertLess(mixer.voices[1].left + mixer.voices[1].right, voice.left + voice.right)
+
+    def test_personal_damage_and_respawn_feedback_follow_the_listener_after_teleport(self):
+        for cue in ("player_hurt", "player_down", "player_respawn"):
+            with self.subTest(cue=cue):
+                event = GameEvent(cue, 18.5, 103.5, strength=0.8)
+                near, teleported = Mixer(self.bank), Mixer(self.bank)
+                near.add(event, (18.5, 103.5, 0))
+                teleported.add(event, (55.5, 20.5, math.pi / 2))
+                first, second = near.voices[-1], teleported.voices[-1]
+                self.assertEqual((first.left, first.right), (second.left, second.right))
+                self.assertEqual(second.left, second.right)
+                self.assertGreater(second.left, 0.5)
+                self.assertEqual((event.x, event.y, event.strength), (18.5, 103.5, 0.8))
 
     def test_mute_is_silent_and_discards_pending_voices(self):
         mixer = Mixer(self.bank)

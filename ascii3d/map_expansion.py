@@ -1,9 +1,6 @@
-"""Static, connected northern ruins and eastern river route.
+"""Fixed castle grounds and a surrounding meadow, built with shared voxels/doors."""
 
-Keep the original 41-by-62 region intact. Geometry uses existing materials and
-doors so collision, rendering, surface footsteps, and interactions stay shared.
-"""
-
+import math
 from typing import TYPE_CHECKING
 
 from .doors import Door
@@ -12,124 +9,222 @@ if TYPE_CHECKING:
     from .world import World
 
 
-EXPANDED_WIDTH = 65
-EXPANDED_DEPTH = 86
-# Exclusive bounds; exported for map/river validation and future placement.
-EAST_BRIDGE_BOUNDS = (49, 38, 54, 54)
-RUIN_BOUNDS = (28, 69, 47, 83)
-LODGE_BOUNDS = (45, 14, 61, 29)
+EXPANDED_WIDTH = 112
+EXPANDED_DEPTH = 112
+WORLD_HEIGHT = 12
+CASTLE_BOUNDS = (28, 24, 82, 76)
+CURTAIN_BOUNDS = (30, 26, 80, 74)
+RUIN_BOUNDS = (48, 97, 67, 109)
+LODGE_BOUNDS = (92, 40, 105, 54)
+FIRST_BRIDGE_BOUNDS = (22, 80, 27, 94)
+EAST_BRIDGE_BOUNDS = (84, 80, 89, 94)
+INDOOR_SPAWN = (55.5, 30.5, 1.0)
+OUTDOOR_SPAWN = (55.5, 20.5, 1.0)
+SWORD_POSITIONS = ((55.5, 32.5), (55.5, 22.5))
+STAFF_POSITION = (53.5, 103.5)
+DUMMY_POSITIONS = ((42.5, 48.5), (46.5, 48.5), (50.5, 48.5))
+WATCHSTONE_BOUNDS = (12, 99, 24, 106)
+WARDEN_POSITION = (18.5, 103.0, 1.0)
+# A known isolated tree, used for close/canopy rendering checks.
+CLOSE_TREE = (12.5, 34.5)
+
+
+def _castle(world):
+    from .world import AIR, CRATE, FLOOR, GRASS, METAL, PATH, WOOD
+
+    # A broad enclosure with an open yard, roofed halls and four tall towers.
+    world.box(30, 26, 0, 80, 74, 1, FLOOR)
+    world.box(38, 40, 0, 61, 57, 1, PATH)
+    world.box(63, 39, 0, 76, 59, 1, GRASS)
+    for bounds in ((30, 26, 80, 28), (30, 72, 80, 74),
+                   (30, 28, 32, 72), (78, 28, 80, 72)):
+        x0, y0, x1, y1 = bounds
+        world.box(x0, y0, 1, x1, y1, 6)
+    # Curtain walk segments connect to the west cloister roof; taller corner
+    # towers interrupt the ring rather than promising an unbroken circuit.
+    world.box(32, 28, 5, 78, 30, 6)
+    world.box(32, 70, 5, 78, 72, 6)
+    world.box(32, 30, 5, 34, 70, 6)
+    world.box(76, 30, 5, 78, 70, 6)
+    for x in range(30, 80, 4):
+        for y in (26, 73):
+            world.box(x, y, 6, min(x + 2, 80), y + 1, 7)
+    for y in range(30, 72, 4):
+        for x in (30, 79):
+            world.box(x, y, 6, x + 1, y + 2, 7)
+
+    # Standard gate openings: southern entrance, north trail, east/west meadows.
+    world.box(53, 26, 1, 58, 28, 4, AIR)
+    world.box(53, 72, 1, 58, 74, 4, AIR)
+    world.box(30, 45, 1, 32, 50, 4, AIR)
+    world.box(78, 45, 1, 80, 50, 4, AIR)
+
+    # The south gatehouse is the indoor start. Its roof frames the open yard.
+    for x in (49, 61):
+        world.box(x, 28, 1, x + 1, 36, 5)
+    world.box(49, 28, 5, 62, 36, 6, WOOD)
+    for x in (49, 61):
+        world.box(x, 30, 2, x + 1, 33, 4, AIR)
+
+    # Covered west cloister: repeated open arches rather than extra doors.
+    world.box(32, 42, 5, 39, 63, 6)
+    for y in (42, 47, 52, 57, 62):
+        world.box(38, y, 1, 39, y + 1, 5)
+    # Broad one-unit steps can be jumped/climbed with existing player physics.
+    for step in range(5):
+        world.box(34, 34 + step, 1, 37, 35 + step, 2 + step)
+    world.box(32, 39, 5, 37, 43, 6)
+
+    # A central northern great hall, with south doors and a rear arch to the gate.
+    world.box(47, 61, 0, 65, 72, 1, WOOD)
+    for bounds in ((47, 61, 65, 62), (47, 71, 65, 72),
+                   (47, 62, 48, 71), (64, 62, 65, 71)):
+        x0, y0, x1, y1 = bounds
+        world.box(x0, y0, 1, x1, y1, 6)
+    world.box(53, 61, 1, 58, 62, 4, AIR)
+    world.box(53, 71, 1, 58, 72, 4, AIR)
+    for x in (47, 64):
+        for y in (64, 68):
+            world.box(x, y, 2, x + 1, y + 2, 5, AIR)
+    for x in (50, 61):
+        for y in (64, 68):
+            world.box(x, y, 1, x + 1, y + 1, 6, METAL)
+    world.box(47, 61, 6, 65, 72, 7, WOOD)
+
+    # Hollow corner towers keep the castle silhouette legible from the meadow.
+    for x in (28, 75):
+        for y in (24, 69):
+            world.box(x, y, 1, x + 7, y + 7, 8)
+            world.box(x + 2, y + 2, 1, x + 5, y + 5, 7, AIR)
+            inner_x = x + 5 if x == 28 else x
+            inner_y = y + 4 if y == 24 else y + 1
+            world.box(inner_x, inner_y, 1, inner_x + 2, inner_y + 2, 4, AIR)
+            # Narrow windows and crenellations use the same opaque material.
+            outer_y = y if y == 24 else y + 6
+            world.box(x + 3, outer_y, 3, x + 4, outer_y + 1, 5, AIR)
+            for dx, dy in ((0, 0), (3, 0), (6, 0), (0, 3),
+                           (6, 3), (0, 6), (3, 6), (6, 6)):
+                world.box(x + dx, y + dy, 8, x + dx + 1, y + dy + 1, 9)
+
+    # Jumpable crates and masonry occupy the edge of the court, off the routes.
+    world.box(65, 32, 1, 68, 35, 2, CRATE)
+    world.box(67, 34, 2, 68, 35, 3, CRATE)
+    world.box(68, 61, 1, 73, 62, 2)
+    world.box(68, 62, 1, 69, 66, 2)
+
+
+def _grounds(world):
+    from .world import AIR, BRIDGE, FLOOR, PATH, WOOD
+
+    # A loop on all four sides gives both castle gates and bridge approaches
+    # short, dry routes; paths stop at the water and bridges carry them across.
+    for bounds in ((53, 8, 58, 26), (22, 20, 89, 23),
+                   (21, 23, 24, 80), (85, 23, 88, 80),
+                   (24, 77, 86, 80), (53, 74, 58, 78),
+                   (24, 46, 31, 49), (79, 46, 93, 49),
+                   (14, 94, 101, 97), (54, 94, 59, 98),
+                   (22, 94, 27, 100), (84, 94, 89, 97)):
+        x0, y0, x1, y1 = bounds
+        world.box(x0, y0, 0, x1, y1, 1, PATH)
+    for x0, y0, x1, y1 in (FIRST_BRIDGE_BOUNDS, EAST_BRIDGE_BOUNDS):
+        world.box(x0, y0, 0, x1, y1, 1, BRIDGE)
+        for x in (x0 - 1, x1):
+            world.box(x, y0 + 1, 1, x + 1, y1 - 1, 2, WOOD)
+            for y in range(y0 + 1, y1 - 1, 4):
+                world.box(x, y, 1, x + 1, y + 1, 3, WOOD)
+
+    # Northern ruined chapel and its western timber floor retain the fire staff.
+    world.box(49, 98, 0, 66, 108, 1, FLOOR)
+    world.box(50, 101, 0, 56, 107, 1, WOOD)
+    for bounds in ((48, 97, 67, 98), (48, 108, 67, 109),
+                   (48, 98, 49, 108), (66, 98, 67, 108)):
+        x0, y0, x1, y1 = bounds
+        world.box(x0, y0, 1, x1, y1, 5)
+    world.box(54, 97, 1, 59, 98, 4, AIR)
+    world.box(66, 102, 1, 67, 106, 5, AIR)
+    world.box(48, 101, 1, 49, 104, 4, AIR)
+    world.box(48, 105, 3, 52, 109, 5, AIR)
+    world.box(61, 105, 5, 67, 109, 6, WOOD)
+
+    # A small eastern lodge and western watchstones keep the meadow readable.
+    world.box(93, 41, 0, 104, 53, 1, WOOD)
+    for bounds in ((92, 40, 105, 41), (92, 53, 105, 54),
+                   (92, 41, 93, 53), (104, 41, 105, 53)):
+        x0, y0, x1, y1 = bounds
+        world.box(x0, y0, 1, x1, y1, 5)
+    world.box(92, 45, 1, 93, 50, 4, AIR)
+    for y in (42, 50):
+        world.box(104, y, 2, 105, y + 2, 4, AIR)
+    world.box(92, 47, 5, 105, 54, 6, WOOD)
+    world.box(12, 99, 0, 24, 106, 1, PATH)
+    world.box(12, 105, 1, 24, 106, 2)
+    for x in (12, 23):
+        world.box(x, 99, 1, x + 1, 100, 4)
+        world.box(x, 104, 1, x + 1, 105, 3)
 
 
 def expand_world(world: "World") -> None:
-    """Add fixed scenery after the original map and continuous river exist."""
-    # Import only when building: world.py calls this after defining its types.
-    from .world import AIR, BRIDGE, FLOOR, GRASS, PATH, WOOD, Tree
+    """Build deterministic architecture into prefilled meadow/river terrain.
 
-    if world.width < EXPANDED_WIDTH or world.depth < EXPANDED_DEPTH or world.height < 6:
-        raise ValueError("Map expansion requires a world of at least 65x86x6")
+    Rebuilding static scenery is idempotent; existing named doors keep their
+    animation state. Generic fixture worlds remain independent of this builder.
+    """
+    from .world import AIR, GRASS, Tree
 
-    # The eastern lodge has a timber floor, windows, and a sheltered rear bay.
-    # Its open north doorway connects the entry directly to the second bridge.
-    world.box(46, 15, 0, 60, 28, 1, WOOD)
-    world.box(45, 14, 1, 61, 15, 5)
-    world.box(45, 28, 1, 61, 29, 5)
-    world.box(45, 15, 1, 46, 28, 5)
-    world.box(60, 15, 1, 61, 28, 5)
-    world.box(50, 14, 1, 55, 15, 4, AIR)
-    world.box(50, 28, 1, 55, 29, 4, AIR)
-    for x in (45, 60):
-        for y in (18, 24):
-            world.box(x, y, 2, x + 1, y + 3, 4, AIR)
-    world.box(45, 21, 5, 61, 29, 6, WOOD)
-
-    # Gravel approaches stop at intact bridge decks and do not fill the river.
-    world.box(41, 10, 0, 54, 13, 1, PATH)
-    world.box(51, 13, 0, 54, 15, 1, PATH)
-    world.box(51, 28, 0, 54, 38, 1, PATH)
-    x0, y0, x1, y1 = EAST_BRIDGE_BOUNDS
-    world.box(x0, y0, 0, x1, y1, 1, BRIDGE)
-    for x in (x0 - 1, x1):
-        world.box(x, y0 + 1, 1, x + 1, y1 - 1, 2, WOOD)
-        for y in range(y0 + 1, y1 - 1, 4):
-            world.box(x, y, 1, x + 1, y + 1, 3, WOOD)
-
-    # A walkable loop joins both river crossings to the ruined northern court.
-    # Everything west of the original east edge begins beyond its north edge.
-    world.box(51, 54, 0, 54, 80, 1, PATH)
-    world.box(14, 63, 0, 54, 66, 1, PATH)
-    world.box(36, 66, 0, 39, 70, 1, PATH)
-    world.box(47, 77, 0, 54, 80, 1, PATH)
-    world.box(14, 66, 0, 17, 76, 1, PATH)
-
-    # A partly roofless ruin: uneven walls, a broken eastern exit, and one
-    # timber platform give future encounters distinct, traversable spaces.
-    world.box(29, 70, 0, 46, 82, 1, FLOOR)
-    world.box(30, 75, 0, 36, 81, 1, WOOD)
-    world.box(28, 69, 1, 47, 70, 5)
-    world.box(28, 82, 1, 47, 83, 5)
-    world.box(28, 70, 1, 29, 82, 5)
-    world.box(46, 70, 1, 47, 82, 5)
-    world.box(35, 69, 1, 40, 70, 4, AIR)
-    world.box(36, 82, 1, 40, 83, 4, AIR)
-    world.box(28, 75, 1, 29, 78, 4, AIR)
-    world.box(46, 77, 1, 47, 80, 5, AIR)
-    world.box(28, 72, 2, 29, 74, 4, AIR)
-    world.box(28, 78, 3, 29, 83, 5, AIR)
-    world.box(29, 82, 2, 34, 83, 5, AIR)
-    world.box(40, 79, 5, 47, 83, 6, WOOD)
-
-    # Open watchstones terminate the western branch without blocking its view.
-    world.box(10, 75, 0, 21, 82, 1, PATH)
-    world.box(10, 81, 1, 21, 82, 2)
-    for x in (10, 20):
-        world.box(x, 75, 1, x + 1, 76, 4)
-        world.box(x, 80, 1, x + 1, 81, 3)
-
-    # Reuse exactly the existing Door/Panel format and all associated feedback.
-    # Named definitions also make rebuilding the static extension idempotent.
+    if (world.width < EXPANDED_WIDTH or world.depth < EXPANDED_DEPTH
+            or world.height < WORLD_HEIGHT):
+        raise ValueError("Castle grounds require a world of at least 112x112x12")
+    _castle(world)
+    _grounds(world)
     existing_names = {door.name for door in world.doors}
-    for door in (Door("lodge doors", 50.05, 14.5, 4.9),
-                 Door("ruin doors", 35.05, 69.5, 4.9)):
+    for door in (Door("south castle gate", 53.05, 26.5, 4.9),
+                 Door("north castle gate", 53.05, 73.5, 4.9),
+                 Door("west castle gate", 30.5, 45.05, 4.9, math.pi / 2),
+                 Door("east castle gate", 79.5, 45.05, 4.9, math.pi / 2),
+                 Door("great hall doors", 53.05, 61.5, 4.9),
+                 Door("ruin doors", 54.05, 97.5, 4.9),
+                 Door("lodge doors", 92.5, 45.05, 4.9, math.pi / 2)):
         if door.name not in existing_names:
             world.doors.append(door)
-
-    # Sparse deterministic trees remain off every trail and doorway. Scenery
-    # retains its spatial/detail budgets rather than adding per-frame work here.
-    tree_positions = ((43, 6), (60, 7), (43, 33), (60, 35), (60, 57),
-                      (43, 60), (5, 70), (23, 72), (7, 82), (24, 83),
-                      (57, 83), (61, 73), (56, 67), (49, 84))
-    for seed, (x, y) in enumerate(tree_positions, 100):
+    # Sparse fixed groups frame the castle from every side without obstructing
+    # trails, doors, combat targets or bridge approaches. Grass stays chunked.
+    positions = ((12, 34), (12, 16), (25, 12), (43, 12), (72, 12), (94, 18),
+                 (9, 53), (13, 69), (38, 81), (68, 81), (101, 31), (105, 62),
+                 (99, 75), (8, 93), (35, 101), (77, 104), (101, 100), (39, 91))
+    for seed, (x, y) in enumerate(positions):
         if world.get(x, y, 0) == GRASS and world.get(x, y, 1) == AIR:
             world.trees[x, y] = Tree(x + 0.5, y + 0.5,
-                                     0.18 + seed % 3 * 0.025,
-                                     4.0 + seed % 3 * 0.22, seed)
-
-    for x, y in ((42, 17), (58, 61), (8, 67), (20, 67)):
-        world.box(x, y, 1, x + 1, y + 1, 2)
+                                    0.18 + seed % 3 * 0.025,
+                                    4.0 + seed % 3 * 0.22, seed)
 
 
 def expanded_area_name(x: float, y: float) -> str | None:
-    """Name extension landmarks; defer ordinary river terrain to World.area."""
+    """Describe static landmarks; World.area supplies material-aware meadow names."""
     if not (0 <= x < EXPANDED_WIDTH and 0 <= y < EXPANDED_DEPTH):
         return None
-    if x < 41 and y < 62:
-        return None
-    if 28 <= x < 47 and 69 <= y < 83:
+    if 48 <= x < 67 and 97 <= y < 109:
         return "NORTHERN RUINS"
-    if 10 <= x < 21 and 75 <= y < 82:
+    if 12 <= x < 24 and 99 <= y < 106:
         return "THE WATCHSTONES"
-    if 45 <= x < 61 and 14 <= y < 29:
+    if 92 <= x < 105 and 40 <= y < 54:
         return "EASTERN LODGE"
-    if 49 <= x < 54 and 38 <= y < 54:
-        return "EAST BRIDGE"
-    if (14 <= x < 54 and 63 <= y < 66
-            or 51 <= x < 54 and 54 <= y < 80
-            or 14 <= x < 17 and 66 <= y < 76
-            or 36 <= x < 39 and 66 <= y < 70
-            or 47 <= x < 54 and 77 <= y < 80):
-        return "NORTH TRAIL"
-    if y >= 62:
-        return "NORTH COMMON"
-    if x >= 41 and y < 38:
-        return "EAST MEADOW"
+    for bounds, name in ((FIRST_BRIDGE_BOUNDS, "WEST BRIDGE"), (EAST_BRIDGE_BOUNDS, "EAST BRIDGE")):
+        x0, y0, x1, y1 = bounds
+        if x0 <= x < x1 and y0 <= y < y1:
+            return name
+    if ((28 <= x < 35 or 75 <= x < 82)
+            and (24 <= y < 31 or 69 <= y < 76)):
+        return "CASTLE TOWERS"
+    if 30 <= x < 80 and 26 <= y < 74:
+        if 49 <= x < 62 and y < 36:
+            return "SOUTH GATEHOUSE"
+        if 47 <= x < 65 and y >= 61:
+            return "GREAT HALL"
+        if x < 39 and 42 <= y < 63:
+            return "WEST CLOISTER"
+        if 38 <= x < 53 and 40 <= y < 57:
+            return "TRAINING YARD"
+        if x >= 63 and 39 <= y < 59:
+            return "CASTLE GARDEN"
+        return "CASTLE COURTYARD"
     return None

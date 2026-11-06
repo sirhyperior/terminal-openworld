@@ -11,7 +11,7 @@ from ascii3d.world import FLOOR, World, build_world
 class DoorTests(unittest.TestCase):
     def setUp(self):
         self.world = build_world()
-        self.player = Player(x=14.5, y=8.2)
+        self.player = Player(x=55.5, y=24.2)
 
     def advance(self, seconds, keys=()):
         events = []
@@ -22,36 +22,36 @@ class DoorTests(unittest.TestCase):
 
     def test_closed_doors_stop_walking_and_sprinting(self):
         self.advance(1, {"w", "shift"})
-        self.assertLess(self.player.y, 10.5 - self.player.RADIUS)
-        self.assertGreater(self.player.y, 10.1)
+        self.assertLess(self.player.y, 26.5 - self.player.RADIUS)
+        self.assertGreater(self.player.y, 26.1)
 
     def test_open_and_walk_through_then_close_from_other_side(self):
-        self.assertEqual(self.world.interact(self.player).name, "door_open")
+        self.assertEqual(self.world.interact(self.player)[0].name, "door_open")
         self.advance(0.7)
         self.assertEqual(self.world.doors[0].openness, 1)
         self.advance(1.3, {"w"})
-        self.assertGreater(self.player.y, 12.4)
+        self.assertGreater(self.player.y, 28.4)
         self.player.yaw = -math.pi / 2
-        self.assertEqual(self.world.interact(self.player).name, "door_close")
+        self.assertEqual(self.world.interact(self.player)[0].name, "door_close")
         self.advance(0.7)
         self.assertEqual(self.world.doors[0].openness, 0)
 
     def test_interaction_requires_reach_facing_and_line_of_sight(self):
         self.world.combat.pickups.clear()  # Isolate the door targeting contract.
-        self.player.y = 4.5
+        self.player.y = 20.5
         self.assertIsNone(self.world.interaction_target(self.player))
-        self.player.y = 8.2
+        self.player.y = 24.2
         self.player.yaw = -math.pi / 2
         self.assertIsNone(self.world.interaction_target(self.player))
         self.player.yaw = math.pi / 2
         self.assertIs(self.world.interaction_target(self.player), self.world.doors[0])
-        self.world.box(12, 9, 1, 17, 10, 4)
+        self.world.box(53, 25, 1, 58, 26, 4)
         self.assertIsNone(self.world.interaction_target(self.player))
 
     def test_closing_door_reverses_before_crushing_player(self):
         door = self.world.doors[0]
         door.openness, door.target_open = 1.0, False
-        self.player.y = 10.5
+        self.player.y = 26.5
         events = self.advance(1)
         self.assertIn("door_blocked", [event.name for event in events])
         self.assertTrue(door.target_open)
@@ -60,7 +60,7 @@ class DoorTests(unittest.TestCase):
 
     def test_opening_leaf_stops_safely_if_player_is_in_swing(self):
         door = self.world.doors[0]
-        self.player.x, self.player.y = 12.4, 12.0
+        self.player.x, self.player.y = 53.4, 28.0
         door.target_open = True
         events = self.advance(1)
         self.assertLess(door.openness, 1)
@@ -72,14 +72,14 @@ class DoorTests(unittest.TestCase):
         self.player.update(self.world, {"e"}, 1 / 60)
         self.assertEqual(self.player.yaw, yaw)
         frame = Renderer(self.world).frame(self.player, 100, 34)
-        self.assertIn("[E] Open courtyard doors", "\n".join(frame))
+        self.assertIn("[E] Open south castle gate", "\n".join(frame))
 
     def test_resuming_a_blocked_swing_emits_a_fresh_creak_event(self):
         door = self.world.doors[0]
-        self.player.x, self.player.y = 12.4, 12.0
+        self.player.x, self.player.y = 53.4, 28.0
         door.target_open = True
         self.advance(1)
-        self.player.x, self.player.y = 14.5, 8.2
+        self.player.x, self.player.y = 55.5, 24.2
         events = self.advance(0.7)
         self.assertEqual(door.openness, 1)
         self.assertEqual(sum(event.name == "door_open" for event in events), 1)

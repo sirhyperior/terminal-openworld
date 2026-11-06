@@ -1,0 +1,270 @@
+{
+  "python": "3.14.4",
+  "platform": "Windows",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "width": 120,
+  "height": 40,
+  "frames": 60,
+  "audio": true,
+  "scenarios": {
+    "indoors": {
+      "mean_ms": 12.356,
+      "p95_ms": 14.036,
+      "fps": 80.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 0,
+        "grass_drawn": 0,
+        "grass_chunks": 0,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -3.5,
+      "p95_change_percent": -8.4
+    },
+    "courtyard": {
+      "mean_ms": 11.715,
+      "p95_ms": 12.845,
+      "fps": 85.4,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 246,
+        "grass_drawn": 0,
+        "grass_chunks": 17,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -8.3,
+      "p95_change_percent": -13.4
+    },
+    "meadow": {
+      "mean_ms": 16.782,
+      "p95_ms": 19.161,
+      "fps": 59.6,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 392,
+        "grass_drawn": 221,
+        "grass_chunks": 15,
+        "tree_samples": 224,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -2.0,
+      "p95_change_percent": -2.7
+    },
+    "grass_close": {
+      "mean_ms": 15.288,
+      "p95_ms": 17.281,
+      "fps": 65.4,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 466,
+        "grass_drawn": 355,
+        "grass_chunks": 17,
+        "tree_samples": 660,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -9.0,
+      "p95_change_percent": -13.1
+    },
+    "bridge": {
+      "mean_ms": 13.24,
+      "p95_ms": 15.775,
+      "fps": 75.5,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 426,
+        "grass_drawn": 111,
+        "grass_chunks": 22,
+        "tree_samples": 983,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -8.0,
+      "p95_change_percent": -9.6
+    },
+    "river": {
+      "mean_ms": 13.037,
+      "p95_ms": 14.771,
+      "fps": 76.7,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 200,
+        "grass_drawn": 50,
+        "grass_chunks": 19,
+        "tree_samples": 246,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -9.4,
+      "p95_change_percent": -12.6
+    },
+    "ruins": {
+      "mean_ms": 12.629,
+      "p95_ms": 13.484,
+      "fps": 79.2,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 62,
+        "grass_drawn": 10,
+        "grass_chunks": 19,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -0.7,
+      "p95_change_percent": -3.7
+    },
+    "lodge": {
+      "mean_ms": 9.999,
+      "p95_ms": 10.456,
+      "fps": 100.0,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 80,
+        "grass_drawn": 12,
+        "grass_chunks": 16,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -2.0,
+      "p95_change_percent": -3.8
+    },
+    "east_bridge": {
+      "mean_ms": 12.797,
+      "p95_ms": 13.465,
+      "fps": 78.1,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 366,
+        "grass_drawn": 88,
+        "grass_chunks": 21,
+        "tree_samples": 1497,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -3.0,
+      "p95_change_percent": -6.4
+    },
+    "watchstones": {
+      "mean_ms": 12.739,
+      "p95_ms": 14.108,
+      "fps": 78.5,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 226,
+        "grass_drawn": 60,
+        "grass_chunks": 20,
+        "tree_samples": 982,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -17.1,
+      "p95_change_percent": -28.5
+    },
+    "staff": {
+      "mean_ms": 12.294,
+      "p95_ms": 12.837,
+      "fps": 81.3,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 124,
+        "grass_drawn": 29,
+        "grass_chunks": 14,
+        "tree_samples": 0,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "fireballs": {
+      "mean_ms": 14.621,
+      "p95_ms": 16.194,
+      "fps": 68.4,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 572,
+        "grass_drawn": 443,
+        "grass_chunks": 18,
+        "tree_samples": 1398,
+        "tree_pixel_budget": 12600
+      }
+    },
+    "training": {
+      "mean_ms": 17.058,
+      "p95_ms": 20.836,
+      "fps": 58.6,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 572,
+        "grass_drawn": 443,
+        "grass_chunks": 18,
+        "tree_samples": 1398,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": 16.9,
+      "p95_change_percent": 13.3
+    },
+    "tree_close": {
+      "mean_ms": 12.541,
+      "p95_ms": 14.343,
+      "fps": 79.7,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 520,
+        "grass_drawn": 357,
+        "grass_chunks": 16,
+        "tree_samples": 253,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": 1.4,
+      "p95_change_percent": 1.2
+    },
+    "tree_canopy": {
+      "mean_ms": 13.345,
+      "p95_ms": 16.1,
+      "fps": 74.9,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 0,
+        "grass_drawn": 0,
+        "grass_chunks": 16,
+        "tree_samples": 12600,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": 1.8,
+      "p95_change_percent": 13.4
+    },
+    "river_diagonal": {
+      "mean_ms": 14.192,
+      "p95_ms": 15.584,
+      "fps": 70.5,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 332,
+        "grass_drawn": 167,
+        "grass_chunks": 19,
+        "tree_samples": 673,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -4.1,
+      "p95_change_percent": -11.9
+    },
+    "river_upstream": {
+      "mean_ms": 13.122,
+      "p95_ms": 15.175,
+      "fps": 76.2,
+      "scenery": {
+        "grass_budget": 1400,
+        "grass_candidates": 362,
+        "grass_drawn": 199,
+        "grass_chunks": 20,
+        "tree_samples": 298,
+        "tree_pixel_budget": 12600
+      },
+      "change_percent": -10.1,
+      "p95_change_percent": -13.3
+    }
+  },
+  "audio_health": {
+    "buffers": 327,
+    "underruns": 0,
+    "max_write_gap_ms": 86.14,
+    "recoveries": 0,
+    "error": ""
+  }
+}

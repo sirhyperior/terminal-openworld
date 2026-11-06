@@ -1,0 +1,142 @@
+[
+  {
+    "version": "before",
+    "report": {
+      "python": "3.14.4",
+      "platform": "Windows",
+      "machine": "AMD64",
+      "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+      "width": 120,
+      "height": 40,
+      "frames": 120,
+      "audio": true,
+      "scenarios": {
+        "training": {
+          "mean_ms": 14.032,
+          "p95_ms": 16.64,
+          "fps": 71.3,
+          "scenery": {
+            "grass_budget": 1400,
+            "grass_candidates": 574,
+            "grass_drawn": 378,
+            "grass_chunks": 25,
+            "tree_samples": 1931,
+            "tree_pixel_budget": 12600
+          }
+        }
+      },
+      "audio_health": {
+        "buffers": 46,
+        "underruns": 0,
+        "max_write_gap_ms": 73.12,
+        "recoveries": 0,
+        "error": ""
+      }
+    }
+  },
+  {
+    "version": "after",
+    "report": {
+      "python": "3.14.4",
+      "platform": "Windows",
+      "machine": "AMD64",
+      "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+      "width": 120,
+      "height": 40,
+      "frames": 120,
+      "audio": true,
+      "scenarios": {
+        "training": {
+          "mean_ms": 13.517,
+          "p95_ms": 16.731,
+          "fps": 74.0,
+          "scenery": {
+            "grass_budget": 1400,
+            "grass_candidates": 574,
+            "grass_drawn": 378,
+            "grass_chunks": 25,
+            "tree_samples": 1931,
+            "tree_pixel_budget": 12600
+          }
+        }
+      },
+      "audio_health": {
+        "buffers": 45,
+        "underruns": 0,
+        "max_write_gap_ms": 73.4,
+        "recoveries": 0,
+        "error": ""
+      }
+    }
+  },
+  {
+    "version": "after",
+    "report": {
+      "python": "3.14.4",
+      "platform": "Windows",
+      "machine": "AMD64",
+      "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+      "width": 120,
+      "height": 40,
+      "frames": 120,
+      "audio": true,
+      "scenarios": {
+        "training": {
+          "mean_ms": 13.57,
+          "p95_ms": 15.828,
+          "fps": 73.7,
+          "scenery": {
+            "grass_budget": 1400,
+            "grass_candidates": 574,
+            "grass_drawn": 378,
+            "grass_chunks": 25,
+            "tree_samples": 1931,
+            "tree_pixel_budget": 12600
+          }
+        }
+      },
+      "audio_health": {
+        "buffers": 45,
+        "underruns": 0,
+        "max_write_gap_ms": 72.34,
+        "recoveries": 0,
+        "error": ""
+      }
+    }
+  },
+  {
+    "version": "before",
+    "report": {
+      "python": "3.14.4",
+      "platform": "Windows",
+      "machine": "AMD64",
+      "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+      "width": 120,
+      "height": 40,
+      "frames": 120,
+      "audio": true,
+      "scenarios": {
+        "training": {
+          "mean_ms": 13.84,
+          "p95_ms": 16.319,
+          "fps": 72.3,
+          "scenery": {
+            "grass_budget": 1400,
+            "grass_candidates": 574,
+            "grass_drawn": 378,
+            "grass_chunks": 25,
+            "tree_samples": 1931,
+            "tree_pixel_budget": 12600
+          }
+        }
+      },
+      "audio_health": {
+        "buffers": 46,
+        "underruns": 0,
+        "max_write_gap_ms": 71.77,
+        "recoveries": 0,
+        "error": ""
+      }
+    }
+  }
+]
