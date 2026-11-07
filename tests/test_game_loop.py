@@ -16,7 +16,7 @@ from ascii3d.world import FLOOR, World
 class GameLoopTests(unittest.TestCase):
     def run_frames(self, script, world, player, *, demo=False, frame_work=None,
                    clock_tick=1 / 60, advance_sleep=False, sizes=None, mouse=None, keyboard_look=False,
-                   fail_render=False):
+                   fail_render=False, capture_error=""):
         events, states, pauses, frames = [], [], [], []
         self.capture_states = []
         captures = self.capture_states
@@ -57,7 +57,8 @@ class GameLoopTests(unittest.TestCase):
 
             def set_mouse_capture(self, active):
                 captures.append(active)
-                self.mouse_captured = active
+                self.mouse_captured = active and not capture_error
+                self.mouse_error = capture_error if active else ""
 
             def draw(self, frame):
                 nonlocal clock
@@ -233,6 +234,22 @@ class GameLoopTests(unittest.TestCase):
         self.assertAlmostEqual(states[0][6], Player().yaw - 0.1)
         self.assertAlmostEqual(states[0][7], 0.05)
         self.assertEqual(self.capture_states, [True, False])
+
+    def test_mouse_motion_and_attack_are_dispatched_in_the_same_frame(self):
+        world = self.make_world()
+        world.combat.held_item = WeaponPickup(0, 0, collected=True)
+        events, states, _, _ = self.run_frames([({"attack"}, ())], world,
+                                               Player(x=8.5, y=4.5), mouse=[(20, 10)])
+        self.assertEqual([event.name for event in events], ["sword_swing", "sword_hit"])
+        self.assertAlmostEqual(states[0][6], Player().yaw - 0.05)
+        self.assertAlmostEqual(states[0][7], -0.025)
+
+    def test_native_capture_failure_explains_keyboard_fallback_without_crashing(self):
+        _, _, _, frames = self.run_frames([((), ())], self.make_world(),
+                                          Player(x=8.5, y=4.5),
+                                          capture_error="ClipCursor: access denied")
+        self.assertIn("restart with --keyboard-look", frames[0][1]["notice"])
+        self.assertFalse(frames[0][1]["mouse_captured"])
 
     def test_render_errors_release_mouse_before_audio_cleanup(self):
         self.run_frames([((), ())], self.make_world(), Player(x=8.5, y=4.5), fail_render=True)

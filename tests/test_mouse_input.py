@@ -1,6 +1,8 @@
 """Relative pointer ownership, button edges and frame-independent look."""
 
+import ctypes
 import math
+from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
@@ -255,6 +257,121 @@ class MouseInputTests(unittest.TestCase):
             keys = keyboard.poll()
         self.assertEqual(keys.pressed, {"attack", "right"})
         self.assertNotIn("q", keys.down)
+
+
+class MousePollingTests(unittest.TestCase):
+    """Exercise the complete reader with bounded, host-shaped input batches."""
+
+    def setUp(self):
+        self.pointer = FakePointer()
+        self.queue = []
+        self.keyboard = WindowsKeyboard.__new__(WindowsKeyboard)
+        keyboard = self.keyboard
+        keyboard.ctypes = ctypes
+        keyboard.available, keyboard.count = ctypes.c_ulong(), ctypes.c_ulong()
+        keyboard.records = [None] * 256
+        keyboard.handle, keyboard.down, keyboard.mapping = 123, set(), {}
+        keyboard.mouse = WindowsMouse(self.pointer)
+        keyboard.api = SimpleNamespace(GetNumberOfConsoleInputEvents=self.available,
+                                       ReadConsoleInputW=self.read)
+        keyboard.mouse.set_capture(True)
+
+    def available(self, handle, count):
+        count._obj.value = len(self.queue)
+        return True
+
+    def read(self, handle, records, maximum, count):
+        batch = self.queue[:maximum]
+        del self.queue[:maximum]
+        records[:len(batch)] = batch
+        count._obj.value = len(batch)
+        return True
+
+    def record(self, down, flags=0):
+        event = SimpleNamespace(dwButtonState=int(down), dwEventFlags=flags)
+        self.queue.append(SimpleNamespace(EventType=2,
+                          Event=SimpleNamespace(MouseEvent=event)))
+
+    def test_press_is_recovered_with_motion_when_console_click_is_missing(self):
+        self.pointer.position, self.pointer.left = (545, 490), True
+        self.record(True, 1)
+        keys = self.keyboard.poll()
+        self.assertEqual(keys.pressed, {"attack"})
+        self.assertEqual((keys.mouse_dx, keys.mouse_dy), (45, -10))
+        self.assertEqual(self.keyboard.poll().pressed, set())
+
+    def test_motion_or_wheel_state_cannot_forge_a_press_or_release(self):
+        for flags in (1, 4, 8):
+            self.record(True, flags)
+        self.assertEqual(self.keyboard.poll().pressed, set())
+        self.pointer.left = True
+        self.record(True)
+        self.assertEqual(self.keyboard.poll().pressed, {"attack"})
+        self.record(False, 1)
+        self.record(False, 4)
+        self.assertEqual(self.keyboard.poll().pressed, set())
+        self.assertTrue(self.keyboard.mouse.left_down)
+
+    def test_motion_cannot_identify_an_unverified_terminal(self):
+        self.keyboard.mouse.set_capture(False)
+        self.keyboard.mouse.window = None
+        self.pointer.active = 2
+        self.keyboard.mouse.set_capture(True)
+        self.pointer.left = True
+        self.record(True, 1)
+        self.assertEqual(self.keyboard.poll().pressed, set())
+        self.assertIsNone(self.keyboard.mouse.window)
+        self.assertFalse(self.keyboard.mouse.captured)
+
+    def test_delayed_console_ack_after_physical_release_does_not_repeat(self):
+        self.pointer.left = True
+        self.assertEqual(self.keyboard.poll().pressed, {"attack"})
+        self.pointer.left = False
+        self.assertEqual(self.keyboard.poll().pressed, set())
+        self.record(True)
+        self.record(False)
+        self.assertEqual(self.keyboard.poll().pressed, set())
+        self.pointer.left = True
+        self.record(True)
+        self.assertEqual(self.keyboard.poll().pressed, {"attack"})
+
+    def test_fast_click_between_physical_samples_and_double_click_are_retained(self):
+        self.record(True)
+        self.record(False)
+        self.assertEqual(self.keyboard.poll().pressed, {"attack"})
+        self.pointer.left = True
+        self.record(True, 3)  # Some hosts combine DOUBLE_CLICK and MOUSE_MOVED.
+        self.assertEqual(self.keyboard.poll().pressed, {"attack"})
+        self.assertEqual(self.keyboard.poll().pressed, set())
+
+    def test_motion_backlog_does_not_delay_or_duplicate_physical_click(self):
+        for _ in range(2000):
+            self.record(False, 1)
+        self.record(True)
+        self.pointer.left = True
+        self.assertEqual(self.keyboard.poll().pressed, {"attack"})
+        self.assertEqual(len(self.queue), 977)
+        self.assertEqual(self.keyboard.poll().pressed, set())
+        self.assertEqual(self.queue, [])
+
+    def test_blur_discards_physical_press_and_keeps_foreign_window_free(self):
+        self.pointer.active, self.pointer.left = 99, True
+        keys = self.keyboard.poll()
+        self.assertEqual(keys.pressed, {"blur"})
+        self.assertEqual((keys.mouse_dx, keys.mouse_dy), (0, 0))
+        self.assertFalse(self.keyboard.mouse.captured)
+
+    def test_raw_packets_are_the_only_captured_click_source(self):
+        self.keyboard.mouse.raw_relative = True
+        self.pointer.relative_capture = SimpleNamespace(
+            poll=Mock(side_effect=[(9, -7, True), (0, 0, False)]))
+        self.record(True)
+        self.record(False, 1)
+        keys = self.keyboard.poll()
+        self.assertEqual((keys.mouse_dx, keys.mouse_dy), (9, -7))
+        self.assertEqual(keys.pressed, {"attack"})
+        self.record(True)
+        self.assertEqual(self.keyboard.poll().pressed, set())
 
 
 if __name__ == "__main__":

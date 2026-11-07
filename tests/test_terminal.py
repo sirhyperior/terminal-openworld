@@ -71,6 +71,7 @@ class WindowsInputTests(unittest.TestCase):
         self.keyboard.mouse = WindowsMouse(pointer)
         self.keyboard.mouse.set_capture(True)
         for down, expected in ((True, True), (True, False), (False, False), (True, True)):
+            pointer.button_down.return_value = down
             record = self.record_type()
             record.EventType = 0x2
             record.Event.MouseEvent.dwButtonState = int(down)

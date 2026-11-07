@@ -99,11 +99,14 @@ when the terminal is resized. It needs at least 60 columns by 21 terminal rows.
 | Esc or Ctrl+C | Exit |
 
 On Windows, **click inside the terminal to capture mouse look**. The capture
-click does not attack. Turning continues beyond screen edges; P, H, focus loss
-and exit release the pointer. Resume with P. Native key-down/up events preserve
+click does not attack. Turning continues beyond screen edges. P opens pause;
+H opens controls. Resume with P. Native key-down/up events preserve
 simultaneous WASD, Shift and jumping. Q is no longer an attack control.
-Pointer hiding is best effort: Windows Terminal and other external console
-hosts may keep the mouse pointer visible during capture.
+Captured mouse motion and attack clicks are read independently. **Known Windows
+Terminal bugs:** user playtesting reports a visible cursor at the center and
+pausing does not free it. Both fixes are pending; `--keyboard-look` is available
+for play without mouse capture. Unavailable native capture also shows that
+fallback command.
 
 For keyboard controls, run `python main.py --keyboard-look`: arrows look and
 **Enter** attacks. This mode is automatic on Linux/macOS, where mouse capture

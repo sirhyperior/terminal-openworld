@@ -31,11 +31,15 @@ class Keys:
 class _WindowsPointer:
     """Small Win32 seam; all pointer ownership is handled by WindowsMouse."""
 
+    supports_raw_mouse = True
+
     def __init__(self, kernel):
         import ctypes
         from ctypes import wintypes as wt
 
         self.ctypes, self.wt = ctypes, wt
+        self.kernel, self.relative_capture = kernel, None
+        self.capture_error = ""
         self.api = ctypes.WinDLL("user32", use_last_error=True)
         kernel.GetConsoleWindow.restype = wt.HWND
         self.console_window = kernel.GetConsoleWindow()
@@ -94,7 +98,9 @@ class _WindowsPointer:
         return bool(self.api.SetCursorPos(x, y))
 
     def button_down(self):
-        return self.key_down(0x01)
+        # Async state and Raw Input both use physical buttons. Match the
+        # logical primary click when Windows' left/right preference is swapped.
+        return self.key_down(0x02 if self.api.GetSystemMetrics(23) else 0x01)
 
     def key_down(self, virtual_key):
         return bool(self.api.GetAsyncKeyState(virtual_key) & 0x8000)
@@ -115,6 +121,35 @@ class _WindowsPointer:
         for _ in range(count):
             self.api.ShowCursor(True)
 
+    def start_relative(self, window, bounds):
+        from .mouse_capture import NativeMouseCapture
+
+        original_clip, original_cursor = self.clip(), self.cursor()
+        self.capture_error = ""
+        try:
+            if self.relative_capture is None:
+                self.relative_capture = NativeMouseCapture(self.kernel, self.api)
+            if self.relative_capture.start(window, bounds, self.button_down()):
+                return True
+        except OSError as error:
+            self.capture_error = str(error)
+        # Acquisition is transactional: a failed warp/registration must never
+        # leave a one-pixel clip or input window behind.
+        if self.relative_capture is not None:
+            if not self.capture_error:
+                self.capture_error = self.relative_capture.error
+            self.relative_capture.stop()
+            if self.clip() == self.relative_capture.clip:
+                self.set_clip(original_clip)
+        if self.foreground() == window and original_cursor is not None:
+            self.move(*original_cursor)
+        return False
+
+    def close(self):
+        if self.relative_capture is not None:
+            self.relative_capture.close()
+            self.relative_capture = None
+
 
 class WindowsMouse:
     """Relative look without screen-edge limits, restricted to our terminal.
@@ -131,7 +166,11 @@ class WindowsMouse:
         self.bounds = self.center = None
         self.original_clip = self.original_cursor = None
         self.hide_count = 0
+        self.raw_relative = False
+        self.capture_clip = None
+        self._raw_attack = False
         self.left_down = False
+        self._recovered_press = False
         self._blurred = False
 
     def confirm_focus(self):
@@ -172,6 +211,15 @@ class WindowsMouse:
             return
         original_clip = self.pointer.clip()
         center = ((bounds[0] + bounds[2]) // 2, (bounds[1] + bounds[3]) // 2)
+        if getattr(self.pointer, "supports_raw_mouse", False) is True:
+            if not self.pointer.start_relative(self.window, bounds):
+                return
+            self.original_clip, self.original_cursor = original_clip, cursor
+            self.bounds, self.center = bounds, center
+            self.capture_clip = self.pointer.relative_capture.clip
+            self.raw_relative, self.captured = True, True
+            self._raw_attack = False
+            return
         if not self.pointer.set_clip(bounds):
             return
         if not self.pointer.move(*center):
@@ -179,8 +227,10 @@ class WindowsMouse:
             return
         self.original_clip, self.original_cursor = original_clip, cursor
         self.bounds, self.center = bounds, center
+        self.capture_clip = bounds
         self.hide_count = self.pointer.hide()
         self.left_down = self.pointer.button_down()
+        self._recovered_press = False
         self.captured = True
 
     def button(self, down):
@@ -194,8 +244,29 @@ class WindowsMouse:
                 # Only a fresh console click with its physical button still
                 # held can identify a modern host. Focus records are not proof.
                 self.window = foreground
-        attack = bool(down and not self.left_down and self.captured)
+        # A console packet can arrive after physical sampling recovered its
+        # press. Consume that acknowledgement without firing the same click.
+        recovered = self._recovered_press
+        self._recovered_press = False
+        attack = bool(down and not self.left_down and self.captured and not recovered)
         self.left_down = bool(down)
+        return attack
+
+    def sample_button(self):
+        """Recover held presses independently of the host's motion queue."""
+        if not self.captured:
+            return False
+        if self.raw_relative:
+            attack, self._raw_attack = self._raw_attack, False
+            return attack
+        self.confirm_focus()
+        if not self.captured:
+            return False
+        down = self.pointer.button_down()
+        attack = bool(down and not self.left_down)
+        self.left_down = down
+        if attack:
+            self._recovered_press = True
         return attack
 
     def poll(self):
@@ -214,6 +285,21 @@ class WindowsMouse:
             self.focus_lost()
             self._blurred = False
             return 0.0, 0.0, True
+        if self.raw_relative:
+            capture = self.pointer.relative_capture
+            try:
+                if bounds != self.bounds:
+                    resized = capture.resize(bounds)
+                    self.capture_clip = capture.clip
+                    if not resized:
+                        raise OSError("Mouse capture resize failed")
+                    self.bounds = bounds
+                dx, dy, self._raw_attack = capture.poll()
+            except OSError:
+                self.focus_lost()
+                self._blurred = False
+                return 0.0, 0.0, True
+            return dx, dy, False
         if bounds != self.bounds:
             # Resizing changes the center; discard that artificial displacement.
             if not self.pointer.set_clip(bounds):
@@ -238,9 +324,13 @@ class WindowsMouse:
         if not self.captured:
             return
         self.captured = False
+        if self.raw_relative:
+            self.pointer.relative_capture.stop()
+            self.raw_relative = False
+            self._raw_attack = False
         # Another app may have changed confinement after focus changed. Do not
         # overwrite its clip or warp its pointer back to our old location.
-        if self.pointer.clip() == self.bounds:
+        if self.pointer.clip() == self.capture_clip:
             self.pointer.set_clip(self.original_clip)
         if restore_cursor and self.pointer.foreground() == self.window and self.original_cursor is not None:
             self.pointer.move(*self.original_cursor)
@@ -346,7 +436,14 @@ class WindowsKeyboard:
                         pressed.add("blur")
                     continue
                 if record.EventType == 0x2:
-                    if self.mouse.button(bool(record.Event.MouseEvent.dwButtonState & 0x1)):
+                    if self.mouse.raw_relative:
+                        continue  # Raw Input is the sole captured button source.
+                    event = record.Event.MouseEvent
+                    # Motion/wheel snapshots are not button transitions. Some
+                    # hosts coalesce them; neither recentering nor a stale
+                    # motion state may swallow a later real click.
+                    if ((event.dwEventFlags == 0 or event.dwEventFlags & 0x2)
+                            and self.mouse.button(bool(event.dwButtonState & 0x1))):
                         pressed.add("attack")
                     continue
                 if record.EventType != 0x1:
@@ -368,6 +465,8 @@ class WindowsKeyboard:
                 else:
                     self.down.discard("shift")
         dx, dy, blurred = self.mouse.poll()
+        if self.mouse.sample_button():
+            pressed.add("attack")
         if blurred:
             self.down.clear()
             pressed.add("blur")
@@ -380,8 +479,13 @@ class WindowsKeyboard:
         try:
             self.mouse.set_capture(False)
         finally:
-            self.api.SetConsoleMode(self.handle, self.original_input)
-            self.api.SetConsoleMode(self.output, self.original_output)
+            try:
+                close_pointer = getattr(self.mouse.pointer, "close", None)
+                if close_pointer is not None:
+                    close_pointer()
+            finally:
+                self.api.SetConsoleMode(self.handle, self.original_input)
+                self.api.SetConsoleMode(self.output, self.original_output)
 
     def set_mouse_capture(self, active):
         if active and not self.mouse.requested:
@@ -501,6 +605,14 @@ class Terminal:
     @property
     def mouse_captured(self):
         return isinstance(self.keyboard, WindowsKeyboard) and self.keyboard.mouse.captured
+
+    @property
+    def mouse_error(self):
+        if isinstance(self.keyboard, WindowsKeyboard):
+            mouse = self.keyboard.mouse
+            if mouse.requested and not mouse.captured:
+                return getattr(mouse.pointer, "capture_error", "")
+        return ""
 
     def set_mouse_capture(self, active):
         if isinstance(self.keyboard, WindowsKeyboard):

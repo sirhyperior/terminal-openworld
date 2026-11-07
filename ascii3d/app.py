@@ -116,6 +116,7 @@ def main(argv: list[str] | None = None) -> int:
             simulation_time = 0.0
             notice, notice_until = ("Audio output unavailable" if not audio.available else ""), 4.0
             jump_pending = attack_pending = False
+            last_mouse_error = ""
             step = 1 / 120
             while True:
                 start = time.perf_counter()
@@ -157,6 +158,11 @@ def main(argv: list[str] | None = None) -> int:
                 width, height = terminal.size()
                 active = not paused and not help_open and width >= 60 and height >= 20
                 terminal.set_mouse_capture(active and not keyboard_look and not args.demo)
+                mouse_error = getattr(terminal, "mouse_error", "")
+                if mouse_error and mouse_error != last_mouse_error:
+                    notice = "Mouse capture unavailable - restart with --keyboard-look"
+                    notice_until = simulation_time + 4
+                    last_mouse_error = mouse_error
                 # Motion belongs to this rendered input frame, never to each
                 # catch-up physics step. UI/reset transitions discard old input.
                 input_transition = bool(keys.pressed & {"p", "h", "r"})
