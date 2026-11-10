@@ -16,26 +16,41 @@ class VegetationTests(unittest.TestCase):
         self.world = build_world()
 
     def test_short_grass_covers_every_clear_outdoor_cell_including_approaches(self):
-        scenery = Scenery(self.world)
+        # Exhaustively check a bounded world; enormous maps create only the
+        # nearby deterministic chunks rather than millions of eager blades.
+        world = World.empty(24, 24, 10)
+        world.outdoor_bounds = (1, 1, 23, 23)
+        world.box(0, 0, 0, 24, 24, 1, GRASS)
+        world.box(7, 7, 1, 11, 11, 4, GRASS)
+        scenery = Scenery(world)
+        for cy in range(6):
+            for cx in range(6):
+                scenery.grass_chunk(cx, cy)
         counts = {}
         for blade in scenery.blades:
             self.assertGreaterEqual(blade.height, 0.09)
             self.assertLessEqual(blade.height, 0.24)
             cell = int(blade.x), int(blade.y)
             counts[cell] = counts.get(cell, 0) + 1
-        x0, y0, x1, y1 = self.world.outdoor_bounds
+            self.assertEqual(blade.z, world.surface_height(*cell))
+        x0, y0, x1, y1 = world.outdoor_bounds
         for y in range(y0, y1):
             for x in range(x0, x1):
-                if self.world.get(x, y, 0) == GRASS and not self.world.get(x, y, 1):
+                if world.surface_material(x, y) == GRASS:
                     self.assertGreaterEqual(counts.get((x, y), 0), 12)
         self.assertEqual(self.world.get(16, 34, 0), GRASS)
         self.assertEqual(self.world.get(16, 56, 0), GRASS)
+        live = Scenery(self.world)
+        for x, y in ((16, 34), (16, 56)):
+            patches = live.grass_chunk(x // live.CHUNK, y // live.CHUNK)
+            self.assertGreaterEqual(len(next(blades for px, py, blades in patches
+                                             if (px, py) == (x, y))), 12)
 
     def test_player_motion_bends_nearby_grass_without_moving_roots(self):
         renderer = Renderer(self.world)
         player = Player(x=24.5, y=34.5, pitch=-0.65)
-        roots = [(blade.x, blade.y) for blade in renderer.scenery.blades]
         still = renderer.scene(player, 100, 36, time_seconds=2)
+        roots = [(blade.x, blade.y) for blade in renderer.scenery.blades]
         player.moving, player.running = True, True
         disturbed = renderer.scene(player, 100, 36, time_seconds=2)
         self.assertNotEqual(still, disturbed)

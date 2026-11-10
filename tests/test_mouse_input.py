@@ -76,6 +76,19 @@ class MouseInputTests(unittest.TestCase):
         self.pointer = FakePointer()
         self.mouse = WindowsMouse(self.pointer)
 
+    def make_native_mouse(self):
+        pointer = FakePointer()
+        pointer.supports_raw_mouse = True
+        capture = Mock(clip=(500, 500, 501, 501))
+        pointer.relative_capture = capture
+
+        def start(window, bounds):
+            pointer.confinement = capture.clip
+            return True
+
+        pointer.start_relative = Mock(side_effect=start)
+        return pointer, capture, WindowsMouse(pointer)
+
     def test_keys_preserve_old_constructor_and_default_to_no_motion(self):
         keys = Keys({"w"}, {"e"})
         self.assertEqual((keys.mouse_dx, keys.mouse_dy), (0, 0))
@@ -141,6 +154,75 @@ class MouseInputTests(unittest.TestCase):
         self.assertEqual(self.pointer.shown, [2])
         self.mouse.set_capture(False)
         self.assertEqual(self.pointer.shown, [2])
+
+    def test_native_release_uses_latest_clip_and_cleans_up_after_helper_error(self):
+        for failed_stop in (False, True):
+            with self.subTest(failed_stop=failed_stop):
+                pointer, capture, mouse = self.make_native_mouse()
+                original_clip, original_cursor = pointer.confinement, pointer.position
+                mouse.set_capture(True)
+                # The helper owns the successful native readback, including
+                # changes made after the high-level capture was established.
+                capture.clip = pointer.confinement = (600, 600, 601, 601)
+                if failed_stop:
+                    capture.stop.side_effect = OSError("helper teardown failed")
+                    with self.assertRaises(OSError):
+                        mouse.set_capture(False)
+                else:
+                    mouse.set_capture(False)
+                self.assertEqual(pointer.confinement, original_clip)
+                self.assertEqual(pointer.position, original_cursor)
+                self.assertFalse(mouse.captured or mouse.raw_relative or mouse.requested)
+                self.assertFalse(mouse.sample_button())
+                self.assertEqual(mouse.poll(), (0, 0, False))
+                capture.stop.assert_called_once()
+
+    def test_native_release_retries_once_per_call_without_reacquiring_or_rebalancing(self):
+        pointer, capture, mouse = self.make_native_mouse()
+        original_clip, original_cursor = pointer.confinement, pointer.position
+        mouse.set_capture(True)
+        pointer.clip_ok = False
+        mouse.set_capture(False)
+        self.assertFalse(mouse.captured or mouse.raw_relative)
+        self.assertTrue(mouse._release_pending)
+        self.assertTrue(mouse.release_error)
+        self.assertEqual(pointer.clips, [original_clip])
+        self.assertEqual(pointer.moves, [])
+        self.assertEqual(pointer.shown, [0])
+
+        # An immediate resume cannot adopt its own stuck clip as the original.
+        mouse.set_capture(True)
+        self.assertFalse(mouse.captured)
+        self.assertEqual(mouse.original_clip, original_clip)
+        pointer.start_relative.assert_called_once()
+        self.assertEqual(pointer.clips, [original_clip, original_clip])
+
+        pointer.clip_ok = True
+        mouse.set_capture(False)
+        self.assertFalse(mouse._release_pending)
+        self.assertEqual(mouse.release_error, "")
+        self.assertEqual(pointer.confinement, original_clip)
+        self.assertEqual(pointer.moves, [original_cursor])
+        self.assertEqual(pointer.shown, [0])
+        capture.stop.assert_called_once()
+
+    def test_pending_release_never_overwrites_a_foreign_clip(self):
+        pointer, capture, mouse = self.make_native_mouse()
+        mouse.set_capture(True)
+        pointer.clip_ok = False
+        mouse.set_capture(False)
+        calls = list(pointer.clips)
+        foreign_clip = (1000, 1000, 1200, 1200)
+        pointer.confinement, pointer.active = foreign_clip, 99
+        pointer.clip_ok = True
+        mouse.set_capture(False)
+        self.assertFalse(mouse._release_pending)
+        self.assertEqual(mouse.release_error, "")
+        self.assertEqual(pointer.confinement, foreign_clip)
+        self.assertEqual(pointer.clips, calls)
+        self.assertEqual(pointer.moves, [])
+        self.assertEqual(pointer.shown, [0])
+        capture.stop.assert_called_once()
 
     def test_focus_loss_clears_capture_without_warping_another_app(self):
         original_clip = self.pointer.confinement

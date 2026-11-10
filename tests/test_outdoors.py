@@ -7,6 +7,7 @@ from ascii3d.player import Player
 from ascii3d.renderer import Renderer, _river_ripple
 from ascii3d.scenery import Scenery, Wind
 from ascii3d.map_expansion import FIRST_BRIDGE_BOUNDS, EAST_BRIDGE_BOUNDS
+from ascii3d.terrain import NEW_BRIDGES
 from ascii3d.world import (AIR, BRIDGE, FLOOR, GRASS, RIVERBED_LEVEL, WATER, WATER_LEVEL,
                            World, build_world, river_center)
 
@@ -41,7 +42,7 @@ class OutdoorMovementTests(unittest.TestCase):
         for x in range(self.world.width):
             y = math.floor(river_center(x + 0.5))
             expected = BRIDGE if any(bounds[0] <= x < bounds[2] for bounds in
-                                    (FIRST_BRIDGE_BOUNDS, EAST_BRIDGE_BOUNDS)) else WATER
+                                    (FIRST_BRIDGE_BOUNDS, EAST_BRIDGE_BOUNDS, *NEW_BRIDGES)) else WATER
             self.assertEqual(self.world.get(x, y, 0), expected)
         self.assertIn("BRIDGE", self.world.area(24.5, 86))
 
@@ -80,12 +81,17 @@ class AnimatedSceneryTests(unittest.TestCase):
         self.renderer = Renderer(self.world)
 
     def test_blades_are_seeded_and_only_grow_on_clear_grass(self):
+        other = Scenery(self.world)
+        for cy in range(7, 10):
+            for cx in range(2, 5):
+                self.renderer.scenery.grass_chunk(cx, cy)
+                other.grass_chunk(cx, cy)
         blades = self.renderer.scenery.blades
         self.assertGreater(len(blades), 1000)
-        self.assertEqual(blades, Scenery(self.world).blades)
+        self.assertEqual(blades, other.blades)
         for blade in blades:
-            self.assertEqual(self.world.get(int(blade.x), int(blade.y), 0), GRASS)
-            self.assertEqual(self.world.get(int(blade.x), int(blade.y), 1), AIR)
+            self.assertEqual(self.world.get(int(blade.x), int(blade.y), int(blade.z) - 1), GRASS)
+            self.assertEqual(self.world.get(int(blade.x), int(blade.y), int(blade.z)), AIR)
 
     def test_wind_is_deterministic_spatially_varied_and_continuous(self):
         wind = Wind(self.world.outdoor_bounds)
@@ -225,6 +231,9 @@ class AnimatedSceneryTests(unittest.TestCase):
         world.box(0, 7, 1, 16, 8, 8)
         renderer = Renderer(world)
         # Keep only tufts behind the wall; no foreground grass can animate.
+        for cy in range(5):
+            for cx in range(4):
+                renderer.scenery.grass_chunk(cx, cy)
         renderer.scenery.blades = [blade for blade in renderer.scenery.blades if blade.y > 8]
         player = Player(x=8.5, y=4.5)
         first = renderer.scene(player, 80, 26, time_seconds=0)

@@ -1,0 +1,128 @@
+{
+  "method": "same current geometry, scalar crown versus conservative spans, per-frame ABBA, 5 warmups, 60 samples/variant; scenery draw only",
+  "audio": false,
+  "width": 120,
+  "height": 35,
+  "frames": 60,
+  "python": "3.14.4",
+  "before_tree_sha256": "dfb0a1daa1b5661c16752ffac65fe066fcde522fbc1137323e73143dbbd616c8",
+  "after_tree_sha256": "7372011e308bc94a3a9ee86c7f214da4f27ae7e2b79ec6cded540820e4c7f837",
+  "scenarios": {
+    "warden": {
+      "exact_glyphs_all_frames": true,
+      "before": {
+        "mean_ms": 2.5289,
+        "p95_ms": 4.158,
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 402,
+          "grass_drawn": 39,
+          "grass_chunks": 22,
+          "tree_samples": 1051,
+          "tree_pixel_budget": 12600
+        }
+      },
+      "after": {
+        "mean_ms": 2.43724,
+        "p95_ms": 4.1227,
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 402,
+          "grass_drawn": 39,
+          "grass_chunks": 22,
+          "tree_samples": 471,
+          "tree_pixel_budget": 12600
+        }
+      },
+      "mean_change_percent": -3.62,
+      "p95_change_percent": -0.85
+    },
+    "bridge": {
+      "exact_glyphs_all_frames": true,
+      "before": {
+        "mean_ms": 2.08466,
+        "p95_ms": 2.6607,
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 196,
+          "grass_drawn": 20,
+          "grass_chunks": 19,
+          "tree_samples": 621,
+          "tree_pixel_budget": 12600
+        }
+      },
+      "after": {
+        "mean_ms": 2.09972,
+        "p95_ms": 2.5047,
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 196,
+          "grass_drawn": 20,
+          "grass_chunks": 19,
+          "tree_samples": 278,
+          "tree_pixel_budget": 12600
+        }
+      },
+      "mean_change_percent": 0.72,
+      "p95_change_percent": -5.86
+    },
+    "river_diagonal": {
+      "exact_glyphs_all_frames": true,
+      "before": {
+        "mean_ms": 3.40819,
+        "p95_ms": 3.8512,
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 242,
+          "grass_drawn": 124,
+          "grass_chunks": 18,
+          "tree_samples": 596,
+          "tree_pixel_budget": 12600
+        }
+      },
+      "after": {
+        "mean_ms": 3.28226,
+        "p95_ms": 3.6251,
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 242,
+          "grass_drawn": 124,
+          "grass_chunks": 18,
+          "tree_samples": 305,
+          "tree_pixel_budget": 12600
+        }
+      },
+      "mean_change_percent": -3.69,
+      "p95_change_percent": -5.87
+    },
+    "tree_close": {
+      "exact_glyphs_all_frames": true,
+      "before": {
+        "mean_ms": 5.97503,
+        "p95_ms": 6.5701,
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 730,
+          "grass_drawn": 499,
+          "grass_chunks": 26,
+          "tree_samples": 266,
+          "tree_pixel_budget": 12600
+        }
+      },
+      "after": {
+        "mean_ms": 5.76804,
+        "p95_ms": 6.1959,
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 730,
+          "grass_drawn": 499,
+          "grass_chunks": 26,
+          "tree_samples": 135,
+          "tree_pixel_budget": 12600
+        }
+      },
+      "mean_change_percent": -3.46,
+      "p95_change_percent": -5.7
+    }
+  }
+}

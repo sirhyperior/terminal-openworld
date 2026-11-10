@@ -136,6 +136,41 @@ class WindowsInputTests(unittest.TestCase):
         self.inject(ord("C"), True, 0x8)
         self.assertIn("escape", self.keyboard.poll().pressed)
 
+    def test_pause_record_releases_the_native_helper_and_restores_clip(self):
+        from ascii3d.terminal import WindowsMouse
+
+        original_clip = (-1000, -1000, 2000, 2000)
+        current_clip = original_clip
+        pointer = Mock(console_window=1, supports_raw_mouse=True)
+        pointer.foreground.return_value = 1
+        pointer.minimized.return_value = False
+        pointer.rect.return_value = (100, 200, 900, 800)
+        pointer.cursor.return_value = (320, 450)
+        pointer.key_down.return_value = False
+        pointer.clip.side_effect = lambda: current_clip
+        capture = pointer.relative_capture
+        capture.clip = (500, 500, 501, 501)
+        capture.poll.return_value = (0, 0, False)
+
+        def set_clip(value):
+            nonlocal current_clip
+            current_clip = value
+            return True
+
+        pointer.set_clip.side_effect = set_clip
+        pointer.start_relative.side_effect = lambda window, bounds: set_clip(capture.clip)
+        self.keyboard.mouse = WindowsMouse(pointer)
+        self.keyboard.set_mouse_capture(True)
+        self.inject(ord("P"), True)
+        self.assertIn("p", self.keyboard.poll().pressed)
+        self.keyboard.set_mouse_capture(False)
+        self.assertEqual(current_clip, original_clip)
+        capture.stop.assert_called_once()
+        self.assertFalse(self.keyboard.mouse.captured or self.keyboard.mouse.requested)
+        self.inject(ord("P"), False)
+        self.keyboard.poll()
+        self.assertEqual(current_clip, original_clip)
+
     def test_losing_focus_clears_held_keys(self):
         self.inject(ord("W"), True)
         self.keyboard.poll()

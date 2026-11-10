@@ -5,7 +5,8 @@ import math
 from .player import Player
 from .doors import Door
 from .door_render import draw_doors
-from .combat_render import draw_combat
+from .combat_render import draw_combat, large_opaque_enemy
+from .geometry import Camera
 from .scenery import Scenery
 from .world import (AIR, BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, WATER,
                     WATER_LEVEL, WOOD, World, river_center)
@@ -32,8 +33,82 @@ def _flow_glyph(dx: float, dy: float) -> str:
     return "\\" if dx * dy > 0 else "/"
 
 
+def _clear_rectangles(clear, width, height):
+    """Partition clear cells in linear time by joining matching row runs.
+
+    Every cell belongs to at most one rectangle. Unlike expanding each run
+    through all neighboring rows, this also bounds cache construction on large
+    plateaus and open interiors without changing the exact ray traversal.
+    """
+    active = {}
+    complete = []
+    for y in range(height):
+        following = {}
+        x = 0
+        offset = y * width
+        while x < width:
+            if not clear[offset + x]:
+                x += 1
+                continue
+            left = x
+            x += 1
+            while x < width and clear[offset + x]:
+                x += 1
+            key = left, x
+            rectangle = active.pop(key, None)
+            if rectangle is None:
+                rectangle = [left, y, x, y + 1]
+            else:
+                rectangle[3] = y + 1
+            following[key] = rectangle
+        complete.extend(active.values())
+        active = following
+    complete.extend(active.values())
+    return complete
+
+
+def _overlapping_clear_runs(clear, width, height):
+    """Recover maximal row-run overlaps with two linear vertical passes.
+
+    Each cell's vertical clear interval is known before joining a row run.
+    Intersecting those intervals gives the same overlap as extending the run
+    through neighboring rows, without rescanning its rectangle's entire area.
+    """
+    lower, upper = [0] * len(clear), [height] * len(clear)
+    starts = [0] * width
+    for y in range(height):
+        offset = y * width
+        for x in range(width):
+            index = offset + x
+            if clear[index]:
+                lower[index] = starts[x]
+            else:
+                starts[x] = y + 1
+    ends = [height] * width
+    for y in range(height - 1, -1, -1):
+        offset = y * width
+        for x in range(width):
+            index = offset + x
+            if clear[index]:
+                upper[index] = ends[x]
+            else:
+                ends[x] = y
+    for y in range(height):
+        offset, x = y * width, 0
+        while x < width:
+            if not clear[offset + x]:
+                x += 1
+                continue
+            left = x
+            x += 1
+            while x < width and clear[offset + x]:
+                x += 1
+            yield left, y, x, max(lower[offset + left:offset + x]), min(upper[offset + left:offset + x])
+
+
 class Renderer:
-    def __init__(self, world: World, cell_aspect: float = 0.5, skip_empty_space: bool = True):
+    def __init__(self, world: World, cell_aspect: float = 0.5, skip_empty_space: bool = True,
+                 combat_depth_prepass: bool = True):
         self.world = world
         self.cell_aspect = cell_aspect
         self._size = (0, 0)
@@ -42,12 +117,25 @@ class Renderer:
         self._focal = 1.0
         self.scenery = Scenery(world)
         self.skip_empty_space = skip_empty_space
+        self.combat_depth_prepass = combat_depth_prepass and skip_empty_space
+        self.combat_prepass_used = False
         self._world_revision = -1
         self._chunk_tops = []
         self._empty_bounds = []
+        self._empty_columns = []
         self._room_bounds = []
         self._map_key = None
         self._map_rows = []
+        self._ceiling_key = None
+        self._ceiling_top = world.height
+        self._horizon_tops = []
+        self._horizon_key = None
+        self._sky_horizon = None
+        self.cache_stats = {}
+
+    def prepare_world(self) -> None:
+        """Build static traversal caches before interactive input/audio starts."""
+        self._update_chunks()
 
     def _update_chunks(self):
         if self._world_revision == self.world.revision:
@@ -66,74 +154,211 @@ class Renderer:
                         tops[index] = z + 1
                         occupied[index] |= 1 << z
         self._chunk_tops = tops
-        # Merge clear 2x2 columns into rectangles at each integer height.
-        # These are conservative empty volumes, derived only on voxel edits.
-        # Long meadow rays can cross one rectangle instead of many chunks.
+        blocks_x, blocks_y = (chunks_x + 1) // 2, (((world.depth + 1) // 2) + 1) // 2
+        block_tops = [0] * (blocks_x * blocks_y)
+        for y in range((world.depth + 1) // 2):
+            for x in range(chunks_x):
+                index = (y >> 1) * blocks_x + (x >> 1)
+                block_tops[index] = max(block_tops[index], tops[y * chunks_x + x])
+        self._horizon_tops = block_tops
+        # Keep overlapping clear rectangles, so rays can take the same broad
+        # jumps from every row. Vertical interval intersection bounds building
+        # work linearly instead of repeatedly searching neighboring rows.
         chunks_y = (world.depth + 1) // 2
         bounds = [None] * (world.height * len(tops))
+        columns = [None] * len(bounds)
+        highest = max(tops, default=0)
+        whole = (0, 0, chunks_x * 2, chunks_y * 2, highest)
         for level in range(world.height):
-            for row in range(chunks_y):
-                left = 0
-                while left < chunks_x:
-                    if tops[row * chunks_x + left] > level:
-                        left += 1
-                        continue
-                    right = left + 1
-                    while right < chunks_x and tops[row * chunks_x + right] <= level:
-                        right += 1
-                    low, high = row, row + 1
-                    while low > 0 and all(tops[(low - 1) * chunks_x + x] <= level
-                                          for x in range(left, right)):
-                        low -= 1
-                    while high < chunks_y and all(tops[high * chunks_x + x] <= level
-                                                  for x in range(left, right)):
-                        high += 1
-                    top = max(tops[y * chunks_x + x] for y in range(low, high)
-                              for x in range(left, right))
-                    rectangle = (left * 2, low * 2, right * 2, high * 2, top)
-                    for x in range(left, right):
-                        bounds[level * len(tops) + row * chunks_x + x] = rectangle
-                    left = right
+            base = level * len(tops)
+            if level >= highest:
+                bounds[base:base + len(tops)] = [whole] * len(tops)
+                columns[base:base + len(tops)] = [whole] * len(tops)
+                continue
+            clear = [top <= level for top in tops]
+            if not any(clear):
+                continue
+            for left, row, right, low, high in _overlapping_clear_runs(clear, chunks_x, chunks_y):
+                # Downward lookups choose level=the current chunk top, which
+                # belongs to this rectangle and therefore equals its maximum.
+                # Upward lookups never use the rectangle's floor boundary.
+                rectangle = (left * 2, low * 2, right * 2, high * 2, level)
+                run = [rectangle] * (right - left)
+                start = base + row * chunks_x + left
+                bounds[start:start + len(run)] = run
+            # A row's horizontal span can be limited by distant hills far to
+            # one side of a north-facing ray. A transposed atlas gives the same
+            # conservative overlaps in the other direction. Choose by the
+            # dominant horizontal ray component, once per pixel.
+            transposed = [clear[y * chunks_x + x] for x in range(chunks_x)
+                          for y in range(chunks_y)]
+            for low, column, high, left, right in _overlapping_clear_runs(transposed, chunks_y, chunks_x):
+                rectangle = (left * 2, low * 2, right * 2, high * 2, level)
+                for y in range(low, high):
+                    columns[base + y * chunks_x + column] = rectangle
         self._empty_bounds = bounds
+        self._empty_columns = columns
         # The same conservative 2x2 grid can also skip AIR below a roof.
         # Every occupied voxel (including water) contributes a height bit.
         # Merge only rows containing a below-roof gap; outdoor rays retain
         # the original above-terrain cache and its cheaper lookup path.
         rooms = [None] * len(bounds)
-        for level in range(world.height):
+        room_masks = {}
+        union_cells, fallback_runs = 0, 0
+        for level in range(max(tops, default=0)):
             bit = 1 << level
-            for row in range(chunks_y):
-                left = 0
-                while left < chunks_x:
-                    if occupied[row * chunks_x + left] & bit:
-                        left += 1
+            clear = [not mask & bit for mask in occupied]
+            base = level * len(tops)
+            for left, low, right, high in _clear_rectangles(clear, chunks_x, chunks_y):
+                indices = [y * chunks_x + x for y in range(low, high)
+                           for x in range(left, right)]
+                if not any(tops[index] > level for index in indices):
+                    continue
+                key = left, low, right, high
+                mask = room_masks.get(key)
+                if mask is None:
+                    mask = 0
+                    for index in indices:
+                        mask |= occupied[index]
+                    union_cells += len(indices)
+                    room_masks[key] = mask
+                bottom = (mask & (bit - 1)).bit_length()
+                above = mask >> (level + 1)
+                ceiling = level + (above & -above).bit_length() if above else world.height
+                rectangle = (left * 2, low * 2, right * 2, high * 2, bottom, ceiling)
+                for index in indices:
+                    if tops[index] > level:
+                        rooms[base + index] = rectangle
+            # Restore overlapping room skips where they buy broad traversal.
+            # Memoized unions are free across rows/heights. A strict scan
+            # budget bounds unusual fragmented geometry; disjoint prisms above
+            # remain an exact fallback rather than rescanning large regions.
+            remaining = len(tops) * 8
+            for left, row, right, low, high in _overlapping_clear_runs(clear, chunks_x, chunks_y):
+                offset = row * chunks_x
+                if not any(tops[offset + x] > level for x in range(left, right)):
+                    continue
+                key = left, low, right, high
+                mask = room_masks.get(key)
+                if mask is None:
+                    work = (right - left) * (high - low)
+                    if work > remaining:
+                        fallback_runs += 1
                         continue
-                    right = left + 1
-                    while right < chunks_x and not occupied[row * chunks_x + right] & bit:
-                        right += 1
-                    if any(tops[row * chunks_x + x] > level for x in range(left, right)):
-                        low, high = row, row + 1
-                        while low > 0 and all(not occupied[(low - 1) * chunks_x + x] & bit
-                                              for x in range(left, right)):
-                            low -= 1
-                        while high < chunks_y and all(not occupied[high * chunks_x + x] & bit
-                                                      for x in range(left, right)):
-                            high += 1
-                        mask = 0
-                        for y in range(low, high):
-                            for x in range(left, right):
-                                mask |= occupied[y * chunks_x + x]
-                        bottom = (mask & (bit - 1)).bit_length()
-                        above = mask >> (level + 1)
-                        ceiling = level + (above & -above).bit_length() if above else world.height
-                        rectangle = (left * 2, low * 2, right * 2, high * 2, bottom, ceiling)
+                    remaining -= work
+                    union_cells += work
+                    mask = 0
+                    for y in range(low, high):
                         for x in range(left, right):
-                            index = row * chunks_x + x
-                            if tops[index] > level:
-                                rooms[level * len(tops) + index] = rectangle
-                    left = right
+                            mask |= occupied[y * chunks_x + x]
+                    room_masks[key] = mask
+                bottom = (mask & (bit - 1)).bit_length()
+                above = mask >> (level + 1)
+                ceiling = level + (above & -above).bit_length() if above else world.height
+                rectangle = (left * 2, low * 2, right * 2, high * 2, bottom, ceiling)
+                for x in range(left, right):
+                    index = offset + x
+                    if tops[index] > level:
+                        rooms[base + index] = rectangle
         self._room_bounds = rooms
+        self.cache_stats = {"chunks": len(tops), "room_union_cells": union_cells,
+                            "room_union_budget": len(tops) * world.height * 9,
+                            "room_overlap_fallback_runs": fallback_runs}
         self._world_revision = world.revision
+
+    def _local_ceiling(self, player, cp, sp):
+        """Conservative voxel ceiling over every possible ray endpoint.
+
+        Rays are not normalized: use the actual camera-plane extrema rather
+        than assuming the 48-depth limit means a 48-unit horizontal radius.
+        Snapped camera tiles allow reuse during ordinary movement. Only voxel
+        traversal uses this ceiling; panels, trunks and combat still draw into
+        their shared depth buffers independently.
+        """
+        forward = max(abs(cp - self._rows[0] * sp), abs(cp - self._rows[-1] * sp))
+        side = max(abs(self._columns[0]), abs(self._columns[-1]))
+        radius = math.ceil(48 * math.hypot(forward, side)) + 2
+        tile_x, tile_y = math.floor(player.x / 8), math.floor(player.y / 8)
+        key = self.world.revision, tile_x, tile_y, radius
+        if key != self._ceiling_key:
+            chunks_x = (self.world.width + 1) // 2
+            left = max(0, (tile_x * 8 - radius) // 2)
+            low = max(0, (tile_y * 8 - radius) // 2)
+            right = min(chunks_x, (tile_x * 8 + 8 + radius) // 2 + 1)
+            high = min((self.world.depth + 1) // 2, (tile_y * 8 + 8 + radius) // 2 + 1)
+            self._ceiling_top = max((max(self._chunk_tops[y * chunks_x + left:y * chunks_x + right], default=0)
+                                     for y in range(low, high)), default=0)
+            self._ceiling_key = key
+        return self._ceiling_top
+
+    def _prepare_horizon(self, player, cp, sp):
+        """Conservative voxel skyline for every origin in the camera cell.
+
+        Four-cell blocks bound voxel tops; expanded relative XY rectangles
+        include the entire integer camera-origin cell. Their nearest distance
+        and lowest possible eye height overestimate every upward slope. Angular
+        bins include the full corner interval plus adjacent bins for rounding.
+        Dynamic panels, scenery and combat retain their independent depth pass.
+        """
+        forward = max(abs(cp - self._rows[0] * sp), abs(cp - self._rows[-1] * sp))
+        side = max(abs(self._columns[0]), abs(self._columns[-1]))
+        radius = math.ceil(48 * math.hypot(forward, side)) + 2
+        origin_x, origin_y = math.floor(player.x), math.floor(player.y)
+        eye = math.floor(player.eye_z * 4) / 4
+        key = self.world.revision, origin_x, origin_y, eye, radius
+        if key == self._horizon_key:
+            return self._sky_horizon
+        world = self.world
+        blocks_x, blocks_y = (world.width + 3) // 4, (world.depth + 3) // 4
+        left, low = max(0, (origin_x - radius) // 4), max(0, (origin_y - radius) // 4)
+        right = min(blocks_x, (origin_x + 1 + radius) // 4 + 1)
+        high = min(blocks_y, (origin_y + 1 + radius) // 4 + 1)
+        skyline = [0.0] * 128
+        scale = 128 / math.tau
+        chunks_x, chunks_y = (world.width + 1) // 2, (world.depth + 1) // 2
+        for by in range(low, high):
+            for bx in range(left, right):
+                top = self._horizon_tops[by * blocks_x + bx]
+                if top <= eye:
+                    continue
+                x0, y0 = bx * 4, by * 4
+                x1, y1 = min(world.width, x0 + 4), min(world.depth, y0 + 4)
+                parts = [(top, x0, y0, x1, y1)]
+                if (x0 < origin_x + 1 and x1 > origin_x
+                        and y0 < origin_y + 1 and y1 > origin_y):
+                    # Split only the origin block: a nearby bridge rail need
+                    # not disable every azimuth for a clear camera column.
+                    parts = [(self._chunk_tops[cy * chunks_x + cx], cx * 2, cy * 2,
+                              min(world.width, cx * 2 + 2), min(world.depth, cy * 2 + 2))
+                             for cy in range(by * 2, min(chunks_y, by * 2 + 2))
+                             for cx in range(bx * 2, min(chunks_x, bx * 2 + 2))]
+                for top, x0, y0, x1, y1 in parts:
+                    if top <= eye:
+                        continue
+                    if (x0 < origin_x + 1 and x1 > origin_x
+                            and y0 < origin_y + 1 and y1 > origin_y):
+                        # A roof/tall wall in the camera's own 2x2 region
+                        # makes the bound uninformative; trace ordinary rays.
+                        self._sky_horizon, self._horizon_key = None, key
+                        return None
+                    relative_x = x0 - (origin_x + 1), x1 - origin_x
+                    relative_y = y0 - (origin_y + 1), y1 - origin_y
+                    dx, dy = max(relative_x[0], -relative_x[1], 0), max(relative_y[0], -relative_y[1], 0)
+                    distance_squared = dx * dx + dy * dy
+                    slope = (top - eye) ** 2 / distance_squared if distance_squared else math.inf
+                    angles = sorted(math.atan2(y, x) % math.tau for x in relative_x for y in relative_y)
+                    gaps = [angles[i + 1] - angles[i] for i in range(3)]
+                    gaps.append(angles[0] + math.tau - angles[3])
+                    gap = max(range(4), key=gaps.__getitem__)
+                    start = angles[(gap + 1) % 4]
+                    end = start + math.tau - gaps[gap]
+                    first, last = math.floor(start * scale) - 1, math.floor(end * scale) + 1
+                    for index in range(first, last + 1):
+                        index %= 128
+                        if slope > skyline[index]:
+                            skyline[index] = slope
+        self._sky_horizon, self._horizon_key = skyline, key
+        return skyline
 
     def scene(self, player: Player, width: int, height: int, time_seconds: float = 0.0) -> list[list[str]]:
         if width < 1 or height < 1:
@@ -151,6 +376,7 @@ class Renderer:
         self._update_chunks()
         chunk_tops, chunks_x = self._chunk_tops, (world.width + 1) // 2
         empty_bounds, chunk_count = self._empty_bounds, len(chunk_tops)
+        empty_columns = self._empty_columns
         room_bounds = self._room_bounds
         skip_empty = self.skip_empty_space
         floor = math.floor
@@ -160,6 +386,9 @@ class Renderer:
         start_x, start_y, start_z = int(px), int(py), int(pz)
         cy, sy = math.cos(player.yaw), math.sin(player.yaw)
         cp, sp = math.cos(player.pitch), math.sin(player.pitch)
+        local_ceiling = self._local_ceiling(player, cp, sp)
+        sky_horizon = self._prepare_horizon(player, cp, sp) if skip_empty else None
+        horizon_scale = 128 / math.tau
         current, aspect = world.current, self.cell_aspect
         horizontal_rays = None
         if player.pitch == 0:
@@ -169,11 +398,15 @@ class Renderer:
             for u in self._columns:
                 dx, dy = cy + u * sy, sy - u * cy
                 sx, sy_step = (1 if dx >= 0 else -1), (1 if dy >= 0 else -1)
-                ddx = abs(1 / dx) if abs(dx) > 1e-12 else 1e30
-                ddy = abs(1 / dy) if abs(dy) > 1e-12 else 1e30
+                ddx = 1.0 / dx if dx > 1e-12 else -1.0 / dx if dx < -1e-12 else 1e30
+                ddy = 1.0 / dy if dy > 1e-12 else -1.0 / dy if dy < -1e-12 else 1e30
                 initial_x = ((start_x + 1 - px) if sx > 0 else (px - start_x)) * ddx
                 initial_y = ((start_y + 1 - py) if sy_step > 0 else (py - start_y)) * ddy
-                horizontal_rays.append((dx, dy, sx, sy_step, ddx, ddy, initial_x, initial_y))
+                horizon = math.inf
+                if sky_horizon is not None:
+                    azimuth = int((math.atan2(dy, dx) % math.tau) * horizon_scale) % 128
+                    horizon = sky_horizon[azimuth] * (dx * dx + dy * dy)
+                horizontal_rays.append((dx, dy, sx, sy_step, ddx, ddy, initial_x, initial_y, horizon))
         ramp = RAMP
         ramp_max = len(ramp) - 1
         pixels = []
@@ -185,35 +418,73 @@ class Renderer:
         if world.doors:
             draw_doors(world, door_pixels, door_depths, player, self._focal, self.cell_aspect)
 
+        combat_depths = None
+        self.combat_prepass_used = False
+        if self.combat_depth_prepass and world.combat.enemies:
+            camera = Camera(player, width, height, self._focal, self.cell_aspect)
+            if (large_opaque_enemy(world.combat, camera)
+                    and self.scenery.trees.projected_work_bound(camera) < width * height * 3):
+                # Hidden terrain can be omitted only when extra invisible crown
+                # samples cannot exhaust the shared foliage budget. Grass counts
+                # candidates before depth rejection, so its budget is unchanged.
+                # Keep ordinary terrain/scenery depths: pre-seeding combat here
+                # would alter root-proxy rejection and the existing raster order.
+                combat_depths = [[math.inf] * width for _ in range(height)]
+                combat_pixels = [[" "] * width for _ in range(height)]
+                draw_combat(world.combat, world, combat_pixels, combat_depths, player,
+                            self._focal, self.cell_aspect, time_seconds, labels=False)
+                self.combat_prepass_used = True
+
         for row_index, v in enumerate(self._rows):
             row = []
             depth_row = []
             panel_row = door_pixels[row_index] if door_pixels is not None else None
             panel_depth_row = door_depths[row_index] if door_depths is not None else None
+            combat_depth_row = combat_depths[row_index] if combat_depths is not None else None
             # Forward + vertical camera-plane offset, then horizontal offset.
             base_x, base_y, dz = cy * (cp - v * sp), sy * (cp - v * sp), sp + v * cp
             step_z = 1 if dz >= 0 else -1
-            delta_z = abs(1.0 / dz) if abs(dz) > 1e-12 else 1e30
+            delta_z = 1.0 / dz if dz > 1e-12 else -1.0 / dz if dz < -1e-12 else 1e30
             initial_z = ((start_z + 1 - pz) if step_z > 0 else (pz - start_z)) * delta_z
+            rising = sky_horizon is not None and dz > 0
+            dz_squared = dz * dz
 
             for column_index, u in enumerate(self._columns):
                 panel_depth = panel_depth_row[column_index] if panel_depth_row is not None else math.inf
                 ray_limit = panel_depth if panel_depth < 48 else 48
+                if combat_depth_row is not None and combat_depth_row[column_index] < ray_limit:
+                    ray_limit = combat_depth_row[column_index]
                 if horizontal_rays is not None:
-                    dx, dy, step_x, step_y, delta_x, delta_y, side_x, side_y = horizontal_rays[column_index]
+                    dx, dy, step_x, step_y, delta_x, delta_y, side_x, side_y, horizon = horizontal_rays[column_index]
+                    if rising and dz_squared > horizon:
+                        row.append(panel_row[column_index] if panel_row is not None else " ")
+                        depth_row.append(panel_depth)
+                        continue
                 else:
                     dx, dy = base_x + u * sy, base_y - u * cy
+                    # Sky rays do not need signs, reciprocal crossing deltas,
+                    # or any voxel traversal initialization.
+                    if rising:
+                        azimuth = int((math.atan2(dy, dx) % math.tau) * horizon_scale) % 128
+                        if dz_squared > sky_horizon[azimuth] * (dx * dx + dy * dy):
+                            row.append(panel_row[column_index] if panel_row is not None else " ")
+                            depth_row.append(panel_depth)
+                            continue
                     step_x, step_y = (1 if dx >= 0 else -1), (1 if dy >= 0 else -1)
-                    delta_x = abs(1.0 / dx) if abs(dx) > 1e-12 else 1e30
-                    delta_y = abs(1.0 / dy) if abs(dy) > 1e-12 else 1e30
+                    delta_x = 1.0 / dx if dx > 1e-12 else -1.0 / dx if dx < -1e-12 else 1e30
+                    delta_y = 1.0 / dy if dy > 1e-12 else -1.0 / dy if dy < -1e-12 else 1e30
                     side_x = ((start_x + 1 - px) if step_x > 0 else (px - start_x)) * delta_x
                     side_y = ((start_y + 1 - py) if step_y > 0 else (py - start_y)) * delta_y
                 side_z = initial_z
+                inverse_x, inverse_y = step_x * delta_x, step_y * delta_y
+                ray_bounds = empty_bounds if delta_x <= delta_y else empty_columns
                 x, y, z = start_x, start_y, start_z
                 material, axis, distance = 0, 0, 0.0
 
                 # Rays walk the voxel grid exactly, without a sampling step size.
                 for _ in range(110):
+                    if skip_empty and step_z > 0 and z >= local_ceiling:
+                        break
                     chunk_index = (y >> 1) * chunks_x + (x >> 1)
                     top = chunk_tops[chunk_index] if skip_empty else wh
                     room = room_bounds[z * chunk_count + chunk_index] if skip_empty and z < top else None
@@ -228,13 +499,13 @@ class Renderer:
                         # taller columns elsewhere in a larger rectangle.
                         if room is None:
                             level = top if step_z < 0 else z
-                            low_x, low_y, high_x, high_y, top = empty_bounds[level * chunk_count + chunk_index]
+                            low_x, low_y, high_x, high_y, top = ray_bounds[level * chunk_count + chunk_index]
                             end_z = (pz - top) * delta_z if step_z < 0 else 1e30
                         else:
                             low_x, low_y, high_x, high_y, bottom, ceiling = room
                             end_z = ((ceiling - pz) if step_z > 0 else (pz - bottom)) * delta_z
-                        end_x = ((high_x if step_x > 0 else low_x) - px) * step_x * delta_x
-                        end_y = ((high_y if step_y > 0 else low_y) - py) * step_y * delta_y
+                        end_x = ((high_x if step_x > 0 else low_x) - px) * inverse_x
+                        end_y = ((high_y if step_y > 0 else low_y) - py) * inverse_y
                         if end_x <= end_y and end_x <= end_z:
                             distance, axis = end_x, 0
                         elif end_y <= end_z:
@@ -243,19 +514,35 @@ class Renderer:
                             distance, axis = end_z, 2
                         if distance > ray_limit:
                             break
-                        if room is not None and ((axis != 0 and abs(dx) > 1e-12
-                                                  and abs(px + dx * distance - round(px + dx * distance)) < 1e-7)
-                                                 or (axis != 1 and abs(dy) > 1e-12
-                                                     and abs(py + dy * distance - round(py + dy * distance)) < 1e-7)
-                                                 or (axis != 2 and abs(dz) > 1e-12
-                                                     and abs(pz + dz * distance - round(pz + dz * distance)) < 1e-7)):
-                            # At exact room corners, accumulated DDA rounding
-                            # determines which touching face wins. Preserve its
-                            # ordinary stepping for those few boundary rays.
-                            skip_volume = False
+                        if room is not None:
+                            # Fractional coordinates detect the same ambiguous
+                            # grid corners without repeated round/abs calls.
+                            # Ordinary DDA still decides their touching face.
+                            corner = False
+                            if axis != 0 and delta_x < 1e30:
+                                fraction = (px + dx * distance) % 1.0
+                                corner = fraction < 1e-7 or fraction > 0.9999999
+                            if not corner and axis != 1 and delta_y < 1e30:
+                                fraction = (py + dy * distance) % 1.0
+                                corner = fraction < 1e-7 or fraction > 0.9999999
+                            if not corner and axis != 2 and delta_z < 1e30:
+                                fraction = (pz + dz * distance) % 1.0
+                                corner = fraction < 1e-7 or fraction > 0.9999999
+                            if corner:
+                                skip_volume = False
                     if skip_volume:
                         advance = distance + 1e-7
-                        x, y, z = floor(px + dx * advance), floor(py + dy * advance), floor(pz + dz * advance)
+                        # The crossed coordinate is an integer cache boundary.
+                        # Only the other two coordinates need a floor query.
+                        if axis == 0:
+                            x = high_x if step_x > 0 else low_x - 1
+                            y, z = floor(py + dy * advance), floor(pz + dz * advance)
+                        elif axis == 1:
+                            x, z = floor(px + dx * advance), floor(pz + dz * advance)
+                            y = high_y if step_y > 0 else low_y - 1
+                        else:
+                            x, y = floor(px + dx * advance), floor(py + dy * advance)
+                            z = (ceiling if step_z > 0 else bottom - 1) if room is not None else top - 1
                         if not (0 <= x < ww and 0 <= y < wd and 0 <= z < wh):
                             break
                         material = cells[z * layer + y * ww + x]
@@ -263,8 +550,8 @@ class Renderer:
                             # Most downward meadow rays land on this plane.
                             # Do not rebuild DDA crossings after their hit.
                             break
-                        side_x = (x + (step_x > 0) - px) * step_x * delta_x
-                        side_y = (y + (step_y > 0) - py) * step_y * delta_y
+                        side_x = (x + (step_x > 0) - px) * inverse_x
+                        side_y = (y + (step_y > 0) - py) * inverse_y
                         side_z = (z + (step_z > 0) - pz) * step_z * delta_z
                     elif side_x <= side_y and side_x <= side_z:
                         distance, side_x, x, axis = side_x, side_x + delta_x, x + step_x, 0
@@ -327,16 +614,20 @@ class Renderer:
                     a, b, light = hx, hy, (0.93 if step_z < 0 else 0.40)
                 fu, fv = a % 1.0, b % 1.0
 
-                if material == GRASS:
+                if material == GRASS and axis == 2 and step_z < 0:
                     noise = (int(hx * 6.0) * 73856093 ^ int(hy * 6.0) * 19349663) & 15
                     wx, wy = self.scenery.wind_at(hx, hy)
-                    # A continuous turf layer covers every grass surface, even
+                    # A continuous turf layer covers every grass top, even
                     # where individual blades become subpixel or leave the LOD.
                     row.append(",;\"'"[(noise // 4 + int((wx + wy * 0.6 + 0.6) * 3)) % 4])
                     continue
+                elif material == GRASS:
+                    # Terrace lips have directional shade, so a grassy rise
+                    # reads as a solid step instead of more flat turf noise.
+                    texture = 0.65 if fv > 0.18 else 0.32
                 elif material == PATH:
                     noise = (int(hx * 10) * 17 + int(hy * 10) * 31) % 13
-                    texture = 0.26 if noise > 2 else 0.15
+                    texture = 0.35 if noise > 2 else 0.23
                 elif material in (WOOD, BRIDGE):
                     # Crosswise deck planks; long grain on posts and rails.
                     grain = (a * 8 + math.sin(b * 5) * 0.12) % 1.0
@@ -348,9 +639,9 @@ class Renderer:
                     texture = 0.38 + noise * 0.045
                 elif material == FLOOR:
                     # Large tiled floor with darker grout and a quiet checker.
-                    texture = 0.29 if (int(a) + int(b)) % 2 else 0.21
+                    texture = 0.38 if (int(a) + int(b)) % 2 else 0.30
                     if fu < 0.035 or fv < 0.035:
-                        texture = 0.12
+                        texture = 0.18
                 elif material == METAL:
                     texture = 0.9 if 0.09 < fu < 0.91 else 0.48
                     if fv < 0.065 or fv > 0.935:
@@ -370,7 +661,7 @@ class Renderer:
                     if (b * 2) % 1.0 < 0.075 or joint < 0.045:
                         texture = 0.30
 
-                fog = 1.0 / (1.0 + distance * 0.047)
+                fog = 1.0 / (1.0 + distance * 0.033)
                 brightness = texture * light * fog * 1.30
                 if brightness > 1.0:
                     brightness = 1.0
@@ -411,7 +702,7 @@ class Renderer:
         if help_open:
             look = "ARROWS        look / aim" if keyboard_look else "MOUSE         look / aim"
             attack = "ENTER         attack" if keyboard_look else "LEFT CLICK    attack"
-            lines = ["CONTROLS", "", "WASD          move / strafe",
+            lines = ["CONTROLS", "", "WASD          move / strafe / climb steps",
                      "SHIFT / SPACE sprint / jump", look, attack,
                      "E             open / use / collect",
                      "One held item; collect another to swap.",
@@ -445,7 +736,7 @@ class Renderer:
             rate = ("SND ON  " if sound_on else "SND OFF  ") + rate
         top = title + " " * max(1, width - len(title) - len(rate)) + rate
         status = f"  {self.world.area(player.x, player.y)}   /   {compass} {heading:03.0f}   /   {state}"
-        position = f"{player.x:04.1f}, {player.y:04.1f}  "
+        position = f"{player.x:04.1f}, {player.y:04.1f}  Z {player.z:.1f}  "
         status += " " * max(1, width - len(status) - len(position)) + position
         if help_open:
             controls = "  H back  P resume  ESC quit"
@@ -464,40 +755,49 @@ class Renderer:
         return [line[:width].ljust(width) for line in lines]
 
     def _map(self, pixels: list[list[str]], player: Player) -> None:
-        # Scale the whole enlarged map to the available space, preserving the
-        # approximate physical aspect of two north/south cells per text row.
+        # Large worlds keep a readable local chart rather than shrinking a
+        # doorway or trail into a single world-overview pixel. Snapped origins
+        # let the static background remain cached while the player moves.
         max_width, max_height = min(43, len(pixels[0]) // 3), len(pixels) - 4
         if max_width < 16 or max_height < 8:
             return
-        scale = max(1.0, self.world.width / max_width, self.world.depth / (2 * max_height))
-        map_width = math.ceil(self.world.width / scale)
-        map_height = math.ceil(self.world.depth / (2 * scale))
+        world = self.world
+        local = max(world.width, world.depth) > 128
+        span_x, span_y = (min(96, world.width), min(96, world.depth)) if local else (world.width, world.depth)
+        origin_x = max(0, min(world.width - span_x, int(player.x // 16) * 16 - span_x // 2)) if local else 0
+        origin_y = max(0, min(world.depth - span_y, int(player.y // 16) * 16 - span_y // 2)) if local else 0
+        scale = max(1.0, span_x / max_width, span_y / (2 * max_height))
+        map_width = math.ceil(span_x / scale)
+        map_height = math.ceil(span_y / (2 * scale))
         left, top = len(pixels[0]) - map_width - 3, 1
         self._write(pixels, left, top, "+" + "-" * map_width + "+")
-        key = (self.world.revision, len(pixels[0]), len(pixels), len(self.world.trees))
+        key = (world.revision, len(pixels[0]), len(pixels), len(world.trees), origin_x, origin_y)
         if key != self._map_key:
             rows = []
             for row in range(map_height):
-                y0 = self.world.depth - 1 - int(row * 2 * scale)
-                y1 = max(0, self.world.depth - int((row + 1) * 2 * scale))
+                y0 = origin_y + span_y - 1 - int(row * 2 * scale)
+                y1 = max(origin_y, origin_y + span_y - int((row + 1) * 2 * scale))
                 chars = []
                 for column in range(map_width):
-                    x0, x1 = int(column * scale), min(self.world.width, math.ceil((column + 1) * scale))
+                    x0 = origin_x + int(column * scale)
+                    x1 = min(origin_x + span_x, origin_x + int((column + 1) * scale))
                     priority, char = 0, " "
                     for y in range(y1, y0 + 1):
                         for x in range(x0, x1):
-                            material = self.world.get(x, y, 0)
-                            obstacle = self.world.get(x, y, 1) or (x, y) in self.world.trees
-                            if obstacle:
+                            surface = world.surface_height(x, y)
+                            material = world.surface_material(x, y)
+                            if (x, y) in world.trees:
                                 rank, symbol = 5, "#"
                             elif material == BRIDGE:
                                 rank, symbol = 4, "="
                             elif material == WATER:
                                 rank, symbol = 3, "~"
                             elif material == PATH:
-                                rank, symbol = 2, "."
+                                rank, symbol = 4, "."
                             elif material == GRASS:
-                                rank, symbol = 1, ","
+                                rank, symbol = 2, ("^" if surface >= 8 else ";" if surface > 1 else ",")
+                            elif material:
+                                rank, symbol = 6, "#"
                             else:
                                 rank, symbol = 0, " "
                             if rank >= priority:
@@ -507,12 +807,12 @@ class Renderer:
             self._map_rows, self._map_key = rows, key
         for row, line in enumerate(self._map_rows):
             self._write(pixels, left, top + row + 1, line)
-        marker_x = left + 1 + min(map_width - 1, max(0, int(player.x / scale)))
-        marker_y = top + 1 + min(map_height - 1, max(0, int((self.world.depth - 1 - player.y) / (2 * scale))))
+        marker_x = left + 1 + min(map_width - 1, max(0, int((player.x - origin_x) / scale)))
+        marker_y = top + 1 + min(map_height - 1, max(0, int((origin_y + span_y - 1 - player.y) / (2 * scale))))
         direction = (">", "^", "<", "v")[int((player.yaw + math.pi / 4) / (math.pi / 2)) % 4]
         pixels[marker_y][marker_x] = direction
         self._write(pixels, left, top + map_height + 1, "+" + "-" * map_width + "+")
-        legend = "N ^  ~ river  = bridge  , grass"
+        legend = "LOCAL N^  ~ river  ^ ridge" if local else "N ^  ~ river  = bridge  , grass"
         self._write(pixels, left, top + map_height + 2, legend[:map_width + 2])
 
     @staticmethod

@@ -1,0 +1,173 @@
+before indoors
+         1071852 function calls in 0.551 seconds
+
+   Ordered by: internal time
+   List reduced from 94 to 12 due to restriction <12>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10    0.401    0.040    0.547    0.055 renderer.py:138(scene)
+   408626    0.043    0.000    0.043    0.000 {built-in method math.floor}
+   359587    0.038    0.000    0.038    0.000 {built-in method builtins.abs}
+   177575    0.025    0.000    0.025    0.000 {built-in method builtins.round}
+    86433    0.014    0.000    0.014    0.000 {method 'append' of 'list' objects}
+      760    0.004    0.000    0.006    0.000 geometry.py:85(triangle)
+      493    0.003    0.000    0.005    0.000 geometry.py:158(stroke)
+       10    0.002    0.000    0.004    0.000 door_render.py:8(draw_doors)
+       10    0.002    0.000    0.007    0.001 scenery.py:125(draw)
+     3742    0.002    0.000    0.002    0.000 geometry.py:24(project)
+     9924    0.002    0.000    0.002    0.000 {built-in method builtins.min}
+       10    0.001    0.000    0.551    0.055 renderer.py:386(frame)
+
+
+
+before bridge
+         640929 function calls in 0.348 seconds
+
+   Ordered by: internal time
+   List reduced from 87 to 12 due to restriction <12>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10    0.249    0.025    0.345    0.034 renderer.py:138(scene)
+   307896    0.030    0.000    0.030    0.000 {built-in method math.floor}
+   174783    0.017    0.000    0.017    0.000 {built-in method builtins.abs}
+    85779    0.012    0.000    0.012    0.000 {method 'append' of 'list' objects}
+       10    0.008    0.001    0.024    0.002 scenery.py:125(draw)
+     1069    0.004    0.000    0.006    0.000 geometry.py:158(stroke)
+    25500    0.004    0.000    0.004    0.000 {built-in method math.sin}
+     1135    0.003    0.000    0.003    0.000 scenery.py:44(sample)
+     5271    0.003    0.000    0.003    0.000 geometry.py:24(project)
+      170    0.002    0.000    0.003    0.000 geometry.py:112(quad)
+     2001    0.002    0.000    0.005    0.000 scenery.py:117(wind_at)
+       10    0.001    0.000    0.348    0.035 renderer.py:386(frame)
+
+
+
+before warden
+         498000 function calls in 0.266 seconds
+
+   Ordered by: internal time
+   List reduced from 102 to 12 due to restriction <12>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10    0.183    0.018    0.258    0.026 renderer.py:138(scene)
+   191302    0.019    0.000    0.019    0.000 {built-in method math.floor}
+   173760    0.017    0.000    0.017    0.000 {built-in method builtins.abs}
+    85645    0.012    0.000    0.012    0.000 {method 'append' of 'list' objects}
+       10    0.007    0.001    0.017    0.002 scenery.py:125(draw)
+      150    0.004    0.000    0.005    0.000 geometry.py:112(quad)
+      979    0.002    0.000    0.002    0.000 scenery.py:44(sample)
+     4785    0.002    0.000    0.002    0.000 geometry.py:24(project)
+      411    0.002    0.000    0.003    0.000 geometry.py:158(stroke)
+       10    0.001    0.000    0.261    0.026 renderer.py:386(frame)
+     6176    0.001    0.000    0.001    0.000 {built-in method builtins.max}
+      990    0.001    0.000    0.004    0.000 scenery.py:117(wind_at)
+
+
+
+before great_hall
+         813431 function calls in 0.549 seconds
+
+   Ordered by: internal time
+   List reduced from 79 to 12 due to restriction <12>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10    0.390    0.039    0.545    0.055 renderer.py:138(scene)
+   413845    0.051    0.000    0.051    0.000 {built-in method builtins.abs}
+   161769    0.022    0.000    0.022    0.000 {built-in method math.floor}
+   112712    0.021    0.000    0.021    0.000 {built-in method builtins.round}
+    85372    0.017    0.000    0.017    0.000 {method 'append' of 'list' objects}
+       10    0.015    0.002    0.020    0.002 door_render.py:8(draw_doors)
+       10    0.006    0.001    0.026    0.003 scenery.py:125(draw)
+      365    0.003    0.000    0.005    0.000 geometry.py:158(stroke)
+    13160    0.003    0.000    0.003    0.000 {built-in method math.sin}
+     3202    0.002    0.000    0.002    0.000 geometry.py:24(project)
+      525    0.002    0.000    0.002    0.000 scenery.py:44(sample)
+       10    0.002    0.000    0.549    0.055 renderer.py:386(frame)
+
+
+
+after indoors
+         1183898 function calls in 1.599 seconds
+
+   Ordered by: internal time
+   List reduced from 97 to 12 due to restriction <12>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10    1.212    0.121    1.589    0.159 renderer.py:147(scene)
+   511880    0.120    0.000    0.120    0.000 {built-in method math.floor}
+   365449    0.094    0.000    0.094    0.000 {built-in method builtins.abs}
+   180183    0.066    0.000    0.066    0.000 {built-in method builtins.round}
+    86433    0.034    0.000    0.034    0.000 {method 'append' of 'list' objects}
+      760    0.014    0.000    0.018    0.000 geometry.py:85(triangle)
+      495    0.007    0.000    0.011    0.000 geometry.py:158(stroke)
+       10    0.006    0.001    0.009    0.001 door_render.py:8(draw_doors)
+     3744    0.005    0.000    0.005    0.000 geometry.py:24(project)
+       10    0.004    0.000    1.599    0.160 renderer.py:399(frame)
+     9999    0.004    0.000    0.004    0.000 {built-in method builtins.min}
+       10    0.004    0.000    0.014    0.001 scenery.py:165(draw)
+
+
+
+after bridge
+         1046791 function calls in 1.644 seconds
+
+   Ordered by: internal time
+   List reduced from 96 to 12 due to restriction <12>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10    1.263    0.126    1.637    0.164 renderer.py:147(scene)
+   695625    0.167    0.000    0.167    0.000 {built-in method math.floor}
+   175611    0.045    0.000    0.045    0.000 {built-in method builtins.abs}
+    86219    0.036    0.000    0.036    0.000 {method 'append' of 'list' objects}
+       10    0.022    0.002    0.092    0.009 scenery.py:165(draw)
+    25656    0.013    0.000    0.013    0.000 {built-in method math.sin}
+     1244    0.013    0.000    0.019    0.000 geometry.py:158(stroke)
+       84    0.009    0.000    0.013    0.000 trees.py:74(_crown)
+     1135    0.009    0.000    0.010    0.000 scenery.py:45(sample)
+     5853    0.007    0.000    0.007    0.000 geometry.py:24(project)
+     2001    0.005    0.000    0.018    0.000 scenery.py:157(wind_at)
+      170    0.004    0.000    0.007    0.000 geometry.py:112(quad)
+
+
+
+after warden
+         1032385 function calls in 1.463 seconds
+
+   Ordered by: internal time
+   List reduced from 122 to 12 due to restriction <12>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10    1.089    0.109    1.447    0.145 renderer.py:147(scene)
+   674474    0.143    0.000    0.143    0.000 {built-in method math.floor}
+   176889    0.042    0.000    0.042    0.000 {built-in method builtins.abs}
+    86250    0.030    0.000    0.030    0.000 {method 'append' of 'list' objects}
+       10    0.028    0.003    0.120    0.012 scenery.py:165(draw)
+       99    0.018    0.000    0.025    0.000 trees.py:74(_crown)
+     1078    0.013    0.000    0.019    0.000 geometry.py:158(stroke)
+     1708    0.012    0.000    0.014    0.000 scenery.py:45(sample)
+     8020    0.010    0.000    0.010    0.000 geometry.py:24(project)
+      150    0.009    0.000    0.013    0.000 geometry.py:112(quad)
+     2273    0.006    0.000    0.021    0.000 scenery.py:157(wind_at)
+    15140    0.005    0.000    0.006    0.000 {built-in method builtins.max}
+
+
+
+after great_hall
+         1567845 function calls in 1.673 seconds
+
+   Ordered by: internal time
+   List reduced from 88 to 12 due to restriction <12>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10    1.226    0.123    1.667    0.167 renderer.py:147(scene)
+   748304    0.159    0.000    0.159    0.000 {built-in method builtins.abs}
+   412509    0.088    0.000    0.088    0.000 {built-in method math.floor}
+   279867    0.086    0.000    0.086    0.000 {built-in method builtins.round}
+    85511    0.031    0.000    0.031    0.000 {method 'append' of 'list' objects}
+       10    0.029    0.003    0.038    0.004 door_render.py:8(draw_doors)
+       10    0.009    0.001    0.042    0.004 scenery.py:165(draw)
+    13170    0.005    0.000    0.005    0.000 {built-in method math.sin}
+      371    0.005    0.000    0.007    0.000 geometry.py:158(stroke)
+     3227    0.004    0.000    0.004    0.000 geometry.py:24(project)
+      525    0.003    0.000    0.003    0.000 scenery.py:45(sample)
+      104    0.003    0.000    0.006    0.000 trees.py:74(_crown)

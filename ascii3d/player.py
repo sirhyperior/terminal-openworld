@@ -5,7 +5,7 @@ import math
 
 from .events import GameEvent
 from .sound_surfaces import surface_kind
-from .world import INDOOR_SPAWN, World
+from .world import FLOOR, GRASS, PATH, STONE, INDOOR_SPAWN, World
 
 
 @dataclass
@@ -33,6 +33,27 @@ class Player:
     RUN_SPEED = 6.2
     GRAVITY = 19.0
     JUMP_SPEED = 7.1
+
+    def _step_up(self, world: World, x: float, y: float) -> bool:
+        """Climb one voxel of terrain/stairs only with support and headroom."""
+        if not self.grounded or self.in_water or self.vertical_speed > 0:
+            return False
+        feet = math.floor(self.z + 1.0001)
+        if feet <= self.z or feet - self.z > 1.0001:
+            return False
+        if world.collides(x, y, feet, self.RADIUS, self.HEIGHT):
+            return False
+        # Restrict stepping to terrain and masonry. Crates, wooden guardrails,
+        # analytic door leaves and enemy bodies retain their jump/collision rules.
+        for cy in range(math.floor(y - self.RADIUS), math.floor(y + self.RADIUS) + 1):
+            for cx in range(math.floor(x - self.RADIUS), math.floor(x + self.RADIUS) + 1):
+                dx = max(cx - x, 0.0, x - cx - 1)
+                dy = max(cy - y, 0.0, y - cy - 1)
+                if (dx * dx + dy * dy < self.RADIUS ** 2
+                        and world.get(cx, cy, feet - 1) in (GRASS, PATH, FLOOR, STONE)):
+                    self.z = float(feet)
+                    return True
+        return False
 
     def take_damage(self, amount: int) -> list[GameEvent]:
         """Apply one confirmed hit and report feedback once per living player."""
@@ -95,12 +116,17 @@ class Player:
         count = max(1, math.ceil(max(abs(dx), abs(dy), abs(self.vertical_speed * dt)) / 0.08))
         step_dt = dt / count
         old_x, old_y = self.x, self.y
+        stepped = False
         for _ in range(count):
             next_x, next_y = self.x + dx / count, self.y + dy / count
             if not world.collides(next_x, self.y, self.z, self.RADIUS, self.HEIGHT):
                 self.x = next_x
+            elif self._step_up(world, next_x, self.y):
+                self.x, stepped = next_x, True
             if not world.collides(self.x, next_y, self.z, self.RADIUS, self.HEIGHT):
                 self.y = next_y
+            elif self._step_up(world, self.x, next_y):
+                self.y, stepped = next_y, True
             self.vertical_speed -= self.GRAVITY * step_dt
             dz = self.vertical_speed * step_dt
             next_z = self.z + dz
@@ -131,6 +157,10 @@ class Player:
             surface = surface_kind(world, self.x, self.y, self.z, self.in_water)
             self.events.append(GameEvent("land", self.x, self.y,
                                          min(1.0, landing_speed / 7), surface))
+        if stepped:
+            surface = surface_kind(world, self.x, self.y, self.z, self.in_water)
+            self.events.append(GameEvent("terrain_step", self.x, self.y, 0.65, surface))
+            self._step_distance = 0.0
         if self.grounded and self.moving and length:
             self._step_distance += distance
             stride = 1.7 if self.running else 1.3

@@ -32,6 +32,18 @@ def spawn_player(outside: bool = False) -> Player:
     return Player(x=x, y=y, z=z, pitch=-0.06 if outside else 0.0)
 
 
+REGION_NAMES = ("ridge", "keep", "observatory", "citadel")
+
+
+def spawn_region(region: str) -> Player:
+    from .terrain import LANDMARKS
+
+    landmark = LANDMARKS[REGION_NAMES.index(region)]
+    x0, y0, x1, _ = landmark.bounds
+    return Player(x=(x0 + x1) / 2 + 0.5, y=y0 - 2.5, z=float(landmark.base),
+                  yaw=math.pi / 2, pitch=-0.06)
+
+
 class FrameRateCounter:
     """Completed loop frames per elapsed second, using recent frame starts."""
 
@@ -58,6 +70,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--benchmark", type=positive_int, metavar="FRAMES", help="render a turn without terminal output")
     parser.add_argument("--demo", action="store_true", help="automatically walk and turn; controls still work")
     parser.add_argument("--outside", action="store_true", help="start in the meadow facing the castle")
+    parser.add_argument("--region", choices=REGION_NAMES,
+                        help="start at a highland landmark; R returns to this entrance")
     parser.add_argument("--keyboard-look", action="store_true",
                         help="use arrows to look and Enter to attack instead of mouse capture")
     parser.add_argument("--max-cells", type=positive_int, default=4800,
@@ -87,7 +101,10 @@ def main(argv: list[str] | None = None) -> int:
         from .audio_check import check_audio
         return check_audio(args.volume)
 
-    world, player = build_world(), spawn_player(args.outside)
+    if not args.snapshot and not args.benchmark and sys.stdout.isatty():
+        print("Loading MONOLITH...", flush=True)
+    entrance = (lambda: spawn_region(args.region)) if args.region else (lambda: spawn_player(args.outside))
+    world, player = build_world(), entrance()
     renderer = Renderer(world, args.cell_aspect)
     soundscape = Soundscape(world)
     if args.snapshot:
@@ -104,6 +121,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     try:
+        # Static terrain preparation belongs to loading, before capture/audio
+        # and the first active physics frame. Headless callers remain lazy-safe.
+        renderer.prepare_world()
+        soundscape.at(player.x, player.y, player.yaw, player.z)
         with ExitStack() as session:
             terminal = session.enter_context(Terminal(args.max_cells))
             audio = session.enter_context(Audio(not args.mute, args.volume))
@@ -150,7 +171,7 @@ def main(argv: list[str] | None = None) -> int:
                     notice = "Sound on" if audio.enabled else ("Sound muted" if audio.available else "Audio output unavailable")
                     notice_until = simulation_time + 2
                 if "r" in keys.pressed:
-                    player = spawn_player(args.outside)
+                    player = entrance()
                     demo_time = 0.0
                     jump_pending = attack_pending = False
                     ui_events.append(GameEvent("ui_reset"))
@@ -170,7 +191,7 @@ def main(argv: list[str] | None = None) -> int:
                     player.look(keys.mouse_dx, keys.mouse_dy)
                 audio.pause(not active)
                 audio.listener = (player.x, player.y, player.yaw)
-                audio.ambient = soundscape.at(player.x, player.y, player.yaw)
+                audio.ambient = soundscape.at(player.x, player.y, player.yaw, player.z)
                 for event in ui_events:
                     audio.emit(event)
                 if active:
@@ -207,7 +228,7 @@ def main(argv: list[str] | None = None) -> int:
                         for event in world.combat.update(step, world, player):
                             audio.emit(event)
                         if player.hp <= 0:
-                            player = spawn_player(args.outside)
+                            player = entrance()
                             audio.listener = (player.x, player.y, player.yaw)
                             audio.emit(GameEvent("player_respawn", player.x, player.y))
                             notice = "You fell to the Warden - restored at the entrance"

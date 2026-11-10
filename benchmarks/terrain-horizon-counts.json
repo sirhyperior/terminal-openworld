@@ -1,0 +1,33 @@
+{
+  "method": "Temporary in-memory counter instrumentation;60 static-combat renderer frames,5 warmups,index5..64 sinusoidal yaw,120x40,noaudio;operation counts only",
+  "renderer_sha256": "dfcf605ab1ae1ae0d0f7e862d5e10685baefceafb20c80ed6563f47b34b6a24e",
+  "scenarios": {
+    "bridge": {
+      "iterations": 788279,
+      "above": 621401,
+      "room": 0,
+      "applied_skip": 609934,
+      "ordinary": 127667,
+      "zero_progress_skips": 0,
+      "horizon_ray_exits": 0
+    },
+    "east_bridge": {
+      "iterations": 671727,
+      "above": 551119,
+      "room": 0,
+      "applied_skip": 496962,
+      "ordinary": 120608,
+      "zero_progress_skips": 0,
+      "horizon_ray_exits": 16443
+    },
+    "warden": {
+      "iterations": 541940,
+      "above": 416925,
+      "room": 0,
+      "applied_skip": 415597,
+      "ordinary": 120583,
+      "zero_progress_skips": 0,
+      "horizon_ray_exits": 57050
+    }
+  }
+}

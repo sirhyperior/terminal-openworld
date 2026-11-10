@@ -172,6 +172,9 @@ class WindowsMouse:
         self.left_down = False
         self._recovered_press = False
         self._blurred = False
+        self._release_pending = False
+        self._release_restore_cursor = False
+        self.release_error = ""
 
     def confirm_focus(self):
         if not self.requested:
@@ -203,6 +206,11 @@ class WindowsMouse:
 
     def _acquire(self):
         if self.captured or not self.requested or self.window is None:
+            return
+        if self._release_pending:
+            # Never replace the saved desktop clip with our unreleased clip.
+            # Retry once, then let a later poll establish a fresh capture.
+            self._restore_clip()
             return
         if self.pointer.foreground() != self.window or self.pointer.minimized(self.window):
             return
@@ -322,20 +330,49 @@ class WindowsMouse:
 
     def release(self, restore_cursor=True):
         if not self.captured:
+            self._release_restore_cursor &= restore_cursor
+            self._restore_clip()
             return
         self.captured = False
-        if self.raw_relative:
-            self.pointer.relative_capture.stop()
+        self._release_pending = True
+        self._release_restore_cursor = restore_cursor
+        try:
+            if self.raw_relative:
+                capture = self.pointer.relative_capture
+                # Native clipping may be normalized or changed by a resize.
+                # Save its latest successful readback before hiding the helper.
+                self.capture_clip = capture.clip
+                capture.stop()
+        finally:
             self.raw_relative = False
             self._raw_attack = False
-        # Another app may have changed confinement after focus changed. Do not
-        # overwrite its clip or warp its pointer back to our old location.
-        if self.pointer.clip() == self.capture_clip:
-            self.pointer.set_clip(self.original_clip)
-        if restore_cursor and self.pointer.foreground() == self.window and self.original_cursor is not None:
+            try:
+                self._restore_clip()
+            finally:
+                self.pointer.show(self.hide_count)
+                self.hide_count = 0
+
+    def _restore_clip(self):
+        """Retry once per call, retaining ownership only while our clip remains."""
+        if not self._release_pending:
+            return
+        current = self.pointer.clip()
+        if current is None:
+            self.release_error = "Could not read cursor confinement during release"
+            return
+        if current != self.capture_clip:
+            # Another app owns confinement now; discard our pending restore.
+            self._release_pending = False
+            self.release_error = ""
+            return
+        if not self.pointer.set_clip(self.original_clip):
+            self.release_error = "Could not restore cursor confinement; release will retry"
+            return
+        self._release_pending = False
+        self.release_error = ""
+        if (self._release_restore_cursor and self.pointer.foreground() == self.window
+                and self.original_cursor is not None):
             self.pointer.move(*self.original_cursor)
-        self.pointer.show(self.hide_count)
-        self.hide_count = 0
 
 
 class WindowsKeyboard:

@@ -3,23 +3,24 @@
 from contextlib import ExitStack
 import io
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from ascii3d.app import FrameRateCounter, main
 from ascii3d.combat import FIRE_STAFF, CombatState, Enemy, WeaponPickup
 from ascii3d.player import Player
 from ascii3d.sound import EFFECTS
-from ascii3d.terminal import Keys
+from ascii3d.terminal import Keys, WindowsMouse
 from ascii3d.world import FLOOR, World
 
 
 class GameLoopTests(unittest.TestCase):
     def run_frames(self, script, world, player, *, demo=False, frame_work=None,
                    clock_tick=1 / 60, advance_sleep=False, sizes=None, mouse=None, keyboard_look=False,
-                   fail_render=False, capture_error=""):
+                   fail_render=False, capture_error="", native_mouse=None, region=None):
         events, states, pauses, frames = [], [], [], []
         self.capture_states = []
         captures = self.capture_states
+        native_states = self.native_capture_states = []
         clock = 0.0
 
         def now():
@@ -59,6 +60,10 @@ class GameLoopTests(unittest.TestCase):
                 captures.append(active)
                 self.mouse_captured = active and not capture_error
                 self.mouse_error = capture_error if active else ""
+                if native_mouse is not None:
+                    native_mouse.set_capture(active)
+                    self.mouse_captured = native_mouse.captured
+                    native_states.append((native_mouse.captured, native_mouse.pointer.clip()))
 
             def draw(self, frame):
                 nonlocal clock
@@ -95,6 +100,9 @@ class GameLoopTests(unittest.TestCase):
             def __init__(self, *args):
                 pass
 
+            def prepare_world(self):
+                pass
+
             def frame(self, *args, **kwargs):
                 if fail_render:
                     raise OSError("simulated renderer failure")
@@ -113,6 +121,8 @@ class GameLoopTests(unittest.TestCase):
                 args.append("--keyboard-look")
             if demo:
                 args.append("--demo")
+            if region:
+                args.extend(("--region", region))
             self.assertEqual(main(args), 1 if fail_render else 0)
         self.assertTrue(all(event.name in EFFECTS for event in events))
         return events, states, pauses, frames
@@ -203,6 +213,24 @@ class GameLoopTests(unittest.TestCase):
         self.assertEqual(world.combat.enemies[0].hp, enemy_hp)
         self.assertIn("restored at the entrance", frames[-1][1]["notice"])
 
+    def test_region_start_and_reset_use_the_same_elevated_entrance(self):
+        world = self.make_world()
+        world.box(0, 0, 2, 24, 24, 3, FLOOR)
+        held = WeaponPickup(0, 0, collected=True)
+        world.combat.held_item = held
+        with patch("ascii3d.app.spawn_region", side_effect=lambda region:
+                   Player(x=8.5, y=4.5, z=3, yaw=0)) as spawn:
+            events, _, _, frames = self.run_frames([((), {"w"}), ({"r"}, ())], world,
+                                                   Player(x=8.5, y=4.5), region="ridge")
+        self.assertEqual(spawn.call_count, 2)
+        self.assertTrue(all(call.args == ("ridge",) for call in spawn.call_args_list))
+        self.assertGreater(frames[0][0][0].x, 8.5)
+        player = frames[1][0][0]
+        self.assertEqual((player.x, player.y, player.hp), (8.5, 4.5, 10))
+        self.assertAlmostEqual(player.z, 3, places=5)
+        self.assertIs(world.combat.held_item, held)
+        self.assertIn("ui_reset", [event.name for event in events])
+
     def test_staff_swap_cast_pause_help_small_terminal_and_reset_route_real_events(self):
         world = self.make_world()
         world.combat.pickups[0].weapon = FIRE_STAFF
@@ -254,6 +282,38 @@ class GameLoopTests(unittest.TestCase):
     def test_render_errors_release_mouse_before_audio_cleanup(self):
         self.run_frames([((), ())], self.make_world(), Player(x=8.5, y=4.5), fail_render=True)
         self.assertEqual(self.capture_states, [True, False])
+
+    def test_pause_and_help_restore_native_clip_before_rendering_and_audio(self):
+        original_clip = (-1000, -1000, 2000, 2000)
+        current_clip = original_clip
+        pointer = Mock(console_window=1, supports_raw_mouse=True)
+        pointer.foreground.return_value = 1
+        pointer.minimized.return_value = False
+        pointer.rect.return_value = (100, 200, 900, 800)
+        pointer.cursor.return_value = (320, 450)
+        pointer.clip.side_effect = lambda: current_clip
+        capture = pointer.relative_capture
+        capture.clip = (500, 500, 501, 501)
+
+        def set_clip(value):
+            nonlocal current_clip
+            current_clip = value
+            return True
+
+        def start(window, bounds):
+            return set_clip(capture.clip)
+
+        pointer.set_clip.side_effect = set_clip
+        pointer.start_relative.side_effect = start
+        script = [((), ()), ({"p"}, ()), ((), ()), ({"p"}, ()),
+                  ({"h"}, ()), ((), ()), ({"h"}, ())]
+        self.run_frames(script, self.make_world(), Player(x=8.5, y=4.5),
+                        native_mouse=WindowsMouse(pointer))
+        self.assertEqual(self.native_capture_states,
+                         [(True, capture.clip), (False, original_clip), (False, original_clip),
+                          (True, capture.clip), (False, original_clip), (False, original_clip),
+                          (True, capture.clip), (False, original_clip)])
+        self.assertEqual(capture.stop.call_count, 3)
 
     def test_default_mouse_mode_ignores_q_and_arrows_keyboard_mode_uses_enter_action(self):
         for keyboard in (False, True):

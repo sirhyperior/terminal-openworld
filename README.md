@@ -1,11 +1,29 @@
 # MONOLITH
 
 A first-person 3D playground drawn entirely with **white ASCII text on black**.
-Explore a **castle surrounded by meadow** in a 112 by 112 world. Four towers and
+Explore a **512 by 512 world** with terraced highlands, valleys, a deep ravine,
+forested ridges and a castle hub. This is about **21 times the previous area**,
+with terrain rising from Z=1 to Z=20 and occupied floors and overlooks up to Z=27.
+Four towers and
 battlements frame an open courtyard, a roofed gatehouse, a great hall, a west
 cloister and a garden. Jump up the west steps to reach the cloister roof and
 nearby wall walk. Gravel trails circle the castle and lead to two bridges over
 the northern river, ruined chapel, watchstones and an eastern lodge.
+
+Follow the gravel trail east around the lodge to **Ridge Hall**, or leave the
+ruined chapel through its east arch to reach the **Northern Keep**. Longer roads
+connect the **Hill Observatory**, **Splitstone Ravine** and **Far Citadel**. Each
+new hall has three usable floors, windows, a balcony and a rooftop overlook,
+connected by real stairs. Walk up one-unit stone/grass terraces and stairs;
+jump to cross gaps and climb crates. Wooden guardrails remain obstacles.
+
+M shows a local terrain map that follows your position. `^` marks high ground,
+`;` lower terraces, `~` water and `=` bridges. Your direction marker moves over
+the map; the lower HUD shows your region, coordinates and elevation.
+
+The current hills and stairs use voxel terraces. Planned follow-up work is
+smooth natural hillsides, smaller stair risers, and a viewport that fills the
+terminal; progress and validation limits are tracked in `PROJECT_STATUS.md`.
 
 Seven wooden doors share **E** interaction, swinging animation and collision.
 Approach and look at a doorway to see its prompt. Doors stop or reopen if a leaf
@@ -59,10 +77,25 @@ To start in the southern meadow facing the castle:
 python main.py --outside
 ```
 
+To explore a new landmark immediately, use one of these starts. R and defeat
+return you to the selected entrance while preserving world state:
+
+```powershell
+python main.py --region ridge
+python main.py --region keep
+python main.py --region observatory
+python main.py --region citadel
+```
+
+The landmark entrances are near `(148,38,Z5)`, `(79,188,Z7)`,
+`(226,176,Z10)` and `(397,370,Z12)`, respectively. The default castle starts and
+weapon locations remain as described below; landmark starts begin unarmed.
+
 The indoor start is the south gatehouse (`55.5, 30.5`); the outdoor start is
 `55.5, 20.5`. The courtyard connects to meadow gates on all four sides. Continue
 north through the great hall and north gate, then follow the trail west or east
-to a bridge. The lodge lies east of the castle. Press M to see the whole map.
+to a bridge. The lodge lies east of the castle. Press M for the local map;
+follow gravel roads and bridge crossings into the highlands.
 
 Short grass covers the outdoor ground, including the bridge approaches. Nearby
 blades are 0.09-0.24 world units tall, with a continuous turf texture filling in
@@ -102,11 +135,12 @@ On Windows, **click inside the terminal to capture mouse look**. The capture
 click does not attack. Turning continues beyond screen edges. P opens pause;
 H opens controls. Resume with P. Native key-down/up events preserve
 simultaneous WASD, Shift and jumping. Q is no longer an attack control.
-Captured mouse motion and attack clicks are read independently. **Known Windows
-Terminal bugs:** user playtesting reports a visible cursor at the center and
-pausing does not free it. Both fixes are pending; `--keyboard-look` is available
-for play without mouse capture. Unavailable native capture also shows that
-fallback command.
+Captured mouse motion and attack clicks are read independently. The native
+helper hides the pointer during capture; P and H release it. The reported
+center-cursor and pause-release bugs have a native desktop regression fix;
+physical play review in a tabbed Windows Terminal remains pending.
+`--keyboard-look` is available for play without mouse capture. Unavailable
+native capture also shows that fallback command.
 
 For keyboard controls, run `python main.py --keyboard-look`: arrows look and
 **Enter** attacks. This mode is automatic on Linux/macOS, where mouse capture
@@ -122,6 +156,7 @@ and colors when it exits. Focus loss pauses play on Windows; press P to resume.
 ```powershell
 python main.py --demo                # Automatic walk; Esc still exits
 python main.py --outside             # Southern meadow facing the castle
+python main.py --region ridge        # Start at Ridge Hall in the new highlands
 python main.py --keyboard-look       # Arrows to look; Enter to attack
 python main.py --fps 30              # Lower the frame-rate cap
 python main.py --mute                # Start silently; F enables sound
@@ -153,7 +188,7 @@ changes it). Headless benchmark FPS excludes terminal output and cap waits.
 
 Original fantasy-style Foley adds uneven wooden door creaks and quiet latches,
 distinct stone, grass, wood, water, gravel and metal footsteps and landings,
-cloth-like jumps,
+cloth-like jumps, surface-specific contacts when climbing terrain and stairs,
 splashes, weapon pickup tones, dropped-item thuds, blade whooshes,
 fireball ignition/rush, impacts and fading embers, sharp sword impacts on enemies, dummy
 feedback and quiet interface
@@ -208,7 +243,10 @@ at floors, ceilings and walls. Corner crossings preserve ordinary voxel order.
 Grass uses
 spatial chunks, distance-based detail, cached wind, and a per-frame blade budget.
 Far grass remains visible as animated turf. Tree detail also has a pixel budget.
-These limits keep scenery work bounded as the map expands.
+Grass is generated in nearby 4x4 chunks with at most 128 retained chunks;
+revisiting a patch regenerates the same blades. Terrain cache construction uses
+bounded grid passes, and ray skips preserve exact voxel hits across floors and
+ceilings. These limits keep scenery work bounded as the map expands.
 The overhead map caches its static background until voxel edits or resizing.
 River audio checks only nearby water buckets within its fixed 18-unit radius.
 
@@ -218,6 +256,7 @@ Use the same machine, Python version, resolution, and frame count to compare:
 python tools/benchmark.py --frames 60 --compare benchmarks/vegetation-current.json
 python tools/benchmark.py --frames 60 --save benchmarks/my-run.json
 python tools/benchmark.py --frames 60 --audio --extra-scenes --compare benchmarks/castle-milestone-before-live.json
+python tools/benchmark.py --frames 60 --audio --extra-scenes --terrain-scenes --save benchmarks/my-terrain-run.json
 ```
 
 This checks six indoor/outdoor camera roles and reports mean and p95 frame
@@ -244,16 +283,31 @@ output errors. `audio-repair-measurement.json` records the latest repaired-audio
 run; the historical frame-time check still flags slower scenes, so that report
 has **not** replaced the approved reference.
 
+`--terrain-scenes` adds highland terrain, the ravine, upper floors, rooftop
+views, the highland map and actual terrace/stair walking with contact sounds.
+`tools/benchmark_pair.py` compares a preserved
+source tree against the current engine in per-frame ABBA order with the same
+live mixer, records raw samples and source hashes, and keeps the 15% mean/p95
+limit. See `benchmarks/README.md` for retained expansion measurements and limits.
+
 ## Check the engine
 
 ```powershell
 python -m unittest discover -s tests -v
 ```
 
+On Windows, run input tests in a native console. To include the real desktop
+cursor regression, set `$env:MONOLITH_DESKTOP_TESTS='1'` before the test command;
+it briefly captures and restores the pointer three times. It needs an unlocked
+desktop with native cursor access. In a restricted workspace, set
+`$env:TMP=$PWD.Path; $env:TEMP=$PWD.Path` so the WAV-export test uses writable
+temporary storage.
+
 Edit `ascii3d/world.py` and `ascii3d/map_expansion.py` to build a different
-environment. `World.box()` fills a
+environment. `ascii3d/terrain.py` configures highlands, roads and shared
+multilevel landmarks. `World.box()` fills a
 rectangular volume; filling it with `AIR` cuts out doors or windows. X and Y are
-the ground plane; Z is height. Normal ground and the bridge deck are at Z = 1;
+the ground plane; Z is height. The castle ground and river bridge decks are at Z = 1;
 the river surface is at Z = 0.68 and its shallow bed at Z = 0.12. `scenery.py`
-controls the grass placement and wind field; `trees.py` renders the rounded tree
+controls height-aware grass placement and wind; `trees.py` renders the rounded tree
 crowns. Use `World.box()` to edit voxels so cached empty-space bounds invalidate.

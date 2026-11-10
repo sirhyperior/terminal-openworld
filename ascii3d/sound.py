@@ -22,6 +22,7 @@ from .audio_output import BUFFER_COUNT, BUFFER_FRAMES, SAMPLE_RATE, StreamPacer,
 EFFECTS = {
     "step_stone": 0.18, "step_grass": 0.16, "step_wood": 0.20, "step_water": 0.25,
     "step_gravel": 0.23, "step_metal": 0.27,
+    "terrain_step": 0.18,
     "jump": 0.18, "land": 0.26, "water_splash": 0.32,
     "land_stone": 0.28, "land_grass": 0.27, "land_wood": 0.32,
     "land_water": 0.38, "land_gravel": 0.31, "land_metal": 0.38,
@@ -41,6 +42,7 @@ EFFECTS = {
 }
 LANDING_CUES = {surface: "land_" + surface
                 for surface in ("stone", "grass", "wood", "water", "gravel", "metal")}
+TERRAIN_STEP_CUES = {surface: "step_" + surface for surface in LANDING_CUES}
 
 # Relative start, length and slip frequency for each strain/release gesture.
 # All doors share one friction model; event differences are configuration.
@@ -123,6 +125,9 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
             # Layered rushing/babbling noise, without the old steady tonal hum.
             flow = 0.85 + 0.10 * math.sin(math.tau * t / duration) + 0.05 * math.sin(math.tau * t * 3 / duration)
             value = (low * 1.1 + slow * 1.8 + (noise - low) * 0.14) * flow
+        elif name == "terrain_step":
+            body = math.sin(math.tau * t * 95 * pitch) * math.exp(-t * 32)
+            value = body * 0.65 + low * math.exp(-t * 18) * 0.5
         elif name.startswith("step_"):
             body = math.exp(-t * 32) * math.sin(math.tau * pitch * (95 * t - 45 * t * t))
             if name == "step_stone":
@@ -381,6 +386,8 @@ class Mixer:
 
     def add(self, event, listener=(0.0, 0.0, math.pi / 2)):
         name = LANDING_CUES.get(getattr(event, "surface", None), "land") if event.name == "land" else event.name
+        if event.name == "terrain_step":
+            name = TERRAIN_STEP_CUES.get(getattr(event, "surface", None), "terrain_step")
         # Custom/test banks can keep the original generic landing clip.
         if name not in self.bank.clips:
             name = event.name
@@ -400,7 +407,7 @@ class Mixer:
                     else 2 if event.name in ("sword_hit", "fireball_hit", "fireball_impact",
                                              "enemy_attack", "enemy_down", "player_respawn")
                     or event.name.startswith("door_")
-                    else 0 if event.name.startswith("step_") or event.name == "enemy_step"
+                    else 0 if event.name.startswith("step_") or event.name in ("enemy_step", "terrain_step")
                     else 1)
         if len(self.voices) >= self.MAX_VOICES:
             oldest = min(self.voices, key=lambda voice: voice.priority)

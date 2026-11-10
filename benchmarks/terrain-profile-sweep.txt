@@ -1,0 +1,208 @@
+Diagnostic cProfile only:60frames,5warmups,indices5..64,sinusoidal yaw;120x40,noaudio.
+Renderer hashes: {'before': 'e5f9fc3ee613c178304ef1525b005da90b3792677424170afa245cf86378454f', 'after': 'c49d62d742c224156a0e64e1bdfdb00f260e4a4506abc8c998b212baec4f6e11'}
+
+before bridge
+         3857552 function calls in 2.164 seconds
+
+   Ordered by: internal time
+   List reduced from 87 to 16 due to restriction <16>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       60    1.549    0.026    2.148    0.036 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\renderer.py:138(scene)
+  1839749    0.187    0.000    0.187    0.000 {built-in method math.floor}
+  1049155    0.108    0.000    0.108    0.000 {built-in method builtins.abs}
+   514599    0.077    0.000    0.077    0.000 {method 'append' of 'list' objects}
+       60    0.047    0.001    0.156    0.003 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:125(draw)
+     6859    0.027    0.000    0.040    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:158(stroke)
+   151459    0.023    0.000    0.023    0.000 {built-in method math.sin}
+     6714    0.019    0.000    0.021    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:44(sample)
+    31966    0.015    0.000    0.015    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:24(project)
+    12568    0.012    0.000    0.035    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:117(wind_at)
+     1020    0.011    0.000    0.019    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:112(quad)
+      268    0.010    0.000    0.015    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\trees.py:74(_crown)
+    44576    0.008    0.000    0.009    0.000 {built-in method builtins.max}
+    57008    0.008    0.000    0.008    0.000 {built-in method builtins.round}
+    41414    0.007    0.000    0.008    0.000 {built-in method builtins.min}
+       60    0.006    0.000    2.164    0.036 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\renderer.py:386(frame)
+
+
+
+before east_bridge
+         3730066 function calls in 2.054 seconds
+
+   Ordered by: internal time
+   List reduced from 79 to 16 due to restriction <16>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       60    1.439    0.024    2.039    0.034 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\renderer.py:138(scene)
+  1676217    0.170    0.000    0.170    0.000 {built-in method math.floor}
+  1049658    0.107    0.000    0.107    0.000 {built-in method builtins.abs}
+   510869    0.073    0.000    0.073    0.000 {method 'append' of 'list' objects}
+       60    0.052    0.001    0.199    0.003 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:125(draw)
+     8175    0.033    0.000    0.050    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:158(stroke)
+      304    0.025    0.000    0.037    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\trees.py:74(_crown)
+   156203    0.024    0.000    0.024    0.000 {built-in method math.sin}
+     8464    0.023    0.000    0.025    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:44(sample)
+    33392    0.016    0.000    0.016    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:24(project)
+    18244    0.015    0.000    0.044    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:117(wind_at)
+    66577    0.009    0.000    0.009    0.000 {built-in method builtins.round}
+    53139    0.009    0.000    0.009    0.000 {built-in method builtins.max}
+    46599    0.008    0.000    0.008    0.000 {built-in method builtins.min}
+    33244    0.006    0.000    0.006    0.000 {method 'get' of 'dict' objects}
+       60    0.006    0.000    2.054    0.034 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\renderer.py:386(frame)
+
+
+
+before warden
+         3012217 function calls in 1.590 seconds
+
+   Ordered by: internal time
+   List reduced from 103 to 16 due to restriction <16>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       60    1.082    0.018    1.548    0.026 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\renderer.py:138(scene)
+  1150338    0.116    0.000    0.116    0.000 {built-in method math.floor}
+  1043850    0.103    0.000    0.103    0.000 {built-in method builtins.abs}
+   513797    0.071    0.000    0.071    0.000 {method 'append' of 'list' objects}
+       60    0.041    0.001    0.110    0.002 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:125(draw)
+      896    0.029    0.000    0.041    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:112(quad)
+     6019    0.016    0.000    0.018    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:44(sample)
+     3188    0.014    0.000    0.021    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:158(stroke)
+    29925    0.014    0.000    0.014    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:24(project)
+     7218    0.007    0.000    0.027    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:117(wind_at)
+    41231    0.007    0.000    0.007    0.000 {built-in method builtins.max}
+    36592    0.007    0.000    0.008    0.000 {built-in method builtins.min}
+    49655    0.007    0.000    0.007    0.000 {built-in method builtins.round}
+       60    0.005    0.000    1.563    0.026 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\renderer.py:386(frame)
+     3766    0.005    0.000    0.006    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\doors.py:29(ray_hit)
+      360    0.005    0.000    0.049    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\combat_render.py:181(block)
+
+
+
+before great_hall
+         4896698 function calls in 2.493 seconds
+
+   Ordered by: internal time
+   List reduced from 79 to 16 due to restriction <16>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       60    1.750    0.029    2.476    0.041 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\renderer.py:138(scene)
+  2494145    0.246    0.000    0.246    0.000 {built-in method builtins.abs}
+   975478    0.104    0.000    0.104    0.000 {built-in method math.floor}
+   678666    0.093    0.000    0.093    0.000 {built-in method builtins.round}
+       60    0.079    0.001    0.106    0.002 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\door_render.py:8(draw_doors)
+   512126    0.079    0.000    0.079    0.000 {method 'append' of 'list' objects}
+       60    0.021    0.000    0.104    0.002 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:125(draw)
+     2098    0.013    0.000    0.020    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:158(stroke)
+    79683    0.012    0.000    0.012    0.000 {built-in method math.sin}
+    18459    0.009    0.000    0.009    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:24(project)
+     3037    0.009    0.000    0.009    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\scenery.py:44(sample)
+      524    0.007    0.000    0.019    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\trees.py:74(_crown)
+       60    0.007    0.000    2.493    0.042 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\renderer.py:386(frame)
+    27563    0.007    0.000    0.008    0.000 {built-in method builtins.min}
+    25141    0.006    0.000    0.007    0.000 {built-in method builtins.max}
+     1124    0.005    0.000    0.022    0.000 C:\Users\rlawl\Desktop\project1\terrain_before_tmp\ascii3d\geometry.py:44(stroke_world)
+
+
+
+after bridge
+         3930703 function calls in 2.704 seconds
+
+   Ordered by: internal time
+   List reduced from 97 to 16 due to restriction <16>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       60    2.038    0.034    2.689    0.045 C:\Users\rlawl\Desktop\project1\ascii3d\renderer.py:255(scene)
+  1822700    0.189    0.000    0.189    0.000 {built-in method math.floor}
+  1053840    0.108    0.000    0.108    0.000 {built-in method builtins.abs}
+   515765    0.076    0.000    0.076    0.000 {method 'append' of 'list' objects}
+       60    0.048    0.001    0.206    0.003 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:165(draw)
+     7800    0.035    0.000    0.051    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:158(stroke)
+      486    0.026    0.000    0.038    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\trees.py:74(_crown)
+   152224    0.023    0.000    0.023    0.000 {built-in method math.sin}
+     6714    0.017    0.000    0.019    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:45(sample)
+    35425    0.016    0.000    0.016    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:24(project)
+    12568    0.011    0.000    0.032    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:157(wind_at)
+    64760    0.011    0.000    0.012    0.000 {built-in method builtins.max}
+     1020    0.011    0.000    0.019    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:112(quad)
+    58965    0.010    0.000    0.012    0.000 {built-in method builtins.min}
+    67201    0.009    0.000    0.009    0.000 {built-in method builtins.round}
+       60    0.006    0.000    2.705    0.045 C:\Users\rlawl\Desktop\project1\ascii3d\renderer.py:526(frame)
+
+
+
+after east_bridge
+         4701410 function calls in 3.382 seconds
+
+   Ordered by: internal time
+   List reduced from 89 to 16 due to restriction <16>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       60    2.574    0.043    3.366    0.056 C:\Users\rlawl\Desktop\project1\ascii3d\renderer.py:255(scene)
+  2481714    0.253    0.000    0.253    0.000 {built-in method math.floor}
+  1059434    0.110    0.000    0.110    0.000 {built-in method builtins.abs}
+   512271    0.080    0.000    0.080    0.000 {method 'append' of 'list' objects}
+       60    0.055    0.001    0.298    0.005 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:165(draw)
+    10257    0.051    0.000    0.077    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:158(stroke)
+      805    0.050    0.000    0.078    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\trees.py:74(_crown)
+   157877    0.026    0.000    0.026    0.000 {built-in method math.sin}
+     8447    0.020    0.000    0.023    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:45(sample)
+    41108    0.019    0.000    0.019    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:24(project)
+    89609    0.015    0.000    0.017    0.000 {built-in method builtins.max}
+    18193    0.015    0.000    0.042    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:157(wind_at)
+    81350    0.014    0.000    0.015    0.000 {built-in method builtins.min}
+    88384    0.012    0.000    0.012    0.000 {built-in method builtins.round}
+     2308    0.011    0.000    0.047    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:44(stroke_world)
+      714    0.007    0.000    0.019    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:34(bounds)
+
+
+
+after warden
+         3295987 function calls in 2.164 seconds
+
+   Ordered by: internal time
+   List reduced from 125 to 16 due to restriction <16>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       60    1.466    0.024    2.123    0.035 C:\Users\rlawl\Desktop\project1\ascii3d\renderer.py:255(scene)
+  1141069    0.120    0.000    0.120    0.000 {built-in method math.floor}
+  1062966    0.107    0.000    0.107    0.000 {built-in method builtins.abs}
+   515822    0.075    0.000    0.075    0.000 {method 'append' of 'list' objects}
+       60    0.063    0.001    0.283    0.005 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:165(draw)
+      588    0.047    0.000    0.070    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\trees.py:74(_crown)
+     7304    0.038    0.000    0.056    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:158(stroke)
+      896    0.030    0.000    0.042    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:112(quad)
+    10170    0.024    0.000    0.027    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:45(sample)
+    49476    0.023    0.000    0.023    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:24(project)
+    96317    0.016    0.000    0.018    0.000 {built-in method builtins.max}
+    82227    0.015    0.000    0.017    0.000 {built-in method builtins.min}
+    14377    0.014    0.000    0.043    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:157(wind_at)
+    89756    0.012    0.000    0.012    0.000 {built-in method builtins.round}
+     1344    0.006    0.000    0.029    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:44(stroke_world)
+       60    0.006    0.000    2.139    0.036 C:\Users\rlawl\Desktop\project1\ascii3d\renderer.py:526(frame)
+
+
+
+after great_hall
+         2642935 function calls in 1.927 seconds
+
+   Ordered by: internal time
+   List reduced from 90 to 16 due to restriction <16>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       60    1.426    0.024    1.910    0.032 C:\Users\rlawl\Desktop\project1\ascii3d\renderer.py:255(scene)
+  1198614    0.120    0.000    0.120    0.000 {built-in method builtins.abs}
+       60    0.082    0.001    0.108    0.002 C:\Users\rlawl\Desktop\project1\ascii3d\door_render.py:8(draw_doors)
+   512443    0.075    0.000    0.075    0.000 {method 'append' of 'list' objects}
+   651386    0.071    0.000    0.071    0.000 {built-in method math.floor}
+       60    0.022    0.000    0.112    0.002 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:165(draw)
+     2312    0.015    0.000    0.022    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:158(stroke)
+    79866    0.012    0.000    0.012    0.000 {built-in method math.sin}
+    19171    0.009    0.000    0.009    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:24(project)
+      569    0.008    0.000    0.021    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\trees.py:74(_crown)
+     3037    0.007    0.000    0.008    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\scenery.py:45(sample)
+       60    0.007    0.000    1.927    0.032 C:\Users\rlawl\Desktop\project1\ascii3d\renderer.py:526(frame)
+    30333    0.007    0.000    0.008    0.000 {built-in method builtins.min}
+    29087    0.006    0.000    0.008    0.000 {built-in method builtins.max}
+     1304    0.006    0.000    0.025    0.000 C:\Users\rlawl\Desktop\project1\ascii3d\geometry.py:44(stroke_world)
+       60    0.005    0.000    0.056    0.001 C:\Users\rlawl\Desktop\project1\ascii3d\trees.py:40(draw)

@@ -62,8 +62,9 @@ output; wall-clock rate caps are only for immediately returning sinks.
 
 - `app.py`, `terminal.py`, `mouse_capture.py`: CLI/frame loop, input/native mouse
   capture and terminal lifecycle.
-- `world.py`, `map_expansion.py`, `player.py`: materials/layout, collision,
-  movement, jumping, water current and player health.
+- `world.py`, `map_expansion.py`, `terrain.py`, `player.py`: materials/layout,
+  highlands, shared multilevel landmarks, collision, stairs, movement, jumping,
+  water current and player health.
 - `renderer.py`, `scenery.py`, `trees.py`, `geometry.py`: rays, HUD/map,
   grass/wind, trees and shared projection/fill/strokes.
 - `targeting.py`, `doors.py`, `door_render.py`: view queries and shared panels.

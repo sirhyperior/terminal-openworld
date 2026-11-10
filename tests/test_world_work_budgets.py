@@ -80,19 +80,20 @@ class WorldWorkBudgetTests(unittest.TestCase):
             renderer._map(pixels, player)
             return pixels
 
-        with patch.object(world, "get", wraps=world.get) as get:
+        with patch.object(world, "surface_height", wraps=world.surface_height) as query:
             first = draw()
-            queries = get.call_count
-            self.assertGreater(queries, 112 * 112)
+            queries = query.call_count
+            self.assertGreater(queries, 0)
+            self.assertLessEqual(queries, 112 * 112)
             player.x += 20
             self.assertNotEqual(first, draw())
-            self.assertEqual(get.call_count, queries)
+            self.assertEqual(query.call_count, queries)
             world.box(0, 90, 0, 112, 97, 1, WATER)
             self.assertTrue(any("~" in row for row in draw()))
-            self.assertGreater(get.call_count, queries)
-            queries = get.call_count
+            self.assertGreater(query.call_count, queries)
+            queries = query.call_count
             draw(60, 15)
-            self.assertGreater(get.call_count, queries)
+            self.assertGreater(query.call_count, queries)
 
 
 if __name__ == "__main__":

@@ -98,12 +98,14 @@ class MapExpansionTests(unittest.TestCase):
                 self.assertEqual(target.openness, 1)
 
     def test_trees_remain_sparse_and_off_paths_water_and_castle(self):
-        self.assertEqual(len(self.world.trees), 18)
+        hub_trees = [tree for tree in self.world.trees.values() if tree.x < 112 and tree.y < 112]
+        self.assertEqual(len(hub_trees), 18)
+        self.assertGreater(len(self.world.trees), 100)
         self.assertIn((int(CLOSE_TREE[0]), int(CLOSE_TREE[1])), self.world.trees)
         for tree in self.world.trees.values():
             x, y = int(tree.x), int(tree.y)
-            self.assertEqual(self.world.get(x, y, 0), GRASS)
-            self.assertEqual(self.world.get(x, y, 1), AIR)
+            self.assertEqual(self.world.get(x, y, int(tree.base_z) - 1), GRASS)
+            self.assertEqual(self.world.get(x, y, int(tree.base_z)), AIR)
             self.assertFalse(28 <= x < 82 and 24 <= y < 76)
 
     def test_area_names_cover_castle_landmarks_and_material_aware_river(self):

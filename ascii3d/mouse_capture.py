@@ -1,7 +1,7 @@
 """Windows-only relative mouse capture without changing a terminal host.
 
 Raw Input keeps device motion/button edges independent of cursor warps and the
-console's character-cell event queue. A one-pixel, non-activating game popup
+console's character-cell event queue. A tiny, non-activating game popup
 under the confined pointer supplies a transparent cursor; keyboard focus stays with
 the terminal. No system cursors or foreign window classes are modified.
 """
@@ -73,7 +73,7 @@ class NativeMouseCapture:
 
     def __init__(self, kernel, user):
         self.kernel, self.api = kernel, user
-        self.window = self.owner = self.clip = None
+        self.window = self.owner = self.clip = self.center = None
         self.active = self.failed = False
         self.error = ""
         self.closed = False
@@ -217,10 +217,10 @@ class NativeMouseCapture:
             # TOOLWINDOW | NOACTIVATE, WS_POPUP. Deliberately unowned by the
             # external terminal: cross-thread ownership would attach input
             # queues and let a slow frame stall the host. Scope by foreground
-            # checks instead; only our own one-pixel window becomes topmost.
+            # checks instead; only our own tiny window becomes topmost.
             self.window = self.api.CreateWindowExW(0x08000088, self.class_name,
                             "MONOLITH mouse capture", 0x80000000,
-                            0, 0, 1, 1, None, None, self.instance, None)
+                            0, 0, 3, 3, None, None, self.instance, None)
             if not self.window:
                 self.window = None
                 return self._failure("CreateWindowExW")
@@ -247,8 +247,9 @@ class NativeMouseCapture:
             self.error = "Terminal lost focus during capture"
             return False
         x, y = (bounds[0] + bounds[2]) // 2, (bounds[1] + bounds[3]) // 2
-        if not self.api.SetWindowPos(self.window, -1, x, y, 1, 1, 0x50):
+        if not self.api.SetWindowPos(self.window, -1, x - 1, y - 1, 3, 3, 0x50):
             return self._failure("SetWindowPos")
+        self.center = x, y
         # Enter the helper before locking to a point. Clipping first can move
         # the pointer without a mouse-enter transition, leaving the host's old
         # cursor selected. Warps are not Raw Input device motion.
@@ -258,15 +259,20 @@ class NativeMouseCapture:
         self.clip = tuple(bounds)
         if not (self.api.SetCursorPos(x - 1, y) and self.api.SetCursorPos(x, y)):
             return self._failure("SetCursorPos")
-        # ClipCursor accepts its right/bottom endpoints. A 1x1 RECT can let the
-        # pointer land just outside our 1x1 window after motion; equal endpoints
-        # lock to the single hit-tested pixel while Raw Input retains deltas.
-        confinement = x, y, x, y
+        # Keep a positive-area clip strictly inside the helper. On scaled
+        # desktops an empty RECT can move the cursor to (x - 1, y - 1), outside
+        # the helper, and make later ClipCursor calls fail with access denied.
+        # The margin also covers inclusive endpoints and DPI rounding while
+        # Raw Input keeps the full device deltas independently of confinement.
+        confinement = x, y, x + 1, y + 1
         rect = wt.RECT(*confinement)
         if not self.api.ClipCursor(ctypes.byref(rect)):
             return self._failure("ClipCursor")
         # Track every successful clip for transactional acquisition cleanup.
         self.clip = confinement
+        actual = wt.RECT()
+        if self.api.GetClipCursor(ctypes.byref(actual)):
+            self.clip = actual.left, actual.top, actual.right, actual.bottom
         return True
 
     def _failure(self, operation):
@@ -282,8 +288,8 @@ class NativeMouseCapture:
         # Desktop helpers can reorder non-activating windows. Recover only our
         # capture pixel's z-order, while the verified host remains foreground.
         if not self.get_window_style(self.window, -20) & 8:
-            x, y = self.clip[:2]
-            if not self.api.SetWindowPos(self.window, -1, x, y, 1, 1, 0x50):
+            x, y = self.center
+            if not self.api.SetWindowPos(self.window, -1, x - 1, y - 1, 3, 3, 0x50):
                 raise OSError("Native mouse capture lost its cursor window.")
         self.api.SetCursor(self.cursor)
         return self.motion.take()

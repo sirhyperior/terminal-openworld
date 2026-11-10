@@ -49,9 +49,22 @@ EXTRA_SCENARIOS = {
     "east_meadow": dict(x=100.5, y=68.5, yaw=math.pi / 2, pitch=-0.1),
 }
 
+TERRAIN_SCENARIOS = {
+    "ridge_approach": dict(x=128.5, y=52.5, yaw=0, pitch=0.05),
+    "ridge_upper": dict(x=148.5, y=52.5, z=10, yaw=0, pitch=-0.10),
+    "ridge_roof": dict(x=148.5, y=52.5, z=20, yaw=0.8, pitch=-0.15),
+    "highlands": dict(x=320.5, y=208.5, yaw=1.4, pitch=-0.15),
+    "ravine": dict(x=320.5, y=290.5, yaw=math.pi, pitch=-0.25),
+    "citadel_approach": dict(x=370.5, y=387.5, yaw=0, pitch=0.06),
+    "citadel_roof": dict(x=397.5, y=387.5, z=27, yaw=math.pi, pitch=-0.20),
+    "highland_map": dict(x=397.5, y=387.5, z=27, yaw=math.pi),
+    "terrace_walk": dict(x=124.5, y=52.5, yaw=0),
+    "stair_walk": dict(x=140.5, y=43.0, z=5, yaw=math.pi / 2),
+}
 
 
-def run(frames=90, width=120, height=40, with_audio=False, extra_scenes=False):
+
+def run(frames=90, width=120, height=40, with_audio=False, extra_scenes=False, terrain_scenes=False):
     world = build_world()
     renderer = Renderer(world)
     soundscape = Soundscape(world)
@@ -65,7 +78,12 @@ def run(frames=90, width=120, height=40, with_audio=False, extra_scenes=False):
             if not audio.available:
                 raise OSError(audio.error)
         scenes = {**SCENARIOS, **EXTRA_SCENARIOS} if extra_scenes else SCENARIOS
+        if terrain_scenes:
+            scenes = {**scenes, **TERRAIN_SCENARIOS}
         for name, position in scenes.items():
+            if name in TERRAIN_SCENARIOS and "z" not in position:
+                position = {**position, "z": world.surface_height(position["x"], position["y"])}
+                scenes[name] = position
             player = Player(**position)
             training = name == "training"
             world.combat.held_item = WeaponPickup(0, 0) if training else None
@@ -84,17 +102,21 @@ def run(frames=90, width=120, height=40, with_audio=False, extra_scenes=False):
             for pickup in world.combat.pickups:
                 pickup.collected = training
             casting = name == "fireballs"
+            walking = name in ("terrace_walk", "stair_walk")
             if casting:
                 world.combat.held_item = WeaponPickup(0, 0, weapon=FIRE_STAFF)
             world.combat.cooldown = world.combat.swing_remaining = 0.0
             base_yaw = player.yaw
             timings = []
             for frame in range(frames + 5):
-                player.yaw = base_yaw + math.sin(frame * 0.06) * 0.35
+                player.yaw = base_yaw if walking else base_yaw + math.sin(frame * 0.06) * 0.35
                 start = time.perf_counter()
-                if training or casting or name == "warden":
+                if training or casting or walking or name == "warden":
                     events = []
                     for _ in range(3):
+                        if walking:
+                            player.update(world, {"w"}, 1 / 120)
+                            events.extend(player.events)
                         events.extend(world.combat.update(1 / 120, world, player))
                     if (training or casting) and frame % 20 == 0:
                         events.extend(world.combat.attack(world, player))
@@ -103,12 +125,13 @@ def run(frames=90, width=120, height=40, with_audio=False, extra_scenes=False):
                             audio.emit(event)
                 if audio:
                     audio.listener = (player.x, player.y, player.yaw)
-                    audio.ambient = soundscape.at(player.x, player.y, player.yaw)
-                    if frame % 12 == 0:
+                    audio.ambient = soundscape.at(player.x, player.y, player.yaw, player.z)
+                    if not walking and frame % 12 == 0:
                         audio.emit(GameEvent("step_grass" if name == "grass_close" else "step_stone"))
-                    if frame % 60 == 1:
+                    if not walking and frame % 60 == 1:
                         audio.emit(GameEvent("door_open", player.x + 2, player.y))
-                renderer.frame(player, width, height, time_seconds=frame / 40, show_map=name == "map")
+                renderer.frame(player, width, height, time_seconds=frame / 40,
+                               show_map=name in ("map", "highland_map"))
                 if frame >= 5:
                     timings.append((time.perf_counter() - start) * 1000)
             ordered = sorted(timings)
@@ -143,13 +166,14 @@ def main():
     parser.add_argument("--json", action="store_true", help="print machine-readable results")
     parser.add_argument("--audio", action="store_true", help="include live ambient/effects mixing; needs a Windows audio device")
     parser.add_argument("--extra-scenes", action="store_true", help="also measure expansion landmarks, combat, staff/fireballs, close trees and river views")
+    parser.add_argument("--terrain-scenes", action="store_true", help="also measure elevated terrain, upper floors, rooftops and the highland map")
     args = parser.parse_args()
     if args.frames < 20 or not (60 <= args.width <= 300 and 20 <= args.height <= 120):
         parser.error("use at least 20 frames and dimensions between 60x20 and 300x120")
     if not math.isfinite(args.max_regression) or args.max_regression < 0:
         parser.error("--max-regression must be a finite, nonnegative percentage")
     try:
-        report = run(args.frames, args.width, args.height, args.audio, args.extra_scenes)
+        report = run(args.frames, args.width, args.height, args.audio, args.extra_scenes, args.terrain_scenes)
     except OSError as error:
         parser.error(str(error))
     failed = []

@@ -2,7 +2,7 @@
 
 import math
 
-from .world import BRIDGE, GRASS, PATH, WATER
+from .world import AIR, BRIDGE, GRASS, PATH, WATER
 
 
 class Soundscape:
@@ -14,7 +14,7 @@ class Soundscape:
         self._revision = -1
         self._water_chunks = {}
 
-    def at(self, x, y, yaw):
+    def at(self, x, y, yaw, feet=None):
         if self.world.revision != self._revision:
             chunks = {}
             for cy in range(self.world.depth):
@@ -23,8 +23,18 @@ class Soundscape:
                         chunks.setdefault((cx // self.CHUNK, cy // self.CHUNK), []).append((cx, cy))
             self._water_chunks = chunks
             self._revision = self.world.revision
-        ground = self.world.get(math.floor(x), math.floor(y), 0)
-        outdoors = ground in (GRASS, WATER, BRIDGE, PATH)
+        cx, cy = math.floor(x), math.floor(y)
+        if feet is None:
+            # Existing three-argument callers retain their flat-world material
+            # classification and one-query cost. Live callers supply feet.
+            ground = self.world.get(cx, cy, 0)
+            outdoors = ground in (GRASS, WATER, BRIDGE, PATH)
+        else:
+            # Wind belongs to the listener's actual floor, not buried z=0.
+            # A clear sky also exposes a timber balcony or stone roof walk.
+            head = max(0, math.ceil(feet + 1.7))
+            outdoors = not any(self.world.get(cx, cy, z) not in (AIR, WATER)
+                               for z in range(head, self.world.height))
         wind = 0.18 if outdoors else 0.025
         nearest = math.inf
         total = direction_x = direction_y = 0.0

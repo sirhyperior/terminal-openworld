@@ -9,9 +9,9 @@ if TYPE_CHECKING:
     from .world import World
 
 
-EXPANDED_WIDTH = 112
-EXPANDED_DEPTH = 112
-WORLD_HEIGHT = 12
+EXPANDED_WIDTH = 512
+EXPANDED_DEPTH = 512
+WORLD_HEIGHT = 32
 CASTLE_BOUNDS = (28, 24, 82, 76)
 CURTAIN_BOUNDS = (30, 26, 80, 74)
 RUIN_BOUNDS = (48, 97, 67, 109)
@@ -171,8 +171,7 @@ def expand_world(world: "World") -> None:
     """
     from .world import AIR, GRASS, Tree
 
-    if (world.width < EXPANDED_WIDTH or world.depth < EXPANDED_DEPTH
-            or world.height < WORLD_HEIGHT):
+    if world.width < 112 or world.depth < 112 or world.height < 12:
         raise ValueError("Castle grounds require a world of at least 112x112x12")
     _castle(world)
     _grounds(world)

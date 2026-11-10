@@ -1,13 +1,14 @@
 """Seeded grass geometry and a continuous wind field with local, drifting gusts."""
 
 from dataclasses import dataclass
+from collections import OrderedDict
 import math
 import random
 
 from .player import Player
 from .geometry import Camera
 from .trees import Trees
-from .world import AIR, GRASS, World
+from .world import GRASS, World
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,52 +64,91 @@ class Blade:
     y: float
     height: float
     phase: float
+    z: float = 1.0
 
 
 class Scenery:
     CHUNK = 4
     DETAIL_RADIUS = 14
+    MAX_GRASS_CHUNKS = 128
 
     def __init__(self, world: World):
+        self.world = world
         self.wind = Wind(world.outdoor_bounds) if world.outdoor_bounds else None
         self.trees = Trees(world)
-        self.blades: list[Blade] = []
-        self._indexed_blades = None
-        self._chunks = {}
+        self._override_blades = None
+        self._chunks = OrderedDict()
+        self._revision = world.revision
         self._seconds = None
         self._gusts = []
         self._wind_cache = {}
         self.stats = {}
-        if not world.outdoor_bounds:
-            return
-        rng = random.Random(58431)
-        x0, y0, x1, y1 = world.outdoor_bounds
-        for y in range(y0, y1):
-            for x in range(x0, x1):
-                if world.get(x, y, 0) != GRASS or world.get(x, y, 1) != AIR:
-                    continue
-                positions = [(a, b) for a in range(4) for b in range(4)]
-                rng.shuffle(positions)
-                tree = world.trees.get((x, y))
-                for a, b in positions:
-                    bx, by = x + (a + rng.uniform(0.15, 0.85)) / 4, y + (b + rng.uniform(0.15, 0.85)) / 4
-                    if tree and (bx - tree.x) ** 2 + (by - tree.y) ** 2 < (tree.radius + 0.03) ** 2:
-                        continue
-                    self.blades.append(Blade(bx, by, rng.uniform(0.09, 0.24), rng.uniform(0, math.tau)))
+
+    @property
+    def blades(self):
+        """Resident geometry for diagnostics; a large world is never materialized."""
+        if self._override_blades is not None:
+            return self._override_blades
+        return [blade for key in sorted(self._chunks)
+                for _, _, patch in self._chunks[key] for blade in patch]
+
+    @blades.setter
+    def blades(self, blades):
+        # Explicit geometry overrides are used by focused occlusion probes.
+        self._override_blades = blades
         self._index()
 
     def _index(self):
         patches = {}
-        for blade in self.blades:
+        for blade in self._override_blades:
             patches.setdefault((int(blade.x), int(blade.y)), []).append(blade)
         chunks = {}
         for (x, y), blades in patches.items():
             chunks.setdefault((x // self.CHUNK, y // self.CHUNK), []).append((x, y, blades))
-        self._chunks, self._indexed_blades = chunks, self.blades
+        self._chunks = OrderedDict(chunks)
+
+    def grass_chunk(self, cx: int, cy: int):
+        """Create one deterministic local patch, retaining a bounded working set."""
+        if self._revision != self.world.revision:
+            self._chunks.clear()
+            self._revision = self.world.revision
+            if self._override_blades is not None:
+                self._index()
+        key = cx, cy
+        if key in self._chunks:
+            self._chunks.move_to_end(key)
+            return self._chunks[key]
+        if self._override_blades is not None or not self.wind:
+            return ()
+        world = self.world
+        x0, y0, x1, y1 = world.outdoor_bounds
+        patches = []
+        for y in range(max(y0, cy * self.CHUNK), min(y1, (cy + 1) * self.CHUNK)):
+            for x in range(max(x0, cx * self.CHUNK), min(x1, (cx + 1) * self.CHUNK)):
+                z = world.surface_height(x, y)
+                if z < 1 or world.get(x, y, z - 1) != GRASS:
+                    continue
+                # Per-cell seeding makes eviction/revisit and generation order
+                # independent of the world's dimensions and previous travel.
+                rng = random.Random(58431 ^ (x * 73856093) ^ (y * 19349663))
+                positions = [(a, b) for a in range(4) for b in range(4)]
+                rng.shuffle(positions)
+                tree = world.trees.get((x, y))
+                blades = []
+                for a, b in positions:
+                    bx = x + (a + rng.uniform(0.15, 0.85)) / 4
+                    by = y + (b + rng.uniform(0.15, 0.85)) / 4
+                    if tree and (bx - tree.x) ** 2 + (by - tree.y) ** 2 < (tree.radius + 0.03) ** 2:
+                        continue
+                    blades.append(Blade(bx, by, rng.uniform(0.09, 0.24),
+                                        rng.uniform(0, math.tau), float(z)))
+                patches.append((x, y, blades))
+        self._chunks[key] = patches
+        if len(self._chunks) > self.MAX_GRASS_CHUNKS:
+            self._chunks.popitem(last=False)
+        return patches
 
     def prepare(self, seconds):
-        if self._indexed_blades is not self.blades:
-            self._index()
         if seconds != self._seconds:
             self._seconds = seconds
             self._gusts = self.wind.gusts(seconds) if self.wind else []
@@ -137,14 +177,13 @@ class Scenery:
         cx, cy = int(player.x) // self.CHUNK, int(player.y) // self.CHUNK
         for y in range(cy - 4, cy + 5):
             for x in range(cx - 4, cx + 5):
-                patches = self._chunks.get((x, y))
-                if not patches:
-                    continue
                 dx, dy = (x + 0.5) * self.CHUNK - player.x, (y + 0.5) * self.CHUNK - player.y
                 along = dx * cam.cy + dy * cam.sy
                 right = dx * cam.sy - dy * cam.cy
                 if -3 < along < self.DETAIL_RADIUS + 3 and abs(right) < max(0, along) + 4:
-                    chunks.append((dx * dx + dy * dy, patches))
+                    patches = self.grass_chunk(x, y)
+                    if patches:
+                        chunks.append((dx * dx + dy * dy, patches))
         chunks.sort(key=lambda item: item[0])
         self.stats["grass_chunks"] = len(chunks)
         project, stroke = cam.project, cam.stroke
@@ -154,22 +193,17 @@ class Scenery:
                 along, right = dx * cam.cy + dy * cam.sy, dx * cam.sy - dy * cam.cy
                 if along < 0.05 or along > self.DETAIL_RADIUS or abs(right) > along + 1:
                     continue
-                root = project(x + 0.5, y + 0.5, 1.02)
+                z = blades[0].z if blades else 0.0
+                root = project(x + 0.5, y + 0.5, z + 0.02)
                 if root is None or root[1] < -4 or root[1] > height + 10 or root[0] < -8 or root[0] > width + 8:
                     continue
                 count = 16 if along < 3 else (8 if along < 6 else (4 if along < 9 else 2))
-                wx, wy = self.wind_at(x, y)
-                # Nearby moving feet push the blades away, then release them
-                # naturally as the smooth influence radius leaves the patch.
-                distance_squared = dx * dx + dy * dy
-                if player.moving and 0.02 < distance_squared < 3.24:
-                    force = (1 - distance_squared / 3.24) ** 2 * (2.2 if player.running else 1.4)
-                    wx, wy = wx + dx * force, wy + dy * force
+                wind_ready = False
                 for blade in blades[:count]:
                     if self.stats["grass_candidates"] >= budget:
                         return
                     self.stats["grass_candidates"] += 1
-                    base = project(blade.x, blade.y, 1.015)
+                    base = project(blade.x, blade.y, blade.z + 0.015)
                     if base is None or base[1] > height + 8:
                         continue
                     # Roots behind an obstacle do not require detailed strokes.
@@ -177,17 +211,27 @@ class Scenery:
                     if 0 <= bx < width and 1 <= by < height:
                         if depths[by][bx] < base[2] - 0.5 and depths[by - 1][bx] < base[2] - 0.5:
                             continue
+                    if not wind_ready:
+                        # Entire patches behind hills/walls need no wind or
+                        # foot-interaction synthesis. Preserve the exact sample
+                        # once the first potentially visible root survives.
+                        wx, wy = self.wind_at(x, y)
+                        distance_squared = dx * dx + dy * dy
+                        if player.moving and 0.02 < distance_squared < 3.24:
+                            force = (1 - distance_squared / 3.24) ** 2 * (2.2 if player.running else 1.4)
+                            wx, wy = wx + dx * force, wy + dy * force
+                        wind_ready = True
                     flutter = math.sin(seconds * 5.1 + blade.phase) * 0.15
                     vx, vy = wx + flutter, wy + flutter * 0.6
                     bend = min(1.2, math.hypot(vx, vy))
                     scale = blade.height * 0.9
                     tip = project(blade.x + vx * scale, blade.y + vy * scale,
-                                  1.015 + blade.height * (1 - bend * 0.30))
+                                  blade.z + 0.015 + blade.height * (1 - bend * 0.30))
                     if tip is not None and abs(tip[1] - base[1]) < 1.5:
                         drawn = stroke(pixels, depths, base, tip)
                     else:
                         mid = project(blade.x + vx * scale * 0.25, blade.y + vy * scale * 0.25,
-                                      1.015 + blade.height * 0.55)
+                                      blade.z + 0.015 + blade.height * 0.55)
                         drawn = stroke(pixels, depths, base, mid)
                         drawn |= stroke(pixels, depths, mid, tip)
                     self.stats["grass_drawn"] += bool(drawn)

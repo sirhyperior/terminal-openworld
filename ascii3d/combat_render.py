@@ -12,6 +12,26 @@ MAX_ENEMY_DRAWS = 24
 MAX_PICKUP_DRAWS = 16
 
 
+def large_opaque_enemy(combat, cam):
+    """Only large nearby bodies justify a second bounded geometry pass."""
+    budget = min(MAX_ENEMY_DRAWS, max(1, cam.width * cam.height // 180))
+    for enemy in combat.enemies:
+        if not _visible(cam, enemy.x, enemy.y, enemy.z + 1.0, 1.25):
+            continue
+        if enemy.alive:
+            center = cam.project(enemy.x, enemy.y, enemy.z + enemy.height / 2)
+            if center is not None:
+                depth = center[2]
+                area = (2 * enemy.radius * enemy.height * cam.fx * cam.fy
+                        / (depth * depth))
+                if area >= cam.width * cam.height * 0.16:
+                    return True
+        budget -= 1
+        if budget == 0:
+            break
+    return False
+
+
 def _visible(cam, x, y, z, radius):
     dx, dy, dz = x - cam.x, y - cam.y, z - cam.z
     if dx * dx + dy * dy + dz * dz > (DRAW_DISTANCE + radius) ** 2:
@@ -270,7 +290,7 @@ def _draw_equipped(combat, cam, pixels, depths, player):
 
 
 def draw_combat(combat: CombatState, world, pixels, depths, player,
-                focal, aspect, time_seconds):
+                focal, aspect, time_seconds, *, labels=True):
     if not pixels or not pixels[0]:
         return
     if not (combat.pickups or combat.enemies or combat.held_item
@@ -294,9 +314,10 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
         enemy_budget -= 1
         if enemy_budget == 0:
             break
-    aimed = combat.aimed_enemy(world, player, NAME_REACH)
-    if aimed is not None:
-        _draw_name(aimed, cam, pixels, depths)
+    if labels:
+        aimed = combat.aimed_enemy(world, player, NAME_REACH)
+        if aimed is not None:
+            _draw_name(aimed, cam, pixels, depths)
     for ball in combat.fireballs[:MAX_FIREBALLS]:
         if _visible(cam, ball.x, ball.y, ball.z, 0.20):
             _draw_flame(ball, cam, pixels, depths, 0.14, ball.direction)

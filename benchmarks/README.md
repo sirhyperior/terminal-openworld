@@ -9,6 +9,13 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Highland expansion:** [terrain-expansion.md](terrain-expansion.md) records
+  milestones, controls and repairs. `terrain-interleaved-first.json` failed
+  19/24 scene comparisons; `terrain-profile-first.txt` retains diagnostic counts.
+  `terrain-interleaved-optimized.json` also failed 8/24 comparisons. Further
+  `terrain-interleaved-horizon.json` passes 20/24, with four failures retained.
+  Later signed-inverse/scenery/prepass work has focused checks; full paired
+  acceptance remains open at the user's wrap-up checkpoint. Limits are unchanged.
 - **Castle-wide acceptance is unresolved.** `castle-milestone-before-live.json`
   is the frozen old-map, 60-frame/120x40/audio control with actual Soundscape.
   `castle-milestone-live.json` predates room optimization;
@@ -41,3 +48,5 @@ longer historical narrative removed from the main handoff during cleanup.
 | `staff-before.json`, `fire-staff.json`, `staff-training-interleaved.json` | Staff references and focused interleaved observations. |
 | `fire-staff-concurrent.json` | Concurrent diagnostic; unsuitable as an isolated acceptance result. |
 | `mouse-input-audio.json` | Render/audio smoke after the native input fix; does not time desktop capture or establish a new baseline. |
+| `mouse-capture-2026-11-10.md` | Empty-clip failure reproduction, repaired native cursor/release evidence, tests and remaining physical-host review. |
+| `mouse-release-audio.json` | 2026-11-10 audio smoke: no underruns/recoveries, but all 24 historical mean/p95 comparisons failed; retained evidence, not a replacement baseline. |

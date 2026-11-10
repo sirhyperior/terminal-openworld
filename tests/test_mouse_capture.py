@@ -2,6 +2,9 @@
 
 import ctypes
 import os
+import subprocess
+import sys
+import time
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock
@@ -98,24 +101,45 @@ class NativeResourceTests(unittest.TestCase):
         self.capture.api.GetForegroundWindow.return_value = 7
         self.capture.api.GetCapture.return_value = 42
         self.capture.api.PeekMessageW.return_value = False
+        self.capture.api.GetClipCursor.return_value = False
         self.capture.window, self.capture.owner = 42, 7
         self.capture.cursor = 123
         self.capture.clip = None
+        self.capture.center = (500, 500)
         self.capture.active, self.capture.failed, self.capture.closed = True, False, False
         self.capture.motion = MouseMotion()
         self.capture.motion.reset()
         self.capture.absolute = {}
         self.capture.get_window_style = Mock(return_value=0x08000088)
 
-    def test_resize_uses_one_pixel_and_cannot_take_foreign_focus(self):
+    def test_resize_keeps_positive_clip_inside_helper_and_cannot_take_foreign_focus(self):
         self.assertTrue(self.capture.resize((100, 200, 900, 800)))
-        self.assertEqual(self.capture.clip, (500, 500, 500, 500))
-        self.capture.api.SetWindowPos.assert_called_once_with(42, -1, 500, 500, 1, 1, 0x50)
+        self.assertEqual(self.capture.clip, (500, 500, 501, 501))
+        self.capture.api.SetWindowPos.assert_called_once_with(42, -1, 499, 499, 3, 3, 0x50)
+        for call in self.capture.api.ClipCursor.call_args_list:
+            rect = call.args[0]._obj
+            self.assertGreater(rect.right, rect.left)
+            self.assertGreater(rect.bottom, rect.top)
         self.capture.api.SetForegroundWindow.assert_not_called()
         self.capture.api.GetForegroundWindow.return_value = 99
         self.capture.api.reset_mock()
         self.assertFalse(self.capture.resize((100, 200, 900, 800)))
         self.capture.api.ClipCursor.assert_not_called()
+
+    def test_resize_records_the_actual_clip_for_release_ownership(self):
+        def read_clip(target):
+            rect = target._obj
+            rect.left, rect.top, rect.right, rect.bottom = 499, 499, 501, 501
+            return True
+
+        self.capture.api.GetClipCursor.side_effect = read_clip
+        self.assertTrue(self.capture.resize((100, 200, 900, 800)))
+        self.assertEqual(self.capture.clip, (499, 499, 501, 501))
+        self.capture.get_window_style.return_value = 0x08000080
+        self.capture.poll()
+        # Recover the original helper bounds, independently of clip readback.
+        for call in self.capture.api.SetWindowPos.call_args_list:
+            self.assertEqual(call.args, (42, -1, 499, 499, 3, 3, 0x50))
 
     def test_cursor_message_hides_only_inside_the_active_helper(self):
         self.assertEqual(self.capture._window_proc(42, 0x20, 0, 0), 1)
@@ -138,11 +162,11 @@ class NativeResourceTests(unittest.TestCase):
         self.assertEqual(self.capture.motion.take(), (0, 0, False))
 
     def test_native_poll_restores_its_z_order_and_uses_only_its_private_cursor(self):
-        self.capture.clip = (500, 500, 500, 500)
+        self.capture.clip = (500, 500, 501, 501)
         self.capture.get_window_style.return_value = 0x08000080
         self.capture.motion.feed(12, -3, down=True)
         self.assertEqual(self.capture.poll(), (12, -3, True))
-        self.capture.api.SetWindowPos.assert_called_once_with(42, -1, 500, 500, 1, 1, 0x50)
+        self.capture.api.SetWindowPos.assert_called_once_with(42, -1, 499, 499, 3, 3, 0x50)
         self.capture.api.SetCursor.assert_called_once_with(123)
         self.capture.api.SetSystemCursor.assert_not_called()
 
@@ -276,6 +300,77 @@ class WindowsCursorResourceTests(unittest.TestCase):
         descriptor.size = ctypes.sizeof(descriptor)
         self.assertFalse(api.GetClassInfoExW(capture.instance, capture.class_name,
                                             ctypes.byref(descriptor)))
+
+    @unittest.skipUnless(os.environ.get("MONOLITH_DESKTOP_TESTS") == "1",
+                         "opt in with MONOLITH_DESKTOP_TESTS=1; briefly captures desktop pointer")
+    def test_real_desktop_cursor_is_inside_helper_and_releases_across_capture_epochs(self):
+        from ctypes import wintypes as wt
+        from ascii3d.terminal import _WindowsPointer
+
+        class CursorInfo(ctypes.Structure):
+            _fields_ = [("size", wt.DWORD), ("flags", wt.DWORD),
+                        ("cursor", wt.HANDLE), ("position", wt.POINT)]
+
+        pointer = _WindowsPointer(ctypes.WinDLL("kernel32", use_last_error=True))
+        original_clip, original_cursor = pointer.clip(), pointer.cursor()
+        owner = pointer.foreground()
+        if not owner or original_clip is None or original_cursor is None:
+            self.skipTest("requires an unlocked Windows input desktop")
+        if not pointer.set_clip(original_clip):
+            self.skipTest("ClipCursor denied; run outside the sandbox")
+        # Use the current foreground window as an inert host fixture. No
+        # terminal binding, foreign window edits or injected clicks/keys occur.
+        pointer.console_window = owner
+        pointer.api.WindowFromPoint.argtypes = [wt.POINT]
+        pointer.api.WindowFromPoint.restype = wt.HWND
+        pointer.api.GetCursorInfo.argtypes = [ctypes.POINTER(CursorInfo)]
+        mouse = WindowsMouse(pointer)
+        try:
+            for epoch in range(3):
+                with self.subTest(epoch=epoch):
+                    mouse.set_capture(True)
+                    self.assertTrue(mouse.captured, pointer.capture_error)
+                    capture = pointer.relative_capture
+                    self.assertGreater(capture.clip[2], capture.clip[0])
+                    self.assertGreater(capture.clip[3], capture.clip[1])
+                    # Cursor shape selection follows queued WM_SETCURSOR;
+                    # allow the real desktop to finish its enter transition.
+                    for _ in range(20):
+                        mouse.poll()
+                        info = CursorInfo()
+                        info.size = ctypes.sizeof(info)
+                        self.assertTrue(pointer.api.GetCursorInfo(ctypes.byref(info)))
+                        if info.cursor == capture.cursor:
+                            break
+                        time.sleep(0.005)
+                    self.assertEqual(pointer.api.WindowFromPoint(wt.POINT(*pointer.cursor())),
+                                     capture.window)
+                    self.assertEqual(info.cursor, capture.cursor)
+                    self.assertEqual(pointer.foreground(), owner)
+                    # The same path used by P/help must restore the real clip.
+                    mouse.set_capture(False)
+                    self.assertFalse(mouse.captured)
+                    self.assertEqual(pointer.clip(), original_clip)
+                    self.assertEqual(pointer.cursor(), original_cursor)
+        finally:
+            try:
+                mouse.set_capture(False)
+                capture = pointer.relative_capture
+                if capture is not None and pointer.clip() == capture.clip:
+                    # An empty-RECT regression can deny further ClipCursor calls
+                    # in this process. An independent emergency cleanup must keep
+                    # a failed test from leaving the desktop pointer confined.
+                    subprocess.run([sys.executable, "-B", "-c",
+                                    "import ctypes,sys; from ctypes import wintypes as w; "
+                                    "u=ctypes.windll.user32; "
+                                    f"r=w.RECT{original_clip!r}; "
+                                    "ok=u.ClipCursor(ctypes.byref(r)) or u.ClipCursor(None); "
+                                    "sys.exit(0 if ok else 1)"],
+                                   check=True, timeout=5, creationflags=0x08000000)
+                    self.assertEqual(pointer.clip(), original_clip)
+                    pointer.move(*original_cursor)
+            finally:
+                pointer.close()
 
 
 if __name__ == "__main__":
