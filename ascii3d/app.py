@@ -74,8 +74,8 @@ def main(argv: list[str] | None = None) -> int:
                         help="start at a highland landmark; R returns to this entrance")
     parser.add_argument("--keyboard-look", action="store_true",
                         help="use arrows to look and Enter to attack instead of mouse capture")
-    parser.add_argument("--max-cells", type=positive_int, default=4800,
-                        help="live viewport character budget; larger costs more CPU (default: 4800)")
+    parser.add_argument("--max-cells", type=positive_int,
+                        help="optional live viewport character budget, at least 1200 (default: fill terminal)")
     parser.add_argument("--frames", type=positive_int, help="exit after this many frames")
     parser.add_argument("--mute", action="store_true", help="start with sound muted (F toggles sound)")
     parser.add_argument("--volume", type=float, default=0.55, help="master sound volume, 0 to 1 (default: 0.55)")
@@ -89,8 +89,8 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--width / --height must not exceed 300 / 120")
     if args.fps > 240:
         parser.error("--fps must not exceed 240")
-    if not 1200 <= args.max_cells <= 11520:
-        parser.error("--max-cells must be between 1200 and 11520")
+    if args.max_cells is not None and args.max_cells < 1200:
+        parser.error("--max-cells must be at least 1200")
     if not math.isfinite(args.volume) or not 0 <= args.volume <= 1:
         parser.error("--volume must be between 0 and 1")
     if args.sound_preview:

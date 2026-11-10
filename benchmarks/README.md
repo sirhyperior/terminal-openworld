@@ -9,6 +9,14 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Full-terminal viewport:** [viewport-milestone.md](viewport-milestone.md)
+  records native final-cell checks, large/tall renderer validation and live-audio
+  frame cost. `viewport-interleaved-120x40.json` is diagnostic because its
+  flat/elevated listener sampling differs. The corrected
+  `viewport-interleaved-height-120x40.json` passes 23/24 matched roles; castle
+  exterior p95 fails +20.52% against the unchanged 15% limit. The failure is
+  retained and no baseline is replaced. Larger-resolution costs are measured
+  separately; resolution scaling is not a percentage regression comparison.
 - **Highland expansion:** [terrain-expansion.md](terrain-expansion.md) records
   milestones, controls and repairs. `terrain-interleaved-first.json` failed
   19/24 scene comparisons; `terrain-profile-first.txt` retains diagnostic counts.

@@ -2,18 +2,29 @@
 
 Last reviewed: **2026-11-10**. Earlier gameplay checkpoint: `f27e9ff` (2026-11-06).
 Read this with [AGENTS.md](AGENTS.md); [README.md](README.md) covers play/controls.
-Current checkpoint: wrap up the enormous terrain/floor/visibility expansion at
-the user's request on 2026-11-10. Earlier mouse repairs are included and still
-await physical play review. User explicitly requested a local Git commit.
+Current work: the full-terminal milestone is implemented and integrated after
+three parallel tasks with separate file ownership (terminal output, CLI/docs,
+and renderer validation). Earlier expansion checkpoint: `d2fa0a7`. The user
+requested a Git checkpoint on 2026-11-10 and approved the geometry work for
+smooth hills and finer stairs. Those two milestones are next; implementation
+has not started in this checkpoint. Earlier mouse repairs still await physical
+play review.
 
-## Future Milestones Requested by the User
+## Milestones Requested by the User
 
-1. **Use the full terminal screen.** Fill the available terminal area instead of
-   centering a viewport constrained by the current 4,800-cell/180x64 limits. The
-   user expects more character cells to increase effective image resolution.
-   Measure the actual cell dimensions and frame cost; font/cell size still sets
-   the available character resolution. Preserve resize, small-window and keyboard
-   accessibility behavior. Current caps remain in this checkpoint.
+1. **Use the full terminal screen — implemented (2026-11-10).** Default live
+   sizing uses every reported column and row, including the final cell, with no
+   4,800-cell/180x64 limits. Native stdout dimensions take priority over stale
+   environment overrides. `--max-cells 4800` remains an optional centered CPU
+   budget; explicit budgets require at least 1,200 cells and have no fixed upper
+   cap. Resize clears stale output even when budgeted dimensions round to the
+   same values. The minimum playable terminal is now 60x20. Small windows freeze
+   movement, scenery and combat and hush environmental audio; keyboard look
+   remains available. The
+   font still determines physical cell size; no font or aspect is changed.
+   Native final-cell readback/cleanup and large/tall exact-ray checks pass. See
+   [viewport evidence](benchmarks/viewport-milestone.md) for measurements and
+   remaining physical-host limits.
 2. **Smooth natural terrain.** Replace the visible Minecraft-like blocky hills
    with smooth, continuous hillside surfaces. The user explicitly rejected the
    current terraced appearance. Design rendering, collision, ground support,
@@ -28,7 +39,10 @@ await physical play review. User explicitly requested a local Git commit.
 4. **Finish performance acceptance.** Preserve the unchanged 15% mean/p95 limits
    and all failed evidence. The latest completed expansion ABBA run passes
    20/24 matched roles; bridge, east bridge, Warden and river diagonal still fail.
-   Later local renderer/scenery improvements need a fresh full paired run.
+   Later local renderer/scenery improvements need a fresh full paired run
+   against the expansion's original control. The full-terminal milestone's
+   separate comparison against `d2fa0a7` passes 23/24 at 120x40; castle-exterior
+   p95 fails +20.52%. No earlier failure or baseline was superseded.
 
 ## Expansion Milestones — Checkpoint Progress
 
@@ -185,8 +199,9 @@ feedback. Detailed controls/weapon tuning are in README/source.
   or a radius-safe local cell range; inserted tree radii maintain its bound.
   Interactive static cache and river index preparation occurs during loading,
   before terminal capture or live audio starts.
-- **Budgets:** ray depth 48, 110 traversal iterations; live viewport 4,800 cells,
-  maximum 180x64. Grass: inspect at most 81 nearby chunks, retain at most 128,
+- **Budgets:** ray depth 48, 110 traversal iterations; live viewport fills the
+  terminal by default, with optional `--max-cells` budgeting. Grass: inspect at
+  most 81 nearby chunks, retain at most 128,
   radius 14, candidates <= pixels/3; tree crown
   samples <= 3*pixels. Map backgrounds cache by revision/viewport. River audio
   queries 8x8 water buckets within radius 18, with full-scan equivalence tests.
@@ -196,6 +211,27 @@ feedback. Detailed controls/weapon tuning are in README/source.
   Player hurt/defeat/respawn cues stay centered across queued listener teleports.
 
 ## Validation
+
+Full-terminal milestone (2026-11-10): **331 tests discovered; 320 passed and 11
+skipped** in the piped full suite (117.131 s). The ten console-only input cases
+then passed in a native console (0.038 s); the opt-in desktop cursor case also
+passed (0.032 s). **All 331 test cases passed across these runs**, with no skipped
+case left unexecuted. Fifteen new tests cover sizing/CLI, large and tall exact
+rays, maps/menus, foliage budgets and
+resize freeze/resume. Native 80x24 final-cell readback and console-mode cleanup
+pass. Python 3.14.4, workspace TMP/TEMP. See
+[viewport milestone evidence](benchmarks/viewport-milestone.md) for raw reports,
+audio health, frame costs and physical-host limits. Corrected 120x40 live-audio
+ABBA: **23/24 pass**, castle-exterior p95 **+20.52%**, zero audio underruns or
+recoveries. Separate 34-scene/60-frame live-audio runs measured means/p95 of
+2.354–8.926 / 3.100–9.803 ms at the actual 80x24 native grid, and
+20.461–73.316 / 21.476–76.650 ms at representative 240x80; both had zero audio
+underruns/recoveries. These exclude terminal writes/cap waits and are resolution
+costs, not interchangeable acceptance baselines. `--snapshot` and a native
+`--outside --demo --frames 100` run pass with sound/terminal cleanup. Larger
+views can miss the 40 FPS target; optional `--max-cells 4800` limits work.
+Physical resize/play review in the user's host remains pending. Performance
+acceptance remains open.
 
 Expansion checkpoint (2026-11-10): **316 native-console tests passed, zero skips**
 with `MONOLITH_DESKTOP_TESTS=1`, workspace TMP/TEMP and Python 3.14.4. This includes
@@ -271,6 +307,7 @@ $env:TMP=$PWD.Path; $env:TEMP=$PWD.Path
 $env:MONOLITH_DESKTOP_TESTS='1' # Optional real cursor check; requires desktop access
 python -B -m unittest discover -s tests -v
 python -B main.py
+python -B main.py --max-cells 4800 # Optional CPU budget; default fills terminal
 python -B main.py --keyboard-look
 python -B main.py --region ridge
 python -B main.py --region citadel
@@ -284,3 +321,7 @@ use an unused report path as documented in
 [benchmarks/terrain-expansion.md](benchmarks/terrain-expansion.md). Start the
 future smooth-hill/finer-stair milestone with a shared geometry/collision design;
 do not simulate smooth terrain by changing only its visual surface.
+For full-terminal measurements against `d2fa0a7`, use
+`--before-elevated-audio` and the commands in
+[benchmarks/viewport-milestone.md](benchmarks/viewport-milestone.md). Keep the
+corrected failed p95 report and the earlier sampling-mismatch diagnostic.

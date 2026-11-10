@@ -16,10 +16,12 @@ from ascii3d.world import FLOOR, World
 class GameLoopTests(unittest.TestCase):
     def run_frames(self, script, world, player, *, demo=False, frame_work=None,
                    clock_tick=1 / 60, advance_sleep=False, sizes=None, mouse=None, keyboard_look=False,
-                   fail_render=False, capture_error="", native_mouse=None, region=None):
+                   fail_render=False, capture_error="", native_mouse=None, region=None, max_cells=None):
         events, states, pauses, frames = [], [], [], []
         self.capture_states = []
         captures = self.capture_states
+        terminal_budgets = self.terminal_budgets = []
+        player_positions = self.player_positions = []
         native_states = self.native_capture_states = []
         clock = 0.0
 
@@ -34,7 +36,8 @@ class GameLoopTests(unittest.TestCase):
                 clock += seconds
 
         class FakeTerminal:
-            def __init__(self, *args):
+            def __init__(self, max_cells=None):
+                terminal_budgets.append(max_cells)
                 self.keyboard = self
                 self.index = 0
 
@@ -70,6 +73,8 @@ class GameLoopTests(unittest.TestCase):
                 if frame_work:
                     clock += frame_work[self.index - 1].get("output", 0)
                 frames.append(frame)
+                live_player = frame[0][0]
+                player_positions.append((live_player.x, live_player.y, live_player.z))
                 combat = world.combat
                 states.append((combat.held_item is not None, combat.cooldown, combat.swing_remaining,
                                combat.enemies[0].down_remaining, combat.enemies[0].hp,
@@ -123,6 +128,8 @@ class GameLoopTests(unittest.TestCase):
                 args.append("--demo")
             if region:
                 args.extend(("--region", region))
+            if max_cells is not None:
+                args.extend(("--max-cells", str(max_cells)))
             self.assertEqual(main(args), 1 if fail_render else 0)
         self.assertTrue(all(event.name in EFFECTS for event in events))
         return events, states, pauses, frames
@@ -140,6 +147,49 @@ class GameLoopTests(unittest.TestCase):
         self.assertEqual(rates[0], 0)
         self.assertAlmostEqual(rates[1], 40)
         self.assertAlmostEqual(rates[2], 2 / 0.225)
+
+    def test_viewport_defaults_to_full_terminal_and_accepts_an_explicit_large_budget(self):
+        for budget in (None, 4800, 24000):
+            with self.subTest(budget=budget):
+                _, _, _, frames = self.run_frames(
+                    [((), ())], self.make_world(), Player(x=8.5, y=4.5),
+                    max_cells=budget, sizes=[(240, 80)])
+                self.assertEqual(self.terminal_budgets, [budget])
+                self.assertEqual(frames[0][0][1:3], (240, 80))
+
+    def test_viewport_budget_below_playable_minimum_is_rejected_before_loading(self):
+        for budget in ("0", "1199"):
+            with self.subTest(budget=budget), patch("ascii3d.app.sys.stderr", io.StringIO()), \
+                    patch("ascii3d.app.build_world") as build:
+                with self.assertRaises(SystemExit) as raised:
+                    main(["--max-cells", budget])
+                self.assertEqual(raised.exception.code, 2)
+                build.assert_not_called()
+
+    def test_resize_grows_shrinks_and_resumes_at_the_minimum_with_input_and_audio(self):
+        sizes = [(120, 40), (240, 80), (40, 10), (1, 1), (60, 20)]
+        for keyboard in (False, True):
+            with self.subTest(keyboard=keyboard):
+                world = self.make_world()
+                world.combat.cooldown = 1.0
+                script = [((), {"w", "right"})] * len(sizes)
+                _, states, pauses, frames = self.run_frames(
+                    script, world, Player(x=8.5, y=4.5), sizes=sizes,
+                    keyboard_look=keyboard, mouse=[(20, 10)] * len(sizes))
+                self.assertEqual([frame[0][1:3] for frame in frames], sizes)
+                self.assertEqual(pauses, [False, False, True, True, False])
+                self.assertEqual(self.capture_states,
+                                 [not keyboard, not keyboard, False, False, not keyboard, False])
+                self.assertEqual(states[1], states[2])
+                self.assertEqual(states[2], states[3])
+                self.assertEqual(self.player_positions[1], self.player_positions[2])
+                self.assertEqual(self.player_positions[2], self.player_positions[3])
+                self.assertNotEqual(self.player_positions[0], self.player_positions[1])
+                self.assertNotEqual(self.player_positions[3], self.player_positions[4])
+                times = [frame[1]["time_seconds"] for frame in frames]
+                self.assertEqual(times[1], times[2])
+                self.assertEqual(times[2], times[3])
+                self.assertGreater(times[4], times[3])
 
     def make_world(self):
         world = World.empty(24, 24, 10)

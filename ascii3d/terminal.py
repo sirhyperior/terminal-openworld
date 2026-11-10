@@ -8,16 +8,19 @@ import sys
 import time
 
 
-def fit_viewport(columns: int, rows: int, max_cells: int = 4800) -> tuple[int, int]:
-    """Bound render work while retaining native text cells and a usable HUD."""
-    width, height = min(columns, 180), min(max(1, rows - 1), 64)
-    if width * height > max_cells:
+def fit_viewport(columns: int, rows: int, max_cells: int | None = None) -> tuple[int, int]:
+    """Use every native text cell unless an explicit render budget is supplied."""
+    width, height = max(1, columns), max(1, rows)
+    if max_cells is not None and width * height > max_cells:
+        minimum_width, minimum_height = min(width, 60), min(height, 20)
         scale = math.sqrt(max_cells / (width * height))
-        width = max(min(width, 60), int(width * scale))
-        height = max(min(height, 20), int(height * scale))
+        width = max(minimum_width, int(width * scale))
+        height = max(minimum_height, int(height * scale))
         if width * height > max_cells:
-            width = max(min(width, 60), max_cells // height)
-    return max(1, width), max(1, height)
+            width = max(minimum_width, max_cells // height)
+        if width * height > max_cells:
+            height = max(minimum_height, max_cells // width)
+    return width, height
 
 
 @dataclass
@@ -614,11 +617,12 @@ class PosixKeyboard:
 
 
 class Terminal:
-    def __init__(self, max_cells: int = 4800):
+    def __init__(self, max_cells: int | None = None):
         self.keyboard = None
         self.last_size = (0, 0)
         self.max_cells = max_cells
         self.origin = (1, 1)
+        self._terminal_size = (0, 0)
 
     def __enter__(self) -> "Terminal":
         if not sys.stdin.isatty() or not sys.stdout.isatty():
@@ -633,9 +637,17 @@ class Terminal:
         return self
 
     def size(self) -> tuple[int, int]:
-        size = shutil.get_terminal_size((100, 32))
+        try:
+            # Environment overrides can be stale after a resize. Ask the
+            # output device directly before using the portable fallback.
+            size = os.get_terminal_size(sys.stdout.fileno())
+            if size.columns < 1 or size.lines < 1:
+                raise OSError("terminal returned an empty size")
+        except (AttributeError, OSError, ValueError):
+            size = shutil.get_terminal_size((100, 32))
         width, height = fit_viewport(size.columns, size.lines, self.max_cells)
-        self.origin = (max(1, (size.lines - 1 - height) // 2 + 1),
+        self._terminal_size = (size.columns, size.lines)
+        self.origin = (max(1, (size.lines - height) // 2 + 1),
                        max(1, (size.columns - width) // 2 + 1))
         return width, height
 
@@ -656,11 +668,13 @@ class Terminal:
             self.keyboard.set_mouse_capture(active)
 
     def draw(self, lines: list[str]) -> None:
-        size = (len(lines[0]), len(lines), self.origin)
+        size = (len(lines[0]), len(lines), self.origin, self._terminal_size)
         clear = "\x1b[2J" if size != self.last_size else ""
         self.last_size = size
         top, left = self.origin
         separator = "\r\n" + (f"\x1b[{left}G" if left > 1 else "")
+        # Autowrap is disabled for the session. Writing the bottom-right cell
+        # is safe because the last line has no trailing newline.
         sys.stdout.write(clear + f"\x1b[{top};{left}H" + separator.join(lines))
         sys.stdout.flush()
 

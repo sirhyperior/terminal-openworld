@@ -1,0 +1,34 @@
+{
+  "stdin_tty": true,
+  "stdout_tty": true,
+  "font_api_available": true,
+  "console_reported_cell_pixels": [
+    0,
+    16
+  ],
+  "pixel_scope": "console API metadata; may be virtual under ConPTY, not a physical-host font measurement",
+  "write_ms": 0.122,
+  "grid": [
+    80,
+    24
+  ],
+  "origin": [
+    1,
+    1
+  ],
+  "corner_characters": [
+    "A",
+    "Z"
+  ],
+  "cursor": [
+    79,
+    23
+  ],
+  "visible_window": [
+    0,
+    0,
+    79,
+    23
+  ],
+  "output_mode_restored": true
+}

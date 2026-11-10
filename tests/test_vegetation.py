@@ -235,11 +235,11 @@ class ViewportBudgetTests(unittest.TestCase):
                 self.assertGreaterEqual(width, 60)
                 self.assertGreaterEqual(height, 20)
                 self.assertLessEqual(width, columns)
-                self.assertLess(height, rows)
+                self.assertLessEqual(height, rows)
 
     def test_small_window_is_not_enlarged_past_its_actual_size(self):
-        self.assertEqual(fit_viewport(40, 12), (40, 11))
-        self.assertEqual(fit_viewport(120, 41), (120, 40))
+        self.assertEqual(fit_viewport(40, 12), (40, 12))
+        self.assertEqual(fit_viewport(120, 41), (120, 41))
 
 
 if __name__ == "__main__":

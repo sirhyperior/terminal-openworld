@@ -22,8 +22,8 @@ M shows a local terrain map that follows your position. `^` marks high ground,
 the map; the lower HUD shows your region, coordinates and elevation.
 
 The current hills and stairs use voxel terraces. Planned follow-up work is
-smooth natural hillsides, smaller stair risers, and a viewport that fills the
-terminal; progress and validation limits are tracked in `PROJECT_STATUS.md`.
+smooth natural hillsides and smaller stair risers; progress and validation
+limits are tracked in `PROJECT_STATUS.md`.
 
 Seven wooden doors share **E** interaction, swinging animation and collision.
 Approach and look at a doorway to see its prompt. Doors stop or reopen if a leaf
@@ -110,8 +110,9 @@ environment's animation along with movement.
 
 On Windows you can also double-click `run.bat`. Windows Terminal is recommended;
 PowerShell and Command Prompt consoles also work. Use a monospace font and a
-terminal around **120 columns by 40 rows**, or maximize it. The program adjusts
-when the terminal is resized. It needs at least 60 columns by 21 terminal rows.
+terminal around **120 columns by 40 rows**, or maximize it. The program fills
+the terminal and adjusts when it is resized. It needs at least 60 columns by
+20 terminal rows; smaller windows freeze play and show a resize notice.
 
 ## Controls
 
@@ -163,7 +164,7 @@ python main.py --mute                # Start silently; F enables sound
 python main.py --volume 0.35         # Master sound level, 0 to 1
 python main.py --sound-preview effects.wav # Export the original effects
 python main.py --audio-test          # Play river/effects and check playback health
-python main.py --max-cells 7200      # Allow a larger live viewport; uses more CPU
+python main.py --max-cells 4800      # Optional viewport budget to reduce CPU use
 python main.py --cell-aspect 0.5     # Font cell width divided by its height
 python main.py --snapshot            # One plain-text frame; no terminal needed
 python main.py --benchmark 120       # Time 120 frames without terminal output
@@ -171,11 +172,18 @@ python main.py --demo --frames 100   # A finite interactive smoke test
 python -m ascii3d                    # Alternate entry point
 ```
 
-The live viewport defaults to a **4,800-character budget** (120x40). Large
-terminals center the viewport without stretching characters or increasing the
-work per frame indefinitely. `--max-cells` changes that budget, subject to the
-180-column / 64-row ceiling. Snapshot and benchmark modes accept `--width` and
-`--height` and do not use the live viewport budget.
+The live viewport uses **every terminal column and row** by default, including
+the HUD. There is no fixed character budget or 180-column / 64-row ceiling.
+More terminal cells provide more image detail and require more rendering work.
+The terminal's font and cell size determine how many cells fit on the screen;
+the game does not resize or stretch them. `--cell-aspect` adjusts perspective
+for the font cell's width-to-height ratio.
+
+Use `--max-cells 4800` to limit rendering work on a large terminal. An explicit
+budget of at least 1,200 cells scales and centers the viewport while keeping
+the 60x20 minimum playable size when the terminal allows it. Snapshot and
+benchmark modes accept `--width` and `--height` and do not use the live viewport
+budget.
 
 The live FPS counter refreshes every frame and reports completed game-loop
 frames per elapsed second over a rolling window of roughly one second. It
@@ -288,7 +296,10 @@ views, the highland map and actual terrace/stair walking with contact sounds.
 `tools/benchmark_pair.py` compares a preserved
 source tree against the current engine in per-frame ABBA order with the same
 live mixer, records raw samples and source hashes, and keeps the 15% mean/p95
-limit. See `benchmarks/README.md` for retained expansion measurements and limits.
+limit. Add `--before-elevated-audio` when the frozen control already supports
+listener-height sampling (checkpoint `d2fa0a7` or later), so both variants use
+the same ambience calculation. See `benchmarks/README.md` for retained
+measurements and limits.
 
 ## Check the engine
 

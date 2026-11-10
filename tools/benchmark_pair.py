@@ -136,11 +136,14 @@ def main():
     parser.add_argument("--width", type=int, default=120)
     parser.add_argument("--height", type=int, default=40)
     parser.add_argument("--audio", action="store_true")
+    parser.add_argument("--before-elevated-audio", action="store_true",
+                        help="sample listener height in a frozen control that supports elevated ambience")
     args = parser.parse_args()
     if args.frames < 20 or args.frames % 2 or not (60 <= args.width <= 300 and 20 <= args.height <= 120):
         parser.error("use an even frame count >=20 and dimensions from 60x20 to 300x120")
     current_root = Path(__file__).resolve().parents[1]
     before = variant(load_engine(args.before_source.resolve(), "before_ascii3d"), args.width, args.height)
+    before["elevated_audio"] = args.before_elevated_audio
     after = variant({name: importlib.import_module(f"ascii3d.{name}")
                      for name in before["engine"]}, args.width, args.height)
     after["elevated_audio"] = True
@@ -149,6 +152,8 @@ def main():
               "machine": platform.machine(), "processor": platform.processor(),
               "width": args.width, "height": args.height, "frames": args.frames,
               "audio": args.audio, "threshold_percent": 15.0,
+              "ambient_sampling": {"before": "elevated" if args.before_elevated_audio else "flat",
+                                   "after": "elevated"},
               "before_hashes": hashes(args.before_source.resolve()), "after_hashes": hashes(current_root),
               "world_sizes": {label: [s["world"].width, s["world"].depth, s["world"].height]
                               for label, s in (("before", before), ("after", after))},
