@@ -1,0 +1,269 @@
+indoors
+         117891 function calls in 0.124 seconds
+
+   Ordered by: cumulative time
+   List reduced from 91 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        5    0.001    0.000    0.124    0.025 renderer.py:736(frame)
+        5    0.092    0.018    0.122    0.024 renderer.py:365(scene)
+    43175    0.007    0.000    0.007    0.000 {method 'append' of 'list' objects}
+    45005    0.006    0.000    0.006    0.000 {built-in method math.floor}
+        5    0.000    0.000    0.006    0.001 combat_render.py:292(draw_combat)
+       15    0.000    0.000    0.006    0.000 combat_render.py:143(_draw_enemy)
+        5    0.002    0.000    0.004    0.001 scenery.py:167(draw)
+      360    0.001    0.000    0.004    0.000 combat_render.py:58(_face)
+      360    0.002    0.000    0.002    0.000 geometry.py:85(triangle)
+      240    0.001    0.000    0.002    0.000 geometry.py:158(stroke)
+        5    0.001    0.000    0.002    0.000 door_render.py:8(draw_doors)
+        5    0.001    0.000    0.002    0.000 world.py:191(geometry_query)
+     5705    0.002    0.000    0.002    0.000 {built-in method math.sin}
+      105    0.000    0.000    0.001    0.000 combat_render.py:45(_stroke)
+     1945    0.001    0.000    0.001    0.000 geometry.py:24(project)
+        5    0.000    0.000    0.001    0.000 world.py:411(interaction_target)
+     3325    0.001    0.000    0.001    0.000 {built-in method builtins.min}
+     3240    0.001    0.000    0.001    0.000 {built-in method builtins.max}
+       35    0.000    0.000    0.001    0.000 doors.py:117(interaction_distance)
+        5    0.000    0.000    0.001    0.000 trees.py:81(draw)
+     1300    0.000    0.000    0.000    0.000 world.py:195(visible)
+      415    0.000    0.000    0.000    0.000 scenery.py:159(wind_at)
+       20    0.000    0.000    0.000    0.000 geometry.py:11(__init__)
+     3000    0.000    0.000    0.000    0.000 {built-in method builtins.abs}
+        5    0.000    0.000    0.000    0.000 trees.py:92(_trunk)
+     1815    0.000    0.000    0.000    0.000 {built-in method builtins.round}
+       20    0.000    0.000    0.000    0.000 geometry.py:44(stroke_world)
+     2020    0.000    0.000    0.000    0.000 {built-in method builtins.id}
+      105    0.000    0.000    0.000    0.000 doors.py:29(ray_hit)
+      145    0.000    0.000    0.000    0.000 scenery.py:110(grass_chunk)
+      175    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
+     1025    0.000    0.000    0.000    0.000 {built-in method math.ceil}
+       55    0.000    0.000    0.000    0.000 combat_render.py:35(_visible)
+      420    0.000    0.000    0.000    0.000 surfaces.py:215(_chunk_bounds)
+      415    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+
+
+
+warden
+         929866 function calls in 0.722 seconds
+
+   Ordered by: cumulative time
+   List reduced from 119 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        5    0.001    0.000    0.723    0.145 renderer.py:736(frame)
+        5    0.220    0.044    0.721    0.144 renderer.py:365(scene)
+    21000    0.018    0.000    0.428    0.000 world.py:233(query)
+    10705    0.218    0.000    0.359    0.000 surfaces.py:232(ray_hit)
+    55865    0.048    0.000    0.059    0.000 surfaces.py:22(grid_intervals)
+    21000    0.009    0.000    0.052    0.000 surfaces.py:67(ray_entry)
+    21000    0.035    0.000    0.043    0.000 surfaces.py:71(_ray_query)
+   231765    0.032    0.000    0.032    0.000 {built-in method builtins.abs}
+   187775    0.031    0.000    0.031    0.000 {built-in method builtins.min}
+        5    0.007    0.001    0.025    0.005 scenery.py:167(draw)
+   111725    0.016    0.000    0.016    0.000 {built-in method math.floor}
+    64060    0.015    0.000    0.015    0.000 {method 'get' of 'dict' objects}
+    45430    0.014    0.000    0.014    0.000 surfaces.py:215(_chunk_bounds)
+        5    0.000    0.000    0.012    0.002 trees.py:81(draw)
+    62965    0.011    0.000    0.011    0.000 {built-in method builtins.max}
+    42935    0.009    0.000    0.009    0.000 {method 'append' of 'list' objects}
+       60    0.005    0.000    0.008    0.000 trees.py:103(_crown)
+     4945    0.004    0.000    0.006    0.000 scenery.py:159(wind_at)
+      575    0.004    0.000    0.005    0.000 geometry.py:158(stroke)
+     4720    0.005    0.000    0.005    0.000 <string>:2(__init__)
+        5    0.000    0.000    0.005    0.001 combat_render.py:292(draw_combat)
+        5    0.000    0.000    0.004    0.001 combat_render.py:143(_draw_enemy)
+        5    0.000    0.000    0.004    0.001 combat_render.py:184(_draw_warden)
+        5    0.001    0.000    0.004    0.001 world.py:191(geometry_query)
+       30    0.001    0.000    0.004    0.000 combat_render.py:201(block)
+       30    0.000    0.000    0.004    0.000 trees.py:92(_trunk)
+     9000    0.004    0.000    0.004    0.000 {built-in method math.atan2}
+      120    0.001    0.000    0.003    0.000 geometry.py:44(stroke_world)
+       75    0.002    0.000    0.003    0.000 geometry.py:112(quad)
+     4315    0.003    0.000    0.003    0.000 geometry.py:24(project)
+     7340    0.002    0.000    0.002    0.000 {built-in method math.sqrt}
+       55    0.001    0.000    0.002    0.000 geometry.py:34(bounds)
+     7460    0.001    0.000    0.001    0.000 {built-in method builtins.round}
+     1500    0.001    0.000    0.001    0.000 world.py:195(visible)
+        5    0.000    0.000    0.001    0.000 combat.py:352(aimed_enemy)
+
+
+
+east_bridge
+         665361 function calls in 0.549 seconds
+
+   Ordered by: cumulative time
+   List reduced from 96 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        5    0.001    0.000    0.550    0.110 renderer.py:736(frame)
+        5    0.218    0.044    0.548    0.110 renderer.py:365(scene)
+    21000    0.014    0.000    0.256    0.000 world.py:233(query)
+     6410    0.114    0.000    0.193    0.000 surfaces.py:232(ray_hit)
+    21000    0.009    0.000    0.048    0.000 surfaces.py:67(ray_entry)
+    21000    0.032    0.000    0.040    0.000 surfaces.py:71(_ray_query)
+    28710    0.028    0.000    0.035    0.000 surfaces.py:22(grid_intervals)
+        5    0.007    0.001    0.031    0.006 scenery.py:167(draw)
+   160395    0.022    0.000    0.022    0.000 {built-in method builtins.abs}
+   109925    0.019    0.000    0.019    0.000 {built-in method builtins.min}
+        5    0.000    0.000    0.015    0.003 trees.py:81(draw)
+    99080    0.014    0.000    0.014    0.000 {built-in method math.floor}
+    42745    0.009    0.000    0.009    0.000 {method 'append' of 'list' objects}
+     1015    0.006    0.000    0.009    0.000 geometry.py:158(stroke)
+       85    0.005    0.000    0.008    0.000 trees.py:103(_crown)
+    32065    0.008    0.000    0.008    0.000 {method 'get' of 'dict' objects}
+    22740    0.007    0.000    0.007    0.000 surfaces.py:215(_chunk_bounds)
+    41150    0.007    0.000    0.007    0.000 {built-in method builtins.max}
+       55    0.000    0.000    0.006    0.000 trees.py:92(_trunk)
+      220    0.001    0.000    0.005    0.000 geometry.py:44(stroke_world)
+     4140    0.003    0.000    0.005    0.000 scenery.py:159(wind_at)
+        5    0.002    0.000    0.004    0.001 world.py:191(geometry_query)
+    11745    0.004    0.000    0.004    0.000 {built-in method math.sin}
+     2860    0.003    0.000    0.003    0.000 <string>:2(__init__)
+     8400    0.003    0.000    0.003    0.000 {built-in method math.atan2}
+     3940    0.003    0.000    0.003    0.000 geometry.py:24(project)
+       60    0.001    0.000    0.002    0.000 geometry.py:34(bounds)
+     8265    0.002    0.000    0.002    0.000 {built-in method builtins.round}
+     1560    0.001    0.000    0.002    0.000 world.py:195(visible)
+     5520    0.001    0.000    0.001    0.000 {built-in method math.sqrt}
+        5    0.000    0.000    0.001    0.000 world.py:411(interaction_target)
+     1565    0.001    0.000    0.001    0.000 world.py:198(<genexpr>)
+       35    0.000    0.000    0.001    0.000 doors.py:117(interaction_distance)
+       20    0.000    0.000    0.000    0.000 geometry.py:11(__init__)
+       10    0.000    0.000    0.000    0.000 world.py:203(enclosing)
+
+
+
+castle_exterior
+         296781 function calls in 0.273 seconds
+
+   Ordered by: cumulative time
+   List reduced from 101 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        5    0.001    0.000    0.274    0.055 renderer.py:736(frame)
+        5    0.153    0.031    0.272    0.054 renderer.py:365(scene)
+    21000    0.010    0.000    0.044    0.000 world.py:233(query)
+        5    0.013    0.003    0.041    0.008 scenery.py:167(draw)
+    21000    0.009    0.000    0.034    0.000 surfaces.py:67(ray_entry)
+    21000    0.021    0.000    0.025    0.000 surfaces.py:71(_ray_query)
+     2645    0.012    0.000    0.018    0.000 geometry.py:158(stroke)
+    42710    0.009    0.000    0.009    0.000 {method 'append' of 'list' objects}
+    50720    0.008    0.000    0.008    0.000 {built-in method math.floor}
+     5550    0.004    0.000    0.006    0.000 scenery.py:159(wind_at)
+    40490    0.006    0.000    0.006    0.000 {built-in method builtins.abs}
+    24400    0.005    0.000    0.005    0.000 {built-in method builtins.min}
+    12000    0.004    0.000    0.004    0.000 {built-in method math.atan2}
+     6045    0.004    0.000    0.004    0.000 geometry.py:24(project)
+    16195    0.003    0.000    0.003    0.000 {built-in method builtins.round}
+        5    0.002    0.000    0.003    0.001 door_render.py:8(draw_doors)
+        5    0.001    0.000    0.002    0.000 world.py:191(geometry_query)
+    11390    0.002    0.000    0.002    0.000 {built-in method builtins.max}
+        5    0.000    0.000    0.002    0.000 trees.py:81(draw)
+     5550    0.002    0.000    0.002    0.000 {method 'get' of 'dict' objects}
+       20    0.001    0.000    0.001    0.000 trees.py:103(_crown)
+     2540    0.001    0.000    0.001    0.000 {built-in method math.sin}
+        5    0.000    0.000    0.001    0.000 world.py:411(interaction_target)
+     2245    0.001    0.000    0.001    0.000 {built-in method math.hypot}
+     2730    0.001    0.000    0.001    0.000 {built-in method math.ceil}
+     1300    0.000    0.000    0.001    0.000 world.py:195(visible)
+       35    0.000    0.000    0.001    0.000 doors.py:117(interaction_distance)
+       15    0.000    0.000    0.000    0.000 geometry.py:34(bounds)
+        5    0.000    0.000    0.000    0.000 trees.py:92(_trunk)
+       20    0.000    0.000    0.000    0.000 geometry.py:11(__init__)
+       20    0.000    0.000    0.000    0.000 geometry.py:44(stroke_world)
+        5    0.000    0.000    0.000    0.000 combat_render.py:292(draw_combat)
+     2120    0.000    0.000    0.000    0.000 {built-in method builtins.id}
+      105    0.000    0.000    0.000    0.000 doors.py:29(ray_hit)
+       10    0.000    0.000    0.000    0.000 world.py:203(enclosing)
+
+
+
+highlands
+         1559861 function calls in 1.131 seconds
+
+   Ordered by: cumulative time
+   List reduced from 100 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        5    0.001    0.000    1.132    0.226 renderer.py:736(frame)
+        5    0.223    0.045    1.130    0.226 renderer.py:365(scene)
+    21000    0.026    0.000    0.787    0.000 world.py:233(query)
+    21000    0.416    0.000    0.699    0.000 surfaces.py:232(ray_hit)
+   116210    0.099    0.000    0.122    0.000 surfaces.py:22(grid_intervals)
+        5    0.014    0.003    0.064    0.013 scenery.py:167(draw)
+    21000    0.011    0.000    0.062    0.000 surfaces.py:67(ray_entry)
+   428265    0.060    0.000    0.060    0.000 {built-in method builtins.abs}
+   339500    0.056    0.000    0.057    0.000 {built-in method builtins.min}
+    21000    0.042    0.000    0.052    0.000 surfaces.py:71(_ray_query)
+    95690    0.029    0.000    0.029    0.000 surfaces.py:215(_chunk_bounds)
+    98235    0.024    0.000    0.024    0.000 {method 'get' of 'dict' objects}
+        5    0.000    0.000    0.023    0.005 trees.py:81(draw)
+   133025    0.023    0.000    0.023    0.000 {built-in method builtins.max}
+     2815    0.015    0.000    0.022    0.000 geometry.py:158(stroke)
+   122500    0.019    0.000    0.019    0.000 {built-in method math.floor}
+      105    0.011    0.000    0.015    0.000 trees.py:103(_crown)
+    13200    0.014    0.000    0.014    0.000 <string>:2(__init__)
+    42900    0.011    0.000    0.011    0.000 {method 'append' of 'list' objects}
+     7935    0.006    0.000    0.010    0.000 scenery.py:159(wind_at)
+       60    0.001    0.000    0.007    0.000 trees.py:92(_trunk)
+        5    0.002    0.000    0.007    0.001 world.py:191(geometry_query)
+      240    0.001    0.000    0.006    0.000 geometry.py:44(stroke_world)
+    18990    0.006    0.000    0.006    0.000 {built-in method math.sqrt}
+     7100    0.005    0.000    0.005    0.000 geometry.py:24(project)
+    19550    0.003    0.000    0.003    0.000 {built-in method builtins.round}
+     7200    0.003    0.000    0.003    0.000 {built-in method math.atan2}
+       90    0.001    0.000    0.003    0.000 geometry.py:34(bounds)
+     1780    0.001    0.000    0.002    0.000 world.py:195(visible)
+     2750    0.001    0.000    0.001    0.000 world.py:198(<genexpr>)
+     2685    0.001    0.000    0.001    0.000 {built-in method math.sin}
+     2400    0.001    0.000    0.001    0.000 {built-in method math.hypot}
+        5    0.000    0.000    0.001    0.000 world.py:411(interaction_target)
+       35    0.000    0.000    0.001    0.000 doors.py:117(interaction_distance)
+     3310    0.001    0.000    0.001    0.000 {built-in method math.ceil}
+
+
+
+ridge_upper
+         863471 function calls in 0.810 seconds
+
+   Ordered by: cumulative time
+   List reduced from 100 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        5    0.001    0.000    0.811    0.162 renderer.py:736(frame)
+        5    0.351    0.070    0.809    0.162 renderer.py:365(scene)
+    21000    0.024    0.000    0.398    0.000 world.py:233(query)
+     6410    0.074    0.000    0.289    0.000 world.py:173(_solid_hit)
+    99540    0.139    0.000    0.187    0.000 surfaces.py:71(_ray_query)
+    57540    0.027    0.000    0.151    0.000 surfaces.py:64(ray_hit)
+    42000    0.018    0.000    0.082    0.000 surfaces.py:67(ray_entry)
+   262805    0.042    0.000    0.042    0.000 {built-in method builtins.abs}
+    16335    0.029    0.000    0.037    0.000 surfaces.py:22(grid_intervals)
+   120090    0.019    0.000    0.019    0.000 {built-in method math.floor}
+    16485    0.016    0.000    0.016    0.000 <string>:2(__init__)
+    57540    0.014    0.000    0.014    0.000 {method 'add' of 'set' objects}
+        5    0.000    0.000    0.012    0.002 scenery.py:167(draw)
+    42700    0.011    0.000    0.011    0.000 {method 'append' of 'list' objects}
+        5    0.000    0.000    0.011    0.002 trees.py:81(draw)
+    59830    0.011    0.000    0.011    0.000 {built-in method builtins.id}
+        5    0.002    0.000    0.007    0.001 world.py:191(geometry_query)
+    23895    0.007    0.000    0.007    0.000 {built-in method builtins.min}
+       55    0.001    0.000    0.006    0.000 trees.py:92(_trunk)
+      220    0.001    0.000    0.005    0.000 geometry.py:44(stroke_world)
+    10885    0.005    0.000    0.005    0.000 {built-in method math.sin}
+       70    0.002    0.000    0.005    0.000 trees.py:103(_crown)
+      185    0.002    0.000    0.003    0.000 geometry.py:158(stroke)
+     6510    0.003    0.000    0.003    0.000 {method 'get' of 'dict' objects}
+      150    0.001    0.000    0.002    0.000 surfaces.py:232(ray_hit)
+     1630    0.001    0.000    0.002    0.000 world.py:195(visible)
+       60    0.001    0.000    0.002    0.000 geometry.py:34(bounds)
+     4620    0.001    0.000    0.001    0.000 {built-in method builtins.max}
+     2335    0.001    0.000    0.001    0.000 world.py:198(<genexpr>)
+        5    0.000    0.000    0.001    0.000 world.py:411(interaction_target)
+      925    0.001    0.000    0.001    0.000 geometry.py:24(project)
+       10    0.000    0.000    0.001    0.000 world.py:203(enclosing)
+       35    0.000    0.000    0.001    0.000 doors.py:117(interaction_distance)
+       20    0.000    0.000    0.000    0.000 geometry.py:11(__init__)
+     2205    0.000    0.000    0.000    0.000 {built-in method builtins.round}
+
+

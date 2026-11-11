@@ -8,6 +8,7 @@ from .events import GameEvent
 from .combat import CombatState, WeaponPickup, make_training_combat
 from .targeting import cylinder_hit, view_ray
 from .map_expansion import INDOOR_SPAWN, OUTDOOR_SPAWN
+from .surfaces import HeightField, SolidBox, circle_rect, grid_intervals
 
 
 AIR, STONE, FLOOR, METAL, CRATE, GRASS, WATER, WOOD, LEAVES, PATH, BRIDGE = range(11)
@@ -71,6 +72,11 @@ class World:
     doors: list[Door] = field(default_factory=list)
     combat: CombatState = field(default_factory=CombatState)
     _surfaces: dict[tuple[int, int], tuple[int, int]] = field(default_factory=dict, repr=False)
+    heightfield: HeightField | None = field(default=None, repr=False)
+    solids: list[SolidBox] = field(default_factory=list, repr=False)
+    _solid_chunks: dict = field(default_factory=dict, repr=False)
+    _stair_keys: set = field(default_factory=set, repr=False)
+    _solid_query_cache: tuple | None = field(default=None, repr=False)
 
     def __post_init__(self):
         if not isinstance(self.trees, _TreeMap):
@@ -90,6 +96,8 @@ class World:
         """Fill a box; upper bounds are exclusive. AIR carves openings."""
         self.revision += 1
         self._surfaces.clear()
+        if self.heightfield is not None:
+            self.heightfield.edit_box(x0, y0, z0, x1, y1, z1, material)
         for z in range(max(0, z0), min(self.height, z1)):
             for y in range(max(0, y0), min(self.depth, y1)):
                 left, right = max(0, x0), min(self.width, x1)
@@ -114,11 +122,232 @@ class World:
             self._surfaces[key] = surface
         return self._surfaces[key]
 
-    def surface_height(self, x: float, y: float) -> int:
-        return self._surface(x, y)[0]
+    @property
+    def geometry_present(self):
+        return self.heightfield is not None or bool(self.solids)
+
+    def add_solid(self, box: SolidBox):
+        self.solids.append(box)
+        # Include incident chunks for closed ray faces at exact grid corners.
+        for cy in range(math.floor((box.y0 - 1e-8) / 8), math.floor((box.y1 + 1e-8) / 8) + 1):
+            for cx in range(math.floor((box.x0 - 1e-8) / 8), math.floor((box.x1 + 1e-8) / 8) + 1):
+                self._solid_chunks.setdefault((cx, cy), []).append(box)
+        self.revision += 1
+        return box
+
+    def add_stair_flight(self, x0, y0, width, length, bottom, top, axis="y",
+                         direction=1, riser=0.25, material=FLOOR):
+        if width <= 0 or length <= 0 or riser <= 0 or top <= bottom or axis not in ("x", "y") or direction not in (-1, 1):
+            raise ValueError("stairs require positive dimensions, rising height and an X/Y direction")
+        key = (x0, y0, width, length, bottom, top, axis, direction, riser, material)
+        if key in self._stair_keys:
+            return ()
+        self._stair_keys.add(key)
+        count = math.ceil((top - bottom) / riser - 1e-9)
+        boxes = []
+        for step in range(count):
+            start = step * length / count if direction > 0 else (count - 1 - step) * length / count
+            end = start + length / count
+            high = min(top, bottom + (step + 1) * riser)
+            box = (SolidBox(x0, y0 + start, bottom, x0 + width, y0 + end, high, material)
+                   if axis == "y" else SolidBox(x0 + start, y0, bottom, x0 + end, y0 + width, high, material))
+            boxes.append(self.add_solid(box))
+        return tuple(boxes)
+
+    def _near_solids(self, x, y, radius=0):
+        seen = set()
+        for cy in range(math.floor((y - radius) / 8), math.floor((y + radius) / 8) + 1):
+            for cx in range(math.floor((x - radius) / 8), math.floor((x + radius) / 8) + 1):
+                for box in self._solid_chunks.get((cx, cy), ()):
+                    identity = id(box)
+                    if identity not in seen:
+                        seen.add(identity)
+                        yield box
+
+    def geometry_hit(self, origin, direction, limit):
+        hit = self.heightfield.ray_hit(origin, direction, limit) if self.heightfield is not None else None
+        if hit is not None:
+            limit = hit.distance
+        solid = self._solid_hit(origin, direction, limit, self._solid_chunks)
+        return solid if solid is not None else hit
+
+    @staticmethod
+    def _solid_hit(origin, direction, limit, chunks, start=0.0, size=8):
+        hit = None
+        if chunks:
+            seen = set()
+            for cx, cy, entry, _ in grid_intervals(origin[0], origin[1], direction[0], direction[1], start, limit, size):
+                if entry > limit + 1e-8:
+                    break
+                for box in chunks.get((cx, cy), ()):
+                    identity = id(box)
+                    if identity in seen:
+                        continue
+                    seen.add(identity)
+                    candidate = box.ray_hit(origin, direction, limit)
+                    if candidate is not None:
+                        hit, limit = candidate, candidate.distance
+        return hit
+
+    def geometry_query(self, bounds, planes):
+        """Conservative once-per-view selection; exact rays retain final say."""
+        x0, y0, x1, y1 = bounds
+        planes = tuple(planes)
+
+        def visible(box):
+            if box.x1 < x0 or box.x0 > x1 or box.y1 < y0 or box.y0 > y1:
+                return False
+            return all(nx * (box.x1 if nx >= 0 else box.x0)
+                       + ny * (box.y1 if ny >= 0 else box.y0)
+                       + nz * (box.z1 if nz >= 0 else box.z0) + offset >= -1e-7
+                       for nx, ny, nz, offset in planes)
+
+        def enclosing(boxes):
+            if not boxes:
+                return None
+            return SolidBox(min(b.x0 for b in boxes), min(b.y0 for b in boxes), min(b.z0 for b in boxes),
+                            max(b.x1 for b in boxes), max(b.y1 for b in boxes), max(b.z1 for b in boxes))
+
+        selected = [box for box in self.solids if visible(box)]
+        selection_key = self.revision, tuple(id(box) for box in selected)
+        if self._solid_query_cache is not None and self._solid_query_cache[0] == selection_key:
+            _, chunks, solid_cell_size = self._solid_query_cache
+        else:
+            # Fine tread cells avoid testing an entire eight-unit flight at
+            # every ray crossing. Bound index construction for generic boxes.
+            ranges = [(math.floor(box.x0 - 1e-8), math.floor(box.y0 - 1e-8),
+                       math.floor(box.x1 + 1e-8), math.floor(box.y1 + 1e-8), box)
+                      for box in selected]
+            work = sum((rx1 - rx0 + 1) * (ry1 - ry0 + 1) for rx0, ry0, rx1, ry1, _ in ranges)
+            chunks = {}
+            if work <= 2048:
+                solid_cell_size = 1
+                for rx0, ry0, rx1, ry1, box in ranges:
+                    for y in range(ry0, ry1 + 1):
+                        for x in range(rx0, rx1 + 1):
+                            chunks.setdefault((x, y), []).append(box)
+            else:
+                solid_cell_size = 8
+                selected_ids = set(selection_key[1])
+                for key, boxes in self._solid_chunks.items():
+                    candidates = [box for box in boxes if id(box) in selected_ids]
+                    if candidates:
+                        chunks[key] = candidates
+            self._solid_query_cache = selection_key, chunks, solid_cell_size
+        solid_bounds = enclosing(selected)
+        ground_boxes = []
+        ground = self.heightfield
+        if ground is not None:
+            for cy in range(max(0, math.floor(y0 / 8)), min((ground.depth + 7) // 8, math.floor(y1 / 8) + 1)):
+                for cx in range(max(0, math.floor(x0 / 8)), min((ground.width + 7) // 8, math.floor(x1 / 8) + 1)):
+                    low, high = ground._chunk_bounds(cx, cy)
+                    if low == math.inf:
+                        continue
+                    box = SolidBox(cx * 8, cy * 8, 0, min(ground.width, (cx + 1) * 8),
+                                   min(ground.depth, (cy + 1) * 8), high)
+                    if visible(box):
+                        ground_boxes.append(box)
+        ground_bounds = enclosing(ground_boxes)
+        if solid_bounds is None and ground_bounds is None:
+            return None
+
+        def query(origin, direction, limit):
+            hit = None
+            if ground_bounds is not None:
+                end_z = origin[2] + direction[2] * limit
+                if min(origin[2], end_z) <= ground_bounds.z1 + 1e-7:
+                    entry = ground_bounds.ray_entry(origin, direction, limit)
+                    if entry is not None:
+                        hit = ground.ray_hit(origin, direction, limit, minimum=entry)
+                        if hit is not None:
+                            limit = hit.distance
+            if solid_bounds is not None:
+                end_z = origin[2] + direction[2] * limit
+                if (min(origin[2], end_z) <= solid_bounds.z1 + 1e-7
+                        and max(origin[2], end_z) >= solid_bounds.z0 - 1e-7):
+                    entry = solid_bounds.ray_entry(origin, direction, limit)
+                    if entry is not None:
+                        solid = self._solid_hit(origin, direction, limit, chunks, entry, solid_cell_size)
+                        if solid is not None:
+                            hit = solid
+            return hit
+
+        query.minimum_depth = 0.0
+        if len(planes) >= 2:
+            nx, ny, nz, offset = planes[-2]
+            far = planes[-1]
+            if (abs(nx * nx + ny * ny + nz * nz - 1.0) < 1e-8
+                    and (nx, ny, nz) == tuple(-value for value in far[:3])):
+                # Camera rays have unit forward component. This nearest AABB
+                # support plane bounds their original, unnormalized parameter.
+                minimum = min(nx * (box.x0 if nx >= 0 else box.x1)
+                              + ny * (box.y0 if ny >= 0 else box.y1)
+                              + nz * (box.z0 if nz >= 0 else box.z1) + offset
+                              for box in (*selected, *ground_boxes))
+                query.minimum_depth = max(0.0, minimum - 1e-7)
+        return query
+
+    def _point_surface(self, x, y):
+        top, material = self._surface(x, y)
+        if self.heightfield is not None:
+            ground = self.heightfield.height_at(x, y)
+            if ground is not None and ground >= top - 1e-8:
+                top, material = ground, self.heightfield.material_at(x, y)
+        for box in self._near_solids(x, y):
+            if box.x0 <= x < box.x1 and box.y0 <= y < box.y1 and box.z1 > top:
+                top, material = box.z1, box.material
+        return top, material
+
+    def surface_height(self, x: float, y: float) -> float:
+        return self._point_surface(x, y)[0]
 
     def surface_material(self, x: float, y: float) -> int:
-        return self._surface(x, y)[1]
+        return self._point_surface(x, y)[1]
+
+    def _contact_surfaces(self, x, y, feet, radius, max_rise, max_drop):
+        low, high = feet - max_drop, feet + max_rise
+        if self.heightfield is not None:
+            for top, material in self.heightfield.footprint(x, y, radius):
+                if low - 1e-7 <= top <= high + 1e-7:
+                    yield top, material
+        for box in self._near_solids(x, y, radius):
+            if low - 1e-7 <= box.z1 <= high + 1e-7 and circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1):
+                yield box.z1, box.material
+        for cy in range(math.floor(y - radius), math.floor(y + radius) + 1):
+            for cx in range(math.floor(x - radius), math.floor(x + radius) + 1):
+                if not circle_rect(x, y, radius, cx, cy, cx + 1, cy + 1):
+                    continue
+                for top in range(math.ceil(low - 1e-7), math.floor(high + 1e-7) + 1):
+                    material = self.get(cx, cy, top - 1)
+                    if material not in (AIR, WATER):
+                        yield float(top), material
+
+    def walk_support(self, x, y, feet, radius=0.22, max_rise=0.5, max_drop=0.5):
+        allowed = (STONE, FLOOR, GRASS, PATH)
+        return max((pair for pair in self._contact_surfaces(x, y, feet, radius, max_rise, max_drop)
+                    if pair[1] in allowed or pair[0] <= feet + 1e-7), default=None)
+
+    def terrain_walkable(self, x, y, radius=0.22, feet=None):
+        if self.heightfield is None:
+            return True
+        return not any(grade > 1.0 + 1e-9 and (feet is None or abs(top - feet) <= 0.06)
+                       for top, _, grade in self.heightfield.footprint(x, y, radius, with_grade=True))
+
+    def contact_material(self, x, y, feet, radius=0.22, tolerance=0.06):
+        # Preserve the existing voxel/door Foley resolver's center precedence.
+        contacts = []
+        if self.heightfield is not None:
+            contacts.extend((top, material) for top, material in self.heightfield.footprint(x, y, radius)
+                            if abs(top - feet) <= tolerance)
+        contacts.extend((box.z1, box.material) for box in self._near_solids(x, y, radius)
+                        if abs(box.z1 - feet) <= tolerance
+                        and circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1))
+        contact = max(contacts, default=None)
+        return contact[1] if contact is not None else None
+
+    def step_contact(self, x, y, feet, radius=0.22):
+        return any(abs(box.z1 - feet) < 1e-5 and circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1)
+                   for box in self._near_solids(x, y, radius))
 
     def collides(self, x: float, y: float, feet: float,
                  radius: float = 0.22, height: float = 1.7,
@@ -127,6 +356,10 @@ class World:
         if x - radius < 0 or y - radius < 0:
             return True
         if x + radius > self.width or y + radius > self.depth or feet < RIVERBED_LEVEL - 1e-7:
+            return True
+        if self.heightfield is not None and any(feet < top - 1e-7 for top, _ in self.heightfield.footprint(x, y, radius)):
+            return True
+        if any(box.overlaps(x, y, feet, radius, height) for box in self._near_solids(x, y, radius)):
             return True
         for cy in range(math.floor(y - radius), math.floor(y + radius) + 1):
             for cx in range(math.floor(x - radius), math.floor(x + radius) + 1):
@@ -162,6 +395,9 @@ class World:
         Return travel distance rather than sampling, even for thin door leaves.
         """
         limit = max(0.0, distance)
+        geometry = self.geometry_hit(origin, direction, limit) if self.geometry_present else None
+        if geometry is not None:
+            limit = geometry.distance
         cell = [math.floor(value) for value in origin]
         steps = [1 if value >= 0 else -1 for value in direction]
         deltas = [abs(1 / value) if abs(value) > 1e-12 else math.inf
@@ -169,7 +405,7 @@ class World:
         crossings = [((cell[i] + 1 - origin[i]) if steps[i] > 0
                       else (origin[i] - cell[i])) * deltas[i]
                      if math.isfinite(deltas[i]) else math.inf for i in range(3)]
-        travelled, nearest = 0.0, None
+        travelled, nearest = 0.0, geometry.distance if geometry is not None else None
         while True:
             if self.get(*cell) not in (AIR, WATER):
                 nearest = travelled
@@ -277,5 +513,7 @@ def build_world() -> World:
                   x + 1, math.ceil(center + 2.5), 1, WATER)
     expand_world(world)
     add_landmarks(world)
+    if world.heightfield is not None:
+        world.heightfield.prepare()
     world.combat = make_training_combat()
     return world

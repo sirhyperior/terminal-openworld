@@ -34,9 +34,32 @@ class Player:
     GRAVITY = 19.0
     JUMP_SPEED = 7.1
 
-    def _step_up(self, world: World, x: float, y: float) -> bool:
-        """Climb one voxel of terrain/stairs only with support and headroom."""
+    def _follow_ground(self, world: World, x: float, y: float) -> tuple[bool, bool]:
+        """Follow walkable slopes/treads without turning descent into a fall."""
         if not self.grounded or self.in_water or self.vertical_speed > 0:
+            return False, False
+        support = world.walk_support(x, y, self.z, self.RADIUS, 0.5, 0.5)
+        if support is None:
+            return False, False
+        feet, _ = support
+        if not world.terrain_walkable(x, y, self.RADIUS, feet=feet):
+            return False, False
+        if world.collides(x, y, feet, self.RADIUS, self.HEIGHT):
+            return False, False
+        # Continuous hillside adjustments use ordinary distance-based Foley.
+        # Discrete treads provide a contact cue on both ascent and descent.
+        stepped = (abs(feet - self.z) > 1e-5
+                   and (world.step_contact(self.x, self.y, self.z, self.RADIUS)
+                        or world.step_contact(x, y, feet, self.RADIUS)))
+        self.z = feet
+        self.vertical_speed = 0.0
+        return True, stepped
+
+    def _step_up(self, world: World, x: float, y: float) -> bool:
+        """Retain one-voxel fixture steps with real voxel support/headroom."""
+        if not self.grounded or self.in_water or self.vertical_speed > 0:
+            return False
+        if world.heightfield is not None and world.heightfield.height_at(x, y) is not None:
             return False
         feet = math.floor(self.z + 1.0001)
         if feet <= self.z or feet - self.z > 1.0001:
@@ -119,14 +142,26 @@ class Player:
         stepped = False
         for _ in range(count):
             next_x, next_y = self.x + dx / count, self.y + dy / count
-            if not world.collides(next_x, self.y, self.z, self.RADIUS, self.HEIGHT):
+            supported, contact = self._follow_ground(world, next_x, self.y)
+            if supported:
+                self.x = next_x
+                stepped |= contact
+            elif not world.collides(next_x, self.y, self.z, self.RADIUS, self.HEIGHT):
                 self.x = next_x
             elif self._step_up(world, next_x, self.y):
                 self.x, stepped = next_x, True
-            if not world.collides(self.x, next_y, self.z, self.RADIUS, self.HEIGHT):
+            supported, contact = self._follow_ground(world, self.x, next_y)
+            if supported:
+                self.y = next_y
+                stepped |= contact
+            elif not world.collides(self.x, next_y, self.z, self.RADIUS, self.HEIGHT):
                 self.y = next_y
             elif self._step_up(world, self.x, next_y):
                 self.y, stepped = next_y, True
+            supported, contact = self._follow_ground(world, self.x, self.y)
+            stepped |= contact
+            if supported:
+                continue
             self.vertical_speed -= self.GRAVITY * step_dt
             dz = self.vertical_speed * step_dt
             next_z = self.z + dz

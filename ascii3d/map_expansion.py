@@ -70,10 +70,10 @@ def _castle(world):
     world.box(32, 42, 5, 39, 63, 6)
     for y in (42, 47, 52, 57, 62):
         world.box(38, y, 1, 39, y + 1, 5)
-    # Broad one-unit steps can be jumped/climbed with existing player physics.
-    for step in range(5):
-        world.box(34, 34 + step, 1, 37, 35 + step, 2 + step)
-    world.box(32, 39, 5, 37, 43, 6)
+    # The west approach uses the same quarter-unit stair geometry as the halls.
+    world.add_stair_flight(34, 32, 3, 10, 1, 6,
+                           axis="y", direction=1, riser=0.25, material=FLOOR)
+    world.box(32, 42, 5, 37, 43, 6)
 
     # A central northern great hall, with south doors and a rear arch to the gate.
     world.box(47, 61, 0, 65, 72, 1, WOOD)
@@ -191,10 +191,12 @@ def expand_world(world: "World") -> None:
                  (9, 53), (13, 69), (38, 81), (68, 81), (101, 31), (105, 62),
                  (99, 75), (8, 93), (35, 101), (77, 104), (101, 100), (39, 91))
     for seed, (x, y) in enumerate(positions):
-        if world.get(x, y, 0) == GRASS and world.get(x, y, 1) == AIR:
+        px, py = x + 0.5, y + 0.5
+        feet = world.surface_height(px, py)
+        if world.surface_material(px, py) == GRASS:
             world.trees[x, y] = Tree(x + 0.5, y + 0.5,
                                     0.18 + seed % 3 * 0.025,
-                                    4.0 + seed % 3 * 0.22, seed)
+                                    feet + 3.0 + seed % 3 * 0.22, seed, base_z=feet)
 
 
 def expanded_area_name(x: float, y: float) -> str | None:

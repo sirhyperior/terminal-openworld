@@ -20,11 +20,16 @@ def surface_kind(world, x: float, y: float, feet: float, in_water: bool = False)
     the center cell: a player can stand on a crate/bridge edge with air below
     their center. Only surfaces at foot height count, so ground below a raised
     bridge and nearby walls cannot supply its material. Water takes precedence
-    while wading; analytic wooden door tops also provide support.
+    while wading. Continuous hills and fractional treads use the shared analytic
+    contact query; wooden door tops also provide support.
     """
     cx, cy = math.floor(x), math.floor(y)
     if in_water or (feet < WATER_LEVEL and world.get(cx, cy, 0) == WATER):
         return "water"
+
+    material = world.contact_material(x, y, feet, _CONTACT_RADIUS, _CONTACT_TOLERANCE)
+    if material in _MATERIALS:
+        return _MATERIALS[material]
 
     cz = round(feet) - 1
     # Contact resolution can leave a tiny positive gap above a voxel top.

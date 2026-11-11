@@ -34,9 +34,12 @@ class CastleWorldTests(unittest.TestCase):
         self.assertNotEqual(self.world.get(55, 30, 5), AIR)
         self.assertNotEqual(self.world.get(36, 50, 5), AIR)
         self.assertEqual(self.world.get(36, 50, 2), AIR)
-        for step in range(5):
-            self.assertNotEqual(self.world.get(35, 34 + step, 1 + step), AIR)
-            self.assertEqual(self.world.get(35, 34 + step, 2 + step), AIR)
+        for step in range(20):
+            y = 32.25 + step * 0.5
+            top = 1.25 + step * 0.25
+            self.assertAlmostEqual(self.world.surface_height(35.5, y), top)
+            self.assertAlmostEqual(self.world.solid_hit((35.5, y, top + 0.3),
+                                                        (0, 0, -1), 0.5), 0.3)
 
     def test_sword_aliases_are_collectable_from_both_spawns_and_staff_from_ruins(self):
         swords = [item for item in self.world.combat.pickups if item.weapon == SWORD]
@@ -71,15 +74,24 @@ class CastleWorldTests(unittest.TestCase):
         targets[0].down_remaining = 4
         self.assertTrue(all(enemy.hp == 3 for enemy in targets[1:]))
 
-    def test_jumping_up_west_steps_reaches_cloister_roof_without_new_physics(self):
-        player = Player(x=35.5, y=33, yaw=math.pi / 2)
+    def test_west_fine_steps_walk_to_cloister_roof_and_back(self):
+        player = Player(x=35.5, y=31, yaw=math.pi / 2)
         for _ in range(600):
-            player.update(self.world, {"w"}, 1 / 120, jump=player.grounded)
+            player.update(self.world, {"w"}, 1 / 120)
             if player.y > 42 and player.z >= 6:
                 break
         self.assertGreater(player.y, 42)
         self.assertGreaterEqual(player.z, 6)
         self.assertFalse(self.world.collides(player.x, player.y, player.z))
+        player.yaw = -math.pi / 2
+        for _ in range(600):
+            player.update(self.world, {"w"}, 1 / 120)
+            self.assertTrue(player.grounded)
+            self.assertFalse(self.world.collides(player.x, player.y, player.z))
+            if player.y < 31.5:
+                break
+        self.assertLess(player.y, 31.5)
+        self.assertAlmostEqual(player.z, 1)
 
     def test_river_stays_outside_castle_and_current_follows_its_centerline(self):
         x0, y0, x1, y1 = CASTLE_BOUNDS

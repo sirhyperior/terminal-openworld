@@ -22,6 +22,36 @@ def grass_world(size=32, elevation=1):
 
 
 class ElevatedSceneryTests(unittest.TestCase):
+    def test_fractional_floor_cover_suppresses_only_the_covered_grass_roots(self):
+        from ascii3d.surfaces import SolidBox
+
+        world = grass_world(elevation=1)
+        # The exclusive edge leaves the center clear above the western half.
+        world.add_solid(SolidBox(8, 8, 1, 8.5, 9, 1.25, FLOOR))
+        patches = Scenery(world).grass_chunk(2, 2)
+        blades = next(blades for x, y, blades in patches if (x, y) == (8, 8))
+        self.assertEqual(len(blades), 8)
+        self.assertTrue(all(blade.x >= 8.5 and blade.z == 1 for blade in blades))
+        self.assertTrue(all(world.surface_material(blade.x, blade.y) == GRASS for blade in blades))
+        self.assertTrue(all(len(blades) == 16 for x, y, blades in patches if (x, y) != (8, 8)))
+
+    def test_sloped_grass_uses_each_blades_exact_supported_height_without_thinning(self):
+        from ascii3d.surfaces import HeightField
+
+        world = grass_world(elevation=1)
+        heights = [2 + x / 8 + y / 16
+                   for y in range(world.depth + 1) for x in range(world.width + 1)]
+        world.heightfield = HeightField(world.width, world.depth, heights, material=GRASS)
+        scenery = Scenery(world)
+        patches = scenery.grass_chunk(2, 2)
+        self.assertEqual(len(patches), 16)
+        for x, y, blades in patches:
+            self.assertEqual(len(blades), 16)
+            self.assertGreater(len({blade.z for blade in blades}), 12)
+            for blade in blades:
+                self.assertAlmostEqual(blade.z, 2 + blade.x / 8 + blade.y / 16)
+                self.assertAlmostEqual(blade.z, world.surface_height(blade.x, blade.y))
+
     def test_construction_does_not_scan_or_allocate_the_enormous_grass_field(self):
         world = World.empty(512, 512, 32)
         world.outdoor_bounds = (0, 0, 512, 512)

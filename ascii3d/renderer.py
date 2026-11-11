@@ -1,4 +1,4 @@
-"""Perspective voxel ray casting: one 3D DDA ray per terminal character."""
+"""Perspective voxel and continuous-surface rays, sharing exact depth tests."""
 
 import math
 
@@ -13,6 +13,33 @@ from .world import (AIR, BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, WATER
 
 
 RAMP = " .,:;!+=*#%@"
+
+
+def _extend_horizon(skyline, origin_x, origin_y, eye, top, x0, y0, x1, y1):
+    """Bound a rectangle's upward slope for every origin in one camera cell."""
+    if top <= eye:
+        return True
+    if (x0 < origin_x + 1 and x1 > origin_x
+            and y0 < origin_y + 1 and y1 > origin_y):
+        return False
+    relative_x = x0 - (origin_x + 1), x1 - origin_x
+    relative_y = y0 - (origin_y + 1), y1 - origin_y
+    dx, dy = max(relative_x[0], -relative_x[1], 0), max(relative_y[0], -relative_y[1], 0)
+    distance_squared = dx * dx + dy * dy
+    slope = (top - eye) ** 2 / distance_squared if distance_squared else math.inf
+    angles = sorted(math.atan2(y, x) % math.tau for x in relative_x for y in relative_y)
+    gaps = [angles[i + 1] - angles[i] for i in range(3)]
+    gaps.append(angles[0] + math.tau - angles[3])
+    gap = max(range(4), key=gaps.__getitem__)
+    start = angles[(gap + 1) % 4]
+    end = start + math.tau - gaps[gap]
+    scale = 128 / math.tau
+    first, last = math.floor(start * scale) - 1, math.floor(end * scale) + 1
+    for index in range(first, last + 1):
+        index %= 128
+        if slope > skyline[index]:
+            skyline[index] = slope
+    return True
 
 
 def _river_ripple(x: float, y: float, time_seconds: float) -> float:
@@ -131,11 +158,15 @@ class Renderer:
         self._horizon_tops = []
         self._horizon_key = None
         self._sky_horizon = None
+        self._analytic_horizon_key = None
+        self._analytic_sky_horizon = None
         self.cache_stats = {}
 
     def prepare_world(self) -> None:
         """Build static traversal caches before interactive input/audio starts."""
         self._update_chunks()
+        if self.world.heightfield is not None:
+            self.world.heightfield.prepare()
 
     def _update_chunks(self):
         if self._world_revision == self.world.revision:
@@ -314,7 +345,6 @@ class Renderer:
         right = min(blocks_x, (origin_x + 1 + radius) // 4 + 1)
         high = min(blocks_y, (origin_y + 1 + radius) // 4 + 1)
         skyline = [0.0] * 128
-        scale = 128 / math.tau
         chunks_x, chunks_y = (world.width + 1) // 2, (world.depth + 1) // 2
         for by in range(low, high):
             for bx in range(left, right):
@@ -333,31 +363,60 @@ class Renderer:
                              for cy in range(by * 2, min(chunks_y, by * 2 + 2))
                              for cx in range(bx * 2, min(chunks_x, bx * 2 + 2))]
                 for top, x0, y0, x1, y1 in parts:
-                    if top <= eye:
-                        continue
-                    if (x0 < origin_x + 1 and x1 > origin_x
-                            and y0 < origin_y + 1 and y1 > origin_y):
+                    if not _extend_horizon(skyline, origin_x, origin_y, eye, top, x0, y0, x1, y1):
                         # A roof/tall wall in the camera's own 2x2 region
                         # makes the bound uninformative; trace ordinary rays.
                         self._sky_horizon, self._horizon_key = None, key
                         return None
-                    relative_x = x0 - (origin_x + 1), x1 - origin_x
-                    relative_y = y0 - (origin_y + 1), y1 - origin_y
-                    dx, dy = max(relative_x[0], -relative_x[1], 0), max(relative_y[0], -relative_y[1], 0)
-                    distance_squared = dx * dx + dy * dy
-                    slope = (top - eye) ** 2 / distance_squared if distance_squared else math.inf
-                    angles = sorted(math.atan2(y, x) % math.tau for x in relative_x for y in relative_y)
-                    gaps = [angles[i + 1] - angles[i] for i in range(3)]
-                    gaps.append(angles[0] + math.tau - angles[3])
-                    gap = max(range(4), key=gaps.__getitem__)
-                    start = angles[(gap + 1) % 4]
-                    end = start + math.tau - gaps[gap]
-                    first, last = math.floor(start * scale) - 1, math.floor(end * scale) + 1
-                    for index in range(first, last + 1):
-                        index %= 128
-                        if slope > skyline[index]:
-                            skyline[index] = slope
         self._sky_horizon, self._horizon_key = skyline, key
+        return skyline
+
+    def _prepare_analytic_horizon(self, player, cp, sp):
+        """Conservative independent skyline for continuous ground and solids."""
+        forward = max(abs(cp - self._rows[0] * sp), abs(cp - self._rows[-1] * sp))
+        side = max(abs(self._columns[0]), abs(self._columns[-1]))
+        radius = math.ceil(48 * math.hypot(forward, side)) + 2
+        origin_x, origin_y = math.floor(player.x), math.floor(player.y)
+        eye = math.floor(player.eye_z * 4) / 4
+        world, ground = self.world, self.world.heightfield
+        key = (world.revision, id(ground), ground.revision if ground is not None else None,
+               origin_x, origin_y, eye, radius)
+        if key == self._analytic_horizon_key:
+            return self._analytic_sky_horizon
+        skyline = [0.0] * 128
+        if ground is not None:
+            size = ground.CHUNK
+            left, low = max(0, (origin_x - radius) // size), max(0, (origin_y - radius) // size)
+            right = min((ground.width + size - 1) // size, (origin_x + 1 + radius) // size + 1)
+            high = min((ground.depth + size - 1) // size, (origin_y + 1 + radius) // size + 1)
+            for cy in range(low, high):
+                for cx in range(left, right):
+                    _, top = ground._chunk_bounds(cx, cy)
+                    if top <= eye or top == -math.inf:
+                        continue
+                    x0, y0 = cx * size, cy * size
+                    x1, y1 = min(ground.width, x0 + size), min(ground.depth, y0 + size)
+                    if (x0 <= origin_x < x1 and y0 <= origin_y < y1):
+                        # A high point elsewhere in this coarse chunk must not
+                        # make every direction unbounded around a low player.
+                        parts = [(ground.cell_bounds(x, y)[1], x, y, x + 1, y + 1)
+                                 for y in range(y0, y1) for x in range(x0, x1)
+                                 if ground.enabled[y * ground.width + x]]
+                    else:
+                        parts = [(top, x0, y0, x1, y1)]
+                    for top, x0, y0, x1, y1 in parts:
+                        if not _extend_horizon(skyline, origin_x, origin_y, eye, top, x0, y0, x1, y1):
+                            self._analytic_sky_horizon, self._analytic_horizon_key = None, key
+                            return None
+        for box in world.solids:
+            if (box.x1 < origin_x - radius or box.x0 > origin_x + 1 + radius
+                    or box.y1 < origin_y - radius or box.y0 > origin_y + 1 + radius):
+                continue
+            if not _extend_horizon(skyline, origin_x, origin_y, eye, box.z1,
+                                   box.x0, box.y0, box.x1, box.y1):
+                self._analytic_sky_horizon, self._analytic_horizon_key = None, key
+                return None
+        self._analytic_sky_horizon, self._analytic_horizon_key = skyline, key
         return skyline
 
     def scene(self, player: Player, width: int, height: int, time_seconds: float = 0.0) -> list[list[str]]:
@@ -390,6 +449,34 @@ class Renderer:
         sky_horizon = self._prepare_horizon(player, cp, sp) if skip_empty else None
         horizon_scale = 128 / math.tau
         current, aspect = world.current, self.cell_aspect
+        origin = (px, py, pz)
+        geometry_hit = None
+        if world.geometry_present:
+            # Query only analytic shapes that can reach a sampled camera ray.
+            # The unnormalized ray parameter is forward depth, so the original
+            # 48-unit ray limit is also this frustum's exact far plane.
+            forward = (cy * cp, sy * cp, sp)
+            right, up = (sy, -cy, 0.0), (-cy * sp, -sy * sp, cp)
+            umin, umax = self._columns[0], self._columns[-1]
+            vmin, vmax = self._rows[-1], self._rows[0]
+            normals = [tuple(right[i] - umin * forward[i] for i in range(3)),
+                       tuple(umax * forward[i] - right[i] for i in range(3)),
+                       tuple(up[i] - vmin * forward[i] for i in range(3)),
+                       tuple(vmax * forward[i] - up[i] for i in range(3)),
+                       forward, tuple(-value for value in forward)]
+            planes = [(*normal, -sum(normal[i] * origin[i] for i in range(3)))
+                      for normal in normals]
+            planes[-1] = (*planes[-1][:3], planes[-1][3] + 48)
+            endpoints = [(px, py)] + [
+                (px + 48 * (forward[0] + u * right[0] + v * up[0]),
+                 py + 48 * (forward[1] + u * right[1] + v * up[1]))
+                for u in (umin, umax) for v in (vmin, vmax)]
+            bounds = (min(point[0] for point in endpoints), min(point[1] for point in endpoints),
+                      max(point[0] for point in endpoints), max(point[1] for point in endpoints))
+            geometry_hit = world.geometry_query(bounds, planes)
+        analytic_minimum = getattr(geometry_hit, "minimum_depth", 0.0)
+        analytic_horizon = (self._prepare_analytic_horizon(player, cp, sp)
+                            if geometry_hit is not None and skip_empty else None)
         horizontal_rays = None
         if player.pitch == 0:
             # With a level camera the horizontal DDA setup is identical on
@@ -402,11 +489,16 @@ class Renderer:
                 ddy = 1.0 / dy if dy > 1e-12 else -1.0 / dy if dy < -1e-12 else 1e30
                 initial_x = ((start_x + 1 - px) if sx > 0 else (px - start_x)) * ddx
                 initial_y = ((start_y + 1 - py) if sy_step > 0 else (py - start_y)) * ddy
-                horizon = math.inf
-                if sky_horizon is not None:
+                horizon = analytic_slope = math.inf
+                if sky_horizon is not None or analytic_horizon is not None:
                     azimuth = int((math.atan2(dy, dx) % math.tau) * horizon_scale) % 128
-                    horizon = sky_horizon[azimuth] * (dx * dx + dy * dy)
-                horizontal_rays.append((dx, dy, sx, sy_step, ddx, ddy, initial_x, initial_y, horizon))
+                    horizontal_squared = dx * dx + dy * dy
+                    if sky_horizon is not None:
+                        horizon = sky_horizon[azimuth] * horizontal_squared
+                    if analytic_horizon is not None:
+                        analytic_slope = analytic_horizon[azimuth] * horizontal_squared
+                horizontal_rays.append((dx, dy, sx, sy_step, ddx, ddy, initial_x, initial_y,
+                                        horizon, analytic_slope))
         ramp = RAMP
         ramp_max = len(ramp) - 1
         pixels = []
@@ -447,6 +539,7 @@ class Renderer:
             delta_z = 1.0 / dz if dz > 1e-12 else -1.0 / dz if dz < -1e-12 else 1e30
             initial_z = ((start_z + 1 - pz) if step_z > 0 else (pz - start_z)) * delta_z
             rising = sky_horizon is not None and dz > 0
+            analytic_rising = analytic_horizon is not None and dz > 0
             dz_squared = dz * dz
 
             for column_index, u in enumerate(self._columns):
@@ -454,22 +547,34 @@ class Renderer:
                 ray_limit = panel_depth if panel_depth < 48 else 48
                 if combat_depth_row is not None and combat_depth_row[column_index] < ray_limit:
                     ray_limit = combat_depth_row[column_index]
+                voxel_sky = False
+                query_analytic = geometry_hit is not None and ray_limit >= analytic_minimum
                 if horizontal_rays is not None:
-                    dx, dy, step_x, step_y, delta_x, delta_y, side_x, side_y, horizon = horizontal_rays[column_index]
+                    (dx, dy, step_x, step_y, delta_x, delta_y, side_x, side_y,
+                     horizon, analytic_slope) = horizontal_rays[column_index]
+                    if analytic_rising and dz_squared > analytic_slope:
+                        query_analytic = False
                     if rising and dz_squared > horizon:
-                        row.append(panel_row[column_index] if panel_row is not None else " ")
-                        depth_row.append(panel_depth)
-                        continue
+                        if not query_analytic:
+                            row.append(panel_row[column_index] if panel_row is not None else " ")
+                            depth_row.append(panel_depth)
+                            continue
+                        voxel_sky = True
                 else:
                     dx, dy = base_x + u * sy, base_y - u * cy
                     # Sky rays do not need signs, reciprocal crossing deltas,
                     # or any voxel traversal initialization.
-                    if rising:
+                    if rising or analytic_rising:
                         azimuth = int((math.atan2(dy, dx) % math.tau) * horizon_scale) % 128
-                        if dz_squared > sky_horizon[azimuth] * (dx * dx + dy * dy):
-                            row.append(panel_row[column_index] if panel_row is not None else " ")
-                            depth_row.append(panel_depth)
-                            continue
+                        horizontal_squared = dx * dx + dy * dy
+                        if analytic_rising and dz_squared > analytic_horizon[azimuth] * horizontal_squared:
+                            query_analytic = False
+                        if rising and dz_squared > sky_horizon[azimuth] * horizontal_squared:
+                            if not query_analytic:
+                                row.append(panel_row[column_index] if panel_row is not None else " ")
+                                depth_row.append(panel_depth)
+                                continue
+                            voxel_sky = True
                     step_x, step_y = (1 if dx >= 0 else -1), (1 if dy >= 0 else -1)
                     delta_x = 1.0 / dx if dx > 1e-12 else -1.0 / dx if dx < -1e-12 else 1e30
                     delta_y = 1.0 / dy if dy > 1e-12 else -1.0 / dy if dy < -1e-12 else 1e30
@@ -482,7 +587,7 @@ class Renderer:
                 material, axis, distance = 0, 0, 0.0
 
                 # Rays walk the voxel grid exactly, without a sampling step size.
-                for _ in range(110):
+                for _ in range(0 if voxel_sky else 110):
                     if skip_empty and step_z > 0 and z >= local_ceiling:
                         break
                     chunk_index = (y >> 1) * chunks_x + (x >> 1)
@@ -573,6 +678,20 @@ class Renderer:
                     if material:
                         break
 
+                # Voxel AIR/sky acceleration knows nothing about analytic
+                # surfaces. Query those independently, but only as far as the
+                # opaque voxel/water hit already found, or a panel/combat bound.
+                # Preserve the same coincident-surface tolerance as the merge.
+                analytic_hit = None
+                if query_analytic:
+                    analytic_limit = min(ray_limit, distance + 1e-8) if material else ray_limit
+                    if analytic_limit >= analytic_minimum:
+                        analytic_hit = geometry_hit(origin, (dx, dy, dz), analytic_limit)
+                normal = None
+                if analytic_hit is not None and (not material or analytic_hit.distance <= distance + 1e-8):
+                    distance, material, normal = analytic_hit.distance, analytic_hit.material, analytic_hit.normal
+                    ax, ay, az = abs(normal[0]), abs(normal[1]), abs(normal[2])
+                    axis = 0 if ax >= ay and ax >= az else (1 if ay >= az else 2)
                 if not material:
                     row.append(panel_row[column_index] if panel_row is not None else " ")
                     depth_row.append(panel_depth)
@@ -612,14 +731,28 @@ class Renderer:
                     a, b, light = hx, hz, (0.72 if step_y > 0 else 0.45)
                 else:
                     a, b, light = hx, hy, (0.93 if step_z < 0 else 0.40)
+                if normal is not None and normal[2] > 0.0:
+                    # Continuous slope lighting replaces terrace-side shading;
+                    # flat stair treads retain the ordinary top-face light.
+                    light = max(0.25, min(0.97, 0.76 + 0.17 * normal[2]
+                                         - 0.16 * normal[0] - 0.12 * normal[1]))
                 fu, fv = a % 1.0, b % 1.0
 
-                if material == GRASS and axis == 2 and step_z < 0:
+                if material == GRASS and ((axis == 2 and step_z < 0)
+                                          or (normal is not None and normal[2] > 0.0)):
                     noise = (int(hx * 6.0) * 73856093 ^ int(hy * 6.0) * 19349663) & 15
                     wx, wy = self.scenery.wind_at(hx, hy)
                     # A continuous turf layer covers every grass top, even
                     # where individual blades become subpixel or leave the LOD.
-                    row.append(",;\"'"[(noise // 4 + int((wx + wy * 0.6 + 0.6) * 3)) % 4])
+                    wind = int((wx + wy * 0.6 + 0.6) * 3)
+                    if normal is None:
+                        row.append(",;\"'"[(noise // 4 + wind) % 4])
+                    else:
+                        # Restrained turf glyphs cover slopes continuously,
+                        # including at the horizon beyond the blade radius.
+                        fog = 1.0 / (1.0 + distance * 0.033)
+                        band = min(3, max(0, int(light * fog * 4)))
+                        row.append((".,", ",;", ';"', "\"'")[band][(noise + wind) % 2])
                     continue
                 elif material == GRASS:
                     # Terrace lips have directional shade, so a grassy rise

@@ -1,12 +1,14 @@
 # MONOLITH
 
-A first-person 3D playground drawn entirely with **white ASCII text on black**.
-Explore a **512 by 512 world** with terraced highlands, valleys, a deep ravine,
+A dark fantasy first-person exploration sandbox drawn entirely with
+**white ASCII text on black**. Future structures, landscapes, NPCs and enemies
+follow that theme.
+Explore a **512 by 512 world** with rolling highlands, valleys, a deep ravine,
 forested ridges and a castle hub. This is about **21 times the previous area**,
 with terrain rising from Z=1 to Z=20 and occupied floors and overlooks up to Z=27.
 Four towers and
 battlements frame an open courtyard, a roofed gatehouse, a great hall, a west
-cloister and a garden. Jump up the west steps to reach the cloister roof and
+cloister and a garden. Walk up the west steps to reach the cloister roof and
 nearby wall walk. Gravel trails circle the castle and lead to two bridges over
 the northern river, ruined chapel, watchstones and an eastern lodge.
 
@@ -14,16 +16,19 @@ Follow the gravel trail east around the lodge to **Ridge Hall**, or leave the
 ruined chapel through its east arch to reach the **Northern Keep**. Longer roads
 connect the **Hill Observatory**, **Splitstone Ravine** and **Far Citadel**. Each
 new hall has three usable floors, windows, a balcony and a rooftop overlook,
-connected by real stairs. Walk up one-unit stone/grass terraces and stairs;
-jump to cross gaps and climb crates. Wooden guardrails remain obstacles.
+connected by real stairs. Walk along continuous hillsides and quarter-unit
+stone stair risers, with half-unit treads. Jump to cross gaps and climb crates.
+Steep ravine slopes above 45 degrees and wooden guardrails remain obstacles.
 
 M shows a local terrain map that follows your position. `^` marks high ground,
-`;` lower terraces, `~` water and `=` bridges. Your direction marker moves over
+`;` lower hills, `~` water and `=` bridges. Your direction marker moves over
 the map; the lower HUD shows your region, coordinates and elevation.
 
-The current hills and stairs use voxel terraces. Planned follow-up work is
-smooth natural hillsides and smaller stair risers; progress and validation
-limits are tracked in `PROJECT_STATUS.md`.
+The current working version shares continuous ground geometry across rendering, collision, vegetation,
+targeting and footstep contacts. All thirteen stair flights use the same fine
+step mechanism, including the west cloister route. Native validation passes;
+physical visual/play review and performance acceptance remain pending. Progress and resume
+steps are tracked in `PROJECT_STATUS.md`.
 
 Seven wooden doors share **E** interaction, swinging animation and collision.
 Approach and look at a doorway to see its prompt. Doors stop or reopen if a leaf
@@ -58,7 +63,7 @@ The upper HUD shows your **10-point health bar**. A Warden hit costs two health.
 Defeat returns you to your starting entrance with full health, keeping your
 held item and world state. R also restores health when returning to the entrance.
 
-The renderer casts a real 3D ray through a voxel world for every character. The
+The renderer casts a real 3D ray through buildings and terrain for every character. The
 camera has perspective, pitch, height, textured surfaces, face lighting, and
 distance shading. Movement includes gravity, cylinder collision, sliding along
 walls, and jumping with head collision.

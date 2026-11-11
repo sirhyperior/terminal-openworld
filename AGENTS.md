@@ -7,12 +7,26 @@ ASCII on black in a terminal. Preserve responsive WASD movement, Shift sprinting
 Space jumping, readable environments and keyboard accessibility. Use Python
 3.10+ and prefer the standard library; justify new dependencies.
 
-- Before development, read [PROJECT_STATUS.md](PROJECT_STATUS.md), then relevant
-  README sections, source and tests. Verify documentation against implementation.
+The world's standing theme is **dark fantasy**. Future structures, terrain,
+NPCs, enemies and environmental details must fit that theme in their design,
+names and atmosphere while preserving readable navigation and interactions.
+
+- At session start or resume, read [PROJECT_STATUS.md](PROJECT_STATUS.md), then
+  [user_designated_milestones.md](user_designated_milestones.md). Consider that
+  user-maintained backlog alongside current blockers and explicit requests;
+  its numbering does not set priority. Remove completed entries and renumber
+  only after verifying completion. Then read relevant README sections, source
+  and tests; verify documentation against implementation.
 - Keep stable rules here, current state/issues/decisions in `PROJECT_STATUS.md`,
   user instructions in `README.md`, and detailed measurements in `benchmarks/`.
   Update status/review date after significant work, including resume paths and
   commands. Distinguish verified facts, reports and proposals; never invent progress.
+- At significant updates and every handoff, prune stale or redundant context
+  from both files. Keep this file for durable rules and `PROJECT_STATUS.md` for
+  the current checkpoint, open issues, latest validation and next steps. Link
+  detailed investigations/history in `benchmarks/`; do not accumulate session
+  logs, temporary usage readings or duplicate README content. Preserve required
+  benchmark evidence when cleaning documentation.
 - Ask before major architectural changes. Routine additive features within the
   existing engine do not require another approval.
 
@@ -65,6 +79,8 @@ output; wall-clock rate caps are only for immediately returning sinks.
 - `world.py`, `map_expansion.py`, `terrain.py`, `player.py`: materials/layout,
   highlands, shared multilevel landmarks, collision, stairs, movement, jumping,
   water current and player health.
+- `surfaces.py`: shared continuous ground triangles, exact circular support,
+  analytic ray hits and fractional stair solids.
 - `renderer.py`, `scenery.py`, `trees.py`, `geometry.py`: rays, HUD/map,
   grass/wind, trees and shared projection/fill/strokes.
 - `targeting.py`, `doors.py`, `door_render.py`: view queries and shared panels.
@@ -82,15 +98,8 @@ Use four spaces, existing type hints/dataclasses, `snake_case`, `PascalCase` and
 water, animation and occlusion; inspect indoor/outdoor rendering changes.
 Windows input tests require a live console and otherwise skip.
 
-Run from the repository root; README documents launch options:
-
-```powershell
-python -B main.py --snapshot
-python -B main.py --demo --frames 100
-python -B main.py --audio-test
-python -B -m unittest discover -s tests -v
-python -B tools/benchmark.py --frames 60 --audio --extra-scenes --compare benchmarks/castle-milestone-before-live.json
-```
+Run from the repository root. README documents launch/test options;
+`PROJECT_STATUS.md` identifies current benchmark controls and resume commands.
 
 Remove generated previews, temporary probes and caches after review unless asked
 to retain them. Keep benchmark evidence needed for open issues; consult

@@ -320,6 +320,13 @@ class CombatState:
                         continue
                 below = world.solid_hit((x, y, feet), (0, 0, -1), feet)
                 z = max(0.12, feet - below) if below is not None else 0.12
+                # A sloped top supports the whole dropped item's footprint,
+                # not just the vertical ray through its center.
+                if world.geometry_present:
+                    support = world.walk_support(x, y, z, radius=0.14,
+                                                 max_rise=0.5, max_drop=0.06)
+                    if support is not None:
+                        z = support[0]
                 if not world.collides(x, y, z, 0.14, 1.60):
                     dropped.x, dropped.y, dropped.z = x, y, z
                     break

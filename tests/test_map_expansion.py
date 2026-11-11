@@ -104,8 +104,9 @@ class MapExpansionTests(unittest.TestCase):
         self.assertIn((int(CLOSE_TREE[0]), int(CLOSE_TREE[1])), self.world.trees)
         for tree in self.world.trees.values():
             x, y = int(tree.x), int(tree.y)
-            self.assertEqual(self.world.get(x, y, int(tree.base_z) - 1), GRASS)
-            self.assertEqual(self.world.get(x, y, int(tree.base_z)), AIR)
+            self.assertEqual(self.world.surface_material(tree.x, tree.y), GRASS)
+            self.assertAlmostEqual(self.world.surface_height(tree.x, tree.y), tree.base_z)
+            self.assertEqual(self.world.get(x, y, math.ceil(tree.base_z)), AIR)
             self.assertFalse(28 <= x < 82 and 24 <= y < 76)
 
     def test_area_names_cover_castle_landmarks_and_material_aware_river(self):

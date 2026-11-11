@@ -17,7 +17,7 @@ class TerrainTests(unittest.TestCase):
         # The generated world is immutable throughout these checks.
         cls.world = build_world()
 
-    def test_enormous_world_contains_low_valleys_and_high_terraces(self):
+    def test_enormous_world_contains_low_valleys_and_continuous_highlands(self):
         world = self.world
         self.assertEqual((world.width, world.depth, world.height), (512, 512, 32))
         self.assertGreater(world.width * world.depth, 20 * 112 * 112)
@@ -27,21 +27,24 @@ class TerrainTests(unittest.TestCase):
         self.assertGreaterEqual(max(samples), 20)
         self.assertGreaterEqual(len(set(samples)), 18)
         for x, y in ((130, 30), (200, 220), (320, 208), (310, 290), (450, 450)):
-            feet = terrain_height(x + 0.5, y + 0.5)
-            self.assertIn(world.get(x, y, feet - 1), (GRASS, PATH))
-            self.assertEqual(world.get(x, y, feet), AIR)
-            if feet > 1:
-                self.assertEqual(world.get(x, y, feet - 2), STONE)
+            feet = world.surface_height(x + 0.5, y + 0.5)
+            foundation = math.floor(world.heightfield.cell_bounds(x, y)[0])
+            self.assertIn(world.surface_material(x + 0.5, y + 0.5), (GRASS, PATH))
+            self.assertEqual(world.get(x, y, foundation), AIR)
+            self.assertGreaterEqual(feet, foundation)
+            if foundation > 1:
+                self.assertEqual(world.get(x, y, foundation - 2), STONE)
 
     def test_height_generation_is_repeatable_and_keeps_the_original_hub(self):
         points = [(x + 0.5, y + 0.5) for x in range(3, 510, 17) for y in range(3, 510, 19)]
         forward = {point: terrain_height(*point) for point in points}
         reverse = {point: terrain_height(*point) for point in reversed(points)}
         self.assertEqual(forward, reverse)
-        for x, y in ((0.5, 0.5), (55.5, 30.5), (105.5, 108.5), (111.5, 111.5)):
+        for x, y in ((0.5, 0.5), (55.5, 30.5), (105.5, 108.5), (111.5, 111.5),
+                     (112, 112), (112, 50), (50, 112)):
             self.assertEqual(terrain_height(x, y), 1)
 
-    def test_route_terraces_never_require_more_than_one_unit_per_cell(self):
+    def test_continuous_routes_are_walkable_from_the_castle_to_ridge_hall(self):
         roads = _road_cells()
         self.assertGreater(len(roads), 6000)
         for x, y in roads:
@@ -88,9 +91,10 @@ class TerrainTests(unittest.TestCase):
                 with self.subTest(landmark=landmark.name, feet=feet):
                     player = Player(x=x, y=start_y, z=feet)
                     events = []
-                    for _ in range(360):
+                    for _ in range(720):
                         player.update(self.world, {"w"}, 1 / 120)
                         events.extend(player.events)
+                        self.assertFalse(self.world.collides(player.x, player.y, player.z))
                         if player.y >= end_y:
                             break
                     self.assertGreaterEqual(player.y, end_y)
@@ -98,6 +102,18 @@ class TerrainTests(unittest.TestCase):
                     self.assertFalse(self.world.collides(player.x, player.y, player.z))
                     self.assertIn("terrain_step", [event.name for event in events])
                     self.assertTrue(all(event.name in EFFECTS for event in events))
+                    player.yaw = -math.pi / 2
+                    down_events = []
+                    for _ in range(720):
+                        player.update(self.world, {"w"}, 1 / 120)
+                        down_events.extend(player.events)
+                        self.assertFalse(self.world.collides(player.x, player.y, player.z))
+                        if player.y <= start_y:
+                            break
+                    self.assertLessEqual(player.y, start_y)
+                    self.assertAlmostEqual(player.z, feet, places=4)
+                    self.assertIn("terrain_step", [event.name for event in down_events])
+                    self.assertNotIn("jump", [event.name for event in events + down_events])
 
     def test_roof_and_balcony_guardrails_do_not_auto_step_over_the_edge(self):
         for landmark in LANDMARKS:
@@ -141,7 +157,11 @@ class TerrainTests(unittest.TestCase):
             for _ in range(720):
                 player.update(self.world, {"w"}, 1 / 120)
                 self.assertFalse(player.in_water)
-                self.assertAlmostEqual(player.z, 1)
+                if y0 + player.RADIUS <= player.y <= y1 - player.RADIUS:
+                    self.assertAlmostEqual(player.z, 1, places=6)
+                else:
+                    self.assertGreaterEqual(player.z, 1)
+                    self.assertLess(player.z, 1.1)
                 if player.y > y1 + 0.5:
                     break
             self.assertGreater(player.y, y1 + 0.5)
@@ -157,8 +177,8 @@ class TerrainTests(unittest.TestCase):
         for tree in elevated:
             x, y = int(tree.x), int(tree.y)
             self.assertNotIn((x, y), roads)
-            self.assertEqual(self.world.get(x, y, int(tree.base_z) - 1), GRASS)
-            self.assertEqual(self.world.get(x, y, int(tree.base_z)), AIR)
+            self.assertEqual(self.world.surface_material(tree.x, tree.y), GRASS)
+            self.assertAlmostEqual(self.world.surface_height(tree.x, tree.y), tree.base_z)
             self.assertGreater(tree.height, tree.base_z + 3)
 
 

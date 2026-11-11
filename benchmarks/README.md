@@ -9,6 +9,23 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Smooth hills/fine stairs (working checkpoint):**
+  [2026-11-11 performance repair](smooth-performance-2026-11-11.md) resumes the
+  immediate FPS work. `smooth-interleaved-repair-2026-11-11.json` is complete:
+  8/24 matched roles pass; the later envelope report passes 9/24 and the latest
+  `smooth-interleaved-depthbound-2026-11-11.json` passes **12/24**, all with zero
+  audio underruns/recoveries. All 393 native tests pass; a 100-frame native 80x24
+  Ridge demo averages about 39.4 FPS including cap waits. Performance acceptance
+  remains open. Work stopped at the user's 15% remaining usage threshold.
+  Preserve `smooth-resume-source-2026-11-11.zip`: its engine files match the
+  initial profile source manifest and support same-geometry reference checks.
+  The camera and atomic partial-report repairs are implemented.
+  [smooth-geometry.md](smooth-geometry.md) records architecture, focused checks
+  and exact resume steps. [First failed output](smooth-interleaved-first-failed.txt)
+  retains 24/24 failed matched roles, followed by a stale stair-camera exception.
+  End-only JSON saving lost that run's raw samples/audio-health summary; that
+  historical failure remains retained. Work is checkpointed at the user's
+  2026-11-11 request; no baseline replacement or performance acceptance is claimed.
 - **Full-terminal viewport:** [viewport-milestone.md](viewport-milestone.md)
   records native final-cell checks, large/tall renderer validation and live-audio
   frame cost. `viewport-interleaved-120x40.json` is diagnostic because its

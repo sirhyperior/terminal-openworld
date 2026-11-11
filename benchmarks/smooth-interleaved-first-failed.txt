@@ -1,0 +1,53 @@
+Smooth geometry initial benchmark — 2026-11-10 — FAILED / INCOMPLETE
+
+Command:
+python -B tools/benchmark_pair.py --before-source smooth_control_tmp --before-elevated-audio --frames 60 --audio --save benchmarks/smooth-interleaved-first.json
+
+Control reconstructed from Git d20cd0d. Windows / Python 3.14.4 / 120x40 /
+60 frames per variant / per-frame ABBA / live shared audio mixer.
+These are captured console percentages from the initial geometry implementation,
+before the subsequent flat-cell/frustum optimizations. All 24 matched roles
+failed the unchanged 15% mean/p95 limits. Do not treat this as acceptance.
+
+indoors            mean +312.77% p95 +307.91% FAIL
+courtyard          mean +462.57% p95 +438.79% FAIL
+meadow             mean +684.10% p95 +743.88% FAIL
+grass_close        mean +494.67% p95 +480.79% FAIL
+bridge             mean +362.08% p95 +290.71% FAIL
+river              mean +336.23% p95 +300.98% FAIL
+ruins              mean +221.66% p95 +238.55% FAIL
+lodge              mean +199.77% p95 +186.18% FAIL
+east_bridge        mean +400.43% p95 +383.09% FAIL
+watchstones        mean +501.07% p95 +488.63% FAIL
+warden             mean +478.74% p95 +532.83% FAIL
+staff              mean +517.70% p95 +486.93% FAIL
+fireballs          mean +416.42% p95 +384.66% FAIL
+map                mean +458.25% p95 +451.90% FAIL
+training           mean +292.67% p95 +303.62% FAIL
+tree_close         mean +489.53% p95 +513.61% FAIL
+tree_canopy        mean +288.12% p95 +298.00% FAIL
+river_diagonal     mean +340.03% p95 +315.32% FAIL
+river_upstream     mean +332.64% p95 +313.26% FAIL
+castle_exterior    mean +826.62% p95 +808.37% FAIL
+great_hall         mean +252.46% p95 +238.92% FAIL
+wall_walk          mean +827.37% p95 +767.02% FAIL
+west_meadow        mean +504.52% p95 +480.00% FAIL
+east_meadow        mean +442.88% p95 +438.96% FAIL
+
+The run then aborted during the added terrain scenes:
+ValueError: Terrain benchmark camera intersects geometry: stair_walk
+
+The new stair_walk camera in tools/benchmark.py is (140.5,40.5,Z5), inside
+Ridge Hall's front wall. The actual first-flight approach is (140.5,41.5,Z5).
+Correct and validate that camera before the next timing run.
+
+The driver writes its JSON only after every scene, so the exception prevented
+the requested JSON, raw samples, source hashes and audio-health summary from
+being saved. They cannot be reconstructed from these rounded percentages.
+No successful result, zero-underrun claim or baseline replacement is inferred.
+Improve partial-report persistence before repeating long runs.
+
+Later code removes redundant integer-flat heightfield cells and conservatively
+selects analytic geometry once per frame using the sampled camera frustum.
+Focused correctness tests pass, but no optimized paired timing run was made
+before the user requested a wrap-up. Its performance impact remains unmeasured.

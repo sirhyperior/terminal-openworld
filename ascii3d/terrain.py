@@ -1,8 +1,4 @@
-"""Deterministic highlands, roads and reusable buildings beyond the castle hub.
-
-Everything remains ordinary editable voxels. Heights describe supported feet,
-not a second collision surface, so terrain, floors, stairs and Foley agree.
-"""
+"""Continuous highlands and shared fine stairs beyond the original castle hub."""
 
 from dataclasses import dataclass
 import math
@@ -53,29 +49,34 @@ ROUTE_WAYPOINTS = (
 )
 
 
-def terrain_height(x: float, y: float) -> int:
-    """Return a seeded-looking, repeatable terrace height without random state."""
+def _smooth_blend(value: float) -> float:
+    value = max(0.0, min(1.0, value))
+    return value * value * (3 - 2 * value)
+
+
+def terrain_height(x: float, y: float) -> float:
+    """Return repeatable natural elevation, retaining the hub and river valley."""
     from .world import river_center
 
-    if x < HUB_SIZE and y < HUB_SIZE:
-        return 1
+    if x <= HUB_SIZE and y <= HUB_SIZE:
+        return 1.0
     # Preserve the river's low valley across the entire enlarged map. Its
     # centerline is shared with currents and the renderer, not approximated.
     river_distance = abs(y - river_center(x))
-    river_blend = max(0.0, min(1.0, (river_distance - 8) / 18))
-    hub_blend = max(0.0, min(1.0, max(x - 111, y - 111) / 30))
+    river_blend = _smooth_blend((river_distance - 8) / 18)
+    hub_blend = _smooth_blend(max(x - HUB_SIZE, y - HUB_SIZE) / 30)
     hills = (8 + 3.0 * math.sin(x / 38) + 2.5 * math.cos(y / 49)
              + 2.0 * math.sin((x + y) / 71))
-    ridge = 6 * max(0.0, 1 - abs(x - 320 - 0.28 * (y - 200)) / 90)
-    valley = 5 * max(0.0, 1 - abs(x - 150 - 0.18 * y) / 40)
+    ridge = 6 * _smooth_blend(1 - abs(x - 320 - 0.28 * (y - 200)) / 90)
+    valley = 5 * _smooth_blend(1 - abs(x - 150 - 0.18 * y) / 40)
     height = 1 + hub_blend * river_blend * max(0.0, hills + ridge - valley)
 
     # A narrow ravine has steep sides and gradual entrances at either end.
     x0, y0, x1, y1 = CANYON_BOUNDS
     if x0 <= x < x1 and y0 <= y < y1:
         cross = abs(x - 310 + 0.5 * (y - 290))
-        ends = max(0.0, min(1.0, (y - y0) / 16, (y1 - y) / 16))
-        height -= 12 * max(0.0, 1 - cross / 8) * ends
+        ends = _smooth_blend(min((y - y0) / 16, (y1 - y) / 16))
+        height -= 12 * _smooth_blend(1 - cross / 8) * ends
 
     # Blend the hillside into supported building pads; no isolated vertical
     # plinth forces a jump or traps a player at an entrance.
@@ -83,27 +84,43 @@ def terrain_height(x: float, y: float) -> int:
         x0, y0, x1, y1 = landmark.bounds
         distance = max(x0 - 4 - x, x - (x1 + 6), y0 - 4 - y, y - (y1 + 3), 0)
         if distance < 18:
-            blend = distance / 18
+            blend = _smooth_blend(distance / 18)
             height = landmark.base * (1 - blend) + height * blend
-    return max(1, min(20, math.floor(height + 0.5)))
+    return max(1.0, min(20.0, height))
 
 
 def build_terrain(world: "World") -> None:
-    """Fill columns in equal-height row runs through the normal voxel editor."""
+    """Sample continuous ground once, with conservative solid voxel foundations."""
+    from .surfaces import HeightField
     from .world import GRASS, STONE
 
+    stride = world.width + 1
+    heights = [terrain_height(x, y)
+               for y in range(world.depth + 1) for x in range(world.width + 1)]
+    field = HeightField(world.width, world.depth, heights, material=GRASS)
     for y in range(world.depth):
+        offset = y * stride
+        foundations = [math.floor(min(heights[offset + x], heights[offset + x + 1],
+                                      heights[offset + stride + x], heights[offset + stride + x + 1]))
+                       for x in range(world.width)]
+        for x, height in enumerate(foundations):
+            if (heights[offset + x] == height == heights[offset + x + 1]
+                    == heights[offset + stride + x] == heights[offset + stride + x + 1]):
+                # The grass voxel already represents this exact constant plane.
+                # Retain every vertex for adjoining fractional surface cells.
+                field.enabled[y * world.width + x] = 0
         left = 0
         while left < world.width:
-            height = terrain_height(left + 0.5, y + 0.5)
+            height = foundations[left]
             right = left + 1
-            while (right < world.width
-                   and terrain_height(right + 0.5, y + 0.5) == height):
+            while right < world.width and foundations[right] == height:
                 right += 1
             if height > 1:
                 world.box(left, y, 0, right, y + 1, height - 1, STONE)
             world.box(left, y, height - 1, right, y + 1, height, GRASS)
             left = right
+    # Attach after filling: foundation voxel edits must not cut the surface.
+    world.heightfield = field
 
 
 def _road_cells():
@@ -124,9 +141,9 @@ def _road_cells():
 def stair_routes(landmark: Landmark):
     """Return approach/landing waypoints for three north-facing stair flights."""
     x0, y0, x1, y1 = landmark.bounds
-    return ((x0 + 4.5, y0 + 3.0, y0 + 10.0, landmark.base),
-            (x1 - 4.5, y0 + 3.0, y0 + 10.0, landmark.base + 5),
-            (x0 + 4.5, y1 - 10.0, y1 - 3.0, landmark.base + 10))
+    return ((x0 + 4.5, y0 + 1.5, y0 + 13.0, landmark.base),
+            (x1 - 4.5, y0 + 1.5, y0 + 13.0, landmark.base + 5),
+            (x0 + 4.5, y1 - 14.0, y1 - 2.0, landmark.base + 10))
 
 
 def _building(world: "World", landmark: Landmark) -> None:
@@ -158,14 +175,13 @@ def _building(world: "World", landmark: Landmark) -> None:
         for y in (y0, y1 - 1):
             for x in (x0 + 5, x1 - 8):
                 world.box(x, y, feet + 1, x + 3, y + 1, feet + 4, AIR)
-    # Each five-step flight opens the slab above it. Other floor regions remain
-    # solid; the player can circle to the next staircase on the new storey.
+    # Twenty quarter-unit risers share exact geometry with walking and rays.
+    # Open the upper slab for the complete flight, retaining a solid landing.
     for cx, start_y, _, feet in stair_routes(landmark):
-        sx, sy = math.floor(cx) - 1, round(start_y + 1)
-        world.box(sx, sy - 1, feet + 4, sx + 3, sy + 4, feet + 5, AIR)
-        for step in range(5):
-            world.box(sx, sy + step, feet, sx + 3, sy + step + 1,
-                      feet + step + 1, FLOOR)
+        sx, sy = math.floor(cx) - 1, math.floor(start_y) + 1
+        world.box(sx, sy, feet + 4, sx + 3, sy + 10, feet + 5, AIR)
+        world.add_stair_flight(sx, sy, 3, 10, feet, feet + 5,
+                               axis="y", direction=1, riser=0.25, material=FLOOR)
     # First-floor balcony with an open upper arch and a continuous safety rail.
     feet = base + 5
     world.box(x1 - 1, center_y - 2, feet, x1, center_y + 3, feet + 3, AIR)
@@ -188,14 +204,24 @@ def add_landmarks(world: "World") -> None:
     from .world import AIR, BRIDGE, GRASS, PATH, WOOD, Tree
 
     roads = _road_cells()
+    painted_surface = False
     for x, y in sorted(roads, key=lambda point: (point[1], point[0])):
         if not (0 <= x < world.width and 0 <= y < world.depth):
             continue
-        feet = terrain_height(x + 0.5, y + 0.5)
+        px, py = x + 0.5, y + 0.5
+        feet = world.surface_height(px, py)
         # Routes repaint terrain, never a landmark's existing masonry/timber
         # floor. Keeping those authored surfaces also preserves hub rebuilds.
-        if world.get(x, y, feet - 1) in (GRASS, PATH):
-            world.box(x, y, feet - 1, x + 1, y + 1, feet, PATH)
+        if world.surface_material(px, py) in (GRASS, PATH):
+            field = world.heightfield
+            if field is not None and field.enabled[y * world.width + x]:
+                field.paint_cell(x, y, PATH)
+                painted_surface = True
+            elif float(feet).is_integer() and feet >= 1:
+                world.box(x, y, int(feet) - 1, x + 1, y + 1, int(feet), PATH)
+    if painted_surface:
+        # Direct material edits must invalidate resident grass and map caches.
+        world.revision += 1
     for x0, y0, x1, y1 in NEW_BRIDGES:
         if x1 > world.width or y1 > world.depth:
             continue
@@ -219,11 +245,11 @@ def add_landmarks(world: "World") -> None:
             x, y = gx + seed % 5 - 2, gy + (seed >> 4) % 5 - 2
             if x < HUB_SIZE and y < HUB_SIZE:
                 continue
-            feet = terrain_height(x + 0.5, y + 0.5)
-            if ((x, y) in roads or world.get(x, y, feet - 1) != GRASS
-                    or world.get(x, y, feet) != AIR):
+            px, py = x + 0.5, y + 0.5
+            feet = world.surface_height(px, py)
+            if (x, y) in roads or world.surface_material(px, py) != GRASS:
                 continue
-            world.trees[x, y] = Tree(x + 0.5, y + 0.5, 0.18 + seed % 3 * 0.02,
+            world.trees[x, y] = Tree(px, py, 0.18 + seed % 3 * 0.02,
                                     feet + 3.5 + seed % 5 * 0.2, seed, base_z=feet)
 
 

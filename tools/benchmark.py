@@ -59,8 +59,30 @@ TERRAIN_SCENARIOS = {
     "citadel_roof": dict(x=397.5, y=387.5, z=27, yaw=math.pi, pitch=-0.20),
     "highland_map": dict(x=397.5, y=387.5, z=27, yaw=math.pi),
     "terrace_walk": dict(x=124.5, y=52.5, yaw=0),
-    "stair_walk": dict(x=140.5, y=43.0, z=5, yaw=math.pi / 2),
+    "stair_walk": dict(x=140.5, y=41.5, z=5, yaw=math.pi / 2),
 }
+
+
+def resolve_camera(world, name, camera, *, natural=False, player_type=Player):
+    """Validate a pose before timing; only unraised natural poses follow ground.
+
+    Authored Z values and the original castle roles retain their exact poses.
+    Natural terrain cameras without Z use circular support, not point height.
+    """
+    position = dict(camera)
+    if natural and "z" not in position:
+        position["z"] = world.surface_height(position["x"], position["y"])
+        support_query = getattr(world, "walk_support", None)
+        if support_query is not None:
+            support = support_query(position["x"], position["y"], position["z"])
+            if support is not None:
+                position["z"] = support[0]
+    player = player_type(**position)
+    position.setdefault("z", player.z)
+    if world.collides(player.x, player.y, player.z):
+        raise ValueError(f"Benchmark camera intersects geometry: {name} at "
+                         f"({player.x}, {player.y}, {player.z})")
+    return position
 
 
 
@@ -69,6 +91,11 @@ def run(frames=90, width=120, height=40, with_audio=False, extra_scenes=False, t
     renderer = Renderer(world)
     soundscape = Soundscape(world)
     results = {}
+    scenes = {**SCENARIOS, **EXTRA_SCENARIOS} if extra_scenes else dict(SCENARIOS)
+    if terrain_scenes:
+        scenes.update(TERRAIN_SCENARIOS)
+    scenes = {name: resolve_camera(world, name, camera, natural=name in TERRAIN_SCENARIOS)
+              for name, camera in scenes.items()}
     with ExitStack() as stack:
         audio = None
         if with_audio:
@@ -77,13 +104,7 @@ def run(frames=90, width=120, height=40, with_audio=False, extra_scenes=False, t
             audio = stack.enter_context(Audio(volume=0.25))
             if not audio.available:
                 raise OSError(audio.error)
-        scenes = {**SCENARIOS, **EXTRA_SCENARIOS} if extra_scenes else SCENARIOS
-        if terrain_scenes:
-            scenes = {**scenes, **TERRAIN_SCENARIOS}
         for name, position in scenes.items():
-            if name in TERRAIN_SCENARIOS and "z" not in position:
-                position = {**position, "z": world.surface_height(position["x"], position["y"])}
-                scenes[name] = position
             player = Player(**position)
             training = name == "training"
             world.combat.held_item = WeaponPickup(0, 0) if training else None
@@ -172,9 +193,11 @@ def main():
         parser.error("use at least 20 frames and dimensions between 60x20 and 300x120")
     if not math.isfinite(args.max_regression) or args.max_regression < 0:
         parser.error("--max-regression must be a finite, nonnegative percentage")
+    if args.save and args.save.exists():
+        parser.error("--save must name an unused report path")
     try:
         report = run(args.frames, args.width, args.height, args.audio, args.extra_scenes, args.terrain_scenes)
-    except OSError as error:
+    except (OSError, ValueError) as error:
         parser.error(str(error))
     failed = []
     if args.audio and (report["audio_health"]["underruns"] or report["audio_health"]["error"]):
@@ -196,7 +219,8 @@ def main():
                 failed.append(name)
     if args.save:
         args.save.parent.mkdir(parents=True, exist_ok=True)
-        args.save.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        with args.save.open("x", encoding="utf-8") as destination:
+            destination.write(json.dumps(report, indent=2) + "\n")
     if args.json:
         print(json.dumps(report))
     else:
