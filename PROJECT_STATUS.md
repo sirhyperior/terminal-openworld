@@ -1,7 +1,7 @@
 # Project Status
 
 Last reviewed: **2026-11-12**. Standing rules: [AGENTS.md](AGENTS.md).
-User backlog: [user_designated_milestones.md](user_designated_milestones.md).
+User backlog: [backlog.md](backlog.md).
 Gameplay/launch: [README.md](README.md).
 
 ## Current checkpoint

@@ -100,7 +100,7 @@ over 60 frames), motivating the bounded policy.
 
 No backlog item is completed by this performance pass. The user added a report
 of walking automatically onto castle-wall blocks; it remains uninvestigated in
-`user_designated_milestones.md` and must be preserved.
+`backlog.md` and must be preserved.
 
 ## GPU scope
 

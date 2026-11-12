@@ -12,7 +12,7 @@ NPCs, enemies and environmental details must fit that theme in their design,
 names and atmosphere while preserving readable navigation and interactions.
 
 - At session start or resume, read [PROJECT_STATUS.md](PROJECT_STATUS.md), then
-  [user_designated_milestones.md](user_designated_milestones.md). Consider that
+  [backlog.md](backlog.md). Consider that
   user-maintained backlog alongside current blockers and explicit requests;
   its numbering does not set priority. Remove completed entries and renumber
   only after verifying completion. Then read relevant README sections, source
