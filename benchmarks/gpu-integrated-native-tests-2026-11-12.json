@@ -1,0 +1,17 @@
+{
+  "tests": 420,
+  "failures": 0,
+  "errors": 0,
+  "skips": [
+    [
+      "test_real_desktop_cursor_is_inside_helper_and_releases_across_capture_epochs (test_mouse_capture.WindowsCursorResourceTests.test_real_desktop_cursor_is_inside_helper_and_releases_across_capture_epochs)",
+      "ClipCursor denied; run outside the sandbox"
+    ]
+  ],
+  "seconds": 168.539,
+  "native_console": true,
+  "stdin_tty": true,
+  "stdout_tty": true,
+  "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+  "passed": true
+}

@@ -2,12 +2,47 @@
 
 import random
 import unittest
+from unittest.mock import patch
 
 from ascii3d.surfaces import HeightField, SolidBox
 from ascii3d.world import FLOOR, World
 
 
 class PreparedGeometryTests(unittest.TestCase):
+    def test_solid_tree_matches_grid_with_overlaps_inside_origins_and_coincident_faces(self):
+        world = World.empty(64, 64, 32)
+        for floor in (1, 7, 13):
+            world.add_stair_flight(8, 8, 3, 10, floor, floor + 5)
+            world.add_stair_flight(16, 8, 3, 10, floor, floor + 5, direction=-1)
+        world.add_solid(SolidBox(8, 8, 1, 11, 9, 2, 3))
+        world.add_solid(SolidBox(8, 8, 1, 11, 9, 2, 4))
+        query = world.geometry_query((0, 0, 64, 64), ())
+        _, chunks, size, tree = world._solid_query_cache
+        self.assertIsNotNone(tree)
+        rng = random.Random(7381)
+        cases = [((7, 8, 1.5), (1, 0, 0), 48), ((8, 8, 1), (0, 0, 1), 48),
+                 ((8.5, 8.5, 1.5), (1, 0, 0), 48), ((9, 7, 2), (0, 1, 0), 1)]
+        cases += [(tuple(rng.uniform(0, 24) for _ in range(3)),
+                   tuple(rng.uniform(-1.5, 1.5) for _ in range(3)), rng.uniform(0, 48))
+                  for _ in range(1000)]
+        fallbacks = 0
+        with patch.object(world, "_solid_hit", wraps=world._solid_hit) as grid:
+            for origin, direction, limit in cases:
+                entry = tree[0].ray_entry(origin, direction, limit)
+                expected = world._solid_hit(origin, direction, limit, chunks, entry, size) if entry is not None else None
+                previous_calls = grid.call_count
+                with self.subTest(origin=origin, direction=direction, limit=limit):
+                    self.assertEqual(query(origin, direction, limit), expected)
+                fallbacks += grid.call_count - previous_calls
+            self.assertGreater(fallbacks, 0)
+        origin, direction = (9, 7, 6.5), (0, 1, 0)
+        with patch.object(SolidBox, "ray_hit", autospec=True, side_effect=SolidBox.ray_hit) as exact:
+            self.assertIsNone(query(origin, direction, 48))
+            tree_calls = exact.call_count
+            exact.reset_mock()
+            self.assertIsNone(world._solid_hit(origin, direction, 48, chunks, size=size))
+            self.assertLess(tree_calls, exact.call_count)
+
     def test_camera_forward_bound_cannot_exceed_any_selected_hit(self):
         world = World.empty(32, 32, 12)
         world.add_stair_flight(8, 8, 3, 10, 1, 6)

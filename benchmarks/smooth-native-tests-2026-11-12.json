@@ -1,0 +1,16 @@
+{
+  "tests": 400,
+  "failures": 0,
+  "errors": 0,
+  "skips": [
+    {
+      "test": "test_mouse_capture.WindowsCursorResourceTests.test_real_desktop_cursor_is_inside_helper_and_releases_across_capture_epochs",
+      "reason": "ClipCursor denied; run outside the sandbox"
+    }
+  ],
+  "suite_seconds": 159.356,
+  "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+  "passed": true,
+  "summary_rebuilt_from_full_log": true,
+  "runner_error": "Test suite succeeded. Initial JSON summary serialization failed because skipped TestCase objects were not JSON serializable; retained full text log is authoritative."
+}

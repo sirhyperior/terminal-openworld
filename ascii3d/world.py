@@ -189,6 +189,34 @@ class World:
                         hit, limit = candidate, candidate.distance
         return hit
 
+    @staticmethod
+    def _solid_tree_hit(origin, direction, limit, tree):
+        """Trace bounded solid groups; report ties for the existing grid path."""
+        hit, tied = None, False
+        stack = [tree]
+        while stack:
+            bounds, left, right, boxes = stack.pop()
+            if bounds.ray_entry(origin, direction, limit) is None:
+                continue
+            if boxes:
+                for box in boxes:
+                    candidate = box.ray_hit(origin, direction, limit)
+                    if candidate is not None:
+                        if hit is not None and abs(candidate.distance - hit.distance) <= 1e-8:
+                            tied = True
+                        hit, limit = candidate, candidate.distance
+            else:
+                # The spatial split's nearer side is likely to produce the
+                # first hit. Its exact depth then bounds every later group.
+                left_bounds, right_bounds = left[0], right[0]
+                if ((left_bounds.x0 + left_bounds.x1 - right_bounds.x0 - right_bounds.x1) * direction[0]
+                        + (left_bounds.y0 + left_bounds.y1 - right_bounds.y0 - right_bounds.y1) * direction[1]
+                        + (left_bounds.z0 + left_bounds.z1 - right_bounds.z0 - right_bounds.z1) * direction[2]) <= 0:
+                    stack.extend((right, left))
+                else:
+                    stack.extend((left, right))
+        return hit, tied
+
     def geometry_query(self, bounds, planes):
         """Conservative once-per-view selection; exact rays retain final say."""
         x0, y0, x1, y1 = bounds
@@ -208,10 +236,21 @@ class World:
             return SolidBox(min(b.x0 for b in boxes), min(b.y0 for b in boxes), min(b.z0 for b in boxes),
                             max(b.x1 for b in boxes), max(b.y1 for b in boxes), max(b.z1 for b in boxes))
 
+        def tree_for(boxes):
+            bounds = enclosing(boxes)
+            if len(boxes) <= 4:
+                return bounds, None, None, tuple(boxes)
+            spans = bounds.x1 - bounds.x0, bounds.y1 - bounds.y0, bounds.z1 - bounds.z0
+            axis = max(range(3), key=spans.__getitem__)
+            ordered = sorted(boxes, key=(lambda b: b.x0 + b.x1, lambda b: b.y0 + b.y1,
+                                         lambda b: b.z0 + b.z1)[axis])
+            middle = len(ordered) // 2
+            return bounds, tree_for(ordered[:middle]), tree_for(ordered[middle:]), ()
+
         selected = [box for box in self.solids if visible(box)]
         selection_key = self.revision, tuple(id(box) for box in selected)
         if self._solid_query_cache is not None and self._solid_query_cache[0] == selection_key:
-            _, chunks, solid_cell_size = self._solid_query_cache
+            _, chunks, solid_cell_size, solid_tree = self._solid_query_cache
         else:
             # Fine tread cells avoid testing an entire eight-unit flight at
             # every ray crossing. Bound index construction for generic boxes.
@@ -233,7 +272,8 @@ class World:
                     candidates = [box for box in boxes if id(box) in selected_ids]
                     if candidates:
                         chunks[key] = candidates
-            self._solid_query_cache = selection_key, chunks, solid_cell_size
+            solid_tree = tree_for(selected) if len(selected) > 8 else None
+            self._solid_query_cache = selection_key, chunks, solid_cell_size, solid_tree
         solid_bounds = enclosing(selected)
         ground_boxes = []
         ground = self.heightfield
@@ -267,11 +307,19 @@ class World:
                         and max(origin[2], end_z) >= solid_bounds.z0 - 1e-7):
                     entry = solid_bounds.ray_entry(origin, direction, limit)
                     if entry is not None:
-                        solid = self._solid_hit(origin, direction, limit, chunks, entry, solid_cell_size)
+                        if solid_tree is not None:
+                            solid, tied = self._solid_tree_hit(origin, direction, limit, solid_tree)
+                        else:
+                            solid, tied = None, True
+                        if tied:
+                            # Preserve the grid's original coincident-face
+                            # order, including configured overlapping solids.
+                            solid = self._solid_hit(origin, direction, limit, chunks, entry, solid_cell_size)
                         if solid is not None:
                             hit = solid
             return hit
 
+        query.bounds = (*selected, *ground_boxes)
         query.minimum_depth = 0.0
         if len(planes) >= 2:
             nx, ny, nz, offset = planes[-2]

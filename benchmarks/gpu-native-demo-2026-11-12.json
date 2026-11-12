@@ -1,0 +1,1456 @@
+{
+  "hashes": {
+    "ascii3d\\__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d\\__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d\\app.py": "dc1fb318db8304f1fb5864566f278d6b4ff3f2b8f478f57f378253f4b2280dd7",
+    "ascii3d\\audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d\\audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d\\audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d\\combat.py": "193b336acd5b9ac21fd94987ca52fef7648c245e7938a99fc9c9befaee374a1c",
+    "ascii3d\\combat_render.py": "ae6c866ea74b6f8fd47ce75eeec033323c307c717cf1a8e44d40e6da422473a7",
+    "ascii3d\\door_render.py": "d8a80b3cedf902131598cd655aa96123d6f078a01c6d7f6a38c4ddb57fd4da52",
+    "ascii3d\\doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d\\events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d\\geometry.py": "02cecaabf255fc676c781f0dd8fa08941dd5fffa9e68c96da962d13d2335c12d",
+    "ascii3d\\gpu_renderer.py": "99ce04b3fefc766bc24bde539e74a1a036d3519b36e9d147f1af67e7c65eb1a4",
+    "ascii3d\\gpu_static.wgsl": "3ead5d7f0776ac77444892187829052cb6edfb58b26e0a9e5d1b4b4e2ee2e48b",
+    "ascii3d\\loading.py": "11ae438770c079f8a1cd3b161c853cedd3e56c1e25f12c9341d01459c166d1be",
+    "ascii3d\\map_expansion.py": "f45f99b3fac403d6c90fcc36a381d3cd721968f2693df019d4ec820b2c772f82",
+    "ascii3d\\mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d\\player.py": "098e1264a6cd9a73832c6cabcf29e58186ad5788793c4d2015f3cbae95ba85aa",
+    "ascii3d\\renderer.py": "1e234d69c7c00d1560128a0caaa738cce87fc1bb1ed7b6f135ab715f0aa7aac7",
+    "ascii3d\\scenery.py": "9c3b46e891ef40fd2591a09e9226a9596cbd795578202d2e93e15ffb6a6c6f5e",
+    "ascii3d\\sound.py": "40e0da49c354bebe51378245c5d3566eecf534c5c177b8fff66846c7eedc2fa8",
+    "ascii3d\\sound_surfaces.py": "501851a29f0e0e16250158b82830201e2036c4f60fa2273f69435a2e1b31ea9d",
+    "ascii3d\\soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d\\surfaces.py": "548b3eef61aba9af1133728e490e4590dfea1b2fc5a1bdd20d71dd041e43a76c",
+    "ascii3d\\targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d\\terminal.py": "2f4a21a5e861e64515d77b8a5b3679d8057f53cb39174838492b4b4bf6d53b2e",
+    "ascii3d\\terrain.py": "e4067da2db9ae1810976f6bb21affaa83848c9f88e97abbf63f1d2b4b09ca808",
+    "ascii3d\\trees.py": "f3f54ae1a81ba95a5ffc730bd57d7b25086e09e4a7757f3deea36b6a0470b98a",
+    "ascii3d\\world.py": "8e07f5f77e0526e4dce7f00eb50a9fde896c1cb7d24dd228052dcd3bb022a8b8"
+  },
+  "native_tty": true,
+  "frames": [
+    {
+      "render_ms": 238.62150000059046,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        37.5,
+        5.0
+      ],
+      "simulation_time": 0.0
+    },
+    {
+      "render_ms": 33.69180000026972,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        37.84000000000003,
+        5.0
+      ],
+      "simulation_time": 0.09999999999999999
+    },
+    {
+      "render_ms": 30.948800000260235,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        37.953333333333376,
+        5.0
+      ],
+      "simulation_time": 0.13333333333333333
+    },
+    {
+      "render_ms": 37.67450000032113,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        38.06666666666672,
+        5.0
+      ],
+      "simulation_time": 0.16666666666666666
+    },
+    {
+      "render_ms": 35.03900000032445,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        38.180000000000064,
+        5.0
+      ],
+      "simulation_time": 0.19999999999999998
+    },
+    {
+      "render_ms": 41.511200000059034,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        38.29333333333341,
+        5.0
+      ],
+      "simulation_time": 0.2333333333333333
+    },
+    {
+      "render_ms": 36.504199999399134,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        38.46333333333342,
+        5.0
+      ],
+      "simulation_time": 0.2833333333333334
+    },
+    {
+      "render_ms": 31.22680000069522,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        38.57666666666677,
+        5.0
+      ],
+      "simulation_time": 0.3166666666666668
+    },
+    {
+      "render_ms": 57.365600000593986,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        38.69000000000011,
+        5.0
+      ],
+      "simulation_time": 0.35000000000000026
+    },
+    {
+      "render_ms": 41.355299999850104,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        38.88833333333346,
+        5.0
+      ],
+      "simulation_time": 0.40833333333333377
+    },
+    {
+      "render_ms": 47.59490000014921,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        39.03000000000014,
+        5.0
+      ],
+      "simulation_time": 0.45000000000000057
+    },
+    {
+      "render_ms": 41.160499999932654,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        39.20000000000016,
+        5.0
+      ],
+      "simulation_time": 0.5000000000000007
+    },
+    {
+      "render_ms": 41.98930000075052,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        39.34166666666684,
+        5.0
+      ],
+      "simulation_time": 0.5416666666666672
+    },
+    {
+      "render_ms": 42.102600000362145,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        39.48333333333352,
+        5.0
+      ],
+      "simulation_time": 0.5833333333333337
+    },
+    {
+      "render_ms": 29.636199999913515,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        39.6250000000002,
+        5.0
+      ],
+      "simulation_time": 0.6250000000000002
+    },
+    {
+      "render_ms": 31.322300000283576,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        39.73833333333354,
+        5.0
+      ],
+      "simulation_time": 0.6583333333333334
+    },
+    {
+      "render_ms": 33.59509999972943,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        39.85166666666689,
+        5.0
+      ],
+      "simulation_time": 0.6916666666666667
+    },
+    {
+      "render_ms": 38.225299999794515,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        39.96500000000023,
+        5.0
+      ],
+      "simulation_time": 0.7249999999999999
+    },
+    {
+      "render_ms": 43.92340000049444,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        40.10666666666691,
+        5.0
+      ],
+      "simulation_time": 0.7666666666666664
+    },
+    {
+      "render_ms": 41.652500000054715,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        40.24833333333359,
+        5.0
+      ],
+      "simulation_time": 0.8083333333333329
+    },
+    {
+      "render_ms": 34.90150000016001,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        40.39000000000027,
+        5.0
+      ],
+      "simulation_time": 0.8499999999999994
+    },
+    {
+      "render_ms": 47.6358000005348,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        40.53166666666695,
+        5.0
+      ],
+      "simulation_time": 0.8916666666666659
+    },
+    {
+      "render_ms": 28.23999999964144,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        40.67333333333363,
+        5.0
+      ],
+      "simulation_time": 0.9333333333333325
+    },
+    {
+      "render_ms": 28.009699999529403,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        40.786666666666974,
+        5.0
+      ],
+      "simulation_time": 0.9666666666666657
+    },
+    {
+      "render_ms": 32.38189999956376,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        40.87166666666698,
+        5.0
+      ],
+      "simulation_time": 0.9916666666666656
+    },
+    {
+      "render_ms": 31.68439999990369,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        40.985000000000326,
+        5.0
+      ],
+      "simulation_time": 1.0249999999999988
+    },
+    {
+      "render_ms": 38.205800000469026,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        41.09833333333367,
+        5.0
+      ],
+      "simulation_time": 1.058333333333332
+    },
+    {
+      "render_ms": 31.29209999951854,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        41.24000000000035,
+        5.0
+      ],
+      "simulation_time": 1.0999999999999985
+    },
+    {
+      "render_ms": 35.13259999999718,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        41.353333333333694,
+        5.0
+      ],
+      "simulation_time": 1.1333333333333317
+    },
+    {
+      "render_ms": 30.93989999979385,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        41.46666666666704,
+        5.0
+      ],
+      "simulation_time": 1.166666666666665
+    },
+    {
+      "render_ms": 30.976400000326976,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        41.58000000000038,
+        5.0
+      ],
+      "simulation_time": 1.1999999999999982
+    },
+    {
+      "render_ms": 26.594300000397197,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        41.693333333333726,
+        5.0
+      ],
+      "simulation_time": 1.2333333333333314
+    },
+    {
+      "render_ms": 27.683000000251923,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        41.778333333333734,
+        5.0
+      ],
+      "simulation_time": 1.2583333333333313
+    },
+    {
+      "render_ms": 28.644800000620307,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        41.86333333333374,
+        5.0
+      ],
+      "simulation_time": 1.2833333333333312
+    },
+    {
+      "render_ms": 46.6961000001902,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        41.976666666667086,
+        5.0
+      ],
+      "simulation_time": 1.3166666666666644
+    },
+    {
+      "render_ms": 31.436799999937648,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        42.1466666666671,
+        5.0
+      ],
+      "simulation_time": 1.3666666666666643
+    },
+    {
+      "render_ms": 31.394300000101794,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        42.260000000000446,
+        5.0
+      ],
+      "simulation_time": 1.3999999999999975
+    },
+    {
+      "render_ms": 32.14639999987412,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        42.345000000000454,
+        5.0
+      ],
+      "simulation_time": 1.4249999999999974
+    },
+    {
+      "render_ms": 26.93600000020524,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        42.4583333333338,
+        5.0
+      ],
+      "simulation_time": 1.4583333333333306
+    },
+    {
+      "render_ms": 28.68639999996958,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        42.57166666666714,
+        5.0
+      ],
+      "simulation_time": 1.4916666666666638
+    },
+    {
+      "render_ms": 27.440099999694212,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        42.65666666666715,
+        5.0
+      ],
+      "simulation_time": 1.5166666666666637
+    },
+    {
+      "render_ms": 22.786200000155077,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        42.77000000000049,
+        5.0
+      ],
+      "simulation_time": 1.549999999999997
+    },
+    {
+      "render_ms": 30.246100000113074,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        42.8550000000005,
+        5.0
+      ],
+      "simulation_time": 1.5749999999999968
+    },
+    {
+      "render_ms": 28.467299999647366,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        42.94000000000051,
+        5.0
+      ],
+      "simulation_time": 1.5999999999999968
+    },
+    {
+      "render_ms": 26.56959999967512,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        43.05333333333385,
+        5.0
+      ],
+      "simulation_time": 1.63333333333333
+    },
+    {
+      "render_ms": 26.1542999996891,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        43.13833333333386,
+        5.0
+      ],
+      "simulation_time": 1.6583333333333299
+    },
+    {
+      "render_ms": 30.93929999977263,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        43.22333333333387,
+        5.0
+      ],
+      "simulation_time": 1.6833333333333298
+    },
+    {
+      "render_ms": 41.76770000049146,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        43.33666666666721,
+        5.0
+      ],
+      "simulation_time": 1.716666666666663
+    },
+    {
+      "render_ms": 26.569499999823165,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        43.47833333333389,
+        5.0
+      ],
+      "simulation_time": 1.7583333333333295
+    },
+    {
+      "render_ms": 21.191799999542127,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        43.59166666666724,
+        5.0
+      ],
+      "simulation_time": 1.7916666666666627
+    },
+    {
+      "render_ms": 19.72269999987475,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        43.676666666667245,
+        5.0
+      ],
+      "simulation_time": 1.8166666666666627
+    },
+    {
+      "render_ms": 24.906300000111514,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        43.76166666666725,
+        5.0
+      ],
+      "simulation_time": 1.8416666666666626
+    },
+    {
+      "render_ms": 27.624500000456464,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        43.84666666666726,
+        5.0
+      ],
+      "simulation_time": 1.8666666666666625
+    },
+    {
+      "render_ms": 21.645200000421028,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        43.93166666666727,
+        5.0
+      ],
+      "simulation_time": 1.8916666666666624
+    },
+    {
+      "render_ms": 26.180699999713397,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.01666666666728,
+        5.0
+      ],
+      "simulation_time": 1.9166666666666623
+    },
+    {
+      "render_ms": 28.035100000124658,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.101666666667285,
+        5.0
+      ],
+      "simulation_time": 1.9416666666666622
+    },
+    {
+      "render_ms": 24.574500000198896,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.21500000000063,
+        5.0
+      ],
+      "simulation_time": 1.9749999999999954
+    },
+    {
+      "render_ms": 25.502399999822956,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.30000000000064,
+        5.0
+      ],
+      "simulation_time": 1.9999999999999953
+    },
+    {
+      "render_ms": 26.261500000146043,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.385000000000645,
+        5.0
+      ],
+      "simulation_time": 2.0249999999999955
+    },
+    {
+      "render_ms": 21.059100000456965,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.47000000000065,
+        5.0
+      ],
+      "simulation_time": 2.0499999999999954
+    },
+    {
+      "render_ms": 29.35940000043047,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.55500000000066,
+        5.0
+      ],
+      "simulation_time": 2.0749999999999953
+    },
+    {
+      "render_ms": 24.70640000046842,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.668333333334004,
+        5.0
+      ],
+      "simulation_time": 2.1083333333333285
+    },
+    {
+      "render_ms": 24.89979999973002,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.75333333333401,
+        5.0
+      ],
+      "simulation_time": 2.1333333333333284
+    },
+    {
+      "render_ms": 19.806500000413507,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.83833333333402,
+        5.0
+      ],
+      "simulation_time": 2.1583333333333283
+    },
+    {
+      "render_ms": 17.456399999900896,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        44.92333333333403,
+        5.0
+      ],
+      "simulation_time": 2.1833333333333282
+    },
+    {
+      "render_ms": 20.72649999990972,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.008333333334036,
+        5.0
+      ],
+      "simulation_time": 2.208333333333328
+    },
+    {
+      "render_ms": 21.135200000571785,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.093333333334044,
+        5.0
+      ],
+      "simulation_time": 2.233333333333328
+    },
+    {
+      "render_ms": 17.970400000194786,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.17833333333405,
+        5.0
+      ],
+      "simulation_time": 2.258333333333328
+    },
+    {
+      "render_ms": 17.203299999891897,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.26333333333406,
+        5.0
+      ],
+      "simulation_time": 2.283333333333328
+    },
+    {
+      "render_ms": 26.098299999830488,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.34833333333407,
+        5.0
+      ],
+      "simulation_time": 2.308333333333328
+    },
+    {
+      "render_ms": 23.44370000082563,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.46166666666741,
+        5.0
+      ],
+      "simulation_time": 2.341666666666661
+    },
+    {
+      "render_ms": 20.516600000519247,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.54666666666742,
+        5.0
+      ],
+      "simulation_time": 2.366666666666661
+    },
+    {
+      "render_ms": 24.694499999895925,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.63166666666743,
+        5.0
+      ],
+      "simulation_time": 2.391666666666661
+    },
+    {
+      "render_ms": 38.647800000035204,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.716666666667436,
+        5.0
+      ],
+      "simulation_time": 2.4166666666666607
+    },
+    {
+      "render_ms": 22.67810000012105,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.858333333334116,
+        5.0
+      ],
+      "simulation_time": 2.4583333333333273
+    },
+    {
+      "render_ms": 18.652499999916472,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        45.943333333334124,
+        5.0
+      ],
+      "simulation_time": 2.483333333333327
+    },
+    {
+      "render_ms": 18.160200000238547,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.02833333333413,
+        5.0
+      ],
+      "simulation_time": 2.508333333333327
+    },
+    {
+      "render_ms": 23.849799999879906,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.11333333333414,
+        5.0
+      ],
+      "simulation_time": 2.533333333333327
+    },
+    {
+      "render_ms": 20.70389999971667,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.19833333333415,
+        5.0
+      ],
+      "simulation_time": 2.558333333333327
+    },
+    {
+      "render_ms": 21.45829999972193,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.283333333334156,
+        5.0
+      ],
+      "simulation_time": 2.583333333333327
+    },
+    {
+      "render_ms": 25.50740000060614,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.368333333334164,
+        5.0
+      ],
+      "simulation_time": 2.6083333333333267
+    },
+    {
+      "render_ms": 23.484600000301725,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.45333333333417,
+        5.0
+      ],
+      "simulation_time": 2.6333333333333266
+    },
+    {
+      "render_ms": 20.808000000215543,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.53833333333418,
+        5.0
+      ],
+      "simulation_time": 2.6583333333333266
+    },
+    {
+      "render_ms": 17.609700000321027,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.62333333333419,
+        5.0
+      ],
+      "simulation_time": 2.6833333333333265
+    },
+    {
+      "render_ms": 22.416900000280293,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.708333333334195,
+        5.0
+      ],
+      "simulation_time": 2.7083333333333264
+    },
+    {
+      "render_ms": 19.90620000015042,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.7933333333342,
+        5.0
+      ],
+      "simulation_time": 2.7333333333333263
+    },
+    {
+      "render_ms": 31.329899999946065,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.87833333333421,
+        5.0
+      ],
+      "simulation_time": 2.758333333333326
+    },
+    {
+      "render_ms": 25.29340000000957,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5,
+        46.991666666667555,
+        5.0
+      ],
+      "simulation_time": 2.7916666666666594
+    },
+    {
+      "render_ms": 20.837000000028638,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.50254942629948,
+        47.07662204752423,
+        5.0
+      ],
+      "simulation_time": 2.8166666666666593
+    },
+    {
+      "render_ms": 19.21330000004673,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.50891797374976,
+        47.16137674010425,
+        5.0
+      ],
+      "simulation_time": 2.8416666666666592
+    },
+    {
+      "render_ms": 22.70169999974314,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5190927482183,
+        47.24575914511545,
+        5.0
+      ],
+      "simulation_time": 2.866666666666659
+    },
+    {
+      "render_ms": 21.312400000169873,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.5330531492635,
+        47.32959841702078,
+        5.0
+      ],
+      "simulation_time": 2.891666666666659
+    },
+    {
+      "render_ms": 25.16490000016347,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.55077091184347,
+        47.41272480994216,
+        5.0
+      ],
+      "simulation_time": 2.916666666666659
+    },
+    {
+      "render_ms": 23.798499999429623,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.57221016354308,
+        47.49497002133785,
+        5.0
+      ],
+      "simulation_time": 2.941666666666659
+    },
+    {
+      "render_ms": 25.065400000130467,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.60650871634112,
+        47.60297206582423,
+        5.0
+      ],
+      "simulation_time": 2.974999999999992
+    },
+    {
+      "render_ms": 27.993400000013935,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.63644978046338,
+        47.682517329606476,
+        5.0
+      ],
+      "simulation_time": 2.999999999999992
+    },
+    {
+      "render_ms": 23.98209999955725,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.6699388632724,
+        47.76063517419765,
+        5.0
+      ],
+      "simulation_time": 3.024999999999992
+    },
+    {
+      "render_ms": 20.67330000045331,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.70690816081856,
+        47.83716743765498,
+        5.0
+      ],
+      "simulation_time": 3.049999999999992
+    },
+    {
+      "render_ms": 21.399899999778427,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.7472828229066,
+        47.91195916829572,
+        5.0
+      ],
+      "simulation_time": 3.0749999999999917
+    },
+    {
+      "render_ms": 28.148399999736284,
+      "grid": [
+        160,
+        50
+      ],
+      "backend": "gpu",
+      "position": [
+        148.79098110464165,
+        47.984858938421326,
+        5.0
+      ],
+      "simulation_time": 3.0999999999999917
+    }
+  ],
+  "loading_phases": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "renderer_closed": true,
+  "audio_health": {
+    "available": true,
+    "buffers": 78,
+    "underruns": 0,
+    "max_write_gap_ms": 61.0,
+    "recoveries": 0,
+    "error": ""
+  },
+  "exit_code": 0,
+  "passed": true
+}

@@ -1,0 +1,290 @@
+{
+  "method": "static-geometry GPU feasibility only; query timing includes synchronous readback",
+  "scope": "no dynamic doors, actors, vegetation, HUD or production texture/lighting parity",
+  "python": "3.14.4",
+  "width": 120,
+  "height": 40,
+  "frames": 1,
+  "audio": false,
+  "scenes": {
+    "warden": {
+      "status": "complete",
+      "position": {
+        "x": 18.5,
+        "y": 99.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1.0
+      },
+      "checks": {
+        "pixels": 4200,
+        "coverage_mismatches": 0,
+        "raw_depth_errors_over_1e_7": 2134,
+        "refined_depth_errors_over_1e_7": 0,
+        "invalid_candidates": 0,
+        "max_raw_depth_error": 2.584416183282201e-05,
+        "max_refined_depth_error": 8.881784197001252e-16,
+        "examples": []
+      },
+      "timings": {
+        "gpu_query_readback": {
+          "mean_ms": 0.7994999996299157,
+          "p95_ms": 0.7994999996299157,
+          "samples_ms": [
+            0.7994999996299157
+          ]
+        },
+        "decode": {
+          "mean_ms": 0.2875000000130967,
+          "p95_ms": 0.2875000000130967,
+          "samples_ms": [
+            0.2875000000130967
+          ]
+        },
+        "refine": {
+          "mean_ms": 2.927300000010291,
+          "p95_ms": 2.927300000010291,
+          "samples_ms": [
+            2.927300000010291
+          ]
+        },
+        "ascii": {
+          "mean_ms": 0.44200000002092565,
+          "p95_ms": 0.44200000002092565,
+          "samples_ms": [
+            0.44200000002092565
+          ]
+        },
+        "cpu_static_scene": {
+          "mean_ms": 29.032700000243494,
+          "p95_ms": 29.032700000243494,
+          "samples_ms": [
+            29.032700000243494
+          ]
+        }
+      },
+      "geometry_accuracy_passed": true
+    },
+    "highlands": {
+      "status": "complete",
+      "position": {
+        "x": 320.5,
+        "y": 208.5,
+        "yaw": 1.4,
+        "pitch": -0.15,
+        "z": 18.249413964570465
+      },
+      "checks": {
+        "pixels": 4200,
+        "coverage_mismatches": 0,
+        "raw_depth_errors_over_1e_7": 2594,
+        "refined_depth_errors_over_1e_7": 0,
+        "invalid_candidates": 0,
+        "max_raw_depth_error": 0.0006256235609640726,
+        "max_refined_depth_error": 0.0,
+        "examples": []
+      },
+      "timings": {
+        "gpu_query_readback": {
+          "mean_ms": 0.9002999995573191,
+          "p95_ms": 0.9002999995573191,
+          "samples_ms": [
+            0.9002999995573191
+          ]
+        },
+        "decode": {
+          "mean_ms": 0.4340000000411237,
+          "p95_ms": 0.4340000000411237,
+          "samples_ms": [
+            0.4340000000411237
+          ]
+        },
+        "refine": {
+          "mean_ms": 3.806000000167842,
+          "p95_ms": 3.806000000167842,
+          "samples_ms": [
+            3.806000000167842
+          ]
+        },
+        "ascii": {
+          "mean_ms": 0.3239000002395187,
+          "p95_ms": 0.3239000002395187,
+          "samples_ms": [
+            0.3239000002395187
+          ]
+        },
+        "cpu_static_scene": {
+          "mean_ms": 35.40659999998752,
+          "p95_ms": 35.40659999998752,
+          "samples_ms": [
+            35.40659999998752
+          ]
+        }
+      },
+      "geometry_accuracy_passed": true
+    },
+    "ridge_upper": {
+      "status": "complete",
+      "position": {
+        "x": 148.5,
+        "y": 52.5,
+        "z": 10,
+        "yaw": 0,
+        "pitch": -0.1
+      },
+      "checks": {
+        "pixels": 4200,
+        "coverage_mismatches": 0,
+        "raw_depth_errors_over_1e_7": 3653,
+        "refined_depth_errors_over_1e_7": 0,
+        "invalid_candidates": 0,
+        "max_raw_depth_error": 1.0005136678259419e-05,
+        "max_refined_depth_error": 1.7763568394002505e-15,
+        "examples": []
+      },
+      "timings": {
+        "gpu_query_readback": {
+          "mean_ms": 0.9448999999221996,
+          "p95_ms": 0.9448999999221996,
+          "samples_ms": [
+            0.9448999999221996
+          ]
+        },
+        "decode": {
+          "mean_ms": 1.2369000000944652,
+          "p95_ms": 1.2369000000944652,
+          "samples_ms": [
+            1.2369000000944652
+          ]
+        },
+        "refine": {
+          "mean_ms": 3.621899999870948,
+          "p95_ms": 3.621899999870948,
+          "samples_ms": [
+            3.621899999870948
+          ]
+        },
+        "ascii": {
+          "mean_ms": 0.803500000074564,
+          "p95_ms": 0.803500000074564,
+          "samples_ms": [
+            0.803500000074564
+          ]
+        },
+        "cpu_static_scene": {
+          "mean_ms": 32.13640000012674,
+          "p95_ms": 32.13640000012674,
+          "samples_ms": [
+            32.13640000012674
+          ]
+        }
+      },
+      "geometry_accuracy_passed": true
+    },
+    "stair_walk": {
+      "status": "complete",
+      "position": {
+        "x": 140.5,
+        "y": 41.5,
+        "z": 5,
+        "yaw": 1.5707963267948966
+      },
+      "checks": {
+        "pixels": 4200,
+        "coverage_mismatches": 0,
+        "raw_depth_errors_over_1e_7": 2429,
+        "refined_depth_errors_over_1e_7": 0,
+        "invalid_candidates": 0,
+        "max_raw_depth_error": 9.399342268068267e-06,
+        "max_refined_depth_error": 3.552713678800501e-15,
+        "examples": []
+      },
+      "timings": {
+        "gpu_query_readback": {
+          "mean_ms": 0.8262999999715248,
+          "p95_ms": 0.8262999999715248,
+          "samples_ms": [
+            0.8262999999715248
+          ]
+        },
+        "decode": {
+          "mean_ms": 0.27409999984229216,
+          "p95_ms": 0.27409999984229216,
+          "samples_ms": [
+            0.27409999984229216
+          ]
+        },
+        "refine": {
+          "mean_ms": 4.3410000002950255,
+          "p95_ms": 4.3410000002950255,
+          "samples_ms": [
+            4.3410000002950255
+          ]
+        },
+        "ascii": {
+          "mean_ms": 0.7603999997627398,
+          "p95_ms": 0.7603999997627398,
+          "samples_ms": [
+            0.7603999997627398
+          ]
+        },
+        "cpu_static_scene": {
+          "mean_ms": 54.97060000016063,
+          "p95_ms": 54.97060000016063,
+          "samples_ms": [
+            54.97060000016063
+          ]
+        }
+      },
+      "geometry_accuracy_passed": true
+    }
+  },
+  "errors": [],
+  "complete": true,
+  "hashes": {
+    "ascii3d\\__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d\\__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d\\app.py": "d6447e60a5c9d46e12995317a0fedf4b1617304522a1af2d68ca63a2e8e562fd",
+    "ascii3d\\audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d\\audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d\\audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d\\combat.py": "193b336acd5b9ac21fd94987ca52fef7648c245e7938a99fc9c9befaee374a1c",
+    "ascii3d\\combat_render.py": "ae6c866ea74b6f8fd47ce75eeec033323c307c717cf1a8e44d40e6da422473a7",
+    "ascii3d\\door_render.py": "d8a80b3cedf902131598cd655aa96123d6f078a01c6d7f6a38c4ddb57fd4da52",
+    "ascii3d\\doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d\\events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d\\geometry.py": "02cecaabf255fc676c781f0dd8fa08941dd5fffa9e68c96da962d13d2335c12d",
+    "ascii3d\\map_expansion.py": "f45f99b3fac403d6c90fcc36a381d3cd721968f2693df019d4ec820b2c772f82",
+    "ascii3d\\mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d\\player.py": "098e1264a6cd9a73832c6cabcf29e58186ad5788793c4d2015f3cbae95ba85aa",
+    "ascii3d\\renderer.py": "5d80bbf8765ee99ffa7f2a764e844ef322f0360efd713780b1777080914e0440",
+    "ascii3d\\scenery.py": "9c3b46e891ef40fd2591a09e9226a9596cbd795578202d2e93e15ffb6a6c6f5e",
+    "ascii3d\\sound.py": "40e0da49c354bebe51378245c5d3566eecf534c5c177b8fff66846c7eedc2fa8",
+    "ascii3d\\sound_surfaces.py": "501851a29f0e0e16250158b82830201e2036c4f60fa2273f69435a2e1b31ea9d",
+    "ascii3d\\soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d\\surfaces.py": "548b3eef61aba9af1133728e490e4590dfea1b2fc5a1bdd20d71dd041e43a76c",
+    "ascii3d\\targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d\\terminal.py": "2f4a21a5e861e64515d77b8a5b3679d8057f53cb39174838492b4b4bf6d53b2e",
+    "ascii3d\\terrain.py": "e4067da2db9ae1810976f6bb21affaa83848c9f88e97abbf63f1d2b4b09ca808",
+    "ascii3d\\trees.py": "f3f54ae1a81ba95a5ffc730bd57d7b25086e09e4a7757f3deea36b6a0470b98a",
+    "ascii3d\\world.py": "8e07f5f77e0526e4dce7f00eb50a9fde896c1cb7d24dd228052dcd3bb022a8b8"
+  },
+  "prototype_hashes": {
+    "gpu_prototype.py": "b7d7df031ffea35ef3c7d7c68be558c9726e98cd37ff3ac035d60cbd96696ca0",
+    "gpu_static.wgsl": "a55be4e6e282d6cfe70baca1025447788b5445eef2b5ecf7461184fba995327e"
+  },
+  "adapter": {
+    "vendor": "NVIDIA",
+    "architecture": "",
+    "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+    "description": "621.01",
+    "stackgroup_min_size": 4,
+    "stackgroup_max_size": 128,
+    "vendor_id": 4318,
+    "device_id": 9372,
+    "adapter_type": "DiscreteGPU",
+    "backend_type": "Vulkan"
+  },
+  "wgpu": "0.33.0",
+  "setup_ms": 5369.500900000276
+}

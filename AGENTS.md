@@ -29,6 +29,10 @@ names and atmosphere while preserving readable navigation and interactions.
   benchmark evidence when cleaning documentation.
 - Ask before major architectural changes. Routine additive features within the
   existing engine do not require another approval.
+- Check account usage between major phases. When either relevant usage window
+  reaches **15% remaining or less**, wrap up the session: stop starting new work,
+  safely finish or stop active jobs, and leave a precise verified checkpoint,
+  open issues and resume commands. Do not invent completion to fit the limit.
 
 ## Gameplay Conventions
 
@@ -76,6 +80,9 @@ output; wall-clock rate caps are only for immediately returning sinks.
 
 - `app.py`, `terminal.py`, `mouse_capture.py`: CLI/frame loop, input/native mouse
   capture and terminal lifecycle.
+- `loading.py`: completed-phase startup progress.
+- `gpu_renderer.py`, `gpu_static.wgsl`: optional GPU geometry candidates,
+  float64 refinement and exact CPU fallback; presentation remains shared.
 - `world.py`, `map_expansion.py`, `terrain.py`, `player.py`: materials/layout,
   highlands, shared multilevel landmarks, collision, stairs, movement, jumping,
   water current and player health.

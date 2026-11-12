@@ -1,0 +1,3 @@
+# Optional standalone GPU prototype; the CPU game has no dependencies.
+# wgpu 0.33 requires Python 3.11+; CPU support remains Python 3.10+.
+wgpu==0.33.0

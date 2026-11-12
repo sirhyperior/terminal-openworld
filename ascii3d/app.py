@@ -12,6 +12,7 @@ import time
 from .player import Player
 from .doors import Door
 from .events import GameEvent
+from .loading import LoadingProgress
 from .renderer import Renderer
 from .sound import Audio, SoundBank
 from .soundscape import Soundscape
@@ -68,6 +69,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--fps", type=positive_int, default=40, help="frame rate limit (default: 40)")
     parser.add_argument("--cell-aspect", type=float, default=0.5, help="font cell width / height (default: 0.5)")
     parser.add_argument("--benchmark", type=positive_int, metavar="FRAMES", help="render a turn without terminal output")
+    parser.add_argument("--renderer", choices=('auto', 'cpu', 'gpu'), default='auto',
+                        help='geometry renderer (default: hardware GPU when available, with CPU fallback)')
     parser.add_argument("--demo", action="store_true", help="automatically walk and turn; controls still work")
     parser.add_argument("--outside", action="store_true", help="start in the meadow facing the castle")
     parser.add_argument("--region", choices=REGION_NAMES,
@@ -101,33 +104,56 @@ def main(argv: list[str] | None = None) -> int:
         from .audio_check import check_audio
         return check_audio(args.volume)
 
-    if not args.snapshot and not args.benchmark and sys.stdout.isatty():
-        print("Loading MONOLITH...", flush=True)
+    loading = LoadingProgress(sys.stdout, not args.snapshot and not args.benchmark and sys.stdout.isatty())
+    loading.start()
     entrance = (lambda: spawn_region(args.region)) if args.region else (lambda: spawn_player(args.outside))
-    world, player = build_world(), entrance()
-    renderer = Renderer(world, args.cell_aspect)
-    soundscape = Soundscape(world)
+    renderer = None
+    try:
+        world, player = build_world(), entrance()
+        loading.advance()
+        renderer = Renderer(world, args.cell_aspect, backend=args.renderer)
+        loading.advance()
+        if args.renderer == 'gpu' and renderer.backend_name != 'gpu':
+            print(f'MONOLITH: GPU unavailable; using CPU renderer ({renderer.backend_error})', file=sys.stderr)
+        soundscape = Soundscape(world)
+    except BaseException:
+        loading.close()
+        if renderer is not None:
+            renderer.close()
+        raise
     if args.snapshot:
-        print("\n".join(renderer.frame(player, args.width, args.height, keyboard_look=keyboard_look)))
-        return 0
+        try:
+            print("\n".join(renderer.frame(player, args.width, args.height, keyboard_look=keyboard_look)))
+            return 0
+        finally:
+            renderer.close()
+            loading.close()
     if args.benchmark:
-        start = time.perf_counter()
-        for frame in range(args.benchmark):
-            player.yaw = math.pi / 2 + frame / args.benchmark * math.tau
-            renderer.frame(player, args.width, args.height, time_seconds=frame / args.fps)
-        elapsed = time.perf_counter() - start
-        print(f"{args.benchmark} frames at {args.width}x{args.height}: "
-              f"{args.benchmark / elapsed:.1f} FPS ({elapsed / args.benchmark * 1000:.1f} ms/frame)")
-        return 0
+        try:
+            start = time.perf_counter()
+            for frame in range(args.benchmark):
+                player.yaw = math.pi / 2 + frame / args.benchmark * math.tau
+                renderer.frame(player, args.width, args.height, time_seconds=frame / args.fps)
+            elapsed = time.perf_counter() - start
+            print(f"{args.benchmark} frames at {args.width}x{args.height}: "
+                  f"{args.benchmark / elapsed:.1f} FPS ({elapsed / args.benchmark * 1000:.1f} ms/frame)")
+            return 0
+        finally:
+            renderer.close()
+            loading.close()
 
     try:
         # Static terrain preparation belongs to loading, before capture/audio
         # and the first active physics frame. Headless callers remain lazy-safe.
         renderer.prepare_world()
+        loading.advance()
         soundscape.at(player.x, player.y, player.yaw, player.z)
+        loading.advance()
         with ExitStack() as session:
             terminal = session.enter_context(Terminal(args.max_cells))
+            loading.advance()
             audio = session.enter_context(Audio(not args.mute, args.volume))
+            loading.advance()
             # Release before audio drains, on frame limits and exceptions too.
             session.callback(terminal.set_mouse_capture, False)
             show_map, help_open, paused = False, False, False
@@ -270,4 +296,7 @@ def main(argv: list[str] | None = None) -> int:
     except OSError as error:
         print(f"MONOLITH: {error}", file=sys.stderr)
         return 1
+    finally:
+        renderer.close()
+        loading.close()
     return 0

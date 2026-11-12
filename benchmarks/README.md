@@ -9,7 +9,20 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
-- **Smooth hills/fine stairs (working checkpoint):**
+- **Current CPU repair and approved GPU prototype:**
+  [2026-11-12 evidence](smooth-performance-2026-11-12.md) records the current
+  checkpoint. The final CPU comparison against `d20cd0d` passes **14/24**
+  roles; the separate same-geometry comparison against `a3d044f` passes **34/34**,
+  with zero underruns/recoveries. The earlier grouped experiment failed three
+  views and had one underrun; every failure is retained. There are 204 exact
+  CPU frame/depth pairs and 34,816 exact terrain rays. GPU integration now shares
+  production presentation; 204 full image pairs match, and 420 native tests pass
+  with one sandbox cursor skip. Latest full GPU ABBA passes **14/24** against
+  d20cd0d, with clean audio; its earlier 11/24 and 13/24 failures are retained.
+  A 100-frame actual 160x50 GPU demo completes with sound and loading progress.
+  Whole-game performance acceptance remains open; stage-only prototype timings
+  are not a replacement control.
+- **Smooth hills/fine stairs (2026-11-11 checkpoint):**
   [2026-11-11 performance repair](smooth-performance-2026-11-11.md) resumes the
   immediate FPS work. `smooth-interleaved-repair-2026-11-11.json` is complete:
   8/24 matched roles pass; the later envelope report passes 9/24 and the latest

@@ -9,6 +9,20 @@ from ascii3d.world import AIR, FLOOR, GRASS, PATH, World
 
 
 class SurfaceTests(unittest.TestCase):
+    def test_origin_relative_cache_tracks_moving_and_mutable_ray_origins(self):
+        field = HeightField(12, 12, [1 + 0.3 * x + 0.2 * y
+                                   for y in range(13) for x in range(13)])
+        origin = [3.5, 4.5, 7.0]
+        direction = (0.2, 0.1, -1.0)
+        length = math.sqrt(1 + 0.3 ** 2 + 0.2 ** 2)
+        for pose in ((3.5, 4.5, 7), (3.5, 4.5, 8), (3.7, 4.8, 8), (3.5, 4.5, 7)):
+            origin[:] = pose
+            hit = field.ray_hit(origin, direction, 12)
+            expected = (1 + 0.3 * origin[0] + 0.2 * origin[1] - origin[2]) / (-1 - 0.3 * 0.2 - 0.2 * 0.1)
+            self.assertAlmostEqual(hit.distance, expected, places=12)
+            for actual, component in zip(hit.normal, (-0.3 / length, -0.2 / length, 1 / length)):
+                self.assertAlmostEqual(actual, component, places=12)
+
     def test_chunked_rays_match_independent_all_triangle_reference(self):
         size = 18
         field = HeightField(size, size, [2 + math.sin(x * 0.7) * math.cos(y * 0.3)

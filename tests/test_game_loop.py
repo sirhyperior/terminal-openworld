@@ -102,7 +102,10 @@ class GameLoopTests(unittest.TestCase):
                 pauses.append(paused)
 
         class FakeRenderer:
-            def __init__(self, *args):
+            def __init__(self, *args, **kwargs):
+                pass
+
+            def close(self):
                 pass
 
             def prepare_world(self):

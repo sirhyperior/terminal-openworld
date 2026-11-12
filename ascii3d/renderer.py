@@ -1,5 +1,6 @@
 """Perspective voxel and continuous-surface rays, sharing exact depth tests."""
 
+import heapq
 import math
 
 from .player import Player
@@ -13,6 +14,59 @@ from .world import (AIR, BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, WATER
 
 
 RAMP = " .,:;!+=*#%@"
+
+
+def _analytic_depth_rows(boxes, camera):
+    """Conservative projected bounds, swept in spans rather than per box/pixel.
+
+    Each pixel receives the nearest possible forward depth of any selected
+    analytic AABB. Projection never supplies a hit. A box crossing the near
+    plane uses the whole viewport, retaining rays arbitrarily close to the eye.
+    Work is bounded by eight projections and one interval per box/scanline,
+    plus one viewport's worth of output writes, even for overlapping boxes.
+    """
+    width, height = camera.width, camera.height
+    intervals = [[] for _ in range(height)]
+    for box in boxes:
+        points = [camera.project(x, y, z)
+                  for x in (box.x0, box.x1) for y in (box.y0, box.y1) for z in (box.z0, box.z1)]
+        if any(point is None for point in points):
+            # This conservative full-view interval dominates every other
+            # nonnegative bound. Avoid preparing redundant overlapping spans.
+            return [[0.0] * width for _ in range(height)]
+        else:
+            # Integer sample centers match Camera.project. Expand both edges
+            # and depth for the query's endpoint/coincident-face tolerances.
+            left = max(0, math.floor(min(p[0] for p in points) - 1e-7))
+            right = min(width, math.ceil(max(p[0] for p in points) + 1e-7) + 1)
+            low = max(0, math.floor(min(p[1] for p in points) - 1e-7))
+            high = min(height, math.ceil(max(p[1] for p in points) + 1e-7) + 1)
+            depth = max(0.0, min(p[2] for p in points) - 1e-7)
+        if left >= right:
+            continue
+        for row in range(low, high):
+            intervals[row].append((left, depth, right))
+    rows = []
+    for entries in intervals:
+        entries.sort()
+        heap = []
+        row = [math.inf] * width
+        column = index = 0
+        while column < width:
+            while index < len(entries) and entries[index][0] <= column:
+                _, depth, end = entries[index]
+                heapq.heappush(heap, (depth, end))
+                index += 1
+            while heap and heap[0][1] <= column:
+                heapq.heappop(heap)
+            end = entries[index][0] if index < len(entries) else width
+            if heap:
+                depth, stop = heap[0]
+                end = min(end, stop)
+                row[column:end] = [depth] * (end - column)
+            column = end
+        rows.append(row)
+    return rows
 
 
 def _extend_horizon(skyline, origin_x, origin_y, eye, top, x0, y0, x1, y1):
@@ -135,7 +189,7 @@ def _overlapping_clear_runs(clear, width, height):
 
 class Renderer:
     def __init__(self, world: World, cell_aspect: float = 0.5, skip_empty_space: bool = True,
-                 combat_depth_prepass: bool = True):
+                 combat_depth_prepass: bool = True, backend: str = 'cpu'):
         self.world = world
         self.cell_aspect = cell_aspect
         self._size = (0, 0)
@@ -161,6 +215,26 @@ class Renderer:
         self._analytic_horizon_key = None
         self._analytic_sky_horizon = None
         self.cache_stats = {}
+        self.ray_backend = None
+        self.backend_name = 'cpu'
+        self.backend_error = ''
+        if backend not in ('cpu', 'gpu', 'auto'):
+            raise ValueError('renderer backend must be cpu, gpu or auto')
+        if backend != 'cpu':
+            try:
+                from .gpu_renderer import GPUBackend
+                self.ray_backend = GPUBackend(world, cell_aspect)
+                self.backend_name = 'gpu'
+            except Exception as error:
+                self.backend_error = str(error)
+
+    def close(self):
+        if self.ray_backend is not None:
+            backend, self.ray_backend = self.ray_backend, None
+            try:
+                backend.close()
+            except Exception as error:
+                self.backend_error = str(error)
 
     def prepare_world(self) -> None:
         """Build static traversal caches before interactive input/audio starts."""
@@ -475,8 +549,15 @@ class Renderer:
                       max(point[0] for point in endpoints), max(point[1] for point in endpoints))
             geometry_hit = world.geometry_query(bounds, planes)
         analytic_minimum = getattr(geometry_hit, "minimum_depth", 0.0)
+        analytic_boxes = getattr(geometry_hit, "bounds", None)
+        analytic_depths = (_analytic_depth_rows(analytic_boxes,
+                           Camera(player, width, height, self._focal, self.cell_aspect))
+                           if analytic_boxes is not None else None)
         analytic_horizon = (self._prepare_analytic_horizon(player, cp, sp)
                             if geometry_hit is not None and skip_empty else None)
+        early_height = world.heightfield.height_at(px, py) if world.heightfield is not None else None
+        early_ground = skip_empty and early_height is not None
+        early_misses = 0
         horizontal_rays = None
         if player.pitch == 0:
             # With a level camera the horizontal DDA setup is identical on
@@ -527,17 +608,28 @@ class Renderer:
                             self._focal, self.cell_aspect, time_seconds, labels=False)
                 self.combat_prepass_used = True
 
+        gpu_hits = None
+        if self.ray_backend is not None:
+            try:
+                gpu_hits = self.ray_backend.render(player, width, height)
+            except Exception as error:
+                self.backend_error = str(error)
+                self.close()
+                self.backend_name = 'cpu'
+
         for row_index, v in enumerate(self._rows):
             row = []
             depth_row = []
             panel_row = door_pixels[row_index] if door_pixels is not None else None
             panel_depth_row = door_depths[row_index] if door_depths is not None else None
             combat_depth_row = combat_depths[row_index] if combat_depths is not None else None
+            analytic_depth_row = analytic_depths[row_index] if analytic_depths is not None else None
             # Forward + vertical camera-plane offset, then horizontal offset.
             base_x, base_y, dz = cy * (cp - v * sp), sy * (cp - v * sp), sp + v * cp
             step_z = 1 if dz >= 0 else -1
             delta_z = 1.0 / dz if dz > 1e-12 else -1.0 / dz if dz < -1e-12 else 1e30
             initial_z = ((start_z + 1 - pz) if step_z > 0 else (pz - start_z)) * delta_z
+            early_depth = (pz - early_height) * delta_z if early_ground else math.inf
             rising = sky_horizon is not None and dz > 0
             analytic_rising = analytic_horizon is not None and dz > 0
             dz_squared = dz * dz
@@ -547,45 +639,59 @@ class Renderer:
                 ray_limit = panel_depth if panel_depth < 48 else 48
                 if combat_depth_row is not None and combat_depth_row[column_index] < ray_limit:
                     ray_limit = combat_depth_row[column_index]
-                voxel_sky = False
-                query_analytic = geometry_hit is not None and ray_limit >= analytic_minimum
-                if horizontal_rays is not None:
-                    (dx, dy, step_x, step_y, delta_x, delta_y, side_x, side_y,
-                     horizon, analytic_slope) = horizontal_rays[column_index]
-                    if analytic_rising and dz_squared > analytic_slope:
-                        query_analytic = False
-                    if rising and dz_squared > horizon:
-                        if not query_analytic:
-                            row.append(panel_row[column_index] if panel_row is not None else " ")
-                            depth_row.append(panel_depth)
-                            continue
-                        voxel_sky = True
-                else:
+                gpu_hit = gpu_hits[row_index * width + column_index] if gpu_hits is not None else None
+                if gpu_hit is not None and (not gpu_hit[1] or abs(gpu_hit[0] - ray_limit) > 1e-7):
                     dx, dy = base_x + u * sy, base_y - u * cy
-                    # Sky rays do not need signs, reciprocal crossing deltas,
-                    # or any voxel traversal initialization.
-                    if rising or analytic_rising:
-                        azimuth = int((math.atan2(dy, dx) % math.tau) * horizon_scale) % 128
-                        horizontal_squared = dx * dx + dy * dy
-                        if analytic_rising and dz_squared > analytic_horizon[azimuth] * horizontal_squared:
+                    step_x, step_y = (1 if dx >= 0 else -1), (1 if dy >= 0 else -1)
+                    distance, material, gpu_normal, axis = gpu_hit
+                    if distance > ray_limit:
+                        material, gpu_normal = 0, None
+                    analytic_hit = None
+                    query_analytic = early_query = False
+                    voxel_sky = True
+                else:
+                    voxel_sky = False
+                    analytic_near = analytic_depth_row[column_index] if analytic_depth_row is not None else analytic_minimum
+                    query_analytic = geometry_hit is not None and ray_limit >= analytic_near
+                    if horizontal_rays is not None:
+                        (dx, dy, step_x, step_y, delta_x, delta_y, side_x, side_y,
+                         horizon, analytic_slope) = horizontal_rays[column_index]
+                        if analytic_rising and dz_squared > analytic_slope:
                             query_analytic = False
-                        if rising and dz_squared > sky_horizon[azimuth] * horizontal_squared:
+                        if rising and dz_squared > horizon:
                             if not query_analytic:
                                 row.append(panel_row[column_index] if panel_row is not None else " ")
                                 depth_row.append(panel_depth)
                                 continue
                             voxel_sky = True
-                    step_x, step_y = (1 if dx >= 0 else -1), (1 if dy >= 0 else -1)
-                    delta_x = 1.0 / dx if dx > 1e-12 else -1.0 / dx if dx < -1e-12 else 1e30
-                    delta_y = 1.0 / dy if dy > 1e-12 else -1.0 / dy if dy < -1e-12 else 1e30
-                    side_x = ((start_x + 1 - px) if step_x > 0 else (px - start_x)) * delta_x
-                    side_y = ((start_y + 1 - py) if step_y > 0 else (py - start_y)) * delta_y
-                side_z = initial_z
-                inverse_x, inverse_y = step_x * delta_x, step_y * delta_y
-                ray_bounds = empty_bounds if delta_x <= delta_y else empty_columns
-                x, y, z = start_x, start_y, start_z
-                material, axis, distance = 0, 0, 0.0
-
+                    else:
+                        dx, dy = base_x + u * sy, base_y - u * cy
+                        # Sky rays do not need signs, reciprocal crossing deltas,
+                        # or any voxel traversal initialization.
+                        if rising or analytic_rising:
+                            azimuth = int((math.atan2(dy, dx) % math.tau) * horizon_scale) % 128
+                            horizontal_squared = dx * dx + dy * dy
+                            if analytic_rising and dz_squared > analytic_horizon[azimuth] * horizontal_squared:
+                                query_analytic = False
+                            if rising and dz_squared > sky_horizon[azimuth] * horizontal_squared:
+                                if not query_analytic:
+                                    row.append(panel_row[column_index] if panel_row is not None else " ")
+                                    depth_row.append(panel_depth)
+                                    continue
+                                voxel_sky = True
+                        step_x, step_y = (1 if dx >= 0 else -1), (1 if dy >= 0 else -1)
+                        delta_x = 1.0 / dx if dx > 1e-12 else -1.0 / dx if dx < -1e-12 else 1e30
+                        delta_y = 1.0 / dy if dy > 1e-12 else -1.0 / dy if dy < -1e-12 else 1e30
+                        side_x = ((start_x + 1 - px) if step_x > 0 else (px - start_x)) * delta_x
+                        side_y = ((start_y + 1 - py) if step_y > 0 else (py - start_y)) * delta_y
+                    side_z = initial_z
+                    inverse_x, inverse_y = step_x * delta_x, step_y * delta_y
+                    ray_bounds = empty_bounds if delta_x <= delta_y else empty_columns
+                    x, y, z = start_x, start_y, start_z
+                    material, axis, distance = 0, 0, 0.0
+                    analytic_hit = None
+                    gpu_normal = None
+                    early_query = early_ground and query_analytic and step_z < 0 and early_misses < 4
                 # Rays walk the voxel grid exactly, without a sampling step size.
                 for _ in range(0 if voxel_sky else 110):
                     if skip_empty and step_z > 0 and z >= local_ceiling:
@@ -617,6 +723,25 @@ class Renderer:
                             distance, axis = end_y, 1
                         else:
                             distance, axis = end_z, 2
+                        if early_query:
+                            # The cached prism is provably empty of voxels.
+                            # On continuous outdoor ground, an exact surface
+                            # often wins before its first voxel boundary. Keep
+                            # the voxel-first path where authored floors/walls
+                            # replaced the heightfield, including interiors.
+                            early_query = False
+                            early_limit = min(ray_limit, distance + 1e-8)
+                            if early_limit >= analytic_near and early_depth <= early_limit:
+                                analytic_hit = geometry_hit(origin, (dx, dy, dz), early_limit)
+                                if analytic_hit is not None:
+                                    query_analytic = False
+                                    break
+                                if early_limit >= ray_limit:
+                                    query_analytic = False
+                                else:
+                                    # Bound duplicate work when nearby walls
+                                    # or chunk edges make early queries miss.
+                                    early_misses += 1
                         if distance > ray_limit:
                             break
                         if room is not None:
@@ -682,12 +807,11 @@ class Renderer:
                 # surfaces. Query those independently, but only as far as the
                 # opaque voxel/water hit already found, or a panel/combat bound.
                 # Preserve the same coincident-surface tolerance as the merge.
-                analytic_hit = None
                 if query_analytic:
                     analytic_limit = min(ray_limit, distance + 1e-8) if material else ray_limit
-                    if analytic_limit >= analytic_minimum:
+                    if analytic_limit >= analytic_near:
                         analytic_hit = geometry_hit(origin, (dx, dy, dz), analytic_limit)
-                normal = None
+                normal = gpu_normal
                 if analytic_hit is not None and (not material or analytic_hit.distance <= distance + 1e-8):
                     distance, material, normal = analytic_hit.distance, analytic_hit.material, analytic_hit.normal
                     ax, ay, az = abs(normal[0]), abs(normal[1]), abs(normal[2])

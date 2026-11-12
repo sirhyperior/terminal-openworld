@@ -146,6 +146,7 @@ class HeightField:
         self._chunk_envelopes = {}
         self._footprints = {}
         self._ray_cells = {}
+        self._ray_origin = None
         self._maximum = max(self.heights, default=0.0)
         self.revision = 0
 
@@ -162,12 +163,16 @@ class HeightField:
         h00, h10, h01, h11 = self._corners(x, y)
         return (h11 - h01, h01 - h00, h00) if second else (h10 - h00, h11 - h10, h00)
 
-    def _ray_cell(self, x, y, index):
-        """Cache both exact planes; materials/enabled flags remain live."""
+    def _ray_cell(self, x, y, index, origin):
+        """Cache exact origin-relative planes and normals; flags remain live."""
         h00, h10, h01, h11 = self._corners(x, y)
         a0, b0, a1, b1 = h10 - h00, h11 - h10, h11 - h01, h01 - h00
-        value = (h00, a0, b0, a1, b1, max(h00, h10, h01, h11),
-                 max(abs(a0), abs(a1)), max(abs(b0), abs(b1)))
+        ox, oy, oz = origin
+        numerator0 = h00 + a0 * (ox - x) + b0 * (oy - y) - oz
+        numerator1 = h00 + a1 * (ox - x) + b1 * (oy - y) - oz
+        length0, length1 = math.sqrt(a0 * a0 + b0 * b0 + 1), math.sqrt(a1 * a1 + b1 * b1 + 1)
+        normal0, normal1 = (-a0 / length0, -b0 / length0, 1 / length0), (-a1 / length1, -b1 / length1, 1 / length1)
+        value = h00, a0, b0, a1, b1, max(h00, h10, h01, h11), numerator0, numerator1, normal0, normal1
         if len(self._ray_cells) >= self.RAY_CACHE_CELLS:
             self._ray_cells.clear()
         self._ray_cells[index] = value
@@ -276,21 +281,34 @@ class HeightField:
         if start > end or end < 0:
             return None
         width, depth = self.width, self.depth
+        ray_origin = ox, oy, oz
+        if self._ray_origin != ray_origin:
+            self._ray_cells.clear()
+            self._ray_origin = ray_origin
         enabled, materials, ray_cells = self.enabled, self.materials, self._ray_cells
         step_x, step_y = (1 if dx >= 0 else -1), (1 if dy >= 0 else -1)
         delta_x = abs(1 / dx) if abs(dx) > 1e-12 else math.inf
         delta_y = abs(1 / dy) if abs(dy) > 1e-12 else math.inf
         abs_dx, abs_dy, abs_dz = abs(dx), abs(dy), abs(dz)
+        # Nonnegative vertices bound every triangle slope by the maximum
+        # height, and every eight-cell envelope slope by that same value.
+        # One conservative ray margin replaces repeated per-chunk/cell error
+        # arithmetic. This only admits extra exact tests; it never supplies a
+        # surface or changes the triangle intersection tolerances below.
+        maximum = self._maximum
+        rate_bound = abs_dz + maximum * (abs_dx + abs_dy)
+        margin = (EPSILON + 1e-8 * rate_bound
+                  + 1e-12 * (1 + abs(oz) + maximum * (33 + abs(ox) + width + abs(oy) + depth)
+                             + rate_bound * abs(limit)))
         for chunk_x, chunk_y, a, b in grid_intervals(ox, oy, dx, dy, start, end, self.CHUNK):
             low, high = self._chunk_bounds(chunk_x, chunk_y)
-            if low == math.inf or min(oz + dz * a, oz + dz * b) > high + EPSILON:
+            if low == math.inf or oz + dz * (b if dz < 0 else a) > high + margin:
                 continue
             fine_start, fine_end = a, b
             # Restrict fine traversal to where the ray could meet this chunk's
             # constant ceiling. Retain a parameter halo for the exact triangle
             # tests' 1e-8 endpoint tolerance and grid-boundary offset.
             halo = 1.1e-8
-            margin = EPSILON + 1e-8 * abs_dz + 1e-12 * (1 + abs(high) + abs(oz) + abs_dz * abs(b))
             if dz < -1e-12:
                 crossing = (high + margin - oz) / dz - halo
                 if crossing > fine_start:
@@ -305,11 +323,7 @@ class HeightField:
             local_x, local_y = ox - chunk_x * self.CHUNK, oy - chunk_y * self.CHUNK
             clearance = oz - upper - slope_x * local_x - slope_y * local_y
             rate = dz - slope_x * dx - slope_y * dy
-            margin = (EPSILON + 1e-8 * (abs_dz + abs(slope_x) * abs_dx + abs(slope_y) * abs_dy)
-                      + 1e-12 * (1 + abs(oz) + abs(upper)
-                                 + abs(slope_x * local_x) + abs(slope_y * local_y) + abs(rate * b)))
-            gap_start, gap_end = clearance + rate * fine_start, clearance + rate * fine_end
-            if min(gap_start, gap_end) > margin:
+            if clearance + rate * (fine_end if rate < 0 else fine_start) > margin:
                 continue
             if rate < -1e-12:
                 crossing = (margin - clearance) / rate - halo
@@ -337,36 +351,33 @@ class HeightField:
                     if enabled[index]:
                         planes = ray_cells.get(index)
                         if planes is None:
-                            planes = self._ray_cell(x, y, index)
-                        cc, a0, b0, a1, b1, cell_top, max_a, max_b = planes
-                        za, zb = oz + dz * left, oz + dz * right
+                            planes = self._ray_cell(x, y, index, origin)
+                        cc, a0, b0, a1, b1, cell_top, numerator0, numerator1, normal0, normal1 = planes
                         # The ray is linear over this cell. All triangle
                         # heights lie below its highest vertex; expand by the
                         # existing intersection tolerance at either endpoint.
-                        margin = EPSILON + 1e-8 * (abs_dz + max_a * abs_dx + max_b * abs_dy)
-                        if min(za, zb) <= cell_top + margin:
+                        if oz + dz * (right if dz < 0 else left) <= cell_top + margin:
+                            za = oz + dz * left
                             u, v = ox + dx * left - x, oy + dy * left - y
                             aa, bb = (a1, b1) if v > u else (a0, b0)
                             if za < cc + aa * u + bb * v - EPSILON:
                                 return SurfaceHit(max(0.0, left), materials[index], (0.0, 0.0, 1.0))
                             nearest = math.inf
-                            hit_a = hit_b = 0.0
+                            hit_normal = None
                             for second in (False, True):
                                 aa, bb = (a1, b1) if second else (a0, b0)
                                 denominator = dz - aa * dx - bb * dy
                                 if denominator >= -1e-12:
                                     continue
-                                t = (cc + aa * (ox - x) + bb * (oy - y) - oz) / denominator
+                                t = (numerator1 if second else numerator0) / denominator
                                 if left - 1e-8 <= t <= right + 1e-8 and t >= -1e-8:
                                     u, v = ox + dx * t - x, oy + dy * t - y
                                     if (v >= u - 1e-8) if second else (v <= u + 1e-8):
                                         distance = max(0.0, t)
                                         if distance < nearest:
-                                            nearest, hit_a, hit_b = distance, aa, bb
+                                            nearest, hit_normal = distance, normal1 if second else normal0
                             if nearest != math.inf:
-                                length = math.sqrt(hit_a * hit_a + hit_b * hit_b + 1)
-                                return SurfaceHit(nearest, materials[index],
-                                                  (-hit_a / length, -hit_b / length, 1 / length))
+                                return SurfaceHit(nearest, materials[index], hit_normal)
                 if right >= fine_end:
                     break
                 crossing = right + 1e-10

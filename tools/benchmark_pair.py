@@ -36,11 +36,14 @@ def load_engine(root, alias):
             for name in ("world", "player", "renderer", "combat", "soundscape")}
 
 
-def variant(engine, width=120, height=40):
+def variant(engine, width=120, height=40, renderer_backend='cpu'):
     start = time.perf_counter()
     world = engine["world"].build_world()
     built = time.perf_counter()
-    renderer = engine["renderer"].Renderer(world)
+    renderer = (engine["renderer"].Renderer(world) if renderer_backend == 'cpu'
+                else engine["renderer"].Renderer(world, backend=renderer_backend))
+    if renderer_backend == 'gpu' and getattr(renderer, 'backend_name', 'cpu') != 'gpu':
+        raise RuntimeError('GPU benchmark unavailable: ' + getattr(renderer, 'backend_error', 'unknown device error'))
     created = time.perf_counter()
     renderer.frame(engine["player"].Player(), width, height)
     primed = time.perf_counter()
@@ -127,7 +130,7 @@ def summarize(state):
 
 def hashes(root):
     return {str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
-            for path in sorted((root / "ascii3d").glob("*.py"))}
+            for path in sorted(path for path in (root / "ascii3d").iterdir() if path.suffix in ('.py', '.wgsl'))}
 
 
 def save_report(path, report, *, initial=False):
@@ -207,9 +210,15 @@ def run(args, *, before=None, after=None, audio_factory=Audio,
         before["elevated_audio"] = args.before_elevated_audio
         if after is None:
             after = variant({name: importlib.import_module(f"ascii3d.{name}")
-                             for name in before["engine"]}, args.width, args.height)
+                             for name in before["engine"]}, args.width, args.height,
+                            getattr(args, 'after_renderer', 'cpu'))
         after["elevated_audio"] = True
         states = {"before": before, "after": after}
+        report['renderer_backends'] = {label: getattr(state['renderer'], 'backend_name', 'cpu')
+                                       for label, state in states.items()}
+        report['gpu_adapters'] = {label: state['renderer'].ray_backend.adapter_info
+                                  for label, state in states.items()
+                                  if getattr(state['renderer'], 'ray_backend', None) is not None}
         report["world_sizes"] = {label: [state["world"].width, state["world"].depth, state["world"].height]
                                  for label, state in states.items()}
         report["startup"] = {label: state["startup"] for label, state in states.items()}
@@ -317,6 +326,21 @@ def run(args, *, before=None, after=None, audio_factory=Audio,
                            or health["recoveries"] or health["error"]):
             report["failed"].append("audio_health")
         report["complete"] = measurements_complete and not report["errors"]
+        if after is not None:
+            renderer = after['renderer']
+            report['after_renderer_health'] = {'backend': getattr(renderer, 'backend_name', 'cpu'),
+                                               'error': getattr(renderer, 'backend_error', '')}
+            if getattr(args, 'after_renderer', 'cpu') == 'gpu' and (
+                    report['after_renderer_health']['backend'] != 'gpu' or report['after_renderer_health']['error']):
+                report['failed'].append('gpu_backend')
+        for state in (before, after):
+            close = getattr(state['renderer'], 'close', None) if state is not None else None
+            if close is not None:
+                try:
+                    close()
+                except Exception as error:
+                    failure(error, 'renderer_cleanup')
+                    report['complete'] = False
         report["passed"] = report["complete"] and not report["failed"]
         report["status"] = "incomplete" if not report["complete"] else ("passed" if report["passed"] else "failed")
         save_report(args.save, report)
@@ -331,6 +355,8 @@ def main(argv=None):
     parser.add_argument("--width", type=int, default=120)
     parser.add_argument("--height", type=int, default=40)
     parser.add_argument("--audio", action="store_true")
+    parser.add_argument('--after-renderer', choices=('cpu', 'gpu', 'auto'), default='cpu',
+                        help='current renderer; explicit GPU measurements cannot pass after CPU fallback')
     parser.add_argument("--before-elevated-audio", action="store_true",
                         help="sample listener height in a frozen control that supports elevated ambience")
     args = parser.parse_args(argv)

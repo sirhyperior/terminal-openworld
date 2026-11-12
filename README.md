@@ -177,6 +177,11 @@ python main.py --demo --frames 100   # A finite interactive smoke test
 python -m ascii3d                    # Alternate entry point
 ```
 
+Interactive startup shows a loading percentage and the current stage. The
+percentage counts completed startup phases, rather than predicting remaining
+time; it reaches 100% after the world, renderer, terminal and audio have been
+initialized. Snapshot, benchmark and redirected output omit the loading display.
+
 The live viewport uses **every terminal column and row** by default, including
 the HUD. There is no fixed character budget or 180-column / 64-row ceiling.
 More terminal cells provide more image detail and require more rendering work.
@@ -305,6 +310,52 @@ limit. Add `--before-elevated-audio` when the frozen control already supports
 listener-height sampling (checkpoint `d2fa0a7` or later), so both variants use
 the same ambience calculation. See `benchmarks/README.md` for retained
 measurements and limits.
+
+For CPU diagnosis with the paired benchmark's changing yaw, enemy simulation
+and actual walking workloads:
+
+```powershell
+python -B tools/profile_workloads.py warden east_bridge stair_walk --audio --save benchmarks/my-unused-profile.txt
+```
+
+The profile and its `.sources.json` companion require unused paths. These
+instrumented call counts include five warmup frames before profiling and help
+locate expensive work; use the paired benchmark for performance acceptance.
+
+## GPU rendering
+
+The playable game supports `--renderer auto|cpu|gpu`. Auto uses a hardware GPU
+when the optional dependency is available, with CPU fallback. GPU geometry uses
+the same production shading, doors, actors, vegetation and HUD. Ambiguous rays
+retain the exact CPU path; missing/lost devices fall back without changing play.
+`--renderer cpu` forces the standard-library renderer.
+
+GPU support requires **Python 3.11+** and optional `wgpu`, which supplies GPU
+access unavailable in the standard library. The CPU game retains Python 3.10+
+and needs no added dependencies. Install GPU support in an isolated environment:
+
+```powershell
+python -m venv .venv-gpu
+.\.venv-gpu\Scripts\python.exe -m pip install -r requirements-gpu.txt
+.\.venv-gpu\Scripts\python.exe -B main.py --renderer gpu
+```
+
+`run.bat` prefers this local environment when present. Full GPU performance
+acceptance remains open: the latest original-control comparison passes 14/24
+views. GPU rendering improves several expensive views but still regresses some
+cheaper ones. See [current evidence](benchmarks/smooth-performance-2026-11-12.md)
+before treating GPU availability as a whole-game FPS guarantee.
+
+The separate `tools/gpu_prototype.py` remains a static-stage diagnostic with
+simplified ASCII shading. It excludes doors, actors, vegetation and HUD; its
+stage timings do not replace full-game benchmarks. Reports include dispatch and
+readback, hardware identity, CPU finishing, raw samples and accuracy checks.
+
+```powershell
+.\.venv-gpu\Scripts\python.exe -B tools/gpu_prototype.py --scenes warden --snapshot
+$env:MONOLITH_GPU_TESTS='1'
+.\.venv-gpu\Scripts\python.exe -B -m unittest discover -s tests -p 'test_gpu*.py' -v
+```
 
 ## Check the engine
 

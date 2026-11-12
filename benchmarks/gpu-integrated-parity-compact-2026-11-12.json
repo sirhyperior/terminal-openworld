@@ -1,0 +1,4130 @@
+{
+  "method": "same live simulated world, complete production frames; GPU vs CPU",
+  "hashes": {
+    "ascii3d\\__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d\\__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d\\app.py": "dc1fb318db8304f1fb5864566f278d6b4ff3f2b8f478f57f378253f4b2280dd7",
+    "ascii3d\\audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d\\audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d\\audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d\\combat.py": "193b336acd5b9ac21fd94987ca52fef7648c245e7938a99fc9c9befaee374a1c",
+    "ascii3d\\combat_render.py": "ae6c866ea74b6f8fd47ce75eeec033323c307c717cf1a8e44d40e6da422473a7",
+    "ascii3d\\door_render.py": "d8a80b3cedf902131598cd655aa96123d6f078a01c6d7f6a38c4ddb57fd4da52",
+    "ascii3d\\doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d\\events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d\\geometry.py": "02cecaabf255fc676c781f0dd8fa08941dd5fffa9e68c96da962d13d2335c12d",
+    "ascii3d\\gpu_renderer.py": "99ce04b3fefc766bc24bde539e74a1a036d3519b36e9d147f1af67e7c65eb1a4",
+    "ascii3d\\gpu_static.wgsl": "3ead5d7f0776ac77444892187829052cb6edfb58b26e0a9e5d1b4b4e2ee2e48b",
+    "ascii3d\\loading.py": "11ae438770c079f8a1cd3b161c853cedd3e56c1e25f12c9341d01459c166d1be",
+    "ascii3d\\map_expansion.py": "f45f99b3fac403d6c90fcc36a381d3cd721968f2693df019d4ec820b2c772f82",
+    "ascii3d\\mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d\\player.py": "098e1264a6cd9a73832c6cabcf29e58186ad5788793c4d2015f3cbae95ba85aa",
+    "ascii3d\\renderer.py": "1e234d69c7c00d1560128a0caaa738cce87fc1bb1ed7b6f135ab715f0aa7aac7",
+    "ascii3d\\scenery.py": "9c3b46e891ef40fd2591a09e9226a9596cbd795578202d2e93e15ffb6a6c6f5e",
+    "ascii3d\\sound.py": "40e0da49c354bebe51378245c5d3566eecf534c5c177b8fff66846c7eedc2fa8",
+    "ascii3d\\sound_surfaces.py": "501851a29f0e0e16250158b82830201e2036c4f60fa2273f69435a2e1b31ea9d",
+    "ascii3d\\soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d\\surfaces.py": "548b3eef61aba9af1133728e490e4590dfea1b2fc5a1bdd20d71dd041e43a76c",
+    "ascii3d\\targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d\\terminal.py": "2f4a21a5e861e64515d77b8a5b3679d8057f53cb39174838492b4b4bf6d53b2e",
+    "ascii3d\\terrain.py": "e4067da2db9ae1810976f6bb21affaa83848c9f88e97abbf63f1d2b4b09ca808",
+    "ascii3d\\trees.py": "f3f54ae1a81ba95a5ffc730bd57d7b25086e09e4a7757f3deea36b6a0470b98a",
+    "ascii3d\\world.py": "8e07f5f77e0526e4dce7f00eb50a9fde896c1cb7d24dd228052dcd3bb022a8b8"
+  },
+  "adapter": {
+    "vendor": "NVIDIA",
+    "architecture": "",
+    "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+    "description": "621.01",
+    "stackgroup_min_size": 4,
+    "stackgroup_max_size": 128,
+    "vendor_id": 4318,
+    "device_id": 9372,
+    "adapter_type": "DiscreteGPU",
+    "backend_type": "Vulkan"
+  },
+  "pairs": [
+    {
+      "scene": "indoors",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 188.92119999964052,
+        "decode_ms": 0.130899999930989,
+        "refine_ms": 3.29650000003312,
+        "fallback_rays": 28,
+        "rebuilds": 0
+      },
+      "image_sha256": "d714dae702251f8dfbe71d6e552012f394dae8f26a4022d86da51d5d6d186db1"
+    },
+    {
+      "scene": "indoors",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8000999996511382,
+        "decode_ms": 0.10039999961009016,
+        "refine_ms": 3.732500000296568,
+        "fallback_rays": 11,
+        "rebuilds": 0
+      },
+      "image_sha256": "4330abf2496a0303a0508de916b3ec9d998c82387e089b0c612809013c8d634e"
+    },
+    {
+      "scene": "indoors",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6743999992977479,
+        "decode_ms": 0.10920000022451859,
+        "refine_ms": 3.711700000167184,
+        "fallback_rays": 7,
+        "rebuilds": 0
+      },
+      "image_sha256": "9a0e883eacca0f229c18c1f90eb43e90ef34f74d97a2afc6a53e749f65e01554"
+    },
+    {
+      "scene": "indoors",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.4210854715202004e-14,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9319000000687083,
+        "decode_ms": 0.1488999996581697,
+        "refine_ms": 5.4001000007701805,
+        "fallback_rays": 3,
+        "rebuilds": 0
+      },
+      "image_sha256": "885b28f9aaa144fb95b2c3724714e886cfbeb9b3e0c039cf12bc24e35e591864"
+    },
+    {
+      "scene": "indoors",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.25,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.4210854715202004e-14,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.116100000217557,
+        "decode_ms": 0.15950000033626566,
+        "refine_ms": 4.75800000003801,
+        "fallback_rays": 19,
+        "rebuilds": 0
+      },
+      "image_sha256": "6183ed474a2214b120669b3279e8363c6f19e5cf4e8f9834c5860ec4a7c28958"
+    },
+    {
+      "scene": "indoors",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.25,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8895999999367632,
+        "decode_ms": 0.1480999999330379,
+        "refine_ms": 4.7389000001203385,
+        "fallback_rays": 8,
+        "rebuilds": 0
+      },
+      "image_sha256": "d81323959412a78985758f5f3d23d486a888eea0b07315d5d036cdca78b0c26f"
+    },
+    {
+      "scene": "courtyard",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7640000003448222,
+        "decode_ms": 0.13159999980416615,
+        "refine_ms": 3.907700000127079,
+        "fallback_rays": 30,
+        "rebuilds": 0
+      },
+      "image_sha256": "9dbbcfa13149e450982b18b986ef47ab92eff02acd231bb0f5d1d31ba3d98056"
+    },
+    {
+      "scene": "courtyard",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7156000001486973,
+        "decode_ms": 0.1291999997192761,
+        "refine_ms": 3.8347999998222804,
+        "fallback_rays": 12,
+        "rebuilds": 0
+      },
+      "image_sha256": "f2d713361c38318a4c7d77088a22160d91ced50b2020e5094e87e2618b93a8b3"
+    },
+    {
+      "scene": "courtyard",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6657000003542635,
+        "decode_ms": 0.11189999986527255,
+        "refine_ms": 3.94739999956073,
+        "fallback_rays": 9,
+        "rebuilds": 0
+      },
+      "image_sha256": "a6ad7e4ca334875792f0d2e85674fbcd06b155df4bad662166605b80ab03f5a1"
+    },
+    {
+      "scene": "courtyard",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7174999991548248,
+        "decode_ms": 0.11050000011891825,
+        "refine_ms": 3.8004000007276773,
+        "fallback_rays": 27,
+        "rebuilds": 0
+      },
+      "image_sha256": "1bd80c760c33774b5380d6aab95f55edc51b91e107f8ce9844dab56a1a242d25"
+    },
+    {
+      "scene": "courtyard",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.25,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 2.456599999277387,
+        "decode_ms": 0.16150000010384247,
+        "refine_ms": 3.3970000004046597,
+        "fallback_rays": 24,
+        "rebuilds": 0
+      },
+      "image_sha256": "9a8584b29f3b58a69777767c2cb7f5f7d8cea0e40441b46872c4dbf0f3340fc6"
+    },
+    {
+      "scene": "courtyard",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.25,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.5266000000337954,
+        "decode_ms": 0.15830000029382063,
+        "refine_ms": 4.3631999997160165,
+        "fallback_rays": 20,
+        "rebuilds": 0
+      },
+      "image_sha256": "b65b4137187636d8ece7d109b1dd2dd36ccf0480341703a76ca612d414311a40"
+    },
+    {
+      "scene": "meadow",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9136999997281237,
+        "decode_ms": 0.17600000046513742,
+        "refine_ms": 5.157199999302975,
+        "fallback_rays": 0,
+        "rebuilds": 0
+      },
+      "image_sha256": "54dbd631f241f15486c889d868e68b8eb47353068267a12602e75c444a0b3094"
+    },
+    {
+      "scene": "meadow",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7007000003795838,
+        "decode_ms": 0.15619999976479448,
+        "refine_ms": 5.6009999998423154,
+        "fallback_rays": 6,
+        "rebuilds": 0
+      },
+      "image_sha256": "1ad90cf2cde82fb33a4d4fc6bab5536d4c538a2d233fbd46dd0bb02ef578bf35"
+    },
+    {
+      "scene": "meadow",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7915000005596085,
+        "decode_ms": 0.1274999995075632,
+        "refine_ms": 5.027100000006612,
+        "fallback_rays": 9,
+        "rebuilds": 0
+      },
+      "image_sha256": "fbbe177a6b889a528db21ca92ab6cb508b65550f6dd4df4c10d72d1f127f764a"
+    },
+    {
+      "scene": "meadow",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8929000005082344,
+        "decode_ms": 0.11919999997189734,
+        "refine_ms": 5.056899999544839,
+        "fallback_rays": 8,
+        "rebuilds": 0
+      },
+      "image_sha256": "e5554bf973c7d2b59ff1556fe51dbade81bfa120471688c9c5e35bfd63f5c877"
+    },
+    {
+      "scene": "meadow",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.19,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7673999998587533,
+        "decode_ms": 0.17349999961879803,
+        "refine_ms": 6.334800000331597,
+        "fallback_rays": 18,
+        "rebuilds": 0
+      },
+      "image_sha256": "95bbec6b27983c4c1e4017470f256510c412ead9543e67228fd5ec680ee11ddc"
+    },
+    {
+      "scene": "meadow",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.31,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9738999997352948,
+        "decode_ms": 0.11309999990771757,
+        "refine_ms": 4.824900000130583,
+        "fallback_rays": 8,
+        "rebuilds": 0
+      },
+      "image_sha256": "d59c7c16fac0188314329ee65ed85137e39888e1637ea5bb2628ff60fb3619f9"
+    },
+    {
+      "scene": "grass_close",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.35,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.956400000177382,
+        "decode_ms": 6.376899999850139,
+        "refine_ms": 4.2825999998967745,
+        "fallback_rays": 10,
+        "rebuilds": 0
+      },
+      "image_sha256": "e8b27f9a4d192ed62dab7bdea1e1794279277246e88024583b5decdf3638bb4a"
+    },
+    {
+      "scene": "grass_close",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.35,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.859400000081223,
+        "decode_ms": 0.14389999978448031,
+        "refine_ms": 4.841899999519228,
+        "fallback_rays": 7,
+        "rebuilds": 0
+      },
+      "image_sha256": "079266f9ccd547c6edda95a0fd34eaa401aa23473902c3c468c30efc5939822c"
+    },
+    {
+      "scene": "grass_close",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.35,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.643099999455444,
+        "decode_ms": 0.12690000039583538,
+        "refine_ms": 4.433299999618612,
+        "fallback_rays": 5,
+        "rebuilds": 0
+      },
+      "image_sha256": "5f6b1d8954c5eafb428d7982fa3d89865d0358d7f7bddc7226a90dec2b900404"
+    },
+    {
+      "scene": "grass_close",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.35,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6715999998050393,
+        "decode_ms": 1.6472999996040016,
+        "refine_ms": 4.911300000458141,
+        "fallback_rays": 10,
+        "rebuilds": 0
+      },
+      "image_sha256": "2c2412bacc60da966cbb5dbe8b41c272e0cd232255e52f407c53d39505a4e5ac"
+    },
+    {
+      "scene": "grass_close",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": -0.09999999999999998,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9012000000439002,
+        "decode_ms": 1.2004000000160886,
+        "refine_ms": 4.829800000152318,
+        "fallback_rays": 16,
+        "rebuilds": 0
+      },
+      "image_sha256": "8218caf356d0b9826044d25ea890f7f134cbee5df006f8201265ed5956c02293"
+    },
+    {
+      "scene": "grass_close",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.6,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8692999999766471,
+        "decode_ms": 19.723899999917194,
+        "refine_ms": 4.5301000000108615,
+        "fallback_rays": 7,
+        "rebuilds": 0
+      },
+      "image_sha256": "ee302e488c1ade9be66ebc2f844ff0cc7d2e4e2f9ac71dadd2ad66f54457192b"
+    },
+    {
+      "scene": "bridge",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8694999996805564,
+        "decode_ms": 0.1312000003963476,
+        "refine_ms": 4.851800000324147,
+        "fallback_rays": 30,
+        "rebuilds": 0
+      },
+      "image_sha256": "02695735291bfb68ea8deefead3c7a560abda93a1d61766b319945f522ae15cb"
+    },
+    {
+      "scene": "bridge",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.703599999724247,
+        "decode_ms": 0.1781999999366235,
+        "refine_ms": 4.653899999539135,
+        "fallback_rays": 42,
+        "rebuilds": 0
+      },
+      "image_sha256": "9cc4bea2057be73fca71c27437e2697e7a6a6b5784af20418e001b8713c4467f"
+    },
+    {
+      "scene": "bridge",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9832999994614511,
+        "decode_ms": 0.23839999994379468,
+        "refine_ms": 5.188200000702636,
+        "fallback_rays": 39,
+        "rebuilds": 0
+      },
+      "image_sha256": "fbdd813b26ffca8a53dda27caf9eba82c7ea7d3fd531c2ac241b64994a4d6e7a"
+    },
+    {
+      "scene": "bridge",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9215000000040163,
+        "decode_ms": 0.1584999999977299,
+        "refine_ms": 5.222700000558689,
+        "fallback_rays": 42,
+        "rebuilds": 0
+      },
+      "image_sha256": "fcf65484172d78a4e30922c0f215f875a12fee43cc9f764d3cdea789acfa1fa5"
+    },
+    {
+      "scene": "bridge",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.15,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9842999997999868,
+        "decode_ms": 0.26139999954466475,
+        "refine_ms": 5.187000000660191,
+        "fallback_rays": 86,
+        "rebuilds": 0
+      },
+      "image_sha256": "aa82295fe05a327f1dfda7dbb72439b0e33bba4e9f944006f475008fc7d5bb2c"
+    },
+    {
+      "scene": "bridge",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.35,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0126999995918595,
+        "decode_ms": 0.18120000004273606,
+        "refine_ms": 5.394300000261865,
+        "fallback_rays": 36,
+        "rebuilds": 0
+      },
+      "image_sha256": "9b0fa5ea1bc63eecd1d77f9ef592d75dfe2fcd9e43cd2cfb1fe33ed19214866c"
+    },
+    {
+      "scene": "river",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1430000004111207,
+        "decode_ms": 0.2365000000281725,
+        "refine_ms": 5.456599999888567,
+        "fallback_rays": 5,
+        "rebuilds": 0
+      },
+      "image_sha256": "cf60692d32708f7c0cc3eab6dd43cb97d3b3fe918ad0c8d2aad79ea4f01e6f72"
+    },
+    {
+      "scene": "river",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 0.10343207233146884,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8643000001029577,
+        "decode_ms": 0.17639999987295596,
+        "refine_ms": 5.448199999591452,
+        "fallback_rays": 19,
+        "rebuilds": 0
+      },
+      "image_sha256": "0b98352ca8db51422bc7c769838092a691ae23878df6df2c9ca546b01b269b10"
+    },
+    {
+      "scene": "river",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 0.3021232783271058,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9362999999211752,
+        "decode_ms": 0.18060000002151355,
+        "refine_ms": 5.96880000011879,
+        "fallback_rays": 21,
+        "rebuilds": 0
+      },
+      "image_sha256": "df22107779c4d0e4dece08d8a7a6ef1ed0ac65b94a217528c73c2f813ff8e808"
+    },
+    {
+      "scene": "river",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.898100000085833,
+        "decode_ms": 0.1655000005484908,
+        "refine_ms": 5.2080999994359445,
+        "fallback_rays": 22,
+        "rebuilds": 0
+      },
+      "image_sha256": "04db939102cd06d6033c246f4d389799daa2a1d54582a753c0df3d5d447fe1f2"
+    },
+    {
+      "scene": "river",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.15,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.060200000210898,
+        "decode_ms": 0.24339999981748406,
+        "refine_ms": 5.447600000479724,
+        "fallback_rays": 48,
+        "rebuilds": 0
+      },
+      "image_sha256": "9ce9686a2d4e2a8f875bb7b469f69ccf26d4d9934632a8a0e8a86e24e65dcde6"
+    },
+    {
+      "scene": "river",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.35,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.297800000429561,
+        "decode_ms": 0.2195999995819875,
+        "refine_ms": 5.164500000319094,
+        "fallback_rays": 21,
+        "rebuilds": 0
+      },
+      "image_sha256": "75cce324f5c1782da715fff9b9ccbf40f78751ae5d6beef28348a52fa5cd25a2"
+    },
+    {
+      "scene": "ruins",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0.0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.2318999997660285,
+        "decode_ms": 0.1878000002761837,
+        "refine_ms": 5.065399999693909,
+        "fallback_rays": 14,
+        "rebuilds": 0
+      },
+      "image_sha256": "a4ec07f5a9910b8c1861bcdabb0d009e1daae7b62ccde65ddeaccf6613639dca"
+    },
+    {
+      "scene": "ruins",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9502000002612476,
+        "decode_ms": 0.21149999975023093,
+        "refine_ms": 5.8015999993585865,
+        "fallback_rays": 30,
+        "rebuilds": 0
+      },
+      "image_sha256": "041635a675aec6e63d2f32ed80b5c811e5489bdabd868a174c936202a339770c"
+    },
+    {
+      "scene": "ruins",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7786999995005317,
+        "decode_ms": 0.1419000000169035,
+        "refine_ms": 5.822400000397465,
+        "fallback_rays": 30,
+        "rebuilds": 0
+      },
+      "image_sha256": "19e8467a67d4d4904d15d32c69e93590e9458ae224299fcae28729d8d893f701"
+    },
+    {
+      "scene": "ruins",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0516999991523335,
+        "decode_ms": 0.18280000040249433,
+        "refine_ms": 6.222600000000966,
+        "fallback_rays": 38,
+        "rebuilds": 0
+      },
+      "image_sha256": "3b90949e2d6e292ff09068a4b8afdbff79cd8010eced73364d610cc963f66c00"
+    },
+    {
+      "scene": "ruins",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.19,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.136400000177673,
+        "decode_ms": 0.30640000022685854,
+        "refine_ms": 7.419300000037765,
+        "fallback_rays": 53,
+        "rebuilds": 0
+      },
+      "image_sha256": "04ebcea9e0838b19e9e9ce8e9d7536b383edf2ba99954d33ff286022ac3f2428"
+    },
+    {
+      "scene": "ruins",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.31,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7138999999369844,
+        "decode_ms": 0.1038999998854706,
+        "refine_ms": 4.779599999892525,
+        "fallback_rays": 20,
+        "rebuilds": 0
+      },
+      "image_sha256": "fe56100ac2668871bf5f5f1db7456415afb17734f3a48b4107af7f0ebf38fcf0"
+    },
+    {
+      "scene": "lodge",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0.0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9651000000303611,
+        "decode_ms": 0.14139999984763563,
+        "refine_ms": 5.545900000470283,
+        "fallback_rays": 5,
+        "rebuilds": 0
+      },
+      "image_sha256": "8a59c04cfdcf3157e50b66847b94428fd0ad6aabe804f152905d2d03f9c00bb6"
+    },
+    {
+      "scene": "lodge",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 0.10343207233146884,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0068000001410837,
+        "decode_ms": 0.18679999993764795,
+        "refine_ms": 6.932599999345257,
+        "fallback_rays": 23,
+        "rebuilds": 0
+      },
+      "image_sha256": "d3f33fe6130863f98971a829cfd1a955d3286b1200d03dd70cad74b7d1de778f"
+    },
+    {
+      "scene": "lodge",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 0.3021232783271058,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.140299999860872,
+        "decode_ms": 0.18910000017058337,
+        "refine_ms": 7.787900000039372,
+        "fallback_rays": 14,
+        "rebuilds": 0
+      },
+      "image_sha256": "f30c49fdc85018e2bbe8b345a5e98f7d11a4e9bdb40d9a0f7f86dcb5f8d481a0"
+    },
+    {
+      "scene": "lodge",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1761000005208189,
+        "decode_ms": 0.20189999941067072,
+        "refine_ms": 7.143200000427896,
+        "fallback_rays": 19,
+        "rebuilds": 0
+      },
+      "image_sha256": "a8241f41cc17d3be5200f4411e7743c9129e84bd096b559f3284840cddf25ba1"
+    },
+    {
+      "scene": "lodge",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.19,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.043500000378117,
+        "decode_ms": 11.507999999594176,
+        "refine_ms": 7.623500000590866,
+        "fallback_rays": 31,
+        "rebuilds": 0
+      },
+      "image_sha256": "53d67cdd99a643777a60f20814933a0ae3ca1c9442ce06e252f9549014eb65c6"
+    },
+    {
+      "scene": "lodge",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.31,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.2397999998938758,
+        "decode_ms": 0.16030000006139744,
+        "refine_ms": 5.277299999761453,
+        "fallback_rays": 9,
+        "rebuilds": 0
+      },
+      "image_sha256": "b7b0c5a24b504fb2802c2f6174245d348ff384ccdf930ad317b6cbc2b409494d"
+    },
+    {
+      "scene": "east_bridge",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.3807000004817382,
+        "decode_ms": 0.15639999946870375,
+        "refine_ms": 5.490100000315579,
+        "fallback_rays": 32,
+        "rebuilds": 0
+      },
+      "image_sha256": "983e2c7b44d0714c31e6ebb1765e45afaf1b3c8dbbc62dcf01edf493638b8bc2"
+    },
+    {
+      "scene": "east_bridge",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1624999997366103,
+        "decode_ms": 0.19189999966329196,
+        "refine_ms": 6.473700000242388,
+        "fallback_rays": 45,
+        "rebuilds": 0
+      },
+      "image_sha256": "d20f2f11a1f577777bb1ab7ee61af6af87571f669b77070514072cf67abe98ac"
+    },
+    {
+      "scene": "east_bridge",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8556000002499786,
+        "decode_ms": 0.14840000039839651,
+        "refine_ms": 4.751599999508471,
+        "fallback_rays": 48,
+        "rebuilds": 0
+      },
+      "image_sha256": "5085f287593ee45be5ca5a5bc4ceabf69412ff0eadfdf0d62e548e64fd997362"
+    },
+    {
+      "scene": "east_bridge",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8275999998659245,
+        "decode_ms": 0.1407999998264131,
+        "refine_ms": 4.562099999930069,
+        "fallback_rays": 41,
+        "rebuilds": 0
+      },
+      "image_sha256": "46bd34b81dfb0c90ee1efb76519dab8f3598b690de5222304574c27be5342b10"
+    },
+    {
+      "scene": "east_bridge",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.15,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9879999997792765,
+        "decode_ms": 0.17670000033831457,
+        "refine_ms": 5.109499999889522,
+        "fallback_rays": 91,
+        "rebuilds": 0
+      },
+      "image_sha256": "cfd17964541a6e007aa587cd97b90d2d344b892eb6e98e1513dc6ae5e4e80db9"
+    },
+    {
+      "scene": "east_bridge",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.35,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 8.881784197001252e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0486999999557156,
+        "decode_ms": 4.003200000624929,
+        "refine_ms": 4.810899999938556,
+        "fallback_rays": 35,
+        "rebuilds": 0
+      },
+      "image_sha256": "afddfb5f6ff2acaf96b1295fba76c797f5fbdfde1ac6bbd7ba86834fe6d4653f"
+    },
+    {
+      "scene": "watchstones",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0140000003957539,
+        "decode_ms": 0.2037999993262929,
+        "refine_ms": 6.36930000018765,
+        "fallback_rays": 39,
+        "rebuilds": 0
+      },
+      "image_sha256": "9b3bd5faf7ec4cca4a4f39037566f13749e4f061a4e821c2b91b190626f18659"
+    },
+    {
+      "scene": "watchstones",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.818000000435859,
+        "decode_ms": 2.1955000001980807,
+        "refine_ms": 5.464399999254965,
+        "fallback_rays": 49,
+        "rebuilds": 0
+      },
+      "image_sha256": "48e9ae80ab2a18e32bb9b09996070721d3526ca8a7f541d605ee84fbc2141e8f"
+    },
+    {
+      "scene": "watchstones",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.2987000000066473,
+        "decode_ms": 0.20060000042576576,
+        "refine_ms": 4.941600000165636,
+        "fallback_rays": 43,
+        "rebuilds": 0
+      },
+      "image_sha256": "22cf2745019f161dd8f723c573b5910033dfcd6d230c03c7303b6eba454299be"
+    },
+    {
+      "scene": "watchstones",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1067000004914007,
+        "decode_ms": 1.1150000000270666,
+        "refine_ms": 5.349099999875762,
+        "fallback_rays": 66,
+        "rebuilds": 0
+      },
+      "image_sha256": "2822bd09100611b0c05e1b8022fbc7c422b0be58f66bbc680a63bf3589942d05"
+    },
+    {
+      "scene": "watchstones",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.19,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0079000003315741,
+        "decode_ms": 2.378599999246944,
+        "refine_ms": 6.085200000597979,
+        "fallback_rays": 91,
+        "rebuilds": 0
+      },
+      "image_sha256": "5710919261a4bea5ce712acc4ab967e3b2e79f86d49187c9ca45fe58e6a79098"
+    },
+    {
+      "scene": "watchstones",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.31,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.048099999934493,
+        "decode_ms": 22.5388999997449,
+        "refine_ms": 4.929499999889231,
+        "fallback_rays": 39,
+        "rebuilds": 0
+      },
+      "image_sha256": "cb128db21f26ccd040d38065b548f3949342e6baf89a21040c20da35b00ce1f6"
+    },
+    {
+      "scene": "warden",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 8.881784197001252e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9090000003197929,
+        "decode_ms": 0.23990000045159832,
+        "refine_ms": 5.535599999348051,
+        "fallback_rays": 32,
+        "rebuilds": 0
+      },
+      "image_sha256": "6e31d55a90115e745283dda07a132f4b64425d76e76fc36d8906d2651fde3d6b"
+    },
+    {
+      "scene": "warden",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 8.881784197001252e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7503999995606137,
+        "decode_ms": 0.21800000013172394,
+        "refine_ms": 6.077799999729905,
+        "fallback_rays": 51,
+        "rebuilds": 0
+      },
+      "image_sha256": "998e089cd7f5f07845c97b23ed1b95ef94f29214b03661f4b2bfd61ec3ae2794"
+    },
+    {
+      "scene": "warden",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.817799999822455,
+        "decode_ms": 0.2038000002357876,
+        "refine_ms": 5.322300000443647,
+        "fallback_rays": 44,
+        "rebuilds": 0
+      },
+      "image_sha256": "1d6f715ceb6f13de8448679251a9e7647e510ad50b34666505cc48e35f73f803"
+    },
+    {
+      "scene": "warden",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8774000007178984,
+        "decode_ms": 0.19899999915651279,
+        "refine_ms": 6.052200000340235,
+        "fallback_rays": 66,
+        "rebuilds": 0
+      },
+      "image_sha256": "00711f90b46febcee78d396741deae8bcff1ab6eb3542b44097ff2b640a42b4d"
+    },
+    {
+      "scene": "warden",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.19,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0999999994965037,
+        "decode_ms": 0.23850000070524402,
+        "refine_ms": 6.244299999707437,
+        "fallback_rays": 97,
+        "rebuilds": 0
+      },
+      "image_sha256": "f321ee2e8f2eef286357784b6a9da7a591c1c0e857a8f5e5b6dfa30a89d577ee"
+    },
+    {
+      "scene": "warden",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.31,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8666000003358931,
+        "decode_ms": 0.15770000027259812,
+        "refine_ms": 5.1536000000851345,
+        "fallback_rays": 47,
+        "rebuilds": 0
+      },
+      "image_sha256": "a8a23f3532af5ffa205cd6f3c6ab6a6340f358f3a08044f119255cc18bc9fb18"
+    },
+    {
+      "scene": "staff",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 8.881784197001252e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.3055999997959589,
+        "decode_ms": 0.21999999989930075,
+        "refine_ms": 6.265500000154134,
+        "fallback_rays": 7,
+        "rebuilds": 0
+      },
+      "image_sha256": "5969c5bc43248e36ec96cac50d9dab1e062e2133f80ea4f1ced898a8e92f6f95"
+    },
+    {
+      "scene": "staff",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 8.881784197001252e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.888900000063586,
+        "decode_ms": 0.19599999995989492,
+        "refine_ms": 5.570399999669462,
+        "fallback_rays": 30,
+        "rebuilds": 0
+      },
+      "image_sha256": "dadb086afd370bde41e23138c6ec37ace01acadfa2d133744ca5ba82ba56305d"
+    },
+    {
+      "scene": "staff",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 8.881784197001252e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.2025000005451147,
+        "decode_ms": 0.19079999947280157,
+        "refine_ms": 6.3771000004635425,
+        "fallback_rays": 31,
+        "rebuilds": 0
+      },
+      "image_sha256": "be29bf42101a54490ec89ce46405e2eac39366c9d65e95941ce18c51ecf8f5c6"
+    },
+    {
+      "scene": "staff",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.06,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8164000000761007,
+        "decode_ms": 0.15940000048431102,
+        "refine_ms": 4.6913999995013,
+        "fallback_rays": 14,
+        "rebuilds": 0
+      },
+      "image_sha256": "9395b0a6c98265d16d070b70deae2b9b1bc89af8757556e6877b7524b3e2cb4a"
+    },
+    {
+      "scene": "staff",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.19,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1724000005415292,
+        "decode_ms": 0.25829999958659755,
+        "refine_ms": 6.539900000461785,
+        "fallback_rays": 55,
+        "rebuilds": 0
+      },
+      "image_sha256": "a30890f916b08c711337330d943599ad0c5edc9414c00472d10544f44f5b0ce7"
+    },
+    {
+      "scene": "staff",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.31,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8420000003752648,
+        "decode_ms": 0.1320000001214794,
+        "refine_ms": 4.825099999834492,
+        "fallback_rays": 34,
+        "rebuilds": 0
+      },
+      "image_sha256": "1c425003c66b4a10aeddd3fe1a7b94a70e97230a8f472e5aa7d232e05bcb0b5e"
+    },
+    {
+      "scene": "fireballs",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9184000000459491,
+        "decode_ms": 0.1443999999537482,
+        "refine_ms": 4.915399999845249,
+        "fallback_rays": 21,
+        "rebuilds": 0
+      },
+      "image_sha256": "541b33ae736542ff2d6d9be33ca9e5178f833be34ca076fe1b04e68ee7a469a2"
+    },
+    {
+      "scene": "fireballs",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8856000004016096,
+        "decode_ms": 0.12770000012096716,
+        "refine_ms": 4.3048999996244675,
+        "fallback_rays": 10,
+        "rebuilds": 0
+      },
+      "image_sha256": "69487cac99a876f14497120b2992cb65852f6bb3fd28c67d6939c1b826333adf"
+    },
+    {
+      "scene": "fireballs",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8297000003949506,
+        "decode_ms": 0.19269999938842375,
+        "refine_ms": 5.389599999944039,
+        "fallback_rays": 5,
+        "rebuilds": 0
+      },
+      "image_sha256": "d54724e78775032078b8a0a95aa50f0d3418005825b6246332cdca17e3e39215"
+    },
+    {
+      "scene": "fireballs",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6689999991067452,
+        "decode_ms": 0.1233000002685003,
+        "refine_ms": 3.7510000001930166,
+        "fallback_rays": 2,
+        "rebuilds": 0
+      },
+      "image_sha256": "274b4c7490d88900b4f9ce748191206a10578b6ff922b100fcaf7f99692c49c3"
+    },
+    {
+      "scene": "fireballs",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.25,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.0658141036401503e-14,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.90970000019297,
+        "decode_ms": 0.1768000001902692,
+        "refine_ms": 3.4437999993315316,
+        "fallback_rays": 16,
+        "rebuilds": 0
+      },
+      "image_sha256": "1683c11858c5a6895b8fe585796b5035c3a94b0c662866d8304abdf062c11a27"
+    },
+    {
+      "scene": "fireballs",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.25,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8399999996981933,
+        "decode_ms": 0.14929999997548293,
+        "refine_ms": 4.578600000058941,
+        "fallback_rays": 19,
+        "rebuilds": 0
+      },
+      "image_sha256": "4a46635190490d99a2292a9fc1d7c40ed98795d8078e4e247152c33af374dc22"
+    },
+    {
+      "scene": "map",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.078100000086124,
+        "decode_ms": 0.14730000020790612,
+        "refine_ms": 4.2876999996224185,
+        "fallback_rays": 30,
+        "rebuilds": 0
+      },
+      "image_sha256": "5df7f02edfce168256ffd232c6a5e38e61928e140a87f484305426cd78b2a730"
+    },
+    {
+      "scene": "map",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9226000001945067,
+        "decode_ms": 0.15859999984968454,
+        "refine_ms": 4.5276999999259715,
+        "fallback_rays": 12,
+        "rebuilds": 0
+      },
+      "image_sha256": "dcbf192144814882ce018ea95ad9d41197be1239a00d9b626083844d3cb54629"
+    },
+    {
+      "scene": "map",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 2.5381000004927046,
+        "decode_ms": 0.2990000002682791,
+        "refine_ms": 5.807199999253498,
+        "fallback_rays": 9,
+        "rebuilds": 0
+      },
+      "image_sha256": "cbf0ee763784febdfdf962af1599d2aa7cc58cc7d8a770c8a88ba0e74d2d212f"
+    },
+    {
+      "scene": "map",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.2556000001495704,
+        "decode_ms": 0.1905999997688923,
+        "refine_ms": 4.3605000000752625,
+        "fallback_rays": 27,
+        "rebuilds": 0
+      },
+      "image_sha256": "fe9afc936d57d6c9e43169bebd5709086492ad5331aa4b353bf8fdff440e0029"
+    },
+    {
+      "scene": "map",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.25,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1334999999235151,
+        "decode_ms": 0.26189999971393263,
+        "refine_ms": 4.034700000374869,
+        "fallback_rays": 24,
+        "rebuilds": 0
+      },
+      "image_sha256": "9a8584b29f3b58a69777767c2cb7f5f7d8cea0e40441b46872c4dbf0f3340fc6"
+    },
+    {
+      "scene": "map",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.25,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.3146999999662512,
+        "decode_ms": 0.22810000064055203,
+        "refine_ms": 5.6822999995347345,
+        "fallback_rays": 20,
+        "rebuilds": 0
+      },
+      "image_sha256": "b65b4137187636d8ece7d109b1dd2dd36ccf0480341703a76ca612d414311a40"
+    },
+    {
+      "scene": "training",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9131000006163958,
+        "decode_ms": 0.15689999963797163,
+        "refine_ms": 4.846499999985099,
+        "fallback_rays": 19,
+        "rebuilds": 0
+      },
+      "image_sha256": "d1245076b4baac8a59b63389ee0b511b355ea614c91ec5e529e972852f1f2d6e"
+    },
+    {
+      "scene": "training",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.0658141036401503e-14,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8559999996577972,
+        "decode_ms": 0.18600000021251617,
+        "refine_ms": 5.39180000032502,
+        "fallback_rays": 9,
+        "rebuilds": 0
+      },
+      "image_sha256": "b6b3ecd3c8b505c1715bb7a34a14b1686d13237e92f6f74a8575656e083e0737"
+    },
+    {
+      "scene": "training",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.055899999300891,
+        "decode_ms": 0.17150000076071592,
+        "refine_ms": 4.749899999296758,
+        "fallback_rays": 6,
+        "rebuilds": 0
+      },
+      "image_sha256": "b9ff65800a6d700b2ff504d9ed333c348ed7d0301b743b31e8e92cfc3c2cc794"
+    },
+    {
+      "scene": "training",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7752999999866006,
+        "decode_ms": 0.19320000046718633,
+        "refine_ms": 4.943699999785167,
+        "fallback_rays": 28,
+        "rebuilds": 0
+      },
+      "image_sha256": "87c96e86aaa58ba2687f6dad382f56f52c8b57d875dfe8d2f66ded033bc3b14e"
+    },
+    {
+      "scene": "training",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.25,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0894000006373972,
+        "decode_ms": 0.20959999983460875,
+        "refine_ms": 4.009999999652791,
+        "fallback_rays": 27,
+        "rebuilds": 0
+      },
+      "image_sha256": "51d94368670ee0ef49a6a47a9c5373aceddf5f506ea98129c29bb245a62e4fb8"
+    },
+    {
+      "scene": "training",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.25,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1592999999265885,
+        "decode_ms": 0.26479999996809056,
+        "refine_ms": 5.828800000017509,
+        "fallback_rays": 13,
+        "rebuilds": 0
+      },
+      "image_sha256": "77364a6909467b4703ca7079ca7ee50ac6100ffb60b82518c01b41d440455446"
+    },
+    {
+      "scene": "tree_close",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.35,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8584000006521819,
+        "decode_ms": 0.1528999991933233,
+        "refine_ms": 5.076200000075914,
+        "fallback_rays": 2,
+        "rebuilds": 0
+      },
+      "image_sha256": "18549dc3bf66008df2f7445bb3a37adac8537f5797a2c9baaa0a6caecd5f53c9"
+    },
+    {
+      "scene": "tree_close",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.35,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7251999995787628,
+        "decode_ms": 13.605899999674875,
+        "refine_ms": 4.53280000056111,
+        "fallback_rays": 6,
+        "rebuilds": 0
+      },
+      "image_sha256": "aaec3ba51698b0186a5fd3c3fc03497c7a92626209a70aa2ada2e2fdeef6e667"
+    },
+    {
+      "scene": "tree_close",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.35,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9855999996943865,
+        "decode_ms": 0.15640000037819846,
+        "refine_ms": 4.601200000251993,
+        "fallback_rays": 10,
+        "rebuilds": 0
+      },
+      "image_sha256": "6686adc8ddb13906ebb828ce5f46f72a7c204ec6efa40bb621fe88d34de5cd9b"
+    },
+    {
+      "scene": "tree_close",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.35,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8565999996790197,
+        "decode_ms": 0.1357000001007691,
+        "refine_ms": 4.893100000117556,
+        "fallback_rays": 8,
+        "rebuilds": 0
+      },
+      "image_sha256": "66e783a432fc48b0da13ac48189d462a7ad5e80bcd3ae4a0ace0ef0086b0f78a"
+    },
+    {
+      "scene": "tree_close",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": -0.09999999999999998,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1675999994622543,
+        "decode_ms": 0.19740000061574392,
+        "refine_ms": 5.0500999996074825,
+        "fallback_rays": 15,
+        "rebuilds": 0
+      },
+      "image_sha256": "a67252df6f2cd4cc10c505963f545e5b814941ca32942c423400c3a48d5913b9"
+    },
+    {
+      "scene": "tree_close",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.6,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7803999997122446,
+        "decode_ms": 0.1396000006934628,
+        "refine_ms": 4.541299999800685,
+        "fallback_rays": 9,
+        "rebuilds": 0
+      },
+      "image_sha256": "a5ec7e0fc49446e028443208f37dc409bbd48a2711839f228e120ce85bf36e98"
+    },
+    {
+      "scene": "tree_canopy",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.65,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9378000004289788,
+        "decode_ms": 0.11359999916749075,
+        "refine_ms": 0.39590000051248353,
+        "fallback_rays": 20,
+        "rebuilds": 0
+      },
+      "image_sha256": "8b17831ccb016c0dd72f422e461cd6d73a51be3062637aa3452efe697551f254"
+    },
+    {
+      "scene": "tree_canopy",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.65,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8979000003819237,
+        "decode_ms": 0.16229999982897425,
+        "refine_ms": 0.3723999998328509,
+        "fallback_rays": 22,
+        "rebuilds": 0
+      },
+      "image_sha256": "a7d1f816c1bfde53e4d99853b32585da110ff9ee67b16bd5c82c9a3e4b19ad0f"
+    },
+    {
+      "scene": "tree_canopy",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.65,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7184999994933605,
+        "decode_ms": 0.11379999978089472,
+        "refine_ms": 0.3167000004395959,
+        "fallback_rays": 30,
+        "rebuilds": 0
+      },
+      "image_sha256": "74244a86159abcbeee8fbe8683d4df0b60dd1247d184bbd9ab96891cf9ebd04d"
+    },
+    {
+      "scene": "tree_canopy",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.65,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6837000000814442,
+        "decode_ms": 2.679799999896204,
+        "refine_ms": 0.3634000004240079,
+        "fallback_rays": 31,
+        "rebuilds": 0
+      },
+      "image_sha256": "eee908a476e47ecfe8e770ad3cf3f4ce2292ff473c10363a582c2204acfcc775"
+    },
+    {
+      "scene": "tree_canopy",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.9,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1538999997355859,
+        "decode_ms": 3.400100000362727,
+        "refine_ms": 0.5757999997513252,
+        "fallback_rays": 30,
+        "rebuilds": 0
+      },
+      "image_sha256": "a539ca9d68590026fc120e40b5c1a743c9d5b75c16a06c60c2668af26a2b9103"
+    },
+    {
+      "scene": "tree_canopy",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": 0.4,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1052000008930918,
+        "decode_ms": 21.827999999914027,
+        "refine_ms": 2.121699999406701,
+        "fallback_rays": 19,
+        "rebuilds": 0
+      },
+      "image_sha256": "debe04c6ca595c4ab63226c48984ab6bf7a4a8cd752d408aa91c12346a81a1a2"
+    },
+    {
+      "scene": "river_diagonal",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 0.7853981633974483,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0658999999577645,
+        "decode_ms": 0.1494999996793922,
+        "refine_ms": 4.865500000050815,
+        "fallback_rays": 35,
+        "rebuilds": 0
+      },
+      "image_sha256": "3ce8da258e69ced02827b4c98dc5c156fe360ddc3b964fd86f7e3a62578e1284"
+    },
+    {
+      "scene": "river_diagonal",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 0.8888302357289171,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7624999998370185,
+        "decode_ms": 0.15530000018770806,
+        "refine_ms": 5.325299999640265,
+        "fallback_rays": 23,
+        "rebuilds": 0
+      },
+      "image_sha256": "618b11315a7d58b3474c63102229c5197f29c7ae51a01ad1a932516a154f1700"
+    },
+    {
+      "scene": "river_diagonal",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 1.087521441724554,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9847999999692547,
+        "decode_ms": 0.2531000000089989,
+        "refine_ms": 5.640100000164239,
+        "fallback_rays": 26,
+        "rebuilds": 0
+      },
+      "image_sha256": "4a032796566a4980a9fa1e4cd30f7e1db5b3f2fbf8e55146ce016e709cc2f14d"
+    },
+    {
+      "scene": "river_diagonal",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 0.5603486036785802,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7632999995621503,
+        "decode_ms": 0.1498000001447508,
+        "refine_ms": 4.608399999597168,
+        "fallback_rays": 23,
+        "rebuilds": 0
+      },
+      "image_sha256": "7e3068f76b3e890fcefdd16b0b6865050d7a88510c9abb5837aebc4c0e7e5bd8"
+    },
+    {
+      "scene": "river_diagonal",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 0.5603486036785802,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8617000003141584,
+        "decode_ms": 0.18969999928231118,
+        "refine_ms": 4.889200000434357,
+        "fallback_rays": 47,
+        "rebuilds": 0
+      },
+      "image_sha256": "a2d66676326c7c2d29a492d21f8599d9c106b922214f237a86ed71fc9ac2cd4c"
+    },
+    {
+      "scene": "river_diagonal",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.5,
+      "yaw": 0.5603486036785802,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.3861999996152008,
+        "decode_ms": 0.16390000018873252,
+        "refine_ms": 4.38769999982469,
+        "fallback_rays": 38,
+        "rebuilds": 0
+      },
+      "image_sha256": "9b1a0f28646f565fb8a5d40a018e5f830dccc9df34364d1cb1a75efe23403059"
+    },
+    {
+      "scene": "river_upstream",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 3.141592653589793,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9804999999687425,
+        "decode_ms": 0.14680000003863825,
+        "refine_ms": 4.606000000421773,
+        "fallback_rays": 9,
+        "rebuilds": 0
+      },
+      "image_sha256": "b9e2cf05c396b1e95dc3323b6d59bb4bd8f1c385aaffe77baeaad6ad40205aac"
+    },
+    {
+      "scene": "river_upstream",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 3.245024725921262,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 2.1316282072803006e-14,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6936999998288229,
+        "decode_ms": 0.1311999994868529,
+        "refine_ms": 4.961600000569888,
+        "fallback_rays": 12,
+        "rebuilds": 0
+      },
+      "image_sha256": "7787a0d06ea4d492e638abf9713bc972b8cc4846b6e82631fa9ba45a755dd60e"
+    },
+    {
+      "scene": "river_upstream",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 3.443715931916899,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.4210854715202004e-14,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8191999995688093,
+        "decode_ms": 0.12700000024779,
+        "refine_ms": 4.14939999973285,
+        "fallback_rays": 25,
+        "rebuilds": 0
+      },
+      "image_sha256": "6e5ab01dd7874578ae520b9ceecc8061b90e94746d970488b194d5c2baac26a8"
+    },
+    {
+      "scene": "river_upstream",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 2.1316282072803006e-14,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7045000002108281,
+        "decode_ms": 0.15640000037819846,
+        "refine_ms": 5.332499999894935,
+        "fallback_rays": 12,
+        "rebuilds": 0
+      },
+      "image_sha256": "cab6d8c32689488fce03b501a02b7a9e43a0fd2cfde6062a2d153fe533ea01e3"
+    },
+    {
+      "scene": "river_upstream",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 2.842170943040401e-14,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9073999999600346,
+        "decode_ms": 0.1810000003388268,
+        "refine_ms": 4.85359999947832,
+        "fallback_rays": 61,
+        "rebuilds": 0
+      },
+      "image_sha256": "96144f62c9c423e165d23d009ca4919a917fa5284cbd09b78f772016a547754b"
+    },
+    {
+      "scene": "river_upstream",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.5,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.4210854715202004e-14,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0062999999718159,
+        "decode_ms": 0.18869999985327013,
+        "refine_ms": 5.239600000095379,
+        "fallback_rays": 26,
+        "rebuilds": 0
+      },
+      "image_sha256": "6296ea7d3b91951099d2a4bf07de43a1e4cfa1810bc0dfdf566878f6ed314f98"
+    },
+    {
+      "scene": "castle_exterior",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.08,
+      "yaw": 0.6,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.990300000012212,
+        "decode_ms": 0.15900000016699778,
+        "refine_ms": 3.613299999415176,
+        "fallback_rays": 14,
+        "rebuilds": 0
+      },
+      "image_sha256": "6a9fbff2523061194e8c87daf7269958193ac7527275ffe6af930bd8b6e5b938"
+    },
+    {
+      "scene": "castle_exterior",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.08,
+      "yaw": 0.7034320723314689,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7372000000032131,
+        "decode_ms": 0.14290000035543926,
+        "refine_ms": 3.2997999996950966,
+        "fallback_rays": 10,
+        "rebuilds": 0
+      },
+      "image_sha256": "cde2698e5f1a934552f096020be38deae3c89b550502770c7ee43b06cc5ae309"
+    },
+    {
+      "scene": "castle_exterior",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.08,
+      "yaw": 0.9021232783271058,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7093999993230682,
+        "decode_ms": 0.137400000312482,
+        "refine_ms": 4.07309999991412,
+        "fallback_rays": 21,
+        "rebuilds": 0
+      },
+      "image_sha256": "3f7a643db66e8481349c42c1a36ccb2323e8260eb4cc7a88c93c0c78fd1bc514"
+    },
+    {
+      "scene": "castle_exterior",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.08,
+      "yaw": 0.3749504402811319,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8110999997370527,
+        "decode_ms": 0.146399999721325,
+        "refine_ms": 3.941599999961909,
+        "fallback_rays": 10,
+        "rebuilds": 0
+      },
+      "image_sha256": "db7ea6ec1a22cb3c2afe42d98230c1eb3564b83c16e06bd9b51ac2127ead6c98"
+    },
+    {
+      "scene": "castle_exterior",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.33,
+      "yaw": 0.3749504402811319,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7850000001781154,
+        "decode_ms": 0.17449999995733378,
+        "refine_ms": 2.997300000060932,
+        "fallback_rays": 29,
+        "rebuilds": 0
+      },
+      "image_sha256": "8006737bc32b900081a29e35452a8e2c617c92a8e56ad1041fd053ce532a562d"
+    },
+    {
+      "scene": "castle_exterior",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.16999999999999998,
+      "yaw": 0.3749504402811319,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8260000004156609,
+        "decode_ms": 0.14319999991130317,
+        "refine_ms": 3.989900000306079,
+        "fallback_rays": 14,
+        "rebuilds": 0
+      },
+      "image_sha256": "41736cb67ca02a7a8b5b4db0b4659cce2401c9573e052719eafbdc7b5e52ba4b"
+    },
+    {
+      "scene": "great_hall",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.12,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9239000000889064,
+        "decode_ms": 0.1474999999118154,
+        "refine_ms": 5.2963999996791244,
+        "fallback_rays": 0,
+        "rebuilds": 0
+      },
+      "image_sha256": "e576ca57b4ee80b85e5ef43f5ab9d620fbfc22e23a79011ff9978488ef1e5a67"
+    },
+    {
+      "scene": "great_hall",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.12,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8750999995754682,
+        "decode_ms": 0.1609999999345746,
+        "refine_ms": 5.763500000284694,
+        "fallback_rays": 10,
+        "rebuilds": 0
+      },
+      "image_sha256": "11e81b9c7f2aaae1d4f99bf0c40a9b8d35d95918502b268c800ebefc9cb14c49"
+    },
+    {
+      "scene": "great_hall",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.12,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6602000003113062,
+        "decode_ms": 0.15939999957481632,
+        "refine_ms": 5.1574999997683335,
+        "fallback_rays": 6,
+        "rebuilds": 0
+      },
+      "image_sha256": "2a6baa674ca7ebe809481a3dcbdafb37c25469f8d4f965ce59b98e79a68e345c"
+    },
+    {
+      "scene": "great_hall",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.12,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.645500000246102,
+        "decode_ms": 0.14349999946716707,
+        "refine_ms": 5.3365000003395835,
+        "fallback_rays": 6,
+        "rebuilds": 0
+      },
+      "image_sha256": "686fb08fbdb12b08b10aa81e31426c6cf37064bbb9a20fca59434e957ebd89c2"
+    },
+    {
+      "scene": "great_hall",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.37,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9471000003031804,
+        "decode_ms": 0.20619999941118294,
+        "refine_ms": 7.228200000099605,
+        "fallback_rays": 10,
+        "rebuilds": 0
+      },
+      "image_sha256": "a45165892c74800fcabd0e83812b75b22e170923efbb7f37f57acf442423ca68"
+    },
+    {
+      "scene": "great_hall",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.13,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 2.345299999433337,
+        "decode_ms": 0.20760000006703194,
+        "refine_ms": 9.809000000132073,
+        "fallback_rays": 6,
+        "rebuilds": 0
+      },
+      "image_sha256": "f2e032148ec3d8998411a42dd79e374e6ef9675f9e25cd0ee995e2181527aec8"
+    },
+    {
+      "scene": "wall_walk",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.3284999995448743,
+        "decode_ms": 0.17970000044442713,
+        "refine_ms": 4.538599999250437,
+        "fallback_rays": 0,
+        "rebuilds": 0
+      },
+      "image_sha256": "065bb13256b451bd19b698a97b8934fdf5849efe1c14b9151eaee07dda4008ee"
+    },
+    {
+      "scene": "wall_walk",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9119000005739508,
+        "decode_ms": 0.15469999925699085,
+        "refine_ms": 4.082200000084413,
+        "fallback_rays": 14,
+        "rebuilds": 0
+      },
+      "image_sha256": "dc2365d71fd7e3f6a4db50ac9c880c48df0cbebbbbb6fcc1b4f049ea6d143154"
+    },
+    {
+      "scene": "wall_walk",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7215000005089678,
+        "decode_ms": 12.635600000066916,
+        "refine_ms": 3.7606999994750367,
+        "fallback_rays": 9,
+        "rebuilds": 0
+      },
+      "image_sha256": "0e5eeff87a46cdda9a2fe64143c71af22e82590e2b4bbf01a42842367211e9f0"
+    },
+    {
+      "scene": "wall_walk",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8461999996143277,
+        "decode_ms": 0.1157000006060116,
+        "refine_ms": 3.485599999294209,
+        "fallback_rays": 13,
+        "rebuilds": 0
+      },
+      "image_sha256": "11785008ed74ce097e87c670755821f7766542afb0aed55d3651bbb4653bc99e"
+    },
+    {
+      "scene": "wall_walk",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.1,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8354000001418171,
+        "decode_ms": 0.16279999999824213,
+        "refine_ms": 2.8590000001713634,
+        "fallback_rays": 35,
+        "rebuilds": 0
+      },
+      "image_sha256": "4ed03cf94a7adb7b263942484befacaad183108dcc1fbaf20e2ded9335fc07f9"
+    },
+    {
+      "scene": "wall_walk",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.4,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6649999995715916,
+        "decode_ms": 0.11470000026747584,
+        "refine_ms": 3.701100000398583,
+        "fallback_rays": 14,
+        "rebuilds": 0
+      },
+      "image_sha256": "181b5aeb78c5ea3f2aae9410accc688919e7bfa806a2fa0b58bc32a56f2c2c8c"
+    },
+    {
+      "scene": "west_meadow",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.040899999679823,
+        "decode_ms": 0.12929999957123073,
+        "refine_ms": 3.1011000000944478,
+        "fallback_rays": 2,
+        "rebuilds": 0
+      },
+      "image_sha256": "467c31c5de7ee699b94ea7609dd29cbeedf476669f368748f41b5f642df768eb"
+    },
+    {
+      "scene": "west_meadow",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6826000008004485,
+        "decode_ms": 0.12739999965560855,
+        "refine_ms": 3.0835999996270402,
+        "fallback_rays": 21,
+        "rebuilds": 0
+      },
+      "image_sha256": "0c72cfa8d80f439df9feb9154a0006139a4747dd67e61fbde6d0f71b241bf68e"
+    },
+    {
+      "scene": "west_meadow",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7025000004432513,
+        "decode_ms": 3.1101999993552454,
+        "refine_ms": 3.0472000007648603,
+        "fallback_rays": 26,
+        "rebuilds": 0
+      },
+      "image_sha256": "4bbb7ccedec39d2c66f3e4602fee6da2faa2ef7d3d199b17808bff0c77fba42b"
+    },
+    {
+      "scene": "west_meadow",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.808800000413612,
+        "decode_ms": 0.10680000013962854,
+        "refine_ms": 3.5557999999582535,
+        "fallback_rays": 17,
+        "rebuilds": 0
+      },
+      "image_sha256": "74bc34fc5aa9eee6ac3fa1ce26f235aef3260020f99d4075e78e81aa9dd87cd0"
+    },
+    {
+      "scene": "west_meadow",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.15,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8465999999316409,
+        "decode_ms": 0.15249999978550477,
+        "refine_ms": 2.904300000409421,
+        "fallback_rays": 32,
+        "rebuilds": 0
+      },
+      "image_sha256": "919e00cc010e1be1e7877072499e999366be9f8d77740d9573fcfa74a170c5ff"
+    },
+    {
+      "scene": "west_meadow",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.35,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8803000000625616,
+        "decode_ms": 2.059200000076089,
+        "refine_ms": 3.8011999995433143,
+        "fallback_rays": 20,
+        "rebuilds": 0
+      },
+      "image_sha256": "c42c96b16c78a15c8b5856f5bd4fdb79791982a33394da325767cd659c96723c"
+    },
+    {
+      "scene": "east_meadow",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.027799999974377,
+        "decode_ms": 1.1136000002807123,
+        "refine_ms": 3.3090999995692982,
+        "fallback_rays": 14,
+        "rebuilds": 0
+      },
+      "image_sha256": "0b78123ab1ec437d1e6d0391fd7c961afdb100984b17a230eea4c855e7340a1b"
+    },
+    {
+      "scene": "east_meadow",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.6742283991263653,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8336000000781496,
+        "decode_ms": 0.14959999953134684,
+        "refine_ms": 3.598500000407512,
+        "fallback_rays": 39,
+        "rebuilds": 0
+      },
+      "image_sha256": "747c806aa1ce1791f1bfdd643e165fad5eb0096989cc1768698e8cead49eb5a9"
+    },
+    {
+      "scene": "east_meadow",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.8729196051220023,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6872000003568246,
+        "decode_ms": 0.14519999967887998,
+        "refine_ms": 3.645200000391924,
+        "fallback_rays": 45,
+        "rebuilds": 0
+      },
+      "image_sha256": "ee778efaaa30fd3ad6ea0e03b2374dab2cf2a4c3eb5286c0221886f8296a34e4"
+    },
+    {
+      "scene": "east_meadow",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8126000002448563,
+        "decode_ms": 0.15459999940503621,
+        "refine_ms": 3.7910000000920263,
+        "fallback_rays": 47,
+        "rebuilds": 0
+      },
+      "image_sha256": "d728045e5098f0bf0a9b61f01d110eb4444d5c6ccd460fbe1e2513df564e1e98"
+    },
+    {
+      "scene": "east_meadow",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.15,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8860999996613828,
+        "decode_ms": 0.16340000001946464,
+        "refine_ms": 3.241100000195729,
+        "fallback_rays": 84,
+        "rebuilds": 0
+      },
+      "image_sha256": "8e7d9a3ca616a322c620d10569a81c2b188d43288fa3216f20dcb30baa6d1edd"
+    },
+    {
+      "scene": "east_meadow",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.35,
+      "yaw": 1.3457467670760286,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7470999998986372,
+        "decode_ms": 0.12989999959245324,
+        "refine_ms": 4.0103999999701045,
+        "fallback_rays": 43,
+        "rebuilds": 0
+      },
+      "image_sha256": "12db2b8c817db40547648d3554cb6e11b2691b3a71ecfea751b4df38f0268cea"
+    },
+    {
+      "scene": "ridge_approach",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.05,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.128999999309599,
+        "decode_ms": 0.1681000003372901,
+        "refine_ms": 4.581600000165054,
+        "fallback_rays": 222,
+        "rebuilds": 0
+      },
+      "image_sha256": "c8cbe284fc67dd7d98c04097b6c2088d4440159737b1608c4c1d92b45c683d23"
+    },
+    {
+      "scene": "ridge_approach",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.05,
+      "yaw": 0.10343207233146884,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8562000002712011,
+        "decode_ms": 0.15579999944748124,
+        "refine_ms": 4.760599999826809,
+        "fallback_rays": 234,
+        "rebuilds": 0
+      },
+      "image_sha256": "f8aadbcb6cc8347c92b4825d5cf82c67fd43b0c4a3bbfc3f8472643a90f3d1b7"
+    },
+    {
+      "scene": "ridge_approach",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.05,
+      "yaw": 0.3021232783271058,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 3.5380999997869367,
+        "decode_ms": 0.14350000037666177,
+        "refine_ms": 5.068499999651976,
+        "fallback_rays": 282,
+        "rebuilds": 0
+      },
+      "image_sha256": "985eae90ff721c9095f8eb7254837519290d62d2c83de17d0e3a783b19675448"
+    },
+    {
+      "scene": "ridge_approach",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.05,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7428999997500796,
+        "decode_ms": 0.15239999993355013,
+        "refine_ms": 4.631000000699714,
+        "fallback_rays": 199,
+        "rebuilds": 0
+      },
+      "image_sha256": "bb463654cc04912eeafd2614d26d9d9ac4abd1d9ab4c4296bf3393ac3d7ce6e1"
+    },
+    {
+      "scene": "ridge_approach",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.3,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9233000000676839,
+        "decode_ms": 0.21039999955974054,
+        "refine_ms": 6.142000000181724,
+        "fallback_rays": 336,
+        "rebuilds": 0
+      },
+      "image_sha256": "7f242aeb67aacb26c0a12249bf081b0a73cd6bacdc8e1389b08b5ee471b2cc08"
+    },
+    {
+      "scene": "ridge_approach",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.2,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7795999999871128,
+        "decode_ms": 0.14320000082079787,
+        "refine_ms": 8.876699999746052,
+        "fallback_rays": 104,
+        "rebuilds": 0
+      },
+      "image_sha256": "71f4a60234a5831fbd4037f4880472032c8d23e8424492a7facd10e87c0cd044"
+    },
+    {
+      "scene": "ridge_upper",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1607999995248974,
+        "decode_ms": 0.1467000001866836,
+        "refine_ms": 4.168000000390748,
+        "fallback_rays": 1067,
+        "rebuilds": 0
+      },
+      "image_sha256": "c092904817c236e2babcd1d478fd4577f71b726e351263541389d9b1804f1ed2"
+    },
+    {
+      "scene": "ridge_upper",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 0.10343207233146884,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0062000001198612,
+        "decode_ms": 0.1548000000184402,
+        "refine_ms": 4.270100000212551,
+        "fallback_rays": 962,
+        "rebuilds": 0
+      },
+      "image_sha256": "5861d23b47ff286cb0e643a1ad440b969b5b0a04c18f0f5e50b052eb8d32ad93"
+    },
+    {
+      "scene": "ridge_upper",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": 0.3021232783271058,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7961000001159846,
+        "decode_ms": 0.13069999931758502,
+        "refine_ms": 4.4384000002537505,
+        "fallback_rays": 601,
+        "rebuilds": 0
+      },
+      "image_sha256": "c795969616b67b7f356a1a590f4da04d95bfe124eeddfb5e9ef4c962b7d04d1b"
+    },
+    {
+      "scene": "ridge_upper",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.1,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8491999997204402,
+        "decode_ms": 0.13589999980467837,
+        "refine_ms": 4.061300000103074,
+        "fallback_rays": 1149,
+        "rebuilds": 0
+      },
+      "image_sha256": "335697f1025676519de3bfc632bed0183b2df341699dce9760231a2d918084e2"
+    },
+    {
+      "scene": "ridge_upper",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.15,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8667000001878478,
+        "decode_ms": 0.19890000021405285,
+        "refine_ms": 4.792699999597971,
+        "fallback_rays": 1974,
+        "rebuilds": 0
+      },
+      "image_sha256": "a87623c94f4818778a75564457837e55c7107f9a21c1de03e98b9d41a27466b4"
+    },
+    {
+      "scene": "ridge_upper",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.35,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1113999998997315,
+        "decode_ms": 0.1613000003999332,
+        "refine_ms": 4.815100000087114,
+        "fallback_rays": 664,
+        "rebuilds": 0
+      },
+      "image_sha256": "6e0a6e8a48d8d7d1877999431f5ed6b4444a1e79a928e7633718462a2f45d5d3"
+    },
+    {
+      "scene": "ridge_roof",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 0.8,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9297000005972222,
+        "decode_ms": 0.1311999994868529,
+        "refine_ms": 3.430800000387535,
+        "fallback_rays": 34,
+        "rebuilds": 0
+      },
+      "image_sha256": "5f0fc1f3976d2e3102b0af1101414d194a313a9940696dce3afa3a01a3fd1d6d"
+    },
+    {
+      "scene": "ridge_roof",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 0.9034320723314688,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 2.7929999996558763,
+        "decode_ms": 0.15150000035646372,
+        "refine_ms": 3.5812999994959682,
+        "fallback_rays": 32,
+        "rebuilds": 0
+      },
+      "image_sha256": "9ea07a34fcde03b528dedd02a821047d40f5a220187effe708786170c570442f"
+    },
+    {
+      "scene": "ridge_roof",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 1.1021232783271058,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 23.01270000043587,
+        "decode_ms": 0.16150000010384247,
+        "refine_ms": 3.739799999493698,
+        "fallback_rays": 37,
+        "rebuilds": 0
+      },
+      "image_sha256": "a3ba877cc28d03ac9feb5b4f772d370cd25ce9eb739bf69d4532b0415707cabb"
+    },
+    {
+      "scene": "ridge_roof",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 0.574950440281132,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8720999994693557,
+        "decode_ms": 0.15330000042013125,
+        "refine_ms": 4.495399999541405,
+        "fallback_rays": 43,
+        "rebuilds": 0
+      },
+      "image_sha256": "145ca9fb525d2c9383131dc945f5611210c698d5500a946e829f929ae024b446"
+    },
+    {
+      "scene": "ridge_roof",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.1,
+      "yaw": 0.574950440281132,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9805999998206971,
+        "decode_ms": 0.1771000006556278,
+        "refine_ms": 3.2778999993752223,
+        "fallback_rays": 95,
+        "rebuilds": 0
+      },
+      "image_sha256": "d7ccd0366f81abc4706937cac83a56840e86eb4f5e1059ce0a1540d1b6f6521a"
+    },
+    {
+      "scene": "ridge_roof",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.4,
+      "yaw": 0.574950440281132,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9277999997721054,
+        "decode_ms": 0.14140000075713033,
+        "refine_ms": 4.277099999853817,
+        "fallback_rays": 37,
+        "rebuilds": 0
+      },
+      "image_sha256": "b3033d56d0c9fe7e8e5aff7633f00e65db566d8053e6ecc90c68bcfb1b80c1c5"
+    },
+    {
+      "scene": "highlands",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 1.4,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0.0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9845000004133908,
+        "decode_ms": 0.16249999953288352,
+        "refine_ms": 9.277400000428315,
+        "fallback_rays": 175,
+        "rebuilds": 0
+      },
+      "image_sha256": "0781ac7f1dc6640ffb6810b4984418927a81397d94cc3f972cc8a15b3de18ef4"
+    },
+    {
+      "scene": "highlands",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 1.5034320723314687,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0.0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0283000001436449,
+        "decode_ms": 0.17690000004222384,
+        "refine_ms": 8.3703999998761,
+        "fallback_rays": 171,
+        "rebuilds": 0
+      },
+      "image_sha256": "572418db2fc17a966a215a37ecc631044d4804b09e61f1b0dae4885891ea913f"
+    },
+    {
+      "scene": "highlands",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 1.7021232783271056,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0.0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7906000000730273,
+        "decode_ms": 0.14319999991130317,
+        "refine_ms": 8.247700000538316,
+        "fallback_rays": 194,
+        "rebuilds": 0
+      },
+      "image_sha256": "ebda3dd2ec2208e4e3e35f939c9694538b8d39b64c84f97f3f59862161570198"
+    },
+    {
+      "scene": "highlands",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.15,
+      "yaw": 1.174950440281132,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0.0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.9837999998344458,
+        "decode_ms": 0.22979999994277023,
+        "refine_ms": 21.80289999978413,
+        "fallback_rays": 149,
+        "rebuilds": 0
+      },
+      "image_sha256": "f115d236e3d9fb11392a2670eb6784fa6f29849ac1e3737104e3a1bef2c680cb"
+    },
+    {
+      "scene": "highlands",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.1,
+      "yaw": 1.174950440281132,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0.0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0014999998020357,
+        "decode_ms": 0.2991999999721884,
+        "refine_ms": 5.8484999999564025,
+        "fallback_rays": 286,
+        "rebuilds": 0
+      },
+      "image_sha256": "952df4029db7157d371a9fa952eb67847d446727866a39971b97dd5286b40d19"
+    },
+    {
+      "scene": "highlands",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.4,
+      "yaw": 1.174950440281132,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0.0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9326999997938401,
+        "decode_ms": 0.146399999721325,
+        "refine_ms": 9.042399999998452,
+        "fallback_rays": 96,
+        "rebuilds": 0
+      },
+      "image_sha256": "67c461c80218875414ebfc691b64af0f69e6b12ebc66bd7cb344cfb742753aa1"
+    },
+    {
+      "scene": "ravine",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 3.141592653589793,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9324000002379762,
+        "decode_ms": 0.1959000001079403,
+        "refine_ms": 6.872299999486131,
+        "fallback_rays": 256,
+        "rebuilds": 0
+      },
+      "image_sha256": "d34d0e659e1727b345f83f58eff38fbb032fba9ad0ed808d4734d162670a4025"
+    },
+    {
+      "scene": "ravine",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 3.245024725921262,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0399999991932418,
+        "decode_ms": 3.26260000019829,
+        "refine_ms": 6.59429999996064,
+        "fallback_rays": 143,
+        "rebuilds": 0
+      },
+      "image_sha256": "f5e79be5e636167ef7d1d6b6fb50ac8eba31092c260eda6145f531938f63049c"
+    },
+    {
+      "scene": "ravine",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 3.443715931916899,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8796000001893844,
+        "decode_ms": 0.20570000015140977,
+        "refine_ms": 7.138400000258116,
+        "fallback_rays": 123,
+        "rebuilds": 0
+      },
+      "image_sha256": "ba0a71bd8d8dc188e5efa281f700bb110aa086ba039dd98140745306b0c284ca"
+    },
+    {
+      "scene": "ravine",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.25,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7303000002139015,
+        "decode_ms": 0.16000000050553354,
+        "refine_ms": 6.6145000000688015,
+        "fallback_rays": 116,
+        "rebuilds": 0
+      },
+      "image_sha256": "5f983d2dfb4ce72c05d7e0e91fa4164b7376b5236904ee71622ad8a3d42c190a"
+    },
+    {
+      "scene": "ravine",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": true,
+      "max_depth_error": 0.0,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.883800000337942,
+        "decode_ms": 1.830100000006496,
+        "refine_ms": 5.597800000032294,
+        "fallback_rays": 204,
+        "rebuilds": 0
+      },
+      "image_sha256": "00eea900f3dae7511f3d4f72aad90042198be03b88a650a646348e9cb7e3e4dc"
+    },
+    {
+      "scene": "ravine",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.5,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 4.440892098500626e-16,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0053000005427748,
+        "decode_ms": 19.896199999493547,
+        "refine_ms": 5.132000000230619,
+        "fallback_rays": 100,
+        "rebuilds": 0
+      },
+      "image_sha256": "5d4293b7993fee105498ca3a468e946cb93df3bab235195b8520b037381ef29a"
+    },
+    {
+      "scene": "citadel_approach",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.06,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1546999994607177,
+        "decode_ms": 0.1909000002342509,
+        "refine_ms": 6.561399999554851,
+        "fallback_rays": 56,
+        "rebuilds": 0
+      },
+      "image_sha256": "454ea9549b9dd2bb133a9bbb0677e463303d3ec31bec372363cf2df4f6e31159"
+    },
+    {
+      "scene": "citadel_approach",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.06,
+      "yaw": 0.10343207233146884,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.1190999994141748,
+        "decode_ms": 0.17560000014782418,
+        "refine_ms": 6.617900000492227,
+        "fallback_rays": 83,
+        "rebuilds": 0
+      },
+      "image_sha256": "4959a48d3ffac6a21aafd4b800bc070723d75936673a27b7bd3649be7500eaca"
+    },
+    {
+      "scene": "citadel_approach",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.06,
+      "yaw": 0.3021232783271058,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.0847999992620316,
+        "decode_ms": 0.17920000027515925,
+        "refine_ms": 7.308299999749579,
+        "fallback_rays": 79,
+        "rebuilds": 0
+      },
+      "image_sha256": "334e6703fcba131637a31de059d2fe34277ea4b5373b538a4540f934f2b36a60"
+    },
+    {
+      "scene": "citadel_approach",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.06,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8752000003369176,
+        "decode_ms": 0.17829999978857813,
+        "refine_ms": 6.455300000197894,
+        "fallback_rays": 111,
+        "rebuilds": 0
+      },
+      "image_sha256": "b1c238fb09581544daaa8abaeb9867f62180cc114e2dd817d977d4ff67ed569d"
+    },
+    {
+      "scene": "citadel_approach",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.31,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.2323000000833417,
+        "decode_ms": 0.281199999335513,
+        "refine_ms": 6.32820000009815,
+        "fallback_rays": 116,
+        "rebuilds": 0
+      },
+      "image_sha256": "f0a7503db636ddf21eb04fc36ebaddec3860b8a6a57e040e44fa7772bb976269"
+    },
+    {
+      "scene": "citadel_approach",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.19,
+      "yaw": -0.2250495597188681,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.931700000364799,
+        "decode_ms": 0.1708999998299987,
+        "refine_ms": 9.500999999545456,
+        "fallback_rays": 36,
+        "rebuilds": 0
+      },
+      "image_sha256": "ff4f1023bbd2cb599ae614eab0ddcfc2326a66f890c3b931d720fb617bec3af9"
+    },
+    {
+      "scene": "citadel_roof",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.2,
+      "yaw": 3.141592653589793,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9723999992274912,
+        "decode_ms": 0.1717000004646252,
+        "refine_ms": 3.5248000003775815,
+        "fallback_rays": 89,
+        "rebuilds": 0
+      },
+      "image_sha256": "b9ca9fc7d1a81a5cd7e402103d044ce8c94538f1f3ab404cec3af02d74d59cd2"
+    },
+    {
+      "scene": "citadel_roof",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.2,
+      "yaw": 3.245024725921262,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7313999994948972,
+        "decode_ms": 0.15000000075815478,
+        "refine_ms": 3.545300000041607,
+        "fallback_rays": 153,
+        "rebuilds": 0
+      },
+      "image_sha256": "0d5fcff86a464b72004a9f8da453afae59de571bfc1634955f43b8dd7ecf42bf"
+    },
+    {
+      "scene": "citadel_roof",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.2,
+      "yaw": 3.443715931916899,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7243000000016764,
+        "decode_ms": 0.14509999982692534,
+        "refine_ms": 3.581799999665236,
+        "fallback_rays": 174,
+        "rebuilds": 0
+      },
+      "image_sha256": "3d1709cdab64711fc59a5e45aab531920d99bcecb6663c7bef80974c61304ce6"
+    },
+    {
+      "scene": "citadel_roof",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": -0.2,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7910000003903406,
+        "decode_ms": 0.1407999998264131,
+        "refine_ms": 3.646899999694142,
+        "fallback_rays": 131,
+        "rebuilds": 0
+      },
+      "image_sha256": "5f94f671f7f59fb03c36c82bfd992508cbb328f2caf3dd0c12379f7b0ba20a05"
+    },
+    {
+      "scene": "citadel_roof",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.04999999999999999,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8600000001024455,
+        "decode_ms": 0.18399999953544466,
+        "refine_ms": 3.209399999832385,
+        "fallback_rays": 189,
+        "rebuilds": 0
+      },
+      "image_sha256": "84136f3924290fff47dade853f33ea9ec07681633947dac3e1bd0a9f61f8a4e3"
+    },
+    {
+      "scene": "citadel_roof",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.45,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.2135000006310293,
+        "decode_ms": 0.17079999997804407,
+        "refine_ms": 4.253299999618321,
+        "fallback_rays": 67,
+        "rebuilds": 0
+      },
+      "image_sha256": "2eb2ccc85467dedbdcaaabe80497b7d57dbd5937252abfda4e04d99864d67ec6"
+    },
+    {
+      "scene": "highland_map",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 3.141592653589793,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.2021000002278015,
+        "decode_ms": 0.15189999976428226,
+        "refine_ms": 2.563699999882374,
+        "fallback_rays": 120,
+        "rebuilds": 0
+      },
+      "image_sha256": "55c974af1bfdec049e5047716cb312c9c57aacc2856278805ab8df8c1023f840"
+    },
+    {
+      "scene": "highland_map",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 3.245024725921262,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9595999999874039,
+        "decode_ms": 0.1615999999557971,
+        "refine_ms": 2.6347000002715504,
+        "fallback_rays": 148,
+        "rebuilds": 0
+      },
+      "image_sha256": "49730e00457fe40a12eeaaf16c3c84331a2e1171bd5a3572d69b46ebb886c1ea"
+    },
+    {
+      "scene": "highland_map",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 3.443715931916899,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8982999997897423,
+        "decode_ms": 0.12299999980314169,
+        "refine_ms": 2.553999999690859,
+        "fallback_rays": 138,
+        "rebuilds": 0
+      },
+      "image_sha256": "202be118ecc53cccb7f52961570e2e213e272d84797157785f7eb9ed5c0df36d"
+    },
+    {
+      "scene": "highland_map",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6683999999950174,
+        "decode_ms": 0.12930000048072543,
+        "refine_ms": 2.476899999237503,
+        "fallback_rays": 177,
+        "rebuilds": 0
+      },
+      "image_sha256": "5fce7e8f467e2ad56055f002bff54231c4a426a122530f416ea71372275d397b"
+    },
+    {
+      "scene": "highland_map",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.25,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7488000001103501,
+        "decode_ms": 0.1306000003751251,
+        "refine_ms": 1.2837000003855792,
+        "fallback_rays": 189,
+        "rebuilds": 0
+      },
+      "image_sha256": "0f48dca41714abd1653792551668fcc4a59be9b7dfbab2947d306dd32921b09d"
+    },
+    {
+      "scene": "highland_map",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.25,
+      "yaw": 2.916543093870925,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8235999994212762,
+        "decode_ms": 0.1391000005241949,
+        "refine_ms": 3.25539999994362,
+        "fallback_rays": 70,
+        "rebuilds": 0
+      },
+      "image_sha256": "84daddc63a9c51dc92e7b29f5f879c947de4097642b5a57711bbc31911ff43ef"
+    },
+    {
+      "scene": "terrace_walk",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8178999996744096,
+        "decode_ms": 0.1740000006975606,
+        "refine_ms": 6.948999999622174,
+        "fallback_rays": 141,
+        "rebuilds": 0
+      },
+      "image_sha256": "cb132b63a66729d8dc277d105ddbd47c395c850bd47333a3242b8cd1e43ee688"
+    },
+    {
+      "scene": "terrace_walk",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7366000008914853,
+        "decode_ms": 0.13809999927616445,
+        "refine_ms": 6.782400000702182,
+        "fallback_rays": 127,
+        "rebuilds": 0
+      },
+      "image_sha256": "e6bb6703d97360189ec2564d92772e0f8bcbf16aee3e587c15552a55390a9d95"
+    },
+    {
+      "scene": "terrace_walk",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7195999996838509,
+        "decode_ms": 0.13900000067224028,
+        "refine_ms": 5.781399999250425,
+        "fallback_rays": 202,
+        "rebuilds": 0
+      },
+      "image_sha256": "c7e42f01192afe3169b670d804062d01e55f6e66bad68d9aa1be9aec56e828ac"
+    },
+    {
+      "scene": "terrace_walk",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 1.7763568394002505e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6902000004629372,
+        "decode_ms": 0.13589999980467837,
+        "refine_ms": 4.65509999958158,
+        "fallback_rays": 285,
+        "rebuilds": 0
+      },
+      "image_sha256": "a62b2e17322254192cb86dafbde61f5ff25959df1b948ecd835fea893fc80efb"
+    },
+    {
+      "scene": "terrace_walk",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.25,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 7.105427357601002e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 2.4418000002697227,
+        "decode_ms": 0.17719999959808774,
+        "refine_ms": 5.732000000534754,
+        "fallback_rays": 480,
+        "rebuilds": 0
+      },
+      "image_sha256": "b3a434f8f40afb11b9bdfdc60848fe64c7a8986731e8d32992c840e44f7b6802"
+    },
+    {
+      "scene": "terrace_walk",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.25,
+      "yaw": 0.0,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.7771999999022228,
+        "decode_ms": 0.16680000044289045,
+        "refine_ms": 7.414699999571894,
+        "fallback_rays": 157,
+        "rebuilds": 0
+      },
+      "image_sha256": "92b44d0cbdc1268a14437d4af35d33beb9868d86c4680c8d0f39400a490340cd"
+    },
+    {
+      "scene": "stair_walk",
+      "frame": 0,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 1.082499999938591,
+        "decode_ms": 0.19729999985429458,
+        "refine_ms": 9.385999999722117,
+        "fallback_rays": 48,
+        "rebuilds": 0
+      },
+      "image_sha256": "581ce04a4dd32fc425b0fd01f88fed94655be791cd8137a8a78dd8a1d5f976f5"
+    },
+    {
+      "scene": "stair_walk",
+      "frame": 5,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9004000003187684,
+        "decode_ms": 0.18649999947228935,
+        "refine_ms": 9.376199999678647,
+        "fallback_rays": 88,
+        "rebuilds": 0
+      },
+      "image_sha256": "bef996e4c2462580d453cc8e97794b53303ba11baf1f834e727a13f7691c97e9"
+    },
+    {
+      "scene": "stair_walk",
+      "frame": 35,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.9523999997327337,
+        "decode_ms": 0.19069999962084694,
+        "refine_ms": 8.827300000120886,
+        "fallback_rays": 75,
+        "rebuilds": 0
+      },
+      "image_sha256": "66f9d34d92dff31feec3200ffbadb8f1c47bb63225bb52b47afb486cddc99437"
+    },
+    {
+      "scene": "stair_walk",
+      "frame": 64,
+      "width": 120,
+      "height": 40,
+      "pitch": 0.0,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.6703999997625942,
+        "decode_ms": 0.14759999976377003,
+        "refine_ms": 8.14630000058969,
+        "fallback_rays": 197,
+        "rebuilds": 0
+      },
+      "image_sha256": "9ba4ec1bc5392356f78acb48f3231d6737ca7d487df031e42a8035276bafdcd4"
+    },
+    {
+      "scene": "stair_walk",
+      "frame": 65,
+      "width": 160,
+      "height": 40,
+      "pitch": 0.25,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8634999994683312,
+        "decode_ms": 0.21160000051168026,
+        "refine_ms": 7.864700000027369,
+        "fallback_rays": 279,
+        "rebuilds": 0
+      },
+      "image_sha256": "0ff5f6e1277c5610e9466c077a8d4115baae5e9d33fb1a7493527d2557831886"
+    },
+    {
+      "scene": "stair_walk",
+      "frame": 65,
+      "width": 80,
+      "height": 60,
+      "pitch": -0.25,
+      "yaw": 1.5707963267948966,
+      "image_equal": true,
+      "depth_bitwise_equal": false,
+      "max_depth_error": 3.552713678800501e-15,
+      "coverage_mismatches": 0,
+      "gpu_stats": {
+        "query_readback_ms": 0.8477000001221313,
+        "decode_ms": 0.16910000067582587,
+        "refine_ms": 9.478199999648496,
+        "fallback_rays": 111,
+        "rebuilds": 0
+      },
+      "image_sha256": "53c3036a3727a4edb3210ae042c884547b744b64a8596bf3594f5626277a6aa0"
+    }
+  ],
+  "failures": [],
+  "passed": true
+}

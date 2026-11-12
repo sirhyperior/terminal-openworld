@@ -7,7 +7,8 @@ from unittest.mock import patch
 from ascii3d.combat import CombatState, Enemy
 from ascii3d.doors import Door
 from ascii3d.player import Player
-from ascii3d.renderer import Renderer
+from ascii3d.geometry import Camera
+from ascii3d.renderer import Renderer, _analytic_depth_rows
 from ascii3d.surfaces import HeightField, SolidBox
 from ascii3d.world import FLOOR, GRASS, PATH, STONE, WATER, WATER_LEVEL, World
 
@@ -40,6 +41,120 @@ class SmoothSurfaceRenderingTests(unittest.TestCase):
         cy, sy = math.cos(player.yaw), math.sin(player.yaw)
         cp, sp = math.cos(player.pitch), math.sin(player.pitch)
         return cy * (cp - v * sp) + u * sy, sy * (cp - v * sp) - u * cy, sp + v * cp
+
+    def test_projected_analytic_bounds_cover_exact_rays_at_edges_and_near_plane(self):
+        boxes = (SolidBox(8, 5, 0, 13, 17, 6), SolidBox(2, 12, 0, 9, 16, 3),
+                 SolidBox(4.4, 4.4, 1, 4.6, 4.6, 3))
+        for pitch in (-0.7, 0, 0.7):
+            for yaw in (0, 1.4, 3.15, 6.27):
+                player = Player(x=4.5, y=4.5, yaw=yaw, pitch=pitch)
+                renderer = Renderer(World.empty(24, 24, 16))
+                renderer.scene(player, 61, 43)
+                camera = Camera(player, 61, 43, renderer._focal, renderer.cell_aspect)
+                for selected in (boxes[:2], boxes[2:], boxes):
+                    rows = _analytic_depth_rows(selected, camera)
+                    for y in range(43):
+                        for x in range(61):
+                            direction = self.ray(renderer, player, x, y)
+                            hits = [box.ray_hit((player.x, player.y, player.eye_z), direction, 48)
+                                    for box in selected]
+                            for hit in hits:
+                                if hit is not None:
+                                    self.assertLessEqual(rows[y][x], hit.distance)
+
+    def test_projected_analytic_spans_match_per_box_minimum_with_bounded_projections(self):
+        player = Player(x=4.5, y=4.5, yaw=0.7, pitch=-0.1)
+        camera = Camera(player, 120, 40, 65, 0.5)
+        boxes = [SolidBox(x, y, 0, x + 8, y + 8, 4)
+                 for x in range(8, 48, 8) for y in range(8, 48, 8)]
+        individual = [_analytic_depth_rows((box,), camera) for box in boxes]
+        with patch.object(camera, "project", wraps=camera.project) as project:
+            rows = _analytic_depth_rows(boxes, camera)
+        self.assertEqual(project.call_count, 8 * len(boxes))
+        self.assertEqual(rows, [[min(part[y][x] for part in individual) for x in range(120)]
+                                for y in range(40)])
+        near = SolidBox(4, 4, 0, 5, 5, 4)
+        with patch.object(camera, "project", wraps=camera.project) as project:
+            self.assertEqual(_analytic_depth_rows([near, *boxes], camera), [[0.0] * 120 for _ in range(40)])
+        self.assertEqual(project.call_count, 8)
+
+    def test_projected_analytic_bounds_reduce_queries_and_match_unbounded_frames(self):
+        world = self.field_world(64, 64, slope_y=0.2)
+        world.box(0, 0, 0, 64, 24, 24, 0)
+        player = Player(x=32.5, y=12.5, yaw=math.pi / 2, pitch=-0.05)
+        original = world.geometry_query
+        counts = []
+        for bounded in (False, True):
+            calls = []
+
+            def select(bounds, planes):
+                query = original(bounds, planes)
+
+                def observe(origin, direction, limit):
+                    calls.append(limit)
+                    return query(origin, direction, limit)
+
+                observe.minimum_depth = query.minimum_depth
+                if bounded:
+                    observe.bounds = query.bounds
+                return observe
+
+            with patch.object(world, "geometry_query", side_effect=select):
+                actual = self.scene_with_depths(Renderer(world), player, 120, 40)
+            if not bounded:
+                expected = actual
+            else:
+                self.assertEqual(actual, expected)
+            counts.append(len(calls))
+        self.assertLess(counts[1], counts[0])
+
+    def test_early_outdoor_query_avoids_hidden_foundation_reads_with_identical_depths(self):
+        class CountedCells(bytearray):
+            reads = 0
+
+            def __getitem__(self, index):
+                self.reads += 1
+                return super().__getitem__(index)
+
+        world = World.empty(24, 24, 8)
+        world.box(0, 0, 0, 24, 24, 1, GRASS)
+        world.heightfield = HeightField(24, 24, [2.25] * 625)
+        world.cells = CountedCells(world.cells)
+        player = Player(x=8.5, y=4.5, z=2.25, yaw=math.pi / 2, pitch=-0.5)
+        renderer = Renderer(world)
+        renderer.prepare_world()
+        with patch.object(world.heightfield, "height_at", return_value=None):
+            world.cells.reads = 0
+            reference = self.scene_with_depths(renderer, player)
+            foundation_reads = world.cells.reads
+        world.cells.reads = 0
+        self.assertEqual(self.scene_with_depths(renderer, player), reference)
+        self.assertLess(world.cells.reads, foundation_reads)
+
+    def test_early_query_misses_have_a_fixed_duplicate_work_budget(self):
+        world = self.field_world(48, 48, base=20, slope_y=-0.35)
+        player = Player(x=24.5, y=4.5, z=world.surface_height(24.5, 4.5),
+                        yaw=math.pi / 2, pitch=-0.1)
+        with patch.object(world.heightfield, "height_at", return_value=None):
+            expected = self.scene_with_depths(Renderer(world), player)
+        original = world.geometry_query
+        calls = {}
+
+        def select(bounds, planes):
+            query = original(bounds, planes)
+
+            def observe(origin, direction, limit):
+                calls[direction] = calls.get(direction, 0) + 1
+                return query(origin, direction, limit)
+
+            observe.minimum_depth, observe.bounds = query.minimum_depth, query.bounds
+            return observe
+
+        with patch.object(world, "geometry_query", side_effect=select):
+            self.assertEqual(self.scene_with_depths(Renderer(world), player), expected)
+        duplicates = sum(count - 1 for count in calls.values())
+        self.assertGreater(duplicates, 0)
+        self.assertLessEqual(duplicates, 4)
 
     def test_sloped_plane_matches_analytic_depth_at_every_visible_sample(self):
         world = self.field_world(slope_x=0.17, slope_y=0.09)
