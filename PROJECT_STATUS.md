@@ -1,11 +1,22 @@
 # Project Status
 
-Last reviewed: **2026-11-12**. Standing rules: [AGENTS.md](AGENTS.md).
+Last reviewed: **2026-11-13**. Standing rules: [AGENTS.md](AGENTS.md).
 User backlog: [backlog.md](backlog.md).
 Gameplay/launch: [README.md](README.md).
 
 ## Current checkpoint
 
+- At the user's request, all uncommitted color/shading work and its associated
+  optimizations/tools were removed. Tracked engine, tests, tools and README were
+  restored through Git to **fd56e49**, with an empty source diff verified before
+  new work. The game is white ASCII on black again. Color is explicitly deferred
+  in the backlog; do not restart it without a new user request.
+- AGENTS.md now explicitly permits creating and using subagents whenever helpful,
+  without another permission request. The next active task is investigation of
+  the reported castle-wall automatic block climbing; no fix is claimed yet.
+- Abandoned experiment reports/failures are archived as historical evidence in
+  `benchmarks/abandoned-color-2026-11-13.zip`. They do not validate the restored
+  engine and are not active source or replacement baselines.
 - CPU/GPU/loading/cleanup work is checkpointed at the user's explicit Git commit
   request on **2026-11-12**. The pre-session smooth-geometry control is `a3d044f`.
 - The user approved GPU prototyping and subsequently complete integration once
@@ -64,9 +75,9 @@ Detailed controls, failures, measurements and methods:
    The standalone audio diagnostic was not rerun. No save/load or objectives.
    Partial-Z edits through sloped terrain still replace whole XY cells.
 
-The user reaffirmed the **15% remaining usage** wrap-up rule, now in AGENTS.md.
-The final check reached **12% short-window / 47% weekly remaining**; feature work
-stopped and only handoff/cleanup continued. No benchmark/test jobs remain active.
+The **15% remaining usage** wrap-up rule remains in AGENTS.md. No abandoned
+color benchmark/test jobs remain available; no Python processes were visible
+at rollback. New movement work must receive its own validation.
 
 ## Resume commands
 

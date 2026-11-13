@@ -9,6 +9,11 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Abandoned color experiments (2026-11-13):** the user requested restoration
+  to fd56e49 and deferred color. `abandoned-color-2026-11-13.zip` retains the
+  generated reports, failed runs, partial samples and their original source
+  manifests as historical evidence only. Their source code is not active and
+  their measurements do not describe the restored engine. No baseline changed.
 - **Current CPU repair and approved GPU prototype:**
   [2026-11-12 evidence](smooth-performance-2026-11-12.md) records the current
   checkpoint. The final CPU comparison against `d20cd0d` passes **14/24**

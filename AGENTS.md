@@ -29,6 +29,9 @@ names and atmosphere while preserving readable navigation and interactions.
   benchmark evidence when cleaning documentation.
 - Ask before major architectural changes. Routine additive features within the
   existing engine do not require another approval.
+- Create and use subagents whenever they help with the work; no additional user
+  permission is needed. Delegate independent investigation, implementation or
+  review tasks, coordinate shared files, and verify their results before handoff.
 - Check account usage between major phases. When either relevant usage window
   reaches **15% remaining or less**, wrap up the session: stop starting new work,
   safely finish or stop active jobs, and leave a precise verified checkpoint,
