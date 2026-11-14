@@ -1,14 +1,32 @@
 # MONOLITH
 
 A dark fantasy first-person exploration sandbox drawn entirely with
-**monochrome ASCII text on black**. Future structures, landscapes, NPCs and enemies
+**colored ASCII text on black**. Future structures, landscapes, NPCs and enemies
 follow that theme.
 
-The visual redesign is in progress. Interactive output now has 16 grayscale
-foreground levels; `--color-mode mono` keeps uniform-white output. The approved
-six-destination gothic world rebuild has not been authored yet, so the map
-described below is still the playable map. Full color waits for review of the
-completed grayscale world. See `PROJECT_STATUS.md` for the verified checkpoint.
+Interactive output uses rich material colors: cool stone and steel, warm timber
+and gravel, green foliage, teal water, purple rune crystals and orange fire.
+Surface detail now varies within a body: stone has weathered grain and dark
+creases, timber has fibers, and metal has pale highlights that change with the
+view. Actor faces shade at individual characters, armor has broad bevels, and
+nearby tree trunks read as curved forms. Stronger grayscale contrast separates
+lit faces from recesses; distant surfaces cool and soften, while nearby visible
+fireballs cast warm light. The background remains black.
+
+Sparse dust and ash drift through the world. Small motes circle pickups, sparks
+trail fireballs and scatter at impacts, and bright fire cores fade toward dim
+embers. Particles stay behind walls and bodies, keep aimed labels readable, and
+freeze with the environment when paused or viewing help.
+
+Use `--color-mode gray` for neutral grayscale or `--color-mode mono` for uniform
+white. Snapshots remain plain ASCII in every mode. Colors carry semantic material,
+light and depth data through the same opaque depth tests used by the world.
+
+The six-destination gothic world rebuild has not been authored yet, so the map
+described below remains the playable map. Earlier rendering performance failures
+remain open. The latest quality pass is measured against the preceding color
+version, with correctness and timing results reported separately.
+See `PROJECT_STATUS.md` for the latest verification and review limits.
 
 Explore a **512 by 512 world** with rolling highlands, valleys, a deep ravine,
 forested ridges and a castle hub. This is about **21 times the previous area**,
@@ -180,7 +198,8 @@ python main.py --volume 0.35         # Master sound level, 0 to 1
 python main.py --sound-preview effects.wav # Export the original effects
 python main.py --audio-test          # Play river/effects and check playback health
 python main.py --max-cells 4800      # Optional viewport budget to reduce CPU use
-python main.py --color-mode gray    # Grayscale foregrounds on black (default)
+python main.py --color-mode color   # Rich material colors on black (default)
+python main.py --color-mode gray    # Neutral grayscale foregrounds
 python main.py --color-mode mono    # Uniform-white terminal fallback
 python main.py --cell-aspect 0.5     # Font cell width divided by its height
 python main.py --snapshot            # One plain-text frame; no terminal needed

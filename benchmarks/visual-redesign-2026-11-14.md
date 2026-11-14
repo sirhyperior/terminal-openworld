@@ -2,8 +2,10 @@
 
 The user approved the full visual/world plan on 2026-11-14. This report records
 the foundation increment; **the full milestone is not complete**. No full-color
-work or world-layout replacement has begun. Stop for user play review after the
-finished grayscale world, before introducing rich color throughout.
+work or world-layout replacement has begun. The latest user request now makes
+color the next priority and supersedes the earlier grayscale-review prerequisite.
+The account was still at the standing 15%-remaining cutoff on that resume, so
+no color implementation was started.
 
 ## Approved destination and presentation brief
 
@@ -114,8 +116,10 @@ and shadow queries before any map replacement. Keep every failed report.
    validate sound coverage and verify routes/occlusion/new geometry.
 5. Lock before/after semantic role manifests before final timing optimization.
    Inspect 60x20,120x40,160x50 and actual fullscreen, including motion/pause/map.
-6. Deliver the complete grayscale milestone for user play review. Only after
-   approval implement rich material colors and extend the same output buffers.
+6. Latest user steering moves rich material colors ahead of the unfinished world
+   rebuild and its review. Extend the same output buffers, retain gray/mono
+   fallbacks, and verify occlusion, style/material parity and output performance.
 
 Do not remove map/blockiness/optimization/color backlog entries for this foundation
-increment. No commit is authorized until successful user implementation review.
+increment. The user committed this foundation at fe42316. Further implementation
+commits follow successful user review under the standing Git rule.

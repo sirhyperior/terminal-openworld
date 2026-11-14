@@ -2,9 +2,8 @@
 
 ## Project and Context
 
-MONOLITH is a first-person 3D exploration sandbox rendered entirely as monochrome
-ASCII on black in a terminal. Grayscale foregrounds are the current visual
-foundation; full color follows the approved world redesign and user play review. Preserve responsive WASD movement, Shift sprinting,
+MONOLITH is a first-person 3D exploration sandbox rendered entirely as ASCII
+on black in a terminal. Preserve responsive WASD movement, Shift sprinting,
 Space jumping, readable environments and keyboard accessibility. Use Python
 3.10+ and prefer the standard library; justify new dependencies.
 
@@ -97,10 +96,12 @@ output; wall-clock rate caps are only for immediately returning sinks.
   water current and player health.
 - `surfaces.py`: shared continuous ground triangles, exact circular support,
   analytic ray hits, convex pieces and fractional stair solids.
-- `shading.py`, `presentation.py`: shared semantic material lighting, compact
-  grayscale foreground buffers and ANSI serialization.
+- `palette.py`, `shading.py`, `presentation.py`: shared semantic material lighting,
+  compact foreground/effect buffers, color/grayscale palettes and ANSI runs.
 - `renderer.py`, `scenery.py`, `trees.py`, `geometry.py`: rays, HUD/map,
-  grass/wind, trees and shared projection/fill/strokes.
+  grass/wind, curved surfaces and shared projection/shaded fill/strokes.
+- `particles.py`: bounded world-space dust, ash and existing effect particles,
+  simulation-time motion and depth-tested compositing.
 - `targeting.py`, `doors.py`, `door_render.py`: view queries and shared panels.
 - `combat.py`, `combat_render.py`: items, weapons/projectiles, enemy simulation
   and depth-tested presentation.

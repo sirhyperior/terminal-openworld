@@ -5,8 +5,9 @@ import math
 from .combat import (BURST_DURATION, FIRE_STAFF, MAX_FIREBALLS, CombatState,
                      Enemy, NAME_REACH, SWING_DURATION)
 from .geometry import Camera
-from .shading import DEFAULT_SHADING, Shading, ink
-from .world import GRASS, METAL, STONE, WOOD
+from .palette import ARCANE, BONE, EMBER, FIRE, STRAW
+from .shading import DEFAULT_SHADING, RAMP, Shading, ink
+from .world import METAL, STONE, WOOD
 
 
 DRAW_DISTANCE = 28.0
@@ -44,36 +45,149 @@ def _visible(cam, x, y, z, radius):
     return True
 
 
-def _stroke(cam, pixels, depths, a, b, char=None, radius=0.0):
+def _stroke(cam, pixels, depths, a, b, char=None, radius=0.0,
+            material=METAL, emission=0.0, shade_bias=0):
     center = tuple((a[i] + b[i]) / 2 for i in range(3))
     depth = max(0, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
-    glyph = char or "|"
-    tone = getattr(cam, "shading", DEFAULT_SHADING).surface(METAL, *center,
-        (-cam.cy, -cam.sy, 0), depth, glyph=glyph)
-    cam.stroke(pixels, depths, cam.project(*a), cam.project(*b), radius, tone)
+    start, end = cam.project(*a), cam.project(*b)
+    direction = end[0] - start[0] if start is not None and end is not None else 0
+    glyph = char or ("/" if direction > 0.2 else "\\" if direction < -0.2 else "|")
+    if getattr(cam, 'depth_only', False):
+        cam.stroke(pixels, depths, start, end, radius, glyph)
+        return
+    shading = getattr(cam, "shading", DEFAULT_SHADING)
+    normal = (-cam.cy, -cam.sy, 0)
+    tone = shading.surface(material, *center, normal, depth, glyph=glyph, emission=emission)
+    axis = tuple(b[i] - a[i] for i in range(3))
+    square = sum(value * value for value in axis)
+
+    def sample(x, y, z, distance):
+        dx, dy, dz = x - a[0], y - a[1], z - a[2]
+        along = (dx * axis[0] + dy * axis[1] + dz * axis[2]) / square if square > 1e-12 else 0
+        nx, ny, nz = dx - along * axis[0], dy - along * axis[1], dz - along * axis[2]
+        length = math.sqrt(nx * nx + ny * ny + nz * nz)
+        surface_normal = (nx / length, ny / length, nz / length) if radius and length > 1e-8 else normal
+        token = shading.surface(material, x, y, z, surface_normal, distance, glyph=glyph,
+                                emission=emission, texture_position=(dx, dy, dz))
+        if shade_bias:
+            token = ink(glyph, max(1, min(15, token.level + shade_bias)), material, token.effects)
+        return token
+
+    shader = sample if depth < 14 else None
+    if shade_bias and shader is None:
+        tone = ink(glyph, max(1, min(15, tone.level + shade_bias)), material, tone.effects)
+    cam.stroke(pixels, depths, start, end, radius, tone, shader=shader)
 
 
-def _ring(cam, pixels, depths, x, y, z, rx, ry, rz, char=None):
+def _ring(cam, pixels, depths, x, y, z, rx, ry, rz, char=None,
+          material=METAL, emission=0.0):
     points = [(x + rx * math.cos(i * math.tau / 8),
                y + ry * math.cos(i * math.tau / 8),
                z + rz * math.sin(i * math.tau / 8)) for i in range(8)]
-    projected = [cam.project(*point) for point in points]
     for i in range(8):
-        cam.stroke(pixels, depths, projected[i], projected[(i + 1) % 8], char=char)
+        _stroke(cam, pixels, depths, points[i], points[(i + 1) % 8], char,
+                material=material, emission=emission)
 
 
-def _face(cam, pixels, depths, a, b, c, char, material=METAL, emission=0.0):
-    center = tuple((a[i] + b[i] + c[i]) / 3 for i in range(3))
+def _clip_surface(cam, vertices):
+    """Clip world faces to the near plane without losing an opaque interior."""
+    nx, ny, nz = cam.frustum[0][0]
+    near = cam.NEAR + 1e-7
+    result = []
+    previous = vertices[-1]
+    before = (previous[0] - cam.x) * nx + (previous[1] - cam.y) * ny + (previous[2] - cam.z) * nz
+    for point in vertices:
+        after = (point[0] - cam.x) * nx + (point[1] - cam.y) * ny + (point[2] - cam.z) * nz
+        if (before >= near) != (after >= near):
+            fraction = (near - before) / (after - before)
+            result.append(tuple(previous[i] + (point[i] - previous[i]) * fraction for i in range(3)))
+        if after >= near:
+            result.append(point)
+        previous, before = point, after
+    return result
+
+
+def _surface_brush(cam, vertices, normal, material, emission):
+    """Keep material coordinates attached to a moving face, not the camera."""
+    a, b = vertices[:2]
+    axis = tuple(b[i] - a[i] for i in range(3))
+    length = math.sqrt(sum(value * value for value in axis))
+    axis = tuple(value / length for value in axis)
+    nx, ny, nz = normal
+    ux, uy, uz = axis
+    other = (ny * uz - nz * uy, nz * ux - nx * uz, nx * uy - ny * ux)
+    vs = [sum((point[i] - a[i]) * other[i] for i in range(3)) for point in vertices]
+    us = [sum((point[i] - a[i]) * axis[i] for i in range(3)) for point in vertices]
+    u0, v0, width, height = min(us), min(vs), max(us) - min(us), max(vs) - min(vs)
+    shading = getattr(cam, "shading", DEFAULT_SHADING)
+
+    def sample(x, y, z, distance):
+        dx, dy, dz = x - a[0], y - a[1], z - a[2]
+        u = dx * ux + dy * uy + dz * uz
+        v = dx * other[0] + dy * other[1] + dz * other[2]
+        fu = (u - u0) / width if width > 1e-10 else 0.5
+        fv = (v - v0) / height if height > 1e-10 else 0.5
+        edge = max(0.0, min(fu, 1 - fu, fv, 1 - fv))
+        glow = emission
+        if material in (FIRE, ARCANE):
+            # Separate luminous centers from the colored outer facets.
+            glow *= 0.48 + 0.52 * min(1.0, edge * 4)
+        token = shading.surface(material, x, y, z, normal, distance, emission=glow,
+                                texture_position=(u, v, 0), texture_normal=(0, 0, 1))
+        bias = 0
+        if material in (STONE, METAL, BONE):
+            # Worn edges catch light; broad armor gets a recessed chevron.
+            if edge < 0.07:
+                bias = 2 if material != BONE else 1
+            elif material == STONE and width > 0.45 and height > 0.45 and 0.2 < fv < 0.72:
+                if abs(abs(fu - 0.5) * 0.65 - (fv - 0.22)) < 0.04:
+                    bias = -4
+        if bias:
+            level = max(1, min(15, token.level + bias))
+            token = ink(RAMP[min(len(RAMP) - 1, int(level / 15 * (len(RAMP) - 1)))],
+                        level, material, token.effects)
+        return token
+
+    return sample
+
+
+def _surface(cam, pixels, depths, vertices, char, material=METAL, emission=0.0, *, cull=False):
+    a, b, c = vertices[:3]
+    center = tuple(sum(point[i] for point in vertices) / len(vertices) for i in range(3))
     u, v = tuple(b[i] - a[i] for i in range(3)), tuple(c[i] - a[i] for i in range(3))
     normal = (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
     length = math.sqrt(sum(value * value for value in normal))
     if length < 1e-12:
         return
-    sign = 1 if sum(normal[i] * ((cam.x, cam.y, cam.z)[i] - center[i]) for i in range(3)) >= 0 else -1
+    facing = sum(normal[i] * ((cam.x, cam.y, cam.z)[i] - center[i]) for i in range(3))
+    if cull and facing <= 0:
+        return
+    sign = 1 if facing >= 0 else -1
     normal = tuple(value * sign / length for value in normal)
+    clipped = _clip_surface(cam, vertices)
+    if len(clipped) < 3:
+        return
+    points = [cam.project(*point) for point in clipped]
     depth = max(0, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
-    tone = getattr(cam, "shading", DEFAULT_SHADING).surface(material, *center, normal, depth, emission=emission)
-    cam.triangle(pixels, depths, cam.project(*a), cam.project(*b), cam.project(*c), tone)
+    depth_only = getattr(cam, 'depth_only', False)
+    tone = char if depth_only else getattr(cam, "shading", DEFAULT_SHADING).surface(
+        material, *center, normal, depth, emission=emission)
+    area = (max(point[0] for point in points) - min(point[0] for point in points)) * (max(point[1] for point in points) - min(point[1] for point in points))
+    shader = (_surface_brush(cam, vertices, normal, material, emission)
+              if not depth_only and depth < 14 and area >= 4 else None)
+    if len(points) == 4:
+        cam.quad(pixels, depths, *points, tone, shader=shader)
+    else:
+        for i in range(1, len(points) - 1):
+            cam.triangle(pixels, depths, points[0], points[i], points[i + 1], tone, shader=shader)
+
+
+def _face(cam, pixels, depths, a, b, c, char, material=METAL, emission=0.0):
+    _surface(cam, pixels, depths, (a, b, c), char, material, emission)
+
+
+def _quad(cam, pixels, depths, a, b, c, d, char, material=METAL, emission=0.0):
+    _surface(cam, pixels, depths, (a, b, c, d), char, material, emission)
 
 
 def _pickup_marker(pickup, cam, pixels, depths):
@@ -86,9 +200,10 @@ def _pickup_marker(pickup, cam, pixels, depths):
     points = [(x - 0.28, y, z + 0.03), (x, y + 0.28, z + 0.03),
               (x + 0.28, y, z + 0.03), (x, y - 0.28, z + 0.03)]
     for i in range(4):
-        _stroke(cam, pixels, depths, points[i], points[(i + 1) % 4], "+")
-    glint = cam.project(x, y, z + 1.70)
-    cam.stroke(pixels, depths, glint, glint, char=ink("*", 15, METAL))
+        _stroke(cam, pixels, depths, points[i], points[(i + 1) % 4], "+",
+                material=ARCANE, emission=0.50)
+    glint = (x, y, z + 1.70)
+    _stroke(cam, pixels, depths, glint, glint, "*", material=ARCANE, emission=0.85)
 
 
 def _draw_pickup(pickup, cam, pixels, depths, time_seconds):
@@ -114,12 +229,13 @@ def _draw_pickup(pickup, cam, pixels, depths, time_seconds):
     _stroke(cam, pixels, depths, tip, right, "\\")
     _stroke(cam, pixels, depths, (x - ux * 0.27, y - uy * 0.27, z + 0.53),
             (x + ux * 0.27, y + uy * 0.27, z + 0.53), "=")
-    _stroke(cam, pixels, depths, (x, y, z + 0.24), (x, y, z + 0.53), "#")
+    _stroke(cam, pixels, depths, (x, y, z + 0.24), (x, y, z + 0.53), "#",
+            material=WOOD)
     _pickup_marker(pickup, cam, pixels, depths)
 
 
 def _staff_shape(cam, pixels, depths, point, casting=0.0):
-    # A solid wooden shaft and a faceted ember in a forked crown. The same
+    # A solid wooden shaft and a faceted rune crystal in a forked crown. The same
     # geometry supplies the world pickup and the camera-relative held staff.
     corners = [(-0.032, -0.032), (0.032, -0.032),
                (0.032, 0.032), (-0.032, 0.032)]
@@ -127,8 +243,7 @@ def _staff_shape(cam, pixels, depths, point, casting=0.0):
         nx, ny = corners[(i + 1) % 4]
         a, b = point(x, 0.08, y), point(nx, 0.08, ny)
         c, d = point(nx, 1.18, ny), point(x, 1.18, y)
-        _face(cam, pixels, depths, a, b, c, "#", material=WOOD)
-        _face(cam, pixels, depths, a, c, d, "#", material=WOOD)
+        _quad(cam, pixels, depths, a, b, c, d, "#", material=WOOD)
     for side in (-1, 1):
         _stroke(cam, pixels, depths, point(side * 0.03, 1.04, 0),
                 point(side * 0.18, 1.38, 0), "/" if side > 0 else "\\")
@@ -136,25 +251,40 @@ def _staff_shape(cam, pixels, depths, point, casting=0.0):
             point(-0.13, 1.37, 0), point(0, 1.37, -0.13)]
     for i in range(4):
         for up in (1.20, 1.55):
-            _face(cam, pixels, depths, ring[i], ring[(i + 1) % 4], point(0, up, 0), "@")
+            _face(cam, pixels, depths, ring[i], ring[(i + 1) % 4], point(0, up, 0), "@",
+                  material=ARCANE, emission=0.60 + casting * 0.20)
     if casting:
         tip = point(0, 1.60 + casting * 0.12, 0)
-        _stroke(cam, pixels, depths, tip, tip, "*")
+        _stroke(cam, pixels, depths, tip, tip, "*", material=FIRE, emission=0.95)
 
 
-def _draw_flame(flame, cam, pixels, depths, radius, direction=None):
+def _draw_flame(flame, cam, pixels, depths, radius, direction=None, seconds=0.0):
     x, y, z = flame.x, flame.y, flame.z
+    pulse = 0.5 + 0.5 * math.sin(seconds * 11 + x * 0.7 + y * 0.3)
     ring = [(x + radius, y, z), (x, y + radius, z),
             (x - radius, y, z), (x, y - radius, z)]
     for i in range(4):
         for side in (-1, 1):
             _face(cam, pixels, depths, ring[i], ring[(i + 1) % 4],
-                  (x, y, z + side * radius), "@" if side < 0 else "*", emission=1.0)
-    center = cam.project(x, y, z)
-    cam.stroke(pixels, depths, center, center, char=ink("*", 15, METAL))
+                  (x, y, z + side * radius), "@" if side < 0 else "*",
+                  material=FIRE, emission=0.74 + pulse * 0.16 + (0.10 if side < 0 else 0))
     if direction is not None:
         tail = tuple(value - component * 0.45 for value, component in zip((x, y, z), direction))
-        cam.stroke_world(pixels, depths, tail, (x, y, z), char=ink(".", 10, METAL))
+        edge = tuple(value - component * radius * 1.15
+                     for value, component in zip((x, y, z), direction))
+        depth = max(0, (x - cam.x) * cam.cy + (y - cam.y) * cam.sy)
+        ember = ("." if getattr(cam, 'depth_only', False) else
+                 getattr(cam, "shading", DEFAULT_SHADING).surface(EMBER, x, y, z,
+                    (-cam.cy, -cam.sy, 0), depth, glyph=".", emission=0.42 + pulse * 0.12))
+        projected_tail, projected_center = cam.project(*tail), cam.project(x, y, z)
+        # A head-on tail projects onto the fireball itself. Omit that subpixel
+        # detail instead of painting a dim ember over the bright opaque core.
+        if (projected_tail is not None and projected_center is not None
+                and math.hypot(projected_tail[0] - projected_center[0],
+                               projected_tail[1] - projected_center[1]) >= 1.0):
+            cam.stroke_world(pixels, depths, tail, edge, char=ember)
+    _stroke(cam, pixels, depths, (x, y, z), (x, y, z), "*",
+            material=FIRE, emission=1.0)
 
 
 def _draw_enemy(enemy: Enemy, cam, pixels, depths):
@@ -165,14 +295,16 @@ def _draw_enemy(enemy: Enemy, cam, pixels, depths):
     x, y, z = enemy.x, enemy.y, enemy.z
     # The fixed stake stays visible and solid after the straw body falls.
     support_height = 1.25 if enemy.alive else enemy.height
-    _stroke(cam, pixels, depths, (x, y, z), (x, y, z + support_height), "|", 0.055)
+    _stroke(cam, pixels, depths, (x, y, z), (x, y, z + support_height), "|", 0.055,
+            material=WOOD)
     _stroke(cam, pixels, depths, (x - 0.36, y, z + 0.03),
-            (x + 0.36, y, z + 0.03), "=")
+            (x + 0.36, y, z + 0.03), "=", material=WOOD)
     _stroke(cam, pixels, depths, (x, y - 0.30, z + 0.03),
-            (x, y + 0.30, z + 0.03), "=")
+            (x, y + 0.30, z + 0.03), "=", material=WOOD)
     if not enemy.alive:
-        _stroke(cam, pixels, depths, (x, y, z + 0.40), (x + 0.85, y, z + 0.24), "%", 0.10)
-        _ring(cam, pixels, depths, x + 1.00, y, z + 0.27, 0.20, 0, 0.20)
+        _stroke(cam, pixels, depths, (x, y, z + 0.40), (x + 0.85, y, z + 0.24), "%", 0.10,
+                material=STRAW)
+        _ring(cam, pixels, depths, x + 1.00, y, z + 0.27, 0.20, 0, 0.20, material=BONE)
         return
     lean = math.sin((0.18 - enemy.hit_remaining) * 45) * enemy.hit_remaining * 0.5
     x += lean
@@ -184,18 +316,17 @@ def _draw_enemy(enemy: Enemy, cam, pixels, depths):
              for i in range(8)]
     for i in range(8):
         j = (i + 1) % 8
-        _face(cam, pixels, depths, lower[i], upper[i], upper[j], "%", material=GRASS)
-        _face(cam, pixels, depths, lower[i], upper[j], lower[j], "%", material=GRASS)
+        _quad(cam, pixels, depths, lower[i], upper[i], upper[j], lower[j], "%", material=STRAW)
     head = [(x + 0.24, y, z + 1.80), (x, y + 0.24, z + 1.80),
             (x - 0.24, y, z + 1.80), (x, y - 0.24, z + 1.80)]
     for i in range(4):
         for end in (z + 1.55, z + 2.05):
-            _face(cam, pixels, depths, head[i], head[(i + 1) % 4], (x, y, end), "@")
+            _face(cam, pixels, depths, head[i], head[(i + 1) % 4], (x, y, end), "@", material=BONE)
     for side in (-1, 1):
         _stroke(cam, pixels, depths, (x + side * 0.35, y, z + 1.45),
-                (x + side * 0.22, y, z + 0.91), "/" if side < 0 else "\\")
+                (x + side * 0.22, y, z + 0.91), "/" if side < 0 else "\\", material=STRAW)
         _stroke(cam, pixels, depths, (x + side * 0.20, y, z + 1.42),
-                (x + side * 0.70, y, z + 1.22), "=", 0.04)
+                (x + side * 0.70, y, z + 1.22), "=", 0.04, material=WOOD)
 
 
 def _draw_warden(enemy, cam, pixels, depths):
@@ -216,39 +347,42 @@ def _draw_warden(enemy, cam, pixels, depths):
                 enemy.z + up)
 
     def block(right, forward, bottom, half_width, half_depth, top, char):
-        lower = [point(right + rx * half_width, forward + fy * half_depth, bottom)
-                 for rx, fy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
-        upper = [point(right + rx * half_width, forward + fy * half_depth, top)
-                 for rx, fy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
-        lower = [cam.project(*vertex) for vertex in lower]
-        upper = [cam.project(*vertex) for vertex in upper]
-        # Closed opaque blocks only expose faces toward the camera. Project
-        # vertices once and skip hidden face fills; retain all faces for
-        # a camera inside a block, including close camera-plane crossings.
-        sides = (camera_forward <= forward - half_depth,
-                 camera_right >= right + half_width,
-                 camera_forward >= forward + half_depth,
-                 camera_right <= right - half_width)
-        above, below = camera_up >= top, camera_up <= bottom
-        inside = (not (any(sides) or above or below)
-                  or any(vertex is None for vertex in (*lower, *upper)))
-        for i in range(4):
-            if not (inside or sides[i]):
-                continue
-            j = (i + 1) % 4
-            normals = ((-cosine, -sine, 0), (sine, -cosine, 0),
-                       (cosine, sine, 0), (-sine, cosine, 0))
-            center = point(right, forward, (bottom + top) / 2)
-            depth = max(0, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
-            tone = getattr(cam, "shading", DEFAULT_SHADING).surface(STONE, *center, normals[i], depth)
-            cam.quad(pixels, depths, lower[i], upper[i], upper[j], lower[j], tone)
-        for enabled, vertices, up, normal in ((inside or above, upper, top, (0, 0, 1)),
-                                               (inside or below, lower, bottom, (0, 0, -1))):
-            if enabled:
-                center = point(right, forward, up)
-                depth = max(0, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
-                tone = getattr(cam, "shading", DEFAULT_SHADING).surface(STONE, *center, normal, depth)
-                cam.quad(pixels, depths, *vertices, tone)
+        center = point(right, forward, (bottom + top) / 2)
+        depth = max(0.18, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
+        detailed = cam.fx * max(half_width, half_depth) / depth >= 1.75
+
+        def ring(width, length, height, cut):
+            if cut:
+                footprint = ((-width + cut, -length), (width - cut, -length),
+                             (width, -length + cut), (width, length - cut),
+                             (width - cut, length), (-width + cut, length),
+                             (-width, length - cut), (-width, -length + cut))
+            else:
+                footprint = ((-width, -length), (width, -length),
+                             (width, length), (-width, length))
+            return [point(right + x, forward + y, height) for x, y in footprint]
+
+        if detailed:
+            cut = min(half_width, half_depth) * 0.30
+            bevel = min(0.055, (top - bottom) * 0.16)
+            # Broad, shallow shoulder and helmet bevels catch overhead moonlight
+            # even when their vertical faces are turned away from it.
+            inset = min(half_width, half_depth) * 0.38
+            rings = (ring(half_width - inset, half_depth - inset, bottom, cut * 0.65),
+                     ring(half_width, half_depth, bottom + bevel, cut),
+                     ring(half_width, half_depth, top - bevel, cut),
+                     ring(half_width - inset, half_depth - inset, top, cut * 0.65))
+        else:
+            rings = (ring(half_width, half_depth, bottom, 0), ring(half_width, half_depth, top, 0))
+        inside = (abs(camera_right - right) < half_width
+                  and abs(camera_forward - forward) < half_depth and bottom < camera_up < top)
+        for lower, upper in zip(rings, rings[1:]):
+            for i in range(len(lower)):
+                j = (i + 1) % len(lower)
+                _surface(cam, pixels, depths, (lower[i], lower[j], upper[j], upper[i]),
+                         char, STONE, cull=not inside)
+        _surface(cam, pixels, depths, tuple(reversed(rings[0])), char, STONE, cull=not inside)
+        _surface(cam, pixels, depths, rings[-1], char, STONE, cull=not inside)
 
     for side in (-1, 1):
         block(side * 0.22, side * stride, 0.04, 0.14, 0.18, 0.88, "#")
@@ -256,12 +390,12 @@ def _draw_warden(enemy, cam, pixels, depths):
     block(0, 0, 1.61, 0.24, 0.22, 2.08, "@")
     # The carved visor faces the target; raised stone fists telegraph a strike.
     _stroke(cam, pixels, depths, point(-0.17, 0.225, 1.85),
-            point(0.17, 0.225, 1.85), "=")
+            point(0.17, 0.225, 1.85), "=", material=STONE, shade_bias=-4)
     for side in (-1, 1):
         up = 1.12 + raised * 0.75
         forward = 0.15 + raised * 0.18 - side * stride
         _stroke(cam, pixels, depths, point(side * 0.43, 0, 1.48),
-                point(side * 0.50, forward, up), "#", 0.08)
+                point(side * 0.50, forward, up), "#", 0.08, material=STONE)
         block(side * 0.50, forward, up - 0.12, 0.12, 0.13, up + 0.12, "%")
 
 
@@ -302,7 +436,7 @@ def _draw_equipped(combat, cam, pixels, depths, player):
     grip = (0.34 - arc * 0.45, -0.45 + bob, 0.90)
     guard = (grip[0] + 0.025, grip[1] + 0.18, 0.98)
     tip = (0.48 - arc * 1.20, 0.20 + arc * 0.25 + bob, 1.10)
-    _stroke(cam, pixels, depths, point(*grip), point(*guard), "#", 0.012)
+    _stroke(cam, pixels, depths, point(*grip), point(*guard), "#", 0.012, material=WOOD)
     _stroke(cam, pixels, depths, point(guard[0] - 0.10, guard[1], guard[2]),
             point(guard[0] + 0.10, guard[1], guard[2]), "=")
     left = point(guard[0] - 0.035, guard[1], guard[2])
@@ -315,7 +449,7 @@ def _draw_equipped(combat, cam, pixels, depths, player):
 
 
 def draw_combat(combat: CombatState, world, pixels, depths, player,
-                focal, aspect, time_seconds, *, labels=True):
+                focal, aspect, time_seconds, *, labels=True, depth_only=False):
     if not pixels or not pixels[0]:
         return
     if not (combat.pickups or combat.enemies or combat.held_item
@@ -323,8 +457,10 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
         return
     height, width = len(pixels), len(pixels[0])
     cam = Camera(player, width, height, focal, aspect)
-    cam.shading = Shading(world)
-    cam.shading.prepare(player, time_seconds)
+    cam.depth_only = depth_only
+    cam.shading = DEFAULT_SHADING if depth_only else Shading(world)
+    if not depth_only:
+        cam.shading.prepare(player, time_seconds)
     pickup_budget = min(MAX_PICKUP_DRAWS, max(1, width * height // 240))
     for pickup in combat.pickups:
         if pickup.collected or not _visible(cam, pickup.x, pickup.y, pickup.z + 0.8, 0.9):
@@ -341,16 +477,16 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
         enemy_budget -= 1
         if enemy_budget == 0:
             break
-    if labels:
+    if labels and not depth_only:
         aimed = combat.aimed_enemy(world, player, NAME_REACH)
         if aimed is not None:
             _draw_name(aimed, cam, pixels, depths)
     for ball in combat.fireballs[:MAX_FIREBALLS]:
         if _visible(cam, ball.x, ball.y, ball.z, 0.20):
-            _draw_flame(ball, cam, pixels, depths, 0.14, ball.direction)
+            _draw_flame(ball, cam, pixels, depths, 0.14, ball.direction, time_seconds)
     for burst in combat.bursts[:MAX_FIREBALLS]:
         if _visible(cam, burst.x, burst.y, burst.z, 0.35):
             progress = 1 - burst.remaining / BURST_DURATION
-            _draw_flame(burst, cam, pixels, depths, 0.14 + progress * 0.20)
+            _draw_flame(burst, cam, pixels, depths, 0.14 + progress * 0.20, seconds=time_seconds)
     if combat.held_item is not None:
         _draw_equipped(combat, cam, pixels, depths, player)

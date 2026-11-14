@@ -1,6 +1,7 @@
 """Verify complete GPU/CPU game frames, retaining partial or failed evidence."""
 
 import argparse
+from dataclasses import replace
 import hashlib
 import math
 from pathlib import Path
@@ -14,20 +15,52 @@ from tools.benchmark import EXTRA_SCENARIOS, SCENARIOS, TERRAIN_SCENARIOS, resol
 from tools.benchmark_pair import frame, hashes, prepare, save_report, variant
 
 
+def frame_fingerprints(value):
+    """Fingerprint visible cells and semantic buffers independently of ANSI."""
+    result = {'image_sha256': hashlib.sha256('\n'.join(value.rows).encode('ascii')).hexdigest()}
+    for name in ('styles', 'materials', 'effects'):
+        rows = getattr(value, name)
+        payload = b'null' if rows is None else b''.join(rows)
+        result[name + '_sha256'] = hashlib.sha256(payload).hexdigest()
+    for mode in ('gray', 'color'):
+        encoded = replace(value, color_mode=mode).ansi_rows()
+        result[mode + '_ansi_sha256'] = hashlib.sha256('\r\n'.join(encoded).encode('ascii')).hexdigest()
+    return result
+
+
+def presentation_comparison(first, second):
+    """Color and gray output share one render and retain every metadata check."""
+    checks = {'image_equal': first.rows == second.rows,
+              'style_equal': first.styles == second.styles,
+              'material_equal': first.materials == second.materials,
+              'effects_equal': first.effects == second.effects,
+              'size_equal': (first.width, first.height) == (second.width, second.height)}
+    fingerprints = [frame_fingerprints(value) for value in (first, second)]
+    for mode in ('gray', 'color'):
+        checks[mode + '_ansi_equal'] = (fingerprints[0][mode + '_ansi_sha256']
+                                        == fingerprints[1][mode + '_ansi_sha256'])
+    checks['presentation_equal'] = all(checks.values())
+    checks.update(fingerprints[1])
+    return checks
+
+
 def main(argv=None):
     cameras = {**SCENARIOS, **EXTRA_SCENARIOS, **TERRAIN_SCENARIOS}
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--save', type=Path, required=True)
     parser.add_argument('--scenes', nargs='+', choices=tuple(cameras), default=list(cameras))
+    parser.add_argument('--color-mode', choices=('color', 'gray'), default='color')
     args = parser.parse_args(argv)
     if args.save.exists():
         parser.error('--save must name an unused report path')
-    report = {'method': 'same live simulated world, complete production frames; GPU vs CPU',
+    report = {'method': 'same live simulated world, complete glyph/style/material/effects/ANSI frames; GPU vs CPU',
               'hashes': hashes(Path(__file__).resolve().parents[1]), 'scenes': args.scenes,
+              'color_mode': args.color_mode,
               'pairs': [], 'failures': [], 'errors': [], 'phase': 'startup',
               'complete': False, 'passed': False}
     save_report(args.save, report, initial=True)
     reference = current = state = None
+    scene = None
 
     def compare(*values, **keywords):
         outputs, buffers = [], []
@@ -39,24 +72,23 @@ def main(argv=None):
                 return original(pixels, depths, *rest)
 
             with patch.object(render.scenery, 'draw', side_effect=capture):
-                outputs.append(render.frame(*values, **keywords))
+                outputs.append(render.styled_frame(*values, color_mode=args.color_mode, **keywords))
         coverage = sum(math.isfinite(a) != math.isfinite(b) for left, right in zip(buffers[0], buffers[1])
                        for a, b in zip(left, right))
         error = max((abs(a - b) for left, right in zip(buffers[0], buffers[1]) for a, b in zip(left, right)
                      if math.isfinite(a) and math.isfinite(b)), default=0)
         entry = {'scene': scene, 'frame': state['frame'], 'width': values[1], 'height': values[2],
                  'pitch': state['player'].pitch, 'yaw': state['player'].yaw,
-                 'image_equal': outputs[0] == outputs[1], 'depth_bitwise_equal': buffers[0] == buffers[1],
+                 **presentation_comparison(*outputs), 'depth_bitwise_equal': buffers[0] == buffers[1],
                  'max_depth_error': error, 'coverage_mismatches': coverage,
-                 'gpu_stats': current.ray_backend.last_stats if current.ray_backend else None,
-                 'image_sha256': hashlib.sha256('\n'.join(outputs[1]).encode()).hexdigest()}
+                 'gpu_stats': current.ray_backend.last_stats if current.ray_backend else None}
         if not entry['image_equal']:
-            entry['image_differences'] = [(y, x, a, b) for y, (left, right) in enumerate(zip(*outputs))
+            entry['image_differences'] = [(y, x, a, b) for y, (left, right) in enumerate(zip(outputs[0].rows, outputs[1].rows))
                                           for x, (a, b) in enumerate(zip(left, right)) if a != b][:20]
         report['pairs'].append(entry)
-        if not entry['image_equal'] or coverage or error > 1e-7:
+        if not entry['presentation_equal'] or coverage or error > 1e-7:
             report['failures'].append(entry)
-        return outputs[1]
+        return outputs[1].rows
 
     class ComparingRenderer:
         def frame(self, *values, **keywords):
@@ -85,6 +117,11 @@ def main(argv=None):
             print(scene, flush=True)
         if current.backend_name != 'gpu' or current.backend_error:
             raise RuntimeError('GPU fell back during verification: ' + current.backend_error)
+        final_hashes = hashes(Path(__file__).resolve().parents[1])
+        report['source_unchanged'] = final_hashes == report['hashes']
+        report['final_hashes'] = final_hashes
+        if not report['source_unchanged']:
+            raise RuntimeError('engine sources changed during complete-frame verification')
         report['complete'] = True
     except (Exception, KeyboardInterrupt) as error:
         report['errors'].append({'type': type(error).__name__, 'message': str(error),

@@ -1,0 +1,17 @@
+Starting frozen GPU variant
+Windows fatal exception: code 0xc0000008
+
+Thread 0x00001e38 (most recent call first):
+  File "C:\Users\rlawl\Desktop\project1\.venv-gpu\Lib\site-packages\wgpu\backends\wgpu_native\_helpers.py", line 105 in get_wgpu_instance
+  File "C:\Users\rlawl\Desktop\project1\.venv-gpu\Lib\site-packages\wgpu\backends\wgpu_native\_api.py", line 603 in _enumerate_adapters
+  File "C:\Users\rlawl\Desktop\project1\.venv-gpu\Lib\site-packages\wgpu\backends\wgpu_native\_api.py", line 592 in enumerate_adapters_async
+  File "C:\Users\rlawl\Desktop\project1\.venv-gpu\Lib\site-packages\wgpu\_classes.py", line 187 in enumerate_adapters_async
+  File "C:\Users\rlawl\Desktop\project1\.venv-gpu\Lib\site-packages\wgpu\_classes.py", line 156 in enumerate_adapters_sync
+  File "C:\Users\rlawl\Desktop\project1\color_control_tmp\ascii3d\gpu_renderer.py", line 81 in __init__
+  File "C:\Users\rlawl\Desktop\project1\color_control_tmp\ascii3d\gpu_renderer.py", line 235 in __init__
+  File "C:\Users\rlawl\Desktop\project1\color_control_tmp\ascii3d\renderer.py", line 230 in __init__
+  File "C:\Users\rlawl\Desktop\project1\tools\benchmark_pair.py", line 44 in variant
+  File "C:\Users\rlawl\Desktop\project1\color_tail_diagnostic_tmp.py", line 131 in <module>
+
+Current thread's C stack trace (most recent call first):
+  <cannot get C stack on this system>

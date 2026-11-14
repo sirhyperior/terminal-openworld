@@ -9,6 +9,20 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Surface depth and particles (2026-11-14):** [Quality validation](visual-quality-2026-11-14.md)
+  records per-character material shading, stronger relief and bounded depth-tested
+  particles against the 96-file pre-quality color archive. The native 534-test
+  suite passes (one cursor skip); all 204 CPU/GPU pairs pass. Incremental timing
+  fails the unchanged 15% mean/p95 gates: CPU 8/34 pass; GPU timing/native output
+  checks remain deferred at the usage cutoff. No historical baseline changed.
+- **Rich color pass (2026-11-14):** [Implementation and validation](color-pass-2026-11-14.md)
+  records semantic hues, depth/firelight variants and gray/mono fallbacks.
+  Native 508-test suite passes (one cursor skip); 204 CPU/GPU complete frame/style/
+  material/effect/ANSI/depth pairs pass. Incremental CPU 34/34 styled/live-audio roles
+  pass against `color-control-2026-11-14.zip`; GPU 30/34 fails four p95 roles. Four
+  actual native GPU gray/color apps pass with clean audio/restoration. Failed
+  zero-sample diagnostic startups remain retained; no tail attribution claimed.
+  The grayscale foundation's historical failures remain open; no baseline changed.
 - **Grayscale redesign foundation (2026-11-14, incomplete milestone):**
   [Checkpoint and approved world brief](visual-redesign-2026-11-14.md) records
   shared shading, styled terminal output, exact convex geometry/GPU support,

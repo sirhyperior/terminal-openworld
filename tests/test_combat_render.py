@@ -11,7 +11,8 @@ from ascii3d.geometry import Camera
 from ascii3d.doors import Door
 from ascii3d.player import Player
 from ascii3d.renderer import Renderer
-from ascii3d.world import FLOOR, GRASS, METAL, WOOD, Tree, World
+from ascii3d.palette import ARCANE, BONE, FIRE, STRAW
+from ascii3d.world import FLOOR, METAL, WOOD, Tree, World
 from ascii3d.shading import Ink
 
 
@@ -100,7 +101,7 @@ class CombatRenderingTests(unittest.TestCase):
         rows = ["".join(row) for row in scene]
         name_row = next(i for i, row in enumerate(rows) if "Training dummy [3/3]" in row)
         self.assertLess(name_row, len(rows) // 2)
-        self.assertTrue(any(isinstance(char, Ink) and char.material == GRASS
+        self.assertTrue(any(isinstance(char, Ink) and char.material == STRAW
                             for row in scene[name_row + 1:] for char in row))
         self.player.yaw = 1.2
         self.assertNotIn("Training dummy", "\n".join("".join(row) for row in self.renderer.scene(self.player, 120, 35)))
@@ -187,12 +188,16 @@ class CombatRenderingTests(unittest.TestCase):
             with self.subTest(yaw=yaw):
                 self.player.x, self.player.y, self.player.yaw = x, y, yaw
                 pixels = self.renderer.scene(self.player, 90, 30)
-                for height in (1.2, 1.8):
+                for height, material in ((1.2, STRAW), (1.8, BONE)):
                     cam = Camera(self.player, 90, 30, self.renderer._focal, 0.5)
                     px, py, _ = cam.project(self.enemy.x, self.enemy.y, self.enemy.z + height)
                     self.assertIsInstance(pixels[round(py)][round(px)], Ink)
-                self.assertGreater(sum(isinstance(char, Ink) and char.material == GRASS
+                    allowed = (STRAW, WOOD) if material == STRAW else (material,)
+                    self.assertIn(pixels[round(py)][round(px)].material, allowed)
+                self.assertGreater(sum(isinstance(char, Ink) and char.material == STRAW
                                        for row in pixels for char in row), 8)
+                self.assertGreater(sum(isinstance(char, Ink) and char.material == BONE
+                                       for row in pixels for char in row), 2)
 
     def test_triangle_fill_interpolates_depth_and_respects_foreground(self):
         cam = Camera(self.player, 20, 16, 12, 0.5)
@@ -234,7 +239,7 @@ class CombatRenderingTests(unittest.TestCase):
             _draw_pickup(staff, cam, pixels, depths, 0)
             self.assertGreater(sum(isinstance(char, Ink) and char.material == WOOD
                                    for row in pixels for char in row), 5)
-            self.assertGreater(sum(isinstance(char, Ink) and char.material == METAL
+            self.assertGreater(sum(isinstance(char, Ink) and char.material == ARCANE
                                    for row in pixels for char in row), 2)
             self.assertLess(sum(char != "~" for row in pixels for char in row), 90 * 30 * 0.08)
             self.assertTrue(all(depths[y][x] < math.inf for y, row in enumerate(pixels)
@@ -263,7 +268,8 @@ class CombatRenderingTests(unittest.TestCase):
         pixels = [["~"] * 90 for _ in range(30)]
         depths = [[math.inf] * 90 for _ in range(30)]
         draw_combat(combat, self.world, pixels, depths, self.player, 52, 0.5, 0)
-        self.assertTrue(any(char in "@*" for row in pixels for char in row))
+        self.assertTrue(any(isinstance(char, Ink) and char.material == FIRE and char.level >= 12
+                            for row in pixels for char in row))
         self.assertLess(sum(char != "~" for row in pixels for char in row), 30)
         self.assertTrue(any(value < math.inf for row in depths for value in row))
 

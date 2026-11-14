@@ -14,6 +14,7 @@ class Camera:
         self.x, self.y, self.z = player.x, player.y, player.eye_z
         self.cy, self.sy = math.cos(player.yaw), math.sin(player.yaw)
         self.cp, self.sp = math.cos(player.pitch), math.sin(player.pitch)
+        self._surface_columns = self._surface_rows = None
         forward = (self.cy * self.cp, self.sy * self.cp, self.sp)
         right, up = (self.sy, -self.cy, 0), (-self.cy * self.sp, -self.sy * self.sp, self.cp)
         self.frustum = [(forward, self.NEAR)]
@@ -41,7 +42,23 @@ class Camera:
                 min(self.width - 1, math.ceil(max(p[0] for p in points))),
                 min(self.height - 1, math.ceil(max(p[1] for p in points))))
 
-    def stroke_world(self, pixels, depths, start, end, radius=0.0, char=None):
+    def world_point(self, x, y, depth):
+        """Reconstruct the sampled world point from the common forward depth."""
+        if self._surface_columns is None:
+            self._surface_columns = [((x + 0.5 - self.width / 2) / self.fx * self.sy,
+                                      -(x + 0.5 - self.width / 2) / self.fx * self.cy)
+                                     for x in range(self.width)]
+            self._surface_rows = []
+            for row in range(self.height):
+                v = (self.height / 2 - row - 0.5) / self.fy
+                self._surface_rows.append((self.cy * (self.cp - v * self.sp),
+                                           self.sy * (self.cp - v * self.sp),
+                                           self.sp + v * self.cp))
+        ux, uy = self._surface_columns[x]
+        bx, by, bz = self._surface_rows[y]
+        return self.x + (bx + ux) * depth, self.y + (by + uy) * depth, self.z + bz * depth
+
+    def stroke_world(self, pixels, depths, start, end, radius=0.0, char=None, *, shader=None):
         """Clip a 3D segment before projection, then bound its raster work."""
         nx, ny, nz = self.frustum[0][0]
         start_depth = ((start[0] - self.x) * nx + (start[1] - self.y) * ny
@@ -80,9 +97,9 @@ class Camera:
                         a[1] + (b[1] - a[1]) * fraction,
                         1 / ((1 - fraction) / a[2] + fraction / b[2]))
             a, b = clipped(low), clipped(high)
-        return self.stroke(pixels, depths, a, b, radius, char)
+        return self.stroke(pixels, depths, a, b, radius, char, shader=shader)
 
-    def triangle(self, pixels, depths, a, b, c, char="#"):
+    def triangle(self, pixels, depths, a, b, c, char="#", *, shader=None):
         """Fill an opaque projected face with perspective-correct depth.
 
         Screen clipping bounds work to the viewport. Thin faces still receive
@@ -107,17 +124,18 @@ class Camera:
                     continue
                 depth = 1 / (u / az + v / bz + w / cz)
                 if depth <= depths[y][x] + 0.01:
-                    pixels[y][x], depths[y][x] = char, depth
+                    pixels[y][x] = shader(*self.world_point(x, y, depth), depth) if shader else char
+                    depths[y][x] = depth
 
-    def quad(self, pixels, depths, a, b, c, d, char="#"):
+    def quad(self, pixels, depths, a, b, c, d, char="#", *, shader=None):
         """Fill a convex planar face by spans with perspective-correct depth.
 
         Closed enemy blocks reuse each projected vertex and visit their face
         pixels once, avoiding two overlapping triangle bounding-box scans.
         """
         if any(point is None for point in (a, b, c, d)):
-            self.triangle(pixels, depths, a, b, c, char)
-            self.triangle(pixels, depths, a, c, d, char)
+            self.triangle(pixels, depths, a, b, c, char, shader=shader)
+            self.triangle(pixels, depths, a, c, d, char, shader=shader)
             return
         ax, ay, az = a
         bx, by, bz = b
@@ -153,9 +171,10 @@ class Camera:
                     continue
                 depth = 1 / inverse
                 if depth <= zrow[x] + 0.01:
-                    row[x], zrow[x] = char, depth
+                    row[x] = shader(*self.world_point(x, y, depth), depth) if shader else char
+                    zrow[x] = depth
 
-    def stroke(self, pixels, depths, start, end, radius=0.0, char=None):
+    def stroke(self, pixels, depths, start, end, radius=0.0, char=None, *, shader=None):
         if start is None or end is None:
             return False
         sx, sy, sz = start
@@ -177,12 +196,15 @@ class Camera:
                 # Grass strokes are one character wide: avoid width arithmetic,
                 # clipping ranges and an inner loop for that common case.
                 if 0 <= x < self.width and depth <= depths[y][x] + 0.01:
-                    pixels[y][x], depths[y][x] = char, depth
+                    pixels[y][x] = shader(*self.world_point(x, y, depth), depth) if shader else char
+                    depths[y][x] = depth
                     drawn = True
                 continue
             half_width = min(6, round(self.fx * radius / depth))
             for column in range(max(0, x - half_width), min(self.width, x + half_width + 1)):
                 if depth - radius <= depths[y][column] + 0.01:
-                    pixels[y][column], depths[y][column] = char, depth - radius
+                    sample_depth = depth - radius
+                    pixels[y][column] = shader(*self.world_point(column, y, sample_depth), sample_depth) if shader else char
+                    depths[y][column] = sample_depth
                     drawn = True
         return drawn

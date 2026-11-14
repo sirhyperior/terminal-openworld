@@ -3,11 +3,11 @@
 from dataclasses import dataclass
 import re
 
+from .palette import COLOR_CODES, GRAY_LEVELS, UI
+
 
 # Sixteen perceptually useful, neutral foreground levels. The lowest still
 # leaves a faint visible mark; empty/fully dark samples use a space instead.
-GRAY_LEVELS = (28, 38, 50, 63, 77, 92, 108, 125,
-               143, 161, 179, 197, 214, 230, 243, 255)
 GRAY_CODES = tuple(f"\x1b[38;2;{level};{level};{level}m" for level in GRAY_LEVELS)
 WHITE_ON_BLACK = "\x1b[97;40m"
 _ASCII_ROW = re.compile(r"[ -~]*\Z")
@@ -27,6 +27,8 @@ class StyledFrame:
     rows: list[str]
     styles: list[bytearray]
     materials: list[bytearray] | None = None
+    effects: list[bytearray] | None = None
+    color_mode: str = "gray"
 
     def __post_init__(self) -> None:
         if (not isinstance(self.width, int) or not isinstance(self.height, int)
@@ -34,9 +36,15 @@ class StyledFrame:
             raise ValueError("frame dimensions must be positive integers")
         if len(self.rows) != self.height or len(self.styles) != self.height:
             raise ValueError("frame row count must match its height")
+        if self.color_mode not in ("gray", "color"):
+            raise ValueError("styled foreground mode must be gray or color")
         if self.materials is not None and (len(self.materials) != self.height or any(
                 not isinstance(row, bytearray) or len(row) != self.width for row in self.materials)):
             raise ValueError("material buffers must match frame dimensions")
+        if self.effects is not None and (len(self.effects) != self.height or any(
+                not isinstance(row, bytearray) or len(row) != self.width or max(row) >= 16
+                for row in self.effects)):
+            raise ValueError("effect buffers must match dimensions with values 0..15")
         for row, style in zip(self.rows, self.styles):
             if len(row) != self.width or _ASCII_ROW.fullmatch(row) is None:
                 raise ValueError("frame rows must contain exactly width printable ASCII cells")
@@ -51,6 +59,8 @@ class StyledFrame:
         Blank cells have no visible foreground. Ignoring their style changes
         avoids spending output bandwidth on empty sky or cleared panels.
         """
+        if self.color_mode == "color":
+            return self._color_rows()
         result = []
         for row, styles in zip(self.rows, self.styles):
             parts = ["\x1b[40m"]
@@ -64,6 +74,30 @@ class StyledFrame:
                     parts.append(row[start:column])
                     parts.append(GRAY_CODES[style])
                     start, current = column, style
+            parts.append(row[start:])
+            parts.append(WHITE_ON_BLACK)
+            result.append("".join(parts))
+        return result
+
+    def _color_rows(self) -> list[str]:
+        result = []
+        palette = COLOR_CODES
+        for row_index, (row, styles) in enumerate(zip(self.rows, self.styles)):
+            materials = self.materials[row_index] if self.materials is not None else None
+            effects = self.effects[row_index] if self.effects is not None else None
+            parts = ["\x1b[40m"]
+            current = None
+            start = 0
+            for column, char in enumerate(row):
+                if char == " ":
+                    continue
+                material = materials[column] if materials is not None else UI
+                effect = effects[column] if effects is not None else 0
+                code = palette[material][effect * 16 + styles[column]]
+                if code != current:
+                    parts.append(row[start:column])
+                    parts.append(code)
+                    start, current = column, code
             parts.append(row[start:])
             parts.append(WHITE_ON_BLACK)
             result.append("".join(parts))

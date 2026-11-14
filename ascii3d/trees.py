@@ -99,14 +99,37 @@ class Trees:
         bark = shading.surface(WOOD, tree.x, tree.y, tree.base_z + 1,
                                (-camera.cy, -camera.sy, 0), distance, glyph="|",
                                texture_position=(tree.x, tree.y, 1))
-        camera.stroke_world(pixels, depths, root, fork, tree.radius, bark)
+
+        def brush(start, end, glyph=None):
+            ax, ay, az = (end[i] - start[i] for i in range(3))
+            square = ax * ax + ay * ay + az * az
+
+            def sample(x, y, z, depth):
+                along = ((x - start[0]) * ax + (y - start[1]) * ay + (z - start[2]) * az) / square
+                along = max(0.0, min(1.0, along))
+                nx, ny, nz = (x - start[0] - along * ax,
+                              y - start[1] - along * ay,
+                              z - start[2] - along * az)
+                length = math.sqrt(nx * nx + ny * ny + nz * nz)
+                normal = ((nx / length, ny / length, nz / length) if length > 1e-9
+                          else (-camera.cy, -camera.sy, 0))
+                facing = -normal[0] * camera.cy - normal[1] * camera.sy
+                stroke = glyph if glyph is not None else ("|" if facing > 0.90 else None)
+                return shading.surface(WOOD, x, y, z, normal, depth, glyph=stroke,
+                    texture_position=(x - tree.x, y - tree.y, z - tree.base_z + 1e-8))
+
+            return sample
+
+        trunk_shader = brush(root, fork) if distance < 20 else None
+        camera.stroke_world(pixels, depths, root, fork, tree.radius, bark, shader=trunk_shader)
         for index in range(3):
             angle = index * math.tau / 3 + tree.seed * 0.2
             start = (tree.x + 0.04, tree.y, tree.height - 0.8)
             tip = (tree.x + math.cos(angle) * 1.1, tree.y + math.sin(angle), tree.height + 0.7)
             direction = (tip[0] - start[0]) * camera.sy - (tip[1] - start[1]) * camera.cy
-            branch = ink("/" if direction > 0 else "\\", bark.level, WOOD)
-            camera.stroke_world(pixels, depths, start, tip, tree.radius * 0.35, branch)
+            branch = ink("/" if direction > 0 else "\\", bark.level, WOOD, bark.effects)
+            camera.stroke_world(pixels, depths, start, tip, tree.radius * 0.35, branch,
+                                shader=brush(start, tip, str(branch)) if distance < 20 else None)
 
     @staticmethod
     def _crown(crown, pixels, depths, cam, stats, budget):

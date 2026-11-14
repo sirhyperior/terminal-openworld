@@ -235,7 +235,7 @@ class Scenery:
                                                 (0, 0, 1), base[2])
                     direction = tip[0] - base[0] if tip is not None else 0
                     glyph = ink("/" if direction > 0.2 else "\\" if direction < -0.2 else "|",
-                                grass.level, GRASS)
+                                grass.level, GRASS, grass.effects)
                     if tip is not None and abs(tip[1] - base[1]) < 1.5:
                         drawn = stroke(pixels, depths, base, tip, char=glyph)
                     else:

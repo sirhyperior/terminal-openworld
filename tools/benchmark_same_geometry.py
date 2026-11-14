@@ -43,6 +43,7 @@ def main(argv=None):
     parser.add_argument('--width', type=int, default=120)
     parser.add_argument('--height', type=int, default=40)
     parser.add_argument('--audio', action='store_true')
+    pair.add_presentation_arguments(parser)
     args = parser.parse_args(argv)
     if args.frames < 20 or args.frames % 2 or not (60 <= args.width <= 300 and 20 <= args.height <= 120):
         parser.error('use an even frame count >=20 and dimensions from 60x20 to 300x120')

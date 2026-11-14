@@ -8,8 +8,10 @@ from .doors import Door
 from .door_render import draw_doors
 from .combat_render import draw_combat, large_opaque_enemy
 from .geometry import Camera
-from .shading import Shading, ink
+from .shading import Ink, Shading, ink
+from .palette import UI_ACCENT, UI_DANGER, UI_POSITIVE
 from .scenery import Scenery
+from .particles import Particles
 from .world import (AIR, BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, WATER,
                     WATER_LEVEL, WOOD, World, river_center)
 
@@ -190,7 +192,7 @@ def _overlapping_clear_runs(clear, width, height):
 
 class Renderer:
     def __init__(self, world: World, cell_aspect: float = 0.5, skip_empty_space: bool = True,
-                 combat_depth_prepass: bool = True, backend: str = 'cpu'):
+                 combat_depth_prepass: bool = True, backend: str = 'cpu', particles: bool = True):
         self.world = world
         self.cell_aspect = cell_aspect
         self._size = (0, 0)
@@ -198,9 +200,12 @@ class Renderer:
         self._rows: list[float] = []
         self._focal = 1.0
         self.scenery = Scenery(world)
+        self.particles = Particles(world)
+        self.particles.enabled = particles
         self.shading = Shading(world)
         self._frame_styles = []
         self._frame_materials = []
+        self._frame_effects = []
         self.skip_empty_space = skip_empty_space
         self.combat_depth_prepass = combat_depth_prepass and skip_empty_space
         self.combat_prepass_used = False
@@ -612,7 +617,7 @@ class Renderer:
                 combat_depths = [[math.inf] * width for _ in range(height)]
                 combat_pixels = [[" "] * width for _ in range(height)]
                 draw_combat(world.combat, world, combat_pixels, combat_depths, player,
-                            self._focal, self.cell_aspect, time_seconds, labels=False)
+                            self._focal, self.cell_aspect, time_seconds, labels=False, depth_only=True)
                 self.combat_prepass_used = True
 
         gpu_hits = None
@@ -851,13 +856,13 @@ class Renderer:
                         stroke = _flow_glyph(sy * flow_x - cy * flow_y - u * cp * along_flow,
                                              aspect * dz * along_flow)
                         glyph = "~" if wave > 0.72 and stroke == "-" and distance <= 24 else stroke
-                    row.append(ink(glyph, min(15, tone.level + (2 if wave > 1.28 else 0)), material))
+                    row.append(ink(glyph, min(15, tone.level + (2 if wave > 1.28 else 0)), material, tone.effects))
                 elif material == GRASS and normal[2] > 0:
                     noise = (int(hx * 6.0) * 73856093 ^ int(hy * 6.0) * 19349663) & 15
                     wx, wy = self.scenery.wind_at(hx, hy)
                     wind = int((wx + wy * 0.6 + 0.6) * 3)
                     glyph = (".,", ",;", ';"', "\"'")[min(3, tone.level // 3)][(noise + wind) % 2]
-                    row.append(ink(glyph, tone.level, material))
+                    row.append(ink(glyph, tone.level, material, tone.effects))
                 else:
                     row.append(tone)
             pixels.append(row)
@@ -865,6 +870,8 @@ class Renderer:
         self.scenery.draw(pixels, depths, player, time_seconds, self._focal, self.cell_aspect)
         draw_combat(world.combat, world, pixels, depths, player,
                     self._focal, self.cell_aspect, time_seconds)
+        self.particles.draw(pixels, depths, player, time_seconds, self._focal, self.cell_aspect)
+        self.scenery.stats.update(self.particles.stats)
         return pixels
 
     def frame(self, player: Player, width: int, height: int, fps: float = 0.0,
@@ -943,31 +950,50 @@ class Renderer:
         else:
             look, attack = ("ARROWS", "ENTER") if keyboard_look else ("MOUSE", "LMB")
             controls = f" WASD move {look} look {attack} attack E use H help P pause"
-        self._frame_styles = [bytearray([15]) * width, bytearray([6]) * width]
-        self._frame_styles += [bytearray(getattr(char, "level", 15) for char in row) for row in pixels]
-        self._frame_styles += [bytearray([6]) * width, bytearray([12]) * width, bytearray([10]) * width]
-        self._frame_materials = [bytearray([255]) * width for _ in range(2)]
-        self._frame_materials += [bytearray(getattr(char, "material", 255) for char in row) for row in pixels]
-        self._frame_materials += [bytearray([255]) * width for _ in range(3)]
+        styles = [bytearray([15]) * width, bytearray([6]) * width]
+        materials = [bytearray([255]) * width for _ in range(2)]
+        effects = [bytearray(width) for _ in range(2)]
+        for row in pixels:
+            levels, identities, variants = bytearray(width), bytearray([255]) * width, bytearray(width)
+            for x, char in enumerate(row):
+                if isinstance(char, Ink):
+                    levels[x], identities[x], variants[x] = char.level, char.material, char.effects
+                else:
+                    levels[x] = 15
+            styles.append(levels)
+            materials.append(identities)
+            effects.append(variants)
+        styles += [bytearray([6]) * width, bytearray([12]) * width, bytearray([10]) * width]
+        materials += [bytearray([255]) * width for _ in range(3)]
+        effects += [bytearray(width) for _ in range(3)]
+        health_end = min(width, len(f"  HP [{bar}] {health}/{maximum}"))
+        materials[0][2:health_end] = bytes([UI_DANGER if health * 3 <= maximum else UI_POSITIVE]) * max(0, health_end - 2)
+        if prompt and not help_open and not paused and "[E]" in prompt:
+            start = max(0, (width - len(prompt)) // 2 + prompt.index("[E]"))
+            end = min(width, start + 3)
+            materials[view_height][start:end] = bytes([UI_ACCENT]) * (end - start)
+        self._frame_styles, self._frame_materials, self._frame_effects = styles, materials, effects
         lines = [top, "-" * width] + ["".join(row) for row in pixels]
         lines += ["-" * width, status, controls]
         return [line[:width].ljust(width) for line in lines]
 
-    def styled_frame(self, *args, color_mode="gray", **kwargs):
+    def styled_frame(self, *args, color_mode="color", **kwargs):
         """Render styled foregrounds while preserving the plain snapshot API."""
         from .presentation import StyledFrame
 
-        if color_mode not in ("mono", "gray"):
-            raise ValueError("color mode must be mono or gray")
+        if color_mode not in ("mono", "gray", "color"):
+            raise ValueError("color mode must be mono, gray or color")
         self._frame_styles = []
         self._frame_materials = []
+        self._frame_effects = []
         rows = self.frame(*args, **kwargs)
         if color_mode == "mono":
             return rows
         height, width = len(rows), len(rows[0])
         styles = self._frame_styles or [bytearray([15]) * width for _ in rows]
         materials = self._frame_materials or [bytearray([255]) * width for _ in rows]
-        return StyledFrame(width, height, rows, styles, materials)
+        effects = self._frame_effects or [bytearray(width) for _ in rows]
+        return StyledFrame(width, height, rows, styles, materials, effects, color_mode)
 
     def _map(self, pixels: list[list[str]], player: Player) -> None:
         # Large worlds keep a readable local chart rather than shrinking a
@@ -1016,22 +1042,23 @@ class Renderer:
                             else:
                                 rank, symbol = 0, " "
                             if rank >= priority:
-                                priority, char = rank, symbol
+                                identity = LEAVES if (x, y) in world.trees else material
+                                priority, char = rank, ink(symbol, 10, identity)
                     chars.append(char)
-                rows.append("|" + "".join(chars) + "|")
+                rows.append(["|", *chars, "|"])
             self._map_rows, self._map_key = rows, key
         for row, line in enumerate(self._map_rows):
             self._write(pixels, left, top + row + 1, line)
         marker_x = left + 1 + min(map_width - 1, max(0, int((player.x - origin_x) / scale)))
         marker_y = top + 1 + min(map_height - 1, max(0, int((origin_y + span_y - 1 - player.y) / (2 * scale))))
         direction = (">", "^", "<", "v")[int((player.yaw + math.pi / 4) / (math.pi / 2)) % 4]
-        pixels[marker_y][marker_x] = direction
+        pixels[marker_y][marker_x] = ink(direction, 15, UI_ACCENT)
         self._write(pixels, left, top + map_height + 1, "+" + "-" * map_width + "+")
         legend = "LOCAL N^  ~ river  ^ ridge" if local else "N ^  ~ river  = bridge  , grass"
         self._write(pixels, left, top + map_height + 2, legend[:map_width + 2])
 
     @staticmethod
-    def _write(pixels: list[list[str]], x: int, y: int, text: str) -> None:
+    def _write(pixels: list[list[str]], x: int, y: int, text: str | list[str]) -> None:
         if 0 <= y < len(pixels):
             for index, char in enumerate(text):
                 if 0 <= x + index < len(pixels[y]):

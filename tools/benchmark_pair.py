@@ -115,7 +115,7 @@ def prepare(state, name, position):
     if casting:
         combat.held_item = definitions.WeaponPickup(0, 0, weapon=definitions.FIRE_STAFF)
     combat.cooldown = combat.swing_remaining = 0.0
-    state.update(player=player, yaw=player.yaw, timings=[], frame=0,
+    state.update(player=player, yaw=player.yaw, timings=[], serialized_bytes=[], frame=0,
                  training=training, casting=casting, walking=name in ("terrace_walk", "stair_walk"))
 
 
@@ -148,22 +148,52 @@ def frame(state, name, audio, width, height, *, measured):
             audio.emit(GameEvent("step_grass" if name == "grass_close" else "step_stone"))
         if not state["walking"] and index % 60 == 1:
             audio.emit(GameEvent("door_open", player.x + 2, player.y))
-    state["renderer"].frame(player, width, height, time_seconds=index / 40,
-                             show_map=name in ("map", "highland_map"))
+    payload_bytes = None
+    if state.get('presentation', 'plain') == 'styled':
+        rendered = state['renderer'].styled_frame(player, width, height,
+            time_seconds=index / 40, show_map=name in ('map', 'highland_map'),
+            color_mode=state['color_mode'])
+        rows = rendered.ansi_rows() if hasattr(rendered, 'ansi_rows') else rendered
+        # StyledFrame and the mono fallback contain ASCII only. These lengths
+        # include foreground escapes/resets but exclude cursor control and CRLF.
+        payload_bytes = sum(len(row) for row in rows)
+    else:
+        state["renderer"].frame(player, width, height, time_seconds=index / 40,
+                                 show_map=name in ("map", "highland_map"))
     elapsed = (time.perf_counter() - start) * 1000
     if measured:
         state["timings"].append(elapsed)
+        if payload_bytes is not None:
+            state['serialized_bytes'].append(payload_bytes)
     state["frame"] += 1
 
 
 def summarize(state):
     timings = state["timings"]
     ordered = sorted(timings)
-    return {"mean_ms": round(statistics.mean(timings), 3) if timings else None,
+    result = {"mean_ms": round(statistics.mean(timings), 3) if timings else None,
             "p95_ms": round(ordered[math.ceil(len(ordered) * 0.95) - 1], 3) if timings else None,
             "sample_count": len(timings),
             "samples_ms": [round(value, 4) for value in timings],
             "scenery": dict(state["renderer"].scenery.stats)}
+    if state.get('presentation', 'plain') == 'styled':
+        samples = state.get('serialized_bytes', [])
+        ordered_bytes = sorted(samples)
+        result['serialized_row_bytes'] = {
+            'mean_bytes': round(statistics.mean(samples), 3) if samples else None,
+            'p95_bytes': ordered_bytes[math.ceil(len(samples) * 0.95) - 1] if samples else None,
+            'sample_count': len(samples), 'samples_bytes': list(samples)}
+    return result
+
+
+def add_presentation_arguments(parser):
+    """Share explicit presentation controls without changing historical mode."""
+    parser.add_argument('--presentation', choices=('plain', 'styled'), default='plain',
+                        help='styled includes foreground/ANSI serialization, without terminal writes')
+    parser.add_argument('--before-color-mode', choices=('mono', 'gray', 'color'), default='gray',
+                        help='frozen foreground mode for --presentation styled (default: gray)')
+    parser.add_argument('--after-color-mode', choices=('mono', 'gray', 'color'), default='color',
+                        help='current foreground mode for --presentation styled (default: color)')
 
 
 def hashes(root):
@@ -243,6 +273,18 @@ def run(args, *, before=None, after=None, audio_factory=Audio,
                 current_entry[label] = summarize(state)
 
     try:
+        presentation = getattr(args, 'presentation', 'plain')
+        if presentation not in ('plain', 'styled'):
+            raise ValueError('presentation must be plain or styled')
+        color_modes = {'before': getattr(args, 'before_color_mode', 'gray'),
+                       'after': getattr(args, 'after_color_mode', 'color')}
+        if presentation == 'styled':
+            if any(mode not in ('mono', 'gray', 'color') for mode in color_modes.values()):
+                raise ValueError('styled foreground modes must be mono, gray or color')
+            report['method'] += '; styled foreground generation and ANSI row serialization; no terminal writes'
+            report['presentation'] = {'mode': 'styled', 'color_modes': color_modes,
+                'serialized_row_bytes': 'ASCII row lengths including escapes/resets; excludes CRLF/cursor control',
+                'terminal_writes': False}
         role_path = getattr(args, 'role_manifest', None)
         role_poses = load_role_manifest(role_path) if role_path is not None else None
         if role_poses is not None:
@@ -264,6 +306,12 @@ def run(args, *, before=None, after=None, audio_factory=Audio,
                             getattr(args, 'after_renderer', 'cpu'))
         after["elevated_audio"] = True
         states = {"before": before, "after": after}
+        for label, state in states.items():
+            state['presentation'] = presentation
+            if presentation == 'styled':
+                if not callable(getattr(state['renderer'], 'styled_frame', None)):
+                    raise ValueError(f'{label} renderer does not support styled frames')
+                state['color_mode'] = color_modes[label]
         report['requested_renderers'] = {'before': getattr(args, 'before_renderer', 'cpu'),
                                          'after': getattr(args, 'after_renderer', 'cpu')}
         for label, state in states.items():
@@ -310,6 +358,7 @@ def run(args, *, before=None, after=None, audio_factory=Audio,
             current_states = states
             for state in states.values():
                 state["timings"] = []
+                state['serialized_bytes'] = []
             for label, state in states.items():
                 report["current_variant"] = label
                 prepare_scene(state, name, resolved[name][label])
@@ -337,6 +386,7 @@ def run(args, *, before=None, after=None, audio_factory=Audio,
             report["new_scenarios"][name] = current_entry
             current_states = {"after": after}
             after["timings"] = []
+            after['serialized_bytes'] = []
             prepare_scene(after, name, camera)
             for index in range(args.frames + 5):
                 report["phase"] = "measurement" if index >= 5 else "warmup"
@@ -422,6 +472,7 @@ def main(argv=None):
                         help="sample listener height in a frozen control that supports elevated ambience")
     parser.add_argument('--role-manifest', type=Path,
                         help='version-1 JSON before/after poses for changed-map semantic-role comparisons')
+    add_presentation_arguments(parser)
     args = parser.parse_args(argv)
     if args.frames < 20 or args.frames % 2 or not (60 <= args.width <= 300 and 20 <= args.height <= 120):
         parser.error("use an even frame count >=20 and dimensions from 60x20 to 300x120")

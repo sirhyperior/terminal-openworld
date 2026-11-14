@@ -71,8 +71,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--benchmark", type=positive_int, metavar="FRAMES", help="render a turn without terminal output")
     parser.add_argument("--renderer", choices=('auto', 'cpu', 'gpu'), default='auto',
                         help='geometry renderer (default: hardware GPU when available, with CPU fallback)')
-    parser.add_argument("--color-mode", choices=('mono', 'gray'), default='gray',
-                        help='foreground presentation: uniform white or grayscale (default: gray)')
+    parser.add_argument("--color-mode", choices=('mono', 'gray', 'color'), default='color',
+                        help='foreground presentation: color, grayscale or uniform white (default: color)')
     parser.add_argument("--demo", action="store_true", help="automatically walk and turn; controls still work")
     parser.add_argument("--outside", action="store_true", help="start in the meadow facing the castle")
     parser.add_argument("--region", choices=REGION_NAMES,

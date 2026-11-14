@@ -146,17 +146,17 @@ class GameLoopTests(unittest.TestCase):
         self.assertTrue(all(event.name in EFFECTS for event in events))
         return events, states, pauses, frames
 
-    def test_grayscale_is_default_and_mono_option_reaches_live_renderer(self):
-        for selected, expected in ((None, "gray"), ("gray", "gray"), ("mono", "mono")):
+    def test_color_is_default_and_all_modes_reach_live_renderer(self):
+        for selected, expected in ((None, "color"), ("color", "color"), ("gray", "gray"), ("mono", "mono")):
             with self.subTest(selected=selected):
                 self.run_frames([((), ())], self.make_world(), Player(x=8.5, y=4.5),
                                 color_mode=selected)
                 self.assertEqual(self.color_modes, [expected])
 
-    def test_color_is_unavailable_before_grayscale_review(self):
+    def test_unsupported_color_mode_fails_before_world_construction(self):
         with patch("ascii3d.app.sys.stderr", io.StringIO()), patch("ascii3d.app.build_world") as build:
             with self.assertRaises(SystemExit) as raised:
-                main(["--color-mode", "color"])
+                main(["--color-mode", "rainbow"])
             self.assertEqual(raised.exception.code, 2)
             build.assert_not_called()
 
