@@ -6,17 +6,20 @@ struct Params {
     right: vec4<f32>,
     up: vec4<f32>,
     sizes: vec4<u32>, // viewport W/H, world W/D
-    scene: vec4<u32>, // world H, solid count, field present, unused
+    scene: vec4<u32>, // world H, solid BVH node count, field present, compact output
     lens: vec4<f32>, // inverse focal X/Y, far depth, water level
 }
-struct Box { low: vec4<f32>, high: vec4<f32> }
+struct Box { low: vec4<f32>, high: vec4<f32>, metadata: vec4<u32> }
+struct SolidNode { low: vec4<f32>, high: vec4<f32>, metadata: vec4<u32> }
 struct Hit { depth: f32, material: u32, kind: u32, index: u32, axis: u32 }
 @group(0) @binding(0) var<storage, read> params: Params;
 @group(0) @binding(1) var<storage, read> voxels: array<u32>;
 @group(0) @binding(2) var<storage, read> heights: array<f32>;
 @group(0) @binding(3) var<storage, read> ground: array<u32>;
 @group(0) @binding(4) var<storage, read> boxes: array<Box>;
-@group(0) @binding(5) var<storage, read_write> output: array<vec4<u32>>;
+@group(0) @binding(5) var<storage, read> solid_planes: array<vec4<f32>>;
+@group(0) @binding(6) var<storage, read> solid_nodes: array<SolidNode>;
+@group(0) @binding(7) var<storage, read_write> output: array<vec4<u32>>;
 
 fn empty_hit() -> Hit { return Hit(1e30, 0u, 0u, 0u, 0u); }
 fn reciprocal(value: f32) -> f32 {
@@ -162,6 +165,66 @@ fn box_hit(o: vec3<f32>, d: vec3<f32>, limit: f32, index: u32) -> Hit {
     return Hit(enter, u32(box.low.w), 4u | flags, index, axis);
 }
 
+fn convex_hit(o: vec3<f32>, d: vec3<f32>, limit: f32, index: u32) -> Hit {
+    let shape = boxes[index];
+    if shape.metadata.y == 0u { return box_hit(o, d, limit, index); }
+    var enter = 0.0;
+    var leave = limit;
+    var flags = 0u;
+    var axis = 2u;
+    let scale = max(abs(o.x), max(abs(o.y), abs(o.z)))
+              + max(abs(shape.low.x), max(abs(shape.low.y), abs(shape.low.z)))
+              + max(abs(shape.high.x), max(abs(shape.high.y), abs(shape.high.z)));
+    let padding = 8e-7 * (1.0 + scale + params.lens.z * length(d));
+    for (var face = 0u; face < shape.metadata.y; face++) {
+        let plane = solid_planes[shape.metadata.x + face];
+        let numerator = plane.w - dot(plane.xyz, o);
+        let denominator = dot(plane.xyz, d);
+        // A nearly parallel face may change sign after float32 conversion.
+        // Preserve uncertainty even on a miss so the full CPU query can win.
+        if abs(denominator) < 1e-6 * max(1.0, length(d)) {
+            if abs(numerator) <= padding + params.lens.z * abs(denominator) { flags = 64u; }
+        }
+        if abs(denominator) < 1e-12 {
+            if numerator < -1e-10 { return Hit(1e30, 0u, flags, 0u, 0u); }
+            continue;
+        }
+        let t = numerator / denominator;
+        let tolerance = padding / max(abs(denominator), 1e-6);
+        if denominator < 0.0 {
+            if t > enter {
+                enter = t;
+                let n = abs(plane.xyz);
+                axis = select(select(2u, 1u, n.y >= n.z), 0u, n.x >= n.y && n.x >= n.z);
+            }
+        } else { leave = min(leave, t); }
+        if abs(enter - leave) <= tolerance { flags = 64u; }
+        if enter > leave + 1e-10 { return Hit(1e30, 0u, flags, 0u, 0u); }
+    }
+    if leave < 0.0 { return Hit(1e30, 0u, flags, 0u, 0u); }
+    return Hit(enter, u32(shape.low.w), 4u | flags, index, axis);
+}
+
+fn node_intersects(o: vec3<f32>, d: vec3<f32>, limit: f32, node: SolidNode) -> bool {
+    let padding = 8e-7 * (1.0 + length(o) + params.lens.z * length(d));
+    var enter = 0.0;
+    var leave = limit + padding;
+    for (var axis = 0u; axis < 3u; axis++) {
+        let low = node.low[axis] - padding;
+        let high = node.high[axis] + padding;
+        if abs(d[axis]) < 1e-12 {
+            if o[axis] < low || o[axis] > high { return false; }
+        } else {
+            let first = (low - o[axis]) / d[axis];
+            let last = (high - o[axis]) / d[axis];
+            enter = max(enter, min(first, last));
+            leave = min(leave, max(first, last));
+            if enter > leave { return false; }
+        }
+    }
+    return leave >= 0.0;
+}
+
 @compute @workgroup_size(64)
 fn main(@builtin(global_invocation_id) id: vec3<u32>) {
     let count = params.sizes.x * params.sizes.y;
@@ -181,10 +244,23 @@ fn main(@builtin(global_invocation_id) id: vec3<u32>) {
     let field = field_hit(o, d, limit);
     var solid = empty_hit();
     var solid_flags = 0u;
-    for (var box = 0u; box < params.scene.y; box++) {
-        let candidate = box_hit(o, d, min(limit, solid.depth), box);
-        solid_flags |= candidate.kind & 64u;
-        if candidate.material != 0u { solid = candidate; }
+    var node_index = 0u;
+    loop {
+        if node_index >= params.scene.y { break; }
+        let node = solid_nodes[node_index];
+        if !node_intersects(o, d, min(limit, solid.depth + padding), node) {
+            node_index = node.metadata.x;
+            continue;
+        }
+        node_index++;
+        if node.metadata.y != 0u {
+            let candidate = convex_hit(o, d, min(limit, solid.depth + padding), node.metadata.y - 1u);
+            solid_flags |= candidate.kind & 64u;
+            if candidate.material != 0u {
+                if abs(candidate.depth - solid.depth) <= padding { solid_flags |= 64u; }
+                if candidate.depth <= solid.depth { solid = candidate; }
+            }
+        }
     }
     solid.kind |= solid_flags;
     if params.scene.w != 0u {

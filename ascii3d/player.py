@@ -5,7 +5,7 @@ import math
 
 from .events import GameEvent
 from .sound_surfaces import surface_kind
-from .world import FLOOR, GRASS, PATH, STONE, INDOOR_SPAWN, World
+from .world import INDOOR_SPAWN, World
 
 
 @dataclass
@@ -38,7 +38,7 @@ class Player:
         """Follow walkable slopes/treads without turning descent into a fall."""
         if not self.grounded or self.in_water or self.vertical_speed > 0:
             return False, False
-        support = world.walk_support(x, y, self.z, self.RADIUS, 0.5, 0.5)
+        support = world.walk_support(x, y, self.z, self.RADIUS, 0.5, 0.5, walking=True)
         if support is None:
             return False, False
         feet, _ = support
@@ -54,29 +54,6 @@ class Player:
         self.z = feet
         self.vertical_speed = 0.0
         return True, stepped
-
-    def _step_up(self, world: World, x: float, y: float) -> bool:
-        """Retain one-voxel fixture steps with real voxel support/headroom."""
-        if not self.grounded or self.in_water or self.vertical_speed > 0:
-            return False
-        if world.heightfield is not None and world.heightfield.height_at(x, y) is not None:
-            return False
-        feet = math.floor(self.z + 1.0001)
-        if feet <= self.z or feet - self.z > 1.0001:
-            return False
-        if world.collides(x, y, feet, self.RADIUS, self.HEIGHT):
-            return False
-        # Restrict stepping to terrain and masonry. Crates, wooden guardrails,
-        # analytic door leaves and enemy bodies retain their jump/collision rules.
-        for cy in range(math.floor(y - self.RADIUS), math.floor(y + self.RADIUS) + 1):
-            for cx in range(math.floor(x - self.RADIUS), math.floor(x + self.RADIUS) + 1):
-                dx = max(cx - x, 0.0, x - cx - 1)
-                dy = max(cy - y, 0.0, y - cy - 1)
-                if (dx * dx + dy * dy < self.RADIUS ** 2
-                        and world.get(cx, cy, feet - 1) in (GRASS, PATH, FLOOR, STONE)):
-                    self.z = float(feet)
-                    return True
-        return False
 
     def take_damage(self, amount: int) -> list[GameEvent]:
         """Apply one confirmed hit and report feedback once per living player."""
@@ -148,16 +125,12 @@ class Player:
                 stepped |= contact
             elif not world.collides(next_x, self.y, self.z, self.RADIUS, self.HEIGHT):
                 self.x = next_x
-            elif self._step_up(world, next_x, self.y):
-                self.x, stepped = next_x, True
             supported, contact = self._follow_ground(world, self.x, next_y)
             if supported:
                 self.y = next_y
                 stepped |= contact
             elif not world.collides(self.x, next_y, self.z, self.RADIUS, self.HEIGHT):
                 self.y = next_y
-            elif self._step_up(world, self.x, next_y):
-                self.y, stepped = next_y, True
             supported, contact = self._follow_ground(world, self.x, self.y)
             stepped |= contact
             if supported:

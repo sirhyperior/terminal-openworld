@@ -5,7 +5,8 @@ import math
 import random
 
 from .geometry import Camera
-from .world import Tree, World
+from .world import LEAVES, WOOD, Tree, World
+from .shading import DEFAULT_SHADING, ink
 
 
 @dataclass(frozen=True, slots=True)
@@ -93,12 +94,19 @@ class Trees:
     def _trunk(tree: Tree, pixels, depths, camera):
         root = (tree.x, tree.y, tree.base_z)
         fork = (tree.x + 0.10, tree.y - 0.08, tree.height)
-        camera.stroke_world(pixels, depths, root, fork, tree.radius, "|")
+        shading = getattr(camera, "shading", DEFAULT_SHADING)
+        distance = max(0, (tree.x - camera.x) * camera.cy + (tree.y - camera.y) * camera.sy)
+        bark = shading.surface(WOOD, tree.x, tree.y, tree.base_z + 1,
+                               (-camera.cy, -camera.sy, 0), distance, glyph="|",
+                               texture_position=(tree.x, tree.y, 1))
+        camera.stroke_world(pixels, depths, root, fork, tree.radius, bark)
         for index in range(3):
             angle = index * math.tau / 3 + tree.seed * 0.2
             start = (tree.x + 0.04, tree.y, tree.height - 0.8)
             tip = (tree.x + math.cos(angle) * 1.1, tree.y + math.sin(angle), tree.height + 0.7)
-            camera.stroke_world(pixels, depths, start, tip, tree.radius * 0.35)
+            direction = (tip[0] - start[0]) * camera.sy - (tip[1] - start[1]) * camera.cy
+            branch = ink("/" if direction > 0 else "\\", bark.level, WOOD)
+            camera.stroke_world(pixels, depths, start, tip, tree.radius * 0.35, branch)
 
     @staticmethod
     def _crown(crown, pixels, depths, cam, stats, budget):
@@ -182,16 +190,9 @@ class Trees:
                 hx, hy, hz = ox + dx * depth, oy + dy * depth, oz + dz * depth
                 nx, ny, nz = hx * ix, hy * iy, hz * iz
                 normal_length = sqrt(nx * nx + ny * ny + nz * nz)
-                light = (-nx * 0.38 - ny * 0.48 + nz * 0.79) / normal_length
-                if light < 0:
-                    light = 0
-                grain = (int((hx + crown.x) * 14) * 37 ^ int((hy + crown.y) * 14) * 19 ^ int(hz * 14) * 7) & 7
-                brightness = (0.29 + light * 0.52 + grain * 0.018) / (1 + depth * 0.035)
-                shade = int(brightness * 10)
-                if shade < 1:
-                    shade = 1
-                elif shade > 9:
-                    shade = 9
-                pixels[y][x] = palette[shade]
+                shading = getattr(cam, "shading", DEFAULT_SHADING)
+                pixels[y][x] = shading.surface(LEAVES, hx + crown.x, hy + crown.y,
+                    hz + crown.z, (nx / normal_length, ny / normal_length, nz / normal_length), depth,
+                    texture_position=(hx + crown.x, hy + crown.y, hz))
                 depth_row[x] = depth
         stats["tree_samples"] = samples

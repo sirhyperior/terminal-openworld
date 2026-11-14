@@ -16,9 +16,12 @@ from ascii3d.world import FLOOR, World
 class GameLoopTests(unittest.TestCase):
     def run_frames(self, script, world, player, *, demo=False, frame_work=None,
                    clock_tick=1 / 60, advance_sleep=False, sizes=None, mouse=None, keyboard_look=False,
-                   fail_render=False, capture_error="", native_mouse=None, region=None, max_cells=None):
+                   fail_render=False, capture_error="", native_mouse=None, region=None, max_cells=None,
+                   color_mode=None):
         events, states, pauses, frames = [], [], [], []
         self.capture_states = []
+        self.color_modes = []
+        color_modes = self.color_modes
         captures = self.capture_states
         terminal_budgets = self.terminal_budgets = []
         player_positions = self.player_positions = []
@@ -116,6 +119,10 @@ class GameLoopTests(unittest.TestCase):
                     raise OSError("simulated renderer failure")
                 return (args, kwargs)
 
+            def styled_frame(self, *args, color_mode="gray", **kwargs):
+                color_modes.append(color_mode)
+                return self.frame(*args, **kwargs)
+
         with ExitStack() as stack:
             if fail_render:
                 stack.enter_context(patch("ascii3d.app.sys.stderr", io.StringIO()))
@@ -133,9 +140,25 @@ class GameLoopTests(unittest.TestCase):
                 args.extend(("--region", region))
             if max_cells is not None:
                 args.extend(("--max-cells", str(max_cells)))
+            if color_mode is not None:
+                args.extend(("--color-mode", color_mode))
             self.assertEqual(main(args), 1 if fail_render else 0)
         self.assertTrue(all(event.name in EFFECTS for event in events))
         return events, states, pauses, frames
+
+    def test_grayscale_is_default_and_mono_option_reaches_live_renderer(self):
+        for selected, expected in ((None, "gray"), ("gray", "gray"), ("mono", "mono")):
+            with self.subTest(selected=selected):
+                self.run_frames([((), ())], self.make_world(), Player(x=8.5, y=4.5),
+                                color_mode=selected)
+                self.assertEqual(self.color_modes, [expected])
+
+    def test_color_is_unavailable_before_grayscale_review(self):
+        with patch("ascii3d.app.sys.stderr", io.StringIO()), patch("ascii3d.app.build_world") as build:
+            with self.assertRaises(SystemExit) as raised:
+                main(["--color-mode", "color"])
+            self.assertEqual(raised.exception.code, 2)
+            build.assert_not_called()
 
     def test_hud_fps_tracks_actual_completed_frames_and_counts_output_stalls(self):
         world = self.make_world()

@@ -8,7 +8,8 @@ from unittest.mock import patch
 from ascii3d.geometry import Camera
 from ascii3d.player import Player
 from ascii3d.trees import Crown, Trees
-from ascii3d.world import Tree, World
+from ascii3d.world import LEAVES, Tree, World
+from ascii3d.shading import DEFAULT_SHADING
 
 
 def scalar_crown(crown, pixels, depths, cam):
@@ -39,10 +40,9 @@ def scalar_crown(crown, pixels, depths, cam):
             hx, hy, hz = ox + dx * depth, oy + dy * depth, oz + dz * depth
             nx, ny, nz = hx * ix, hy * iy, hz * iz
             normal_length = math.sqrt(nx * nx + ny * ny + nz * nz)
-            light = max(0, (-nx * 0.38 - ny * 0.48 + nz * 0.79) / normal_length)
-            grain = (int((hx + crown.x) * 14) * 37 ^ int((hy + crown.y) * 14) * 19 ^ int(hz * 14) * 7) & 7
-            brightness = (0.29 + light * 0.52 + grain * 0.018) / (1 + depth * 0.035)
-            pixels[y][x] = palette[max(1, min(9, int(brightness * 10)))]
+            pixels[y][x] = DEFAULT_SHADING.surface(LEAVES, hx + crown.x, hy + crown.y,
+                hz + crown.z, (nx / normal_length, ny / normal_length, nz / normal_length), depth,
+                texture_position=(hx + crown.x, hy + crown.y, hz))
             depths[y][x] = depth
 
 

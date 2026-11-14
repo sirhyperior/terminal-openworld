@@ -1,0 +1,7 @@
+{
+  "passed": false,
+  "complete": false,
+  "phase": "launch",
+  "pid": 19704,
+  "error": "Child exited before report or log appeared; no native-suite execution result available. Parent launcher now waits for child lifecycle."
+}

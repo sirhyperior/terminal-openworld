@@ -2,8 +2,9 @@
 
 ## Project and Context
 
-MONOLITH is a first-person 3D exploration sandbox rendered entirely as white
-ASCII on black in a terminal. Preserve responsive WASD movement, Shift sprinting,
+MONOLITH is a first-person 3D exploration sandbox rendered entirely as monochrome
+ASCII on black in a terminal. Grayscale foregrounds are the current visual
+foundation; full color follows the approved world redesign and user play review. Preserve responsive WASD movement, Shift sprinting,
 Space jumping, readable environments and keyboard accessibility. Use Python
 3.10+ and prefer the standard library; justify new dependencies.
 
@@ -58,6 +59,11 @@ names and atmosphere while preserving readable navigation and interactions.
 - X/Y are ground and Z is height. Keep collision independent of rendering,
   fixed-step physics, simulation-time animation, seeded scenery, nonblocking
   input and terminal cleanup. Pause/help freeze movement and scenery.
+- Upward ground following is for continuous terrain and authored stair treads.
+  Ordinary blocks require jumping. Keep generic support queries available for
+  item placement and camera settling when tightening player movement rules.
+- Startup percentages count completed work. Loading animation must stop before
+  gameplay or terminal restoration; silent headless modes start no animation.
 - Edit voxels through `World.box()` to invalidate caches. Keep occlusion exact,
   vegetation work bounded by visibility/detail budgets, and exact-ray tests.
 - Benchmark rendering changes; use live-audio benchmarks for gameplay changes
@@ -83,14 +89,16 @@ output; wall-clock rate caps are only for immediately returning sinks.
 
 - `app.py`, `terminal.py`, `mouse_capture.py`: CLI/frame loop, input/native mouse
   capture and terminal lifecycle.
-- `loading.py`: completed-phase startup progress.
+- `loading.py`: completed-phase progress, bounded startup animation and tips.
 - `gpu_renderer.py`, `gpu_static.wgsl`: optional GPU geometry candidates,
   float64 refinement and exact CPU fallback; presentation remains shared.
 - `world.py`, `map_expansion.py`, `terrain.py`, `player.py`: materials/layout,
   highlands, shared multilevel landmarks, collision, stairs, movement, jumping,
   water current and player health.
 - `surfaces.py`: shared continuous ground triangles, exact circular support,
-  analytic ray hits and fractional stair solids.
+  analytic ray hits, convex pieces and fractional stair solids.
+- `shading.py`, `presentation.py`: shared semantic material lighting, compact
+  grayscale foreground buffers and ANSI serialization.
 - `renderer.py`, `scenery.py`, `trees.py`, `geometry.py`: rays, HUD/map,
   grass/wind, trees and shared projection/fill/strokes.
 - `targeting.py`, `doors.py`, `door_render.py`: view queries and shared panels.

@@ -1,0 +1,1693 @@
+Frozen engine: C:\Users\rlawl\Desktop\project1\movement_control_tmp\ascii3d\__init__.py
+test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) ... 
+  test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=1, kind='quarter') ... FAIL
+  test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=1, kind='half') ... FAIL
+  test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=2, kind='quarter') ... FAIL
+  test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=2, kind='half') ... FAIL
+  test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=5, kind='quarter') ... FAIL
+  test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=5, kind='half') ... FAIL
+  test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=9, kind='quarter') ... FAIL
+  test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=9, kind='half') ... FAIL
+test_generic_support_still_settles_upward_on_ordinary_fixtures (test_block_walking.BlockWalkingTests.test_generic_support_still_settles_upward_on_ordinary_fixtures) ... 
+  test_generic_support_still_settles_upward_on_ordinary_fixtures (test_block_walking.BlockWalkingTests.test_generic_support_still_settles_upward_on_ordinary_fixtures) (kind='quarter') ... ERROR
+  test_generic_support_still_settles_upward_on_ordinary_fixtures (test_block_walking.BlockWalkingTests.test_generic_support_still_settles_upward_on_ordinary_fixtures) (kind='half') ... ERROR
+  test_generic_support_still_settles_upward_on_ordinary_fixtures (test_block_walking.BlockWalkingTests.test_generic_support_still_settles_upward_on_ordinary_fixtures) (kind='partial_terrain') ... ERROR
+test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) ... 
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=1, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=1, keys={'w'}, dt=0.1) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=1, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=1, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=2, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=2, keys={'w'}, dt=0.1) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=2, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=2, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=5, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=5, keys={'w'}, dt=0.1) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=5, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=5, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=9, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=9, keys={'w'}, dt=0.1) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=9, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=9, keys={'shift', 'w'}, dt=0.1) ... FAIL
+test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) ... 
+  test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=1, rise=0.25) ... FAIL
+  test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=1, rise=0.5) ... FAIL
+  test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=2, rise=0.25) ... FAIL
+  test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=2, rise=0.5) ... FAIL
+  test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=5, rise=0.25) ... FAIL
+  test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=5, rise=0.5) ... FAIL
+  test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=9, rise=0.25) ... FAIL
+  test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=9, rise=0.5) ... FAIL
+test_swapping_items_settles_the_dropped_footprint_on_an_unmarked_ledge (test_block_walking.BlockWalkingTests.test_swapping_items_settles_the_dropped_footprint_on_an_unmarked_ledge) ... ok
+test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) ... 
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'shift', 'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'d', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'d', 'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'d', 'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w', 'shift', 'd'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w', 'shift', 'd'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w', 'shift', 'd'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'shift', 'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'d', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'d', 'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'d', 'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w', 'shift', 'd'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w', 'shift', 'd'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w', 'shift', 'd'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'shift', 'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'d', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'d', 'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'d', 'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w', 'shift', 'd'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w', 'shift', 'd'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w', 'shift', 'd'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'shift', 'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'d', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'d', 'w'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'d', 'w'}, dt=0.1) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w', 'shift', 'd'}, dt=0.008333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w', 'shift', 'd'}, dt=0.03333333333333333) ... FAIL
+  test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w', 'shift', 'd'}, dt=0.1) ... FAIL
+test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) ... 
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.25, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.25, keys={'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.25, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.25, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.5, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.5, keys={'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.5, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.5, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.25, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.25, keys={'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.25, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.25, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.5, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.5, keys={'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.5, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.5, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.25, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.25, keys={'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.25, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.25, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.5, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.5, keys={'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.5, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.5, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.25, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.25, keys={'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.25, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.25, keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.5, keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.5, keys={'w'}, dt=0.1) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.5, keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.5, keys={'shift', 'w'}, dt=0.1) ... FAIL
+test_all_thirteen_flights_walk_and_sprint_both_directions_with_contact_foley (test_block_walking.BuiltWorldWalkingTests.test_all_thirteen_flights_walk_and_sprint_both_directions_with_contact_foley) ... ok
+test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) ... 
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='north curtain', keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='north curtain', keys={'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='north curtain', keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='north curtain', keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='south curtain', keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='south curtain', keys={'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='south curtain', keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='south curtain', keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='west curtain', keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='west curtain', keys={'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='west curtain', keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='west curtain', keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='east curtain', keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='east curtain', keys={'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='east curtain', keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='east curtain', keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='tower merlon', keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='tower merlon', keys={'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='tower merlon', keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='tower merlon', keys={'shift', 'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='courtyard masonry', keys={'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='courtyard masonry', keys={'w'}, dt=0.1) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='courtyard masonry', keys={'shift', 'w'}, dt=0.008333333333333333) ... FAIL
+  test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='courtyard masonry', keys={'shift', 'w'}, dt=0.1) ... FAIL
+
+======================================================================
+ERROR: test_generic_support_still_settles_upward_on_ordinary_fixtures (test_block_walking.BlockWalkingTests.test_generic_support_still_settles_upward_on_ordinary_fixtures) (kind='quarter')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 130, in test_generic_support_still_settles_upward_on_ordinary_fixtures
+    self.assertEqual(world.walk_support(3.9, 12, feet, walking=True), (feet, GRASS))
+                     ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: World.walk_support() got an unexpected keyword argument 'walking'
+
+======================================================================
+ERROR: test_generic_support_still_settles_upward_on_ordinary_fixtures (test_block_walking.BlockWalkingTests.test_generic_support_still_settles_upward_on_ordinary_fixtures) (kind='half')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 130, in test_generic_support_still_settles_upward_on_ordinary_fixtures
+    self.assertEqual(world.walk_support(3.9, 12, feet, walking=True), (feet, GRASS))
+                     ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: World.walk_support() got an unexpected keyword argument 'walking'
+
+======================================================================
+ERROR: test_generic_support_still_settles_upward_on_ordinary_fixtures (test_block_walking.BlockWalkingTests.test_generic_support_still_settles_upward_on_ordinary_fixtures) (kind='partial_terrain')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 130, in test_generic_support_still_settles_upward_on_ordinary_fixtures
+    self.assertEqual(world.walk_support(3.9, 12, feet, walking=True), (feet, GRASS))
+                     ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: World.walk_support() got an unexpected keyword argument 'walking'
+
+======================================================================
+FAIL: test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=1, kind='quarter')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 101, in test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures
+    self.assertNotIn("terrain_step", [e.name for e in events])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'terrain_step' unexpectedly found in ['jump', 'land', 'terrain_step']
+
+======================================================================
+FAIL: test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=1, kind='half')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 101, in test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures
+    self.assertNotIn("terrain_step", [e.name for e in events])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'terrain_step' unexpectedly found in ['jump', 'land', 'terrain_step']
+
+======================================================================
+FAIL: test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=2, kind='quarter')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 101, in test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures
+    self.assertNotIn("terrain_step", [e.name for e in events])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'terrain_step' unexpectedly found in ['jump', 'land', 'terrain_step']
+
+======================================================================
+FAIL: test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=2, kind='half')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 101, in test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures
+    self.assertNotIn("terrain_step", [e.name for e in events])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'terrain_step' unexpectedly found in ['jump', 'land', 'terrain_step']
+
+======================================================================
+FAIL: test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=5, kind='quarter')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 101, in test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures
+    self.assertNotIn("terrain_step", [e.name for e in events])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'terrain_step' unexpectedly found in ['jump', 'land', 'terrain_step']
+
+======================================================================
+FAIL: test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=5, kind='half')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 101, in test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures
+    self.assertNotIn("terrain_step", [e.name for e in events])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'terrain_step' unexpectedly found in ['jump', 'land', 'terrain_step']
+
+======================================================================
+FAIL: test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=9, kind='quarter')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 101, in test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures
+    self.assertNotIn("terrain_step", [e.name for e in events])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'terrain_step' unexpectedly found in ['jump', 'land', 'terrain_step']
+
+======================================================================
+FAIL: test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures (test_block_walking.BlockWalkingTests.test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures) (material=9, kind='half')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 101, in test_explicit_jumps_land_on_voxel_fractional_and_partial_terrain_fixtures
+    self.assertNotIn("terrain_step", [e.name for e in events])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'terrain_step' unexpectedly found in ['jump', 'land', 'terrain_step']
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=1, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=1, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=1, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=1, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=2, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=2, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=2, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=2, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=5, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=5, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=5, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=5, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=9, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=9, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=9, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels (test_block_walking.BlockWalkingTests.test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels) (material=9, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 64, in test_partial_heightfield_cannot_snap_up_four_tenths_onto_voxels
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.6 within 5 places (0.3999999999999999 difference)
+
+======================================================================
+FAIL: test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=1, rise=0.25)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 120, in test_standing_and_descending_plain_solids_preserve_support_without_stair_foley
+    self.assertFalse({"jump", "land", "terrain_step"} & {e.name for e in events})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'terrain_step'} is not false
+
+======================================================================
+FAIL: test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=1, rise=0.5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 120, in test_standing_and_descending_plain_solids_preserve_support_without_stair_foley
+    self.assertFalse({"jump", "land", "terrain_step"} & {e.name for e in events})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'terrain_step'} is not false
+
+======================================================================
+FAIL: test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=2, rise=0.25)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 120, in test_standing_and_descending_plain_solids_preserve_support_without_stair_foley
+    self.assertFalse({"jump", "land", "terrain_step"} & {e.name for e in events})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'terrain_step'} is not false
+
+======================================================================
+FAIL: test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=2, rise=0.5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 120, in test_standing_and_descending_plain_solids_preserve_support_without_stair_foley
+    self.assertFalse({"jump", "land", "terrain_step"} & {e.name for e in events})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'terrain_step'} is not false
+
+======================================================================
+FAIL: test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=5, rise=0.25)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 120, in test_standing_and_descending_plain_solids_preserve_support_without_stair_foley
+    self.assertFalse({"jump", "land", "terrain_step"} & {e.name for e in events})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'terrain_step'} is not false
+
+======================================================================
+FAIL: test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=5, rise=0.5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 120, in test_standing_and_descending_plain_solids_preserve_support_without_stair_foley
+    self.assertFalse({"jump", "land", "terrain_step"} & {e.name for e in events})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'terrain_step'} is not false
+
+======================================================================
+FAIL: test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=9, rise=0.25)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 120, in test_standing_and_descending_plain_solids_preserve_support_without_stair_foley
+    self.assertFalse({"jump", "land", "terrain_step"} & {e.name for e in events})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'terrain_step'} is not false
+
+======================================================================
+FAIL: test_standing_and_descending_plain_solids_preserve_support_without_stair_foley (test_block_walking.BlockWalkingTests.test_standing_and_descending_plain_solids_preserve_support_without_stair_foley) (material=9, rise=0.5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 120, in test_standing_and_descending_plain_solids_preserve_support_without_stair_foley
+    self.assertFalse({"jump", "land", "terrain_step"} & {e.name for e in events})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'terrain_step'} is not false
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'shift', 'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'d', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'d', 'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'d', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w', 'shift', 'd'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w', 'shift', 'd'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=1, keys={'w', 'shift', 'd'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'shift', 'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'d', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'d', 'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'d', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w', 'shift', 'd'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w', 'shift', 'd'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=2, keys={'w', 'shift', 'd'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'shift', 'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'d', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'d', 'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'d', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w', 'shift', 'd'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w', 'shift', 'd'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=5, keys={'w', 'shift', 'd'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'shift', 'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'d', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'d', 'w'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'d', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w', 'shift', 'd'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w', 'shift', 'd'}, dt=0.03333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates (test_block_walking.BlockWalkingTests.test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates) (material=9, keys={'w', 'shift', 'd'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 54, in test_unit_blocks_reject_walking_sprinting_diagonals_and_large_updates
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.0 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.25, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.25, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.25, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.25, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.5, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.5, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.5, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=1, rise=0.5, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.25, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.25, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.25, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.25, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.5, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.5, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.5, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=2, rise=0.5, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.25, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.25, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.25, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.25, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.5, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.5, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.5, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=5, rise=0.5, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.25, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.25, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.25, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.25, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.25 != 1.0 within 5 places (0.25 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.5, keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.5, keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.5, keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs (test_block_walking.BlockWalkingTests.test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs) (material=9, rise=0.5, keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 73, in test_unmarked_quarter_and_half_unit_solids_do_not_become_stairs
+    self.assert_blocked(world, feet, keys, dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 41, in assert_blocked
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5 != 1.0 within 5 places (0.5 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='north curtain', keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='north curtain', keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='north curtain', keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='north curtain', keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='south curtain', keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='south curtain', keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='south curtain', keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='south curtain', keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='west curtain', keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='west curtain', keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='west curtain', keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='west curtain', keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='east curtain', keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='east curtain', keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='east curtain', keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='east curtain', keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 7.0 != 6 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='tower merlon', keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 9.0 != 8 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='tower merlon', keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 9.0 != 8 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='tower merlon', keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 9.0 != 8 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='tower merlon', keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 9.0 != 8 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='courtyard masonry', keys={'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='courtyard masonry', keys={'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='courtyard masonry', keys={'shift', 'w'}, dt=0.008333333333333333)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1 within 5 places (1.0 difference)
+
+======================================================================
+FAIL: test_castle_curtain_tower_and_courtyard_blocks_require_jumping (test_block_walking.BuiltWorldWalkingTests.test_castle_curtain_tower_and_courtyard_blocks_require_jumping) (case='courtyard masonry', keys={'shift', 'w'}, dt=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_block_walking.py", line 181, in test_castle_curtain_tower_and_courtyard_blocks_require_jumping
+    self.assertAlmostEqual(player.z, feet, places=5)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1 within 5 places (1.0 difference)
+
+----------------------------------------------------------------------
+Ran 9 tests in 4.285s
+
+FAILED (failures=136, errors=3)

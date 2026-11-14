@@ -1,0 +1,47 @@
+{
+  "tests": 429,
+  "failures": [],
+  "errors": [],
+  "skipped": [
+    [
+      "test_real_desktop_cursor_is_inside_helper_and_releases_across_capture_epochs (test_mouse_capture.WindowsCursorResourceTests.test_real_desktop_cursor_is_inside_helper_and_releases_across_capture_epochs)",
+      "ClipCursor denied; run outside the sandbox"
+    ]
+  ],
+  "passed": true,
+  "native_console": true,
+  "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+  "seconds": 179.26004120000016,
+  "hashes": {
+    "ascii3d\\__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d\\__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d\\app.py": "dec25f1c7a1ea71c8b8e9a4eb19550a8123e39267fdb869f748d9038774677d1",
+    "ascii3d\\audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d\\audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d\\audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d\\combat.py": "193b336acd5b9ac21fd94987ca52fef7648c245e7938a99fc9c9befaee374a1c",
+    "ascii3d\\combat_render.py": "1dbddc26b59e0def57e2dba20ae452a8d96d4d8cafd3611bfe5012087a7f5c2e",
+    "ascii3d\\door_render.py": "b7f7f7c184b5cf087fcb1318759594bbbac008f54f352759abc34e7576507157",
+    "ascii3d\\doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d\\events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d\\geometry.py": "cb877899d5fff69b1a00da6d04c21b74dc86a66b5dc2da1ba5c044217a4a68f2",
+    "ascii3d\\gpu_renderer.py": "3503040ce5ec95bc33f5c728b797619ec1c7a1a21bd01dd9fd0b9c9df3cf72b9",
+    "ascii3d\\gpu_static.wgsl": "3ead5d7f0776ac77444892187829052cb6edfb58b26e0a9e5d1b4b4e2ee2e48b",
+    "ascii3d\\loading.py": "11ae438770c079f8a1cd3b161c853cedd3e56c1e25f12c9341d01459c166d1be",
+    "ascii3d\\map_expansion.py": "f45f99b3fac403d6c90fcc36a381d3cd721968f2693df019d4ec820b2c772f82",
+    "ascii3d\\mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d\\player.py": "83d650349c0e64be85a67729e14736da88dedd3175055179ff26ac38ca045903",
+    "ascii3d\\renderer.py": "1e234d69c7c00d1560128a0caaa738cce87fc1bb1ed7b6f135ab715f0aa7aac7",
+    "ascii3d\\scenery.py": "9ea3fd4ec388265f731892d29b4af9823f5dd63c007d893b816e5c5cbb2ed2bd",
+    "ascii3d\\sound.py": "40e0da49c354bebe51378245c5d3566eecf534c5c177b8fff66846c7eedc2fa8",
+    "ascii3d\\sound_surfaces.py": "501851a29f0e0e16250158b82830201e2036c4f60fa2273f69435a2e1b31ea9d",
+    "ascii3d\\soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d\\surfaces.py": "3dc0991b6568fed7b469cc3b7b5dafac1665304830d9d33cdd162c480052434a",
+    "ascii3d\\targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d\\terminal.py": "a23b200dad42c7b3445388e0695ccbb390b706b24fcf2f94cf3648d4f94e3e3f",
+    "ascii3d\\terrain.py": "e4067da2db9ae1810976f6bb21affaa83848c9f88e97abbf63f1d2b4b09ca808",
+    "ascii3d\\trees.py": "e934a52a1ed7d9157b5b6cc9c8ecabadfd26892136d12c77113d263e34a5cdef",
+    "ascii3d\\world.py": "a61a0501075a70d063fe2487cd0eba912d4235e4ba87d5a6e9e061f452c0fbff"
+  },
+  "source_unchanged": true
+}

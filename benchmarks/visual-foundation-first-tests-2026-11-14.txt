@@ -1,0 +1,224 @@
+test_crown_span_avoids_proven_miss_rays_and_hidden_scanlines (test_crown_spans.CrownSpanTests.test_crown_span_avoids_proven_miss_rays_and_hidden_scanlines) ... ok
+test_projected_work_bound_covers_unoccluded_samples_and_rejects_budget_pressure (test_crown_spans.CrownSpanTests.test_projected_work_bound_covers_unoccluded_samples_and_rejects_budget_pressure) ... ok
+test_selection_preserves_nearest_limit_and_shared_distance_detail (test_crown_spans.CrownSpanTests.test_selection_preserves_nearest_limit_and_shared_distance_detail) ... ok
+test_spans_match_scalar_glyphs_and_depths_outside_inside_and_near_plane (test_crown_spans.CrownSpanTests.test_spans_match_scalar_glyphs_and_depths_outside_inside_and_near_plane) ... ok
+test_analytic_opaque_box_occludes_enemy_body_and_aimed_label (test_smooth_render.SmoothSurfaceRenderingTests.test_analytic_opaque_box_occludes_enemy_body_and_aimed_label) ... ok
+test_analytic_skyline_cache_tracks_field_world_eye_and_frustum_extent (test_smooth_render.SmoothSurfaceRenderingTests.test_analytic_skyline_cache_tracks_field_world_eye_and_frustum_extent) ... ok
+test_analytic_skyline_omits_proven_sky_queries_without_changing_depth (test_smooth_render.SmoothSurfaceRenderingTests.test_analytic_skyline_omits_proven_sky_queries_without_changing_depth) ... ok
+test_analytic_skyline_refines_origin_chunk_and_preserves_wrap_and_near_shapes (test_smooth_render.SmoothSurfaceRenderingTests.test_analytic_skyline_refines_origin_chunk_and_preserves_wrap_and_near_shapes) ... ok
+test_doors_and_analytic_boxes_share_nearest_depth (test_smooth_render.SmoothSurfaceRenderingTests.test_doors_and_analytic_boxes_share_nearest_depth) ... ok
+test_early_outdoor_query_avoids_hidden_foundation_reads_with_identical_depths (test_smooth_render.SmoothSurfaceRenderingTests.test_early_outdoor_query_avoids_hidden_foundation_reads_with_identical_depths) ... ok
+test_early_query_misses_have_a_fixed_duplicate_work_budget (test_smooth_render.SmoothSurfaceRenderingTests.test_early_query_misses_have_a_fixed_duplicate_work_budget) ... ok
+test_first_geometry_selection_and_cached_frames_have_identical_depths (test_smooth_render.SmoothSurfaceRenderingTests.test_first_geometry_selection_and_cached_frames_have_identical_depths) ... ok
+test_frustum_culling_matches_unculled_tall_near_shapes_and_slopes (test_smooth_render.SmoothSurfaceRenderingTests.test_frustum_culling_matches_unculled_tall_near_shapes_and_slopes) ... ok
+test_hillside_normal_changes_turf_light_at_the_same_surface_point (test_smooth_render.SmoothSurfaceRenderingTests.test_hillside_normal_changes_turf_light_at_the_same_surface_point) ... FAIL
+test_opaque_voxel_wall_bounds_queries_for_geometry_behind_it (test_smooth_render.SmoothSurfaceRenderingTests.test_opaque_voxel_wall_bounds_queries_for_geometry_behind_it) ... ok
+test_outside_frustum_geometry_restores_voxel_only_ray_path (test_smooth_render.SmoothSurfaceRenderingTests.test_outside_frustum_geometry_restores_voxel_only_ray_path) ... ok
+test_projected_analytic_bounds_cover_exact_rays_at_edges_and_near_plane (test_smooth_render.SmoothSurfaceRenderingTests.test_projected_analytic_bounds_cover_exact_rays_at_edges_and_near_plane) ... ok
+test_projected_analytic_bounds_reduce_queries_and_match_unbounded_frames (test_smooth_render.SmoothSurfaceRenderingTests.test_projected_analytic_bounds_reduce_queries_and_match_unbounded_frames) ... ok
+test_projected_analytic_spans_match_per_box_minimum_with_bounded_projections (test_smooth_render.SmoothSurfaceRenderingTests.test_projected_analytic_spans_match_per_box_minimum_with_bounded_projections) ... ok
+test_query_minimum_depth_omits_geometry_hidden_by_nearer_voxels (test_smooth_render.SmoothSurfaceRenderingTests.test_query_minimum_depth_omits_geometry_hidden_by_nearer_voxels) ... ok
+test_query_minimum_depth_retains_coincident_voxel_analytic_faces (test_smooth_render.SmoothSurfaceRenderingTests.test_query_minimum_depth_retains_coincident_voxel_analytic_faces) ... ok
+test_sample_ray_endpoints_stay_inside_world_space_culling_bounds (test_smooth_render.SmoothSurfaceRenderingTests.test_sample_ray_endpoints_stay_inside_world_space_culling_bounds) ... ok
+test_sloped_plane_matches_analytic_depth_at_every_visible_sample (test_smooth_render.SmoothSurfaceRenderingTests.test_sloped_plane_matches_analytic_depth_at_every_visible_sample) ... ok
+test_subvoxel_stair_treads_receive_exact_depth_in_front_of_voxel_floor (test_smooth_render.SmoothSurfaceRenderingTests.test_subvoxel_stair_treads_receive_exact_depth_in_front_of_voxel_floor) ... ok
+test_upward_hill_hits_survive_voxel_sky_and_empty_space_skips (test_smooth_render.SmoothSurfaceRenderingTests.test_upward_hill_hits_survive_voxel_sky_and_empty_space_skips) ... ok
+test_voxel_wall_occludes_analytic_geometry_behind_it (test_smooth_render.SmoothSurfaceRenderingTests.test_voxel_wall_occludes_analytic_geometry_behind_it) ... ok
+test_water_plane_wins_only_when_above_continuous_ground (test_smooth_render.SmoothSurfaceRenderingTests.test_water_plane_wins_only_when_above_continuous_ground) ... ok
+test_aimed_enemy_name_is_above_body_and_requires_range_and_aim (test_combat_render.CombatRenderingTests.test_aimed_enemy_name_is_above_body_and_requires_range_and_aim) ... FAIL
+test_closed_door_hides_target_and_open_door_reveals_it (test_combat_render.CombatRenderingTests.test_closed_door_hides_target_and_open_door_reveals_it) ... ok
+test_enemy_has_opaque_torso_and_head_from_all_four_sides (test_combat_render.CombatRenderingTests.test_enemy_has_opaque_torso_and_head_from_all_four_sides) ... 
+  test_enemy_has_opaque_torso_and_head_from_all_four_sides (test_combat_render.CombatRenderingTests.test_enemy_has_opaque_torso_and_head_from_all_four_sides) (yaw=1.5707963267948966) ... FAIL
+  test_enemy_has_opaque_torso_and_head_from_all_four_sides (test_combat_render.CombatRenderingTests.test_enemy_has_opaque_torso_and_head_from_all_four_sides) (yaw=-1.5707963267948966) ... FAIL
+  test_enemy_has_opaque_torso_and_head_from_all_four_sides (test_combat_render.CombatRenderingTests.test_enemy_has_opaque_torso_and_head_from_all_four_sides) (yaw=0) ... FAIL
+  test_enemy_has_opaque_torso_and_head_from_all_four_sides (test_combat_render.CombatRenderingTests.test_enemy_has_opaque_torso_and_head_from_all_four_sides) (yaw=3.141592653589793) ... FAIL
+test_geometry_is_depth_tested_and_draw_count_is_bounded (test_combat_render.CombatRenderingTests.test_geometry_is_depth_tested_and_draw_count_is_bounded) ... ok
+test_help_and_attack_control_fit_minimum_viewport (test_combat_render.CombatRenderingTests.test_help_and_attack_control_fit_minimum_viewport) ... ok
+test_pickup_and_equipped_blade_interiors_are_opaque_and_local (test_combat_render.CombatRenderingTests.test_pickup_and_equipped_blade_interiors_are_opaque_and_local) ... 
+  test_pickup_and_equipped_blade_interiors_are_opaque_and_local (test_combat_render.CombatRenderingTests.test_pickup_and_equipped_blade_interiors_are_opaque_and_local) (equipped=False) ... FAIL
+  test_pickup_and_equipped_blade_interiors_are_opaque_and_local (test_combat_render.CombatRenderingTests.test_pickup_and_equipped_blade_interiors_are_opaque_and_local) (equipped=True) ... FAIL
+test_pickup_prompt_equipment_swing_and_down_pose_are_visible (test_combat_render.CombatRenderingTests.test_pickup_prompt_equipment_swing_and_down_pose_are_visible) ... ok
+test_quad_spans_match_triangle_reference_with_perspective_and_occlusion (test_combat_render.CombatRenderingTests.test_quad_spans_match_triangle_reference_with_perspective_and_occlusion) ... ok
+test_staff_fireballs_and_bursts_respect_foreground_depth_and_walls (test_combat_render.CombatRenderingTests.test_staff_fireballs_and_bursts_respect_foreground_depth_and_walls) ... ok
+test_staff_is_opaque_and_readable_from_four_sides (test_combat_render.CombatRenderingTests.test_staff_is_opaque_and_readable_from_four_sides) ... FAIL
+test_staff_pickup_held_shape_swap_prompt_and_cast_animation (test_combat_render.CombatRenderingTests.test_staff_pickup_held_shape_swap_prompt_and_cast_animation) ... ok
+test_travelling_fireball_has_an_opaque_core_and_finite_depth (test_combat_render.CombatRenderingTests.test_travelling_fireball_has_an_opaque_core_and_finite_depth) ... ok
+test_triangle_fill_interpolates_depth_and_respects_foreground (test_combat_render.CombatRenderingTests.test_triangle_fill_interpolates_depth_and_respects_foreground) ... ok
+test_trunk_blocks_name_even_with_visible_dummy_shoulders (test_combat_render.CombatRenderingTests.test_trunk_blocks_name_even_with_visible_dummy_shoulders) ... ok
+test_wall_hides_pickup_dummy_and_label (test_combat_render.CombatRenderingTests.test_wall_hides_pickup_dummy_and_label) ... ok
+test_warden_body_covers_background_from_all_four_sides (test_combat_render.CombatRenderingTests.test_warden_body_covers_background_from_all_four_sides) ... ok
+test_warden_is_opaque_occluded_and_only_named_when_aimed_at (test_combat_render.CombatRenderingTests.test_warden_is_opaque_occluded_and_only_named_when_aimed_at) ... ok
+test_warden_windup_and_movement_are_deterministic_and_dead_body_vanishes (test_combat_render.CombatRenderingTests.test_warden_windup_and_movement_are_deterministic_and_dead_body_vanishes) ... ok
+test_close_generic_body_and_grass_keep_identical_visible_pixels (test_combat_prepass.CombatPrepassTests.test_close_generic_body_and_grass_keep_identical_visible_pixels) ... ok
+test_dead_and_near_plane_enemies_keep_the_ordinary_path (test_combat_prepass.CombatPrepassTests.test_dead_and_near_plane_enemies_keep_the_ordinary_path) ... ok
+test_dense_nearby_canopies_disable_the_prepass_without_detail_loss (test_combat_prepass.CombatPrepassTests.test_dense_nearby_canopies_disable_the_prepass_without_detail_loss) ... ok
+test_nearly_coplanar_voxel_and_body_faces_preserve_depth_tolerance (test_combat_prepass.CombatPrepassTests.test_nearly_coplanar_voxel_and_body_faces_preserve_depth_tolerance) ... ok
+test_walls_and_panels_keep_occlusion_and_labels (test_combat_prepass.CombatPrepassTests.test_walls_and_panels_keep_occlusion_and_labels) ... ok
+test_blank_foreground_changes_do_not_split_a_visible_run (test_presentation.StyledFrameTests.test_blank_foreground_changes_do_not_split_a_visible_run) ... ok
+test_gray_palette_has_sixteen_neutral_monotonic_levels (test_presentation.StyledFrameTests.test_gray_palette_has_sixteen_neutral_monotonic_levels) ... ok
+test_rejects_invalid_dimensions_cells_and_style_buffers (test_presentation.StyledFrameTests.test_rejects_invalid_dimensions_cells_and_style_buffers) ... ok
+test_runs_preserve_visible_cells_and_reset_each_row (test_presentation.StyledFrameTests.test_runs_preserve_visible_cells_and_reset_each_row) ... ok
+test_centered_styled_rows_use_native_origin (test_presentation.StyledTerminalTests.test_centered_styled_rows_use_native_origin) ... ok
+test_style_byte_length_does_not_change_clear_or_final_cell (test_presentation.StyledTerminalTests.test_style_byte_length_does_not_change_clear_or_final_cell) ... ok
+test_styled_then_plain_output_has_white_foreground (test_presentation.StyledTerminalTests.test_styled_then_plain_output_has_white_foreground) ... ok
+test_constant_rate_is_live_and_keeps_only_recent_samples (test_game_loop.FrameRateTests.test_constant_rate_is_live_and_keeps_only_recent_samples) ... ok
+test_long_stalls_are_not_clamped_by_the_physics_time_limit (test_game_loop.FrameRateTests.test_long_stalls_are_not_clamped_by_the_physics_time_limit) ... ok
+test_rate_changes_replace_old_samples_within_one_second (test_game_loop.FrameRateTests.test_rate_changes_replace_old_samples_within_one_second) ... ok
+test_uneven_frames_report_frames_per_elapsed_time (test_game_loop.FrameRateTests.test_uneven_frames_report_frames_per_elapsed_time) ... ok
+test_color_is_unavailable_before_grayscale_review (test_game_loop.GameLoopTests.test_color_is_unavailable_before_grayscale_review) ... ok
+test_default_mouse_mode_ignores_q_and_arrows_keyboard_mode_uses_enter_action (test_game_loop.GameLoopTests.test_default_mouse_mode_ignores_q_and_arrows_keyboard_mode_uses_enter_action) ... ok
+test_defeat_returns_to_entrance_with_health_and_inventory_preserved (test_game_loop.GameLoopTests.test_defeat_returns_to_entrance_with_health_and_inventory_preserved) ... ok
+test_demo_can_collect_a_pickup_without_assuming_door_fields (test_game_loop.GameLoopTests.test_demo_can_collect_a_pickup_without_assuming_door_fields) ... ok
+test_downed_reset_freezes_while_paused_and_emits_on_resume (test_game_loop.GameLoopTests.test_downed_reset_freezes_while_paused_and_emits_on_resume) ... ok
+test_e_click_pause_help_and_reset_use_real_loop_and_route_sound (test_game_loop.GameLoopTests.test_e_click_pause_help_and_reset_use_real_loop_and_route_sound) ... ok
+test_empty_e_keeps_quiet_feedback_without_an_instruction_notice (test_game_loop.GameLoopTests.test_empty_e_keeps_quiet_feedback_without_an_instruction_notice) ... ok
+test_grayscale_is_default_and_mono_option_reaches_live_renderer (test_game_loop.GameLoopTests.test_grayscale_is_default_and_mono_option_reaches_live_renderer) ... ok
+test_hud_fps_tracks_actual_completed_frames_and_counts_output_stalls (test_game_loop.GameLoopTests.test_hud_fps_tracks_actual_completed_frames_and_counts_output_stalls) ... ok
+test_mouse_look_applies_once_per_frame_not_per_physics_step (test_game_loop.GameLoopTests.test_mouse_look_applies_once_per_frame_not_per_physics_step) ... ok
+test_mouse_motion_and_attack_are_dispatched_in_the_same_frame (test_game_loop.GameLoopTests.test_mouse_motion_and_attack_are_dispatched_in_the_same_frame) ... ok
+test_native_capture_failure_explains_keyboard_fallback_without_crashing (test_game_loop.GameLoopTests.test_native_capture_failure_explains_keyboard_fallback_without_crashing) ... ok
+test_pause_and_help_restore_native_clip_before_rendering_and_audio (test_game_loop.GameLoopTests.test_pause_and_help_restore_native_clip_before_rendering_and_audio) ... ok
+test_pause_help_blur_and_small_terminal_release_mouse_and_discard_view_motion (test_game_loop.GameLoopTests.test_pause_help_blur_and_small_terminal_release_mouse_and_discard_view_motion) ... ok
+test_region_start_and_reset_use_the_same_elevated_entrance (test_game_loop.GameLoopTests.test_region_start_and_reset_use_the_same_elevated_entrance) ... ok
+test_render_errors_release_mouse_before_audio_cleanup (test_game_loop.GameLoopTests.test_render_errors_release_mouse_before_audio_cleanup) ... ok
+test_resize_grows_shrinks_and_resumes_at_the_minimum_with_input_and_audio (test_game_loop.GameLoopTests.test_resize_grows_shrinks_and_resumes_at_the_minimum_with_input_and_audio) ... ok
+test_staff_swap_cast_pause_help_small_terminal_and_reset_route_real_events (test_game_loop.GameLoopTests.test_staff_swap_cast_pause_help_small_terminal_and_reset_route_real_events) ... ok
+test_viewport_budget_below_playable_minimum_is_rejected_before_loading (test_game_loop.GameLoopTests.test_viewport_budget_below_playable_minimum_is_rejected_before_loading) ... ok
+test_viewport_defaults_to_full_terminal_and_accepts_an_explicit_large_budget (test_game_loop.GameLoopTests.test_viewport_defaults_to_full_terminal_and_accepts_an_explicit_large_budget) ... ok
+test_audio_entry_failure_stops_animation_before_terminal_restoration (test_loading.AppLoadingTests.test_audio_entry_failure_stops_animation_before_terminal_restoration) ... ok
+test_failed_preparation_does_not_reach_100_or_start_terminal_audio (test_loading.AppLoadingTests.test_failed_preparation_does_not_reach_100_or_start_terminal_audio) ... ok
+test_headless_snapshot_and_benchmark_never_emit_loading_text (test_loading.AppLoadingTests.test_headless_snapshot_and_benchmark_never_emit_loading_text) ... ok
+test_interactive_load_reports_each_real_completed_stage_before_play (test_loading.AppLoadingTests.test_interactive_load_reports_each_real_completed_stage_before_play) ... ok
+test_interrupted_world_build_stops_animation_without_claiming_ready (test_loading.AppLoadingTests.test_interrupted_world_build_stops_animation_without_claiming_ready) ... ok
+test_redirected_interactive_output_has_no_progress (test_loading.AppLoadingTests.test_redirected_interactive_output_has_no_progress) ... ok
+test_terminal_entry_failure_stops_animation_without_claiming_ready (test_loading.AppLoadingTests.test_terminal_entry_failure_stops_animation_without_claiming_ready) ... ok
+test_animation_rotates_tips_and_spinner_without_advancing_percent (test_loading.LoadingProgressTests.test_animation_rotates_tips_and_spinner_without_advancing_percent) ... ok
+test_completed_stages_reach_100_once_without_timer_progress (test_loading.LoadingProgressTests.test_completed_stages_reach_100_once_without_timer_progress) ... ok
+test_disabled_display_starts_no_thread (test_loading.LoadingProgressTests.test_disabled_display_starts_no_thread) ... ok
+test_disabled_display_writes_nothing (test_loading.LoadingProgressTests.test_disabled_display_writes_nothing) ... ok
+test_empty_terminal_width_never_wraps_or_emits_ansi (test_loading.LoadingProgressTests.test_empty_terminal_width_never_wraps_or_emits_ansi) ... ok
+test_failed_flush_still_stops_worker_before_propagating_error (test_loading.LoadingProgressTests.test_failed_flush_still_stops_worker_before_propagating_error) ... ok
+test_interrupted_load_ends_the_line_without_claiming_completion (test_loading.LoadingProgressTests.test_interrupted_load_ends_the_line_without_claiming_completion) ... ok
+test_narrow_terminal_keeps_percent_and_avoids_autowrap_column (test_loading.LoadingProgressTests.test_narrow_terminal_keeps_percent_and_avoids_autowrap_column) ... ok
+test_playable_sizes_keep_complete_bars_and_untruncated_tips (test_loading.LoadingProgressTests.test_playable_sizes_keep_complete_bars_and_untruncated_tips) ... ok
+test_clear_rectangle_partition_has_linear_reads_and_exact_coverage (test_renderer_terrain.CacheConstructionTests.test_clear_rectangle_partition_has_linear_reads_and_exact_coverage) ... ok
+test_column_atlas_crosses_a_valley_without_distant_side_hill_boundaries (test_renderer_terrain.CacheConstructionTests.test_column_atlas_crosses_a_valley_without_distant_side_hill_boundaries) ... ok
+test_elevated_terraces_and_stacked_floors_preserve_exact_ray_hits (test_renderer_terrain.CacheConstructionTests.test_elevated_terraces_and_stacked_floors_preserve_exact_ray_hits) ... ok
+test_local_sky_ceiling_retains_high_geometry_at_wide_frustum_edges (test_renderer_terrain.CacheConstructionTests.test_local_sky_ceiling_retains_high_geometry_at_wide_frustum_edges) ... ok
+test_origin_rail_refinement_keeps_clear_sky_and_roof_fallback_exact (test_renderer_terrain.CacheConstructionTests.test_origin_rail_refinement_keeps_clear_sky_and_roof_fallback_exact) ... ok
+test_overlapping_runs_match_full_vertical_search_with_linear_reads (test_renderer_terrain.CacheConstructionTests.test_overlapping_runs_match_full_vertical_search_with_linear_reads) ... ok
+test_sky_horizon_preserves_angular_wrap_low_walls_and_camera_cell_edges (test_renderer_terrain.CacheConstructionTests.test_sky_horizon_preserves_angular_wrap_low_walls_and_camera_cell_edges) ... ok
+test_large_world_map_tracks_local_elevation_and_caches_between_boundaries (test_renderer_terrain.TerrainMapTests.test_large_world_map_tracks_local_elevation_and_caches_between_boundaries) ... ok
+test_editing_world_invalidates_empty_space_cache (test_vegetation.TraversalOptimizationTests.test_editing_world_invalidates_empty_space_cache) ... ok
+test_merged_bounds_match_exact_rays_with_partial_chunks_and_raised_surfaces (test_vegetation.TraversalOptimizationTests.test_merged_bounds_match_exact_rays_with_partial_chunks_and_raised_surfaces) ... ok
+test_skipping_matches_exact_traversal_in_all_benchmark_views (test_vegetation.TraversalOptimizationTests.test_skipping_matches_exact_traversal_in_all_benchmark_views) ... ok
+test_close_trunks_remain_visible_from_all_sides_when_looking_up_or_down (test_vegetation.VegetationTests.test_close_trunks_remain_visible_from_all_sides_when_looking_up_or_down) ... ok
+test_crown_silhouette_is_rounded_and_trunk_is_narrow (test_vegetation.VegetationTests.test_crown_silhouette_is_rounded_and_trunk_is_narrow) ... ok
+test_inside_crown_renders_exit_surface_and_respects_foreground_depth (test_vegetation.VegetationTests.test_inside_crown_renders_exit_surface_and_respects_foreground_depth) ... ok
+test_jump_into_live_canopy_stays_visible_within_sample_budget (test_vegetation.VegetationTests.test_jump_into_live_canopy_stays_visible_within_sample_budget) ... FAIL
+test_larger_maps_keep_visible_vegetation_work_within_pixel_budgets (test_vegetation.VegetationTests.test_larger_maps_keep_visible_vegetation_work_within_pixel_budgets) ... ok
+test_near_clipped_trunk_preserves_foreground_occlusion (test_vegetation.VegetationTests.test_near_clipped_trunk_preserves_foreground_occlusion) ... ok
+test_near_plane_crown_is_not_discarded_with_visible_exit_in_front (test_vegetation.VegetationTests.test_near_plane_crown_is_not_discarded_with_visible_exit_in_front) ... ok
+test_offscreen_crown_does_not_spend_fullscreen_intersection_budget (test_vegetation.VegetationTests.test_offscreen_crown_does_not_spend_fullscreen_intersection_budget) ... ok
+test_player_motion_bends_nearby_grass_without_moving_roots (test_vegetation.VegetationTests.test_player_motion_bends_nearby_grass_without_moving_roots) ... ok
+test_short_grass_covers_every_clear_outdoor_cell_including_approaches (test_vegetation.VegetationTests.test_short_grass_covers_every_clear_outdoor_cell_including_approaches) ... ok
+test_tree_behind_camera_does_not_leave_clipped_trunk_artifacts (test_vegetation.VegetationTests.test_tree_behind_camera_does_not_leave_clipped_trunk_artifacts) ... ok
+test_trees_do_not_draw_through_voxel_walls (test_vegetation.VegetationTests.test_trees_do_not_draw_through_voxel_walls) ... ok
+test_trunk_collision_is_circular_and_foliage_is_soft (test_vegetation.VegetationTests.test_trunk_collision_is_circular_and_foliage_is_soft) ... ok
+test_large_windows_cannot_multiply_the_render_work (test_vegetation.ViewportBudgetTests.test_large_windows_cannot_multiply_the_render_work) ... ok
+test_small_window_is_not_enlarged_past_its_actual_size (test_vegetation.ViewportBudgetTests.test_small_window_is_not_enlarged_past_its_actual_size) ... ok
+
+======================================================================
+FAIL: test_hillside_normal_changes_turf_light_at_the_same_surface_point (test_smooth_render.SmoothSurfaceRenderingTests.test_hillside_normal_changes_turf_light_at_the_same_surface_point)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_smooth_render.py", line 196, in test_hillside_normal_changes_turf_light_at_the_same_surface_point
+    self.assertNotEqual(views[0][0], views[1][0])
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "'" == "'"
+
+======================================================================
+FAIL: test_aimed_enemy_name_is_above_body_and_requires_range_and_aim (test_combat_render.CombatRenderingTests.test_aimed_enemy_name_is_above_body_and_requires_range_and_aim)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_combat_render.py", line 102, in test_aimed_enemy_name_is_above_body_and_requires_range_and_aim
+    self.assertTrue(any("%" in row for row in rows[name_row + 1:]))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_enemy_has_opaque_torso_and_head_from_all_four_sides (test_combat_render.CombatRenderingTests.test_enemy_has_opaque_torso_and_head_from_all_four_sides) (yaw=1.5707963267948966)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_combat_render.py", line 187, in test_enemy_has_opaque_torso_and_head_from_all_four_sides
+    self.assertGreater(sum(char == "%" for row in pixels for char in row), 8)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 not greater than 8
+
+======================================================================
+FAIL: test_enemy_has_opaque_torso_and_head_from_all_four_sides (test_combat_render.CombatRenderingTests.test_enemy_has_opaque_torso_and_head_from_all_four_sides) (yaw=-1.5707963267948966)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_combat_render.py", line 187, in test_enemy_has_opaque_torso_and_head_from_all_four_sides
+    self.assertGreater(sum(char == "%" for row in pixels for char in row), 8)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 not greater than 8
+
+======================================================================
+FAIL: test_enemy_has_opaque_torso_and_head_from_all_four_sides (test_combat_render.CombatRenderingTests.test_enemy_has_opaque_torso_and_head_from_all_four_sides) (yaw=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_combat_render.py", line 187, in test_enemy_has_opaque_torso_and_head_from_all_four_sides
+    self.assertGreater(sum(char == "%" for row in pixels for char in row), 8)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 not greater than 8
+
+======================================================================
+FAIL: test_enemy_has_opaque_torso_and_head_from_all_four_sides (test_combat_render.CombatRenderingTests.test_enemy_has_opaque_torso_and_head_from_all_four_sides) (yaw=3.141592653589793)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_combat_render.py", line 187, in test_enemy_has_opaque_torso_and_head_from_all_four_sides
+    self.assertGreater(sum(char == "%" for row in pixels for char in row), 8)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 not greater than 8
+
+======================================================================
+FAIL: test_pickup_and_equipped_blade_interiors_are_opaque_and_local (test_combat_render.CombatRenderingTests.test_pickup_and_equipped_blade_interiors_are_opaque_and_local) (equipped=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_combat_render.py", line 177, in test_pickup_and_equipped_blade_interiors_are_opaque_and_local
+    self.assertEqual(pixels[y][x], "#")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'x' != '#'
+
+======================================================================
+FAIL: test_pickup_and_equipped_blade_interiors_are_opaque_and_local (test_combat_render.CombatRenderingTests.test_pickup_and_equipped_blade_interiors_are_opaque_and_local) (equipped=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_combat_render.py", line 177, in test_pickup_and_equipped_blade_interiors_are_opaque_and_local
+    self.assertEqual(pixels[y][x], "#")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 's' != '#'
+
+======================================================================
+FAIL: test_staff_is_opaque_and_readable_from_four_sides (test_combat_render.CombatRenderingTests.test_staff_is_opaque_and_readable_from_four_sides)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_combat_render.py", line 228, in test_staff_is_opaque_and_readable_from_four_sides
+    self.assertGreater(sum(char == "#" for row in pixels for char in row), 5)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 not greater than 5
+
+======================================================================
+FAIL: test_jump_into_live_canopy_stays_visible_within_sample_budget (test_vegetation.VegetationTests.test_jump_into_live_canopy_stays_visible_within_sample_budget)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_vegetation.py", line 134, in test_jump_into_live_canopy_stays_visible_within_sample_budget
+    self.assertGreater(sum(char in canopy_chars for row in pixels[:18] for char in row), 100)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 56 not greater than 100
+
+----------------------------------------------------------------------
+Ran 123 tests in 40.050s
+
+FAILED (failures=10)

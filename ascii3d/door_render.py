@@ -3,15 +3,17 @@
 import math
 
 from .geometry import Camera
+from .shading import DEFAULT_SHADING
+from .world import METAL, WOOD
 
 
-def draw_doors(world, pixels, depths, player, focal, aspect):
+def draw_doors(world, pixels, depths, player, focal, aspect, shading=None):
     if not world.doors:
         return
     height, width = len(pixels), len(pixels[0])
     cam = Camera(player, width, height, focal, aspect)
     origin = (cam.x, cam.y, cam.z)
-    palette = " .,:;!+=*#%@"
+    shading = shading or DEFAULT_SHADING
     for door in world.doors:
         for panel in door.panels:
             center_x = panel.x + panel.ux * panel.length / 2
@@ -82,12 +84,13 @@ def draw_doors(world, pixels, depths, player, focal, aspect):
                             texture = 0.92 if (a * 2) % 1 < 0.16 else 0.45
                         if abs(a - length + 0.24) < 0.09 and abs(b - 1.25) < 0.15:
                             texture = 1.0
-                        light = 0.86 if face == 1 else 0.52
-                        shade = texture * light / (1 + distance * 0.035)
-                        shade_index = int(shade * 12)
-                        if shade_index < 1:
-                            shade_index = 1
-                        elif shade_index > 10:
-                            shade_index = 10
-                        pixels[y][x] = palette[shade_index]
+                        sign = -1.0 if plane == bounds[face][0] else 1.0
+                        normal = ((panel.ux * sign, panel.uy * sign, 0.0) if face == 0 else
+                                  (-panel.uy * sign, panel.ux * sign, 0.0) if face == 1 else
+                                  (0.0, 0.0, sign))
+                        material = METAL if texture >= 0.9 else WOOD
+                        pixels[y][x] = shading.surface(material,
+                            panel.x + a * panel.ux - c * panel.uy,
+                            panel.y + a * panel.uy + c * panel.ux,
+                            panel.bottom + b, normal, distance)
                         depths[y][x] = distance

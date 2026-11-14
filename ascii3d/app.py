@@ -62,7 +62,7 @@ class FrameRateCounter:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="MONOLITH: a real 3D world rendered as white terminal text.")
+    parser = argparse.ArgumentParser(description="MONOLITH: a real 3D world rendered as ASCII on black.")
     parser.add_argument("--snapshot", action="store_true", help="print one plain ASCII frame and exit")
     parser.add_argument("--width", type=positive_int, default=120, help="snapshot / benchmark columns (default: 120)")
     parser.add_argument("--height", type=positive_int, default=40, help="snapshot / benchmark rows (default: 40)")
@@ -71,6 +71,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--benchmark", type=positive_int, metavar="FRAMES", help="render a turn without terminal output")
     parser.add_argument("--renderer", choices=('auto', 'cpu', 'gpu'), default='auto',
                         help='geometry renderer (default: hardware GPU when available, with CPU fallback)')
+    parser.add_argument("--color-mode", choices=('mono', 'gray'), default='gray',
+                        help='foreground presentation: uniform white or grayscale (default: gray)')
     parser.add_argument("--demo", action="store_true", help="automatically walk and turn; controls still work")
     parser.add_argument("--outside", action="store_true", help="start in the meadow facing the castle")
     parser.add_argument("--region", choices=REGION_NAMES,
@@ -105,10 +107,10 @@ def main(argv: list[str] | None = None) -> int:
         return check_audio(args.volume)
 
     loading = LoadingProgress(sys.stdout, not args.snapshot and not args.benchmark and sys.stdout.isatty())
-    loading.start()
     entrance = (lambda: spawn_region(args.region)) if args.region else (lambda: spawn_player(args.outside))
     renderer = None
     try:
+        loading.start()
         world, player = build_world(), entrance()
         loading.advance()
         renderer = Renderer(world, args.cell_aspect, backend=args.renderer)
@@ -150,7 +152,12 @@ def main(argv: list[str] | None = None) -> int:
         soundscape.at(player.x, player.y, player.yaw, player.z)
         loading.advance()
         with ExitStack() as session:
-            terminal = session.enter_context(Terminal(args.max_cells))
+            with loading.suspend():
+                loading.clear_line()
+                terminal = session.enter_context(Terminal(args.max_cells))
+            # Audio entry can fail before the final loading phase. Stop the
+            # animation before Terminal restores its screen on that path too.
+            session.callback(loading.close)
             loading.advance()
             audio = session.enter_context(Audio(not args.mute, args.volume))
             loading.advance()
@@ -280,11 +287,11 @@ def main(argv: list[str] | None = None) -> int:
                     jump_pending = attack_pending = False
 
                 mouse_captured = terminal.mouse_captured if not keyboard_look and not args.demo else None
-                terminal.draw(renderer.frame(player, width, height, fps, show_map, help_open, paused,
+                terminal.draw(renderer.styled_frame(player, width, height, fps, show_map, help_open, paused,
                                               time_seconds=simulation_time,
                                               notice=notice if simulation_time < notice_until else "", sound_on=audio.enabled,
                                               keyboard_look=keyboard_look,
-                                              mouse_captured=mouse_captured))
+                                              mouse_captured=mouse_captured, color_mode=args.color_mode))
                 frame_count += 1
                 if args.frames and frame_count >= args.frames:
                     break
@@ -294,6 +301,7 @@ def main(argv: list[str] | None = None) -> int:
     except KeyboardInterrupt:
         pass
     except OSError as error:
+        loading.close()
         print(f"MONOLITH: {error}", file=sys.stderr)
         return 1
     finally:

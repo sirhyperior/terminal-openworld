@@ -5,6 +5,8 @@ import math
 from .combat import (BURST_DURATION, FIRE_STAFF, MAX_FIREBALLS, CombatState,
                      Enemy, NAME_REACH, SWING_DURATION)
 from .geometry import Camera
+from .shading import DEFAULT_SHADING, Shading, ink
+from .world import GRASS, METAL, STONE, WOOD
 
 
 DRAW_DISTANCE = 28.0
@@ -43,7 +45,12 @@ def _visible(cam, x, y, z, radius):
 
 
 def _stroke(cam, pixels, depths, a, b, char=None, radius=0.0):
-    cam.stroke(pixels, depths, cam.project(*a), cam.project(*b), radius, char)
+    center = tuple((a[i] + b[i]) / 2 for i in range(3))
+    depth = max(0, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
+    glyph = char or "|"
+    tone = getattr(cam, "shading", DEFAULT_SHADING).surface(METAL, *center,
+        (-cam.cy, -cam.sy, 0), depth, glyph=glyph)
+    cam.stroke(pixels, depths, cam.project(*a), cam.project(*b), radius, tone)
 
 
 def _ring(cam, pixels, depths, x, y, z, rx, ry, rz, char=None):
@@ -55,8 +62,18 @@ def _ring(cam, pixels, depths, x, y, z, rx, ry, rz, char=None):
         cam.stroke(pixels, depths, projected[i], projected[(i + 1) % 8], char=char)
 
 
-def _face(cam, pixels, depths, a, b, c, char):
-    cam.triangle(pixels, depths, cam.project(*a), cam.project(*b), cam.project(*c), char)
+def _face(cam, pixels, depths, a, b, c, char, material=METAL, emission=0.0):
+    center = tuple((a[i] + b[i] + c[i]) / 3 for i in range(3))
+    u, v = tuple(b[i] - a[i] for i in range(3)), tuple(c[i] - a[i] for i in range(3))
+    normal = (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
+    length = math.sqrt(sum(value * value for value in normal))
+    if length < 1e-12:
+        return
+    sign = 1 if sum(normal[i] * ((cam.x, cam.y, cam.z)[i] - center[i]) for i in range(3)) >= 0 else -1
+    normal = tuple(value * sign / length for value in normal)
+    depth = max(0, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
+    tone = getattr(cam, "shading", DEFAULT_SHADING).surface(material, *center, normal, depth, emission=emission)
+    cam.triangle(pixels, depths, cam.project(*a), cam.project(*b), cam.project(*c), tone)
 
 
 def _pickup_marker(pickup, cam, pixels, depths):
@@ -71,7 +88,7 @@ def _pickup_marker(pickup, cam, pixels, depths):
     for i in range(4):
         _stroke(cam, pixels, depths, points[i], points[(i + 1) % 4], "+")
     glint = cam.project(x, y, z + 1.70)
-    cam.stroke(pixels, depths, glint, glint, char="*")
+    cam.stroke(pixels, depths, glint, glint, char=ink("*", 15, METAL))
 
 
 def _draw_pickup(pickup, cam, pixels, depths, time_seconds):
@@ -110,8 +127,8 @@ def _staff_shape(cam, pixels, depths, point, casting=0.0):
         nx, ny = corners[(i + 1) % 4]
         a, b = point(x, 0.08, y), point(nx, 0.08, ny)
         c, d = point(nx, 1.18, ny), point(x, 1.18, y)
-        _face(cam, pixels, depths, a, b, c, "#")
-        _face(cam, pixels, depths, a, c, d, "#")
+        _face(cam, pixels, depths, a, b, c, "#", material=WOOD)
+        _face(cam, pixels, depths, a, c, d, "#", material=WOOD)
     for side in (-1, 1):
         _stroke(cam, pixels, depths, point(side * 0.03, 1.04, 0),
                 point(side * 0.18, 1.38, 0), "/" if side > 0 else "\\")
@@ -132,12 +149,12 @@ def _draw_flame(flame, cam, pixels, depths, radius, direction=None):
     for i in range(4):
         for side in (-1, 1):
             _face(cam, pixels, depths, ring[i], ring[(i + 1) % 4],
-                  (x, y, z + side * radius), "@" if side < 0 else "*")
+                  (x, y, z + side * radius), "@" if side < 0 else "*", emission=1.0)
     center = cam.project(x, y, z)
-    cam.stroke(pixels, depths, center, center, char="*")
+    cam.stroke(pixels, depths, center, center, char=ink("*", 15, METAL))
     if direction is not None:
         tail = tuple(value - component * 0.45 for value, component in zip((x, y, z), direction))
-        cam.stroke_world(pixels, depths, tail, (x, y, z), char=".")
+        cam.stroke_world(pixels, depths, tail, (x, y, z), char=ink(".", 10, METAL))
 
 
 def _draw_enemy(enemy: Enemy, cam, pixels, depths):
@@ -167,8 +184,8 @@ def _draw_enemy(enemy: Enemy, cam, pixels, depths):
              for i in range(8)]
     for i in range(8):
         j = (i + 1) % 8
-        _face(cam, pixels, depths, lower[i], upper[i], upper[j], "%")
-        _face(cam, pixels, depths, lower[i], upper[j], lower[j], "%")
+        _face(cam, pixels, depths, lower[i], upper[i], upper[j], "%", material=GRASS)
+        _face(cam, pixels, depths, lower[i], upper[j], lower[j], "%", material=GRASS)
     head = [(x + 0.24, y, z + 1.80), (x, y + 0.24, z + 1.80),
             (x - 0.24, y, z + 1.80), (x, y - 0.24, z + 1.80)]
     for i in range(4):
@@ -219,11 +236,19 @@ def _draw_warden(enemy, cam, pixels, depths):
             if not (inside or sides[i]):
                 continue
             j = (i + 1) % 4
-            cam.quad(pixels, depths, lower[i], upper[i], upper[j], lower[j], char)
-        if inside or above:
-            cam.quad(pixels, depths, *upper, char)
-        if inside or below:
-            cam.quad(pixels, depths, *lower, char)
+            normals = ((-cosine, -sine, 0), (sine, -cosine, 0),
+                       (cosine, sine, 0), (-sine, cosine, 0))
+            center = point(right, forward, (bottom + top) / 2)
+            depth = max(0, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
+            tone = getattr(cam, "shading", DEFAULT_SHADING).surface(STONE, *center, normals[i], depth)
+            cam.quad(pixels, depths, lower[i], upper[i], upper[j], lower[j], tone)
+        for enabled, vertices, up, normal in ((inside or above, upper, top, (0, 0, 1)),
+                                               (inside or below, lower, bottom, (0, 0, -1))):
+            if enabled:
+                center = point(right, forward, up)
+                depth = max(0, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
+                tone = getattr(cam, "shading", DEFAULT_SHADING).surface(STONE, *center, normal, depth)
+                cam.quad(pixels, depths, *vertices, tone)
 
     for side in (-1, 1):
         block(side * 0.22, side * stride, 0.04, 0.14, 0.18, 0.88, "#")
@@ -298,6 +323,8 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
         return
     height, width = len(pixels), len(pixels[0])
     cam = Camera(player, width, height, focal, aspect)
+    cam.shading = Shading(world)
+    cam.shading.prepare(player, time_seconds)
     pickup_budget = min(MAX_PICKUP_DRAWS, max(1, width * height // 240))
     for pickup in combat.pickups:
         if pickup.collected or not _visible(cam, pickup.x, pickup.y, pickup.z + 0.8, 0.9):

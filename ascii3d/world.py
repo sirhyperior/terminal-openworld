@@ -8,7 +8,7 @@ from .events import GameEvent
 from .combat import CombatState, WeaponPickup, make_training_combat
 from .targeting import cylinder_hit, view_ray
 from .map_expansion import INDOOR_SPAWN, OUTDOOR_SPAWN
-from .surfaces import HeightField, SolidBox, circle_rect, grid_intervals
+from .surfaces import ConvexSolid, HeightField, SolidBox, circle_rect, grid_intervals
 
 
 AIR, STONE, FLOOR, METAL, CRATE, GRASS, WATER, WOOD, LEAVES, PATH, BRIDGE = range(11)
@@ -73,7 +73,7 @@ class World:
     combat: CombatState = field(default_factory=CombatState)
     _surfaces: dict[tuple[int, int], tuple[int, int]] = field(default_factory=dict, repr=False)
     heightfield: HeightField | None = field(default=None, repr=False)
-    solids: list[SolidBox] = field(default_factory=list, repr=False)
+    solids: list[SolidBox | ConvexSolid] = field(default_factory=list, repr=False)
     _solid_chunks: dict = field(default_factory=dict, repr=False)
     _stair_keys: set = field(default_factory=set, repr=False)
     _solid_query_cache: tuple | None = field(default=None, repr=False)
@@ -126,7 +126,7 @@ class World:
     def geometry_present(self):
         return self.heightfield is not None or bool(self.solids)
 
-    def add_solid(self, box: SolidBox):
+    def add_solid(self, box: SolidBox | ConvexSolid):
         self.solids.append(box)
         # Include incident chunks for closed ray faces at exact grid corners.
         for cy in range(math.floor((box.y0 - 1e-8) / 8), math.floor((box.y1 + 1e-8) / 8) + 1):
@@ -149,8 +149,8 @@ class World:
             start = step * length / count if direction > 0 else (count - 1 - step) * length / count
             end = start + length / count
             high = min(top, bottom + (step + 1) * riser)
-            box = (SolidBox(x0, y0 + start, bottom, x0 + width, y0 + end, high, material)
-                   if axis == "y" else SolidBox(x0 + start, y0, bottom, x0 + end, y0 + width, high, material))
+            box = (SolidBox(x0, y0 + start, bottom, x0 + width, y0 + end, high, material, stair=True)
+                   if axis == "y" else SolidBox(x0 + start, y0, bottom, x0 + end, y0 + width, high, material, stair=True))
             boxes.append(self.add_solid(box))
         return tuple(boxes)
 
@@ -342,8 +342,13 @@ class World:
             if ground is not None and ground >= top - 1e-8:
                 top, material = ground, self.heightfield.material_at(x, y)
         for box in self._near_solids(x, y):
-            if box.x0 <= x < box.x1 and box.y0 <= y < box.y1 and box.z1 > top:
-                top, material = box.z1, box.material
+            if isinstance(box, SolidBox):
+                if box.x0 <= x < box.x1 and box.y0 <= y < box.y1 and box.z1 > top:
+                    top, material = box.z1, box.material
+            else:
+                for surface, kind in box.footprint(x, y, 0.0):
+                    if surface > top:
+                        top, material = surface, kind
         return top, material
 
     def surface_height(self, x: float, y: float) -> float:
@@ -352,27 +357,43 @@ class World:
     def surface_material(self, x: float, y: float) -> int:
         return self._point_surface(x, y)[1]
 
-    def _contact_surfaces(self, x, y, feet, radius, max_rise, max_drop):
+    def _contact_surfaces(self, x, y, feet, radius, max_rise, max_drop, *, walking=False):
         low, high = feet - max_drop, feet + max_rise
         if self.heightfield is not None:
             for top, material in self.heightfield.footprint(x, y, radius):
                 if low - 1e-7 <= top <= high + 1e-7:
                     yield top, material
         for box in self._near_solids(x, y, radius):
-            if low - 1e-7 <= box.z1 <= high + 1e-7 and circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1):
-                yield box.z1, box.material
+            if isinstance(box, SolidBox):
+                if walking and not box.stair and box.z1 > feet + 1e-7:
+                    continue
+                if low - 1e-7 <= box.z1 <= high + 1e-7 and circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1):
+                    yield box.z1, box.material
+            else:
+                for top, material in box.footprint(x, y, radius):
+                    if walking and top > feet + 1e-7:
+                        continue
+                    if low - 1e-7 <= top <= high + 1e-7:
+                        yield top, material
         for cy in range(math.floor(y - radius), math.floor(y + radius) + 1):
             for cx in range(math.floor(x - radius), math.floor(x + radius) + 1):
                 if not circle_rect(x, y, radius, cx, cy, cx + 1, cy + 1):
                     continue
                 for top in range(math.ceil(low - 1e-7), math.floor(high + 1e-7) + 1):
+                    if walking and top > feet + 1e-7:
+                        continue
                     material = self.get(cx, cy, top - 1)
                     if material not in (AIR, WATER):
                         yield float(top), material
 
-    def walk_support(self, x, y, feet, radius=0.22, max_rise=0.5, max_drop=0.5):
+    def walk_support(self, x, y, feet, radius=0.22, max_rise=0.5, max_drop=0.5, *, walking=False):
+        """Find support; walking may rise only on terrain or authored treads.
+
+        Generic queries retain all surfaces for item placement and camera
+        settling. Ordinary solids still support standing, descent and landing.
+        """
         allowed = (STONE, FLOOR, GRASS, PATH)
-        return max((pair for pair in self._contact_surfaces(x, y, feet, radius, max_rise, max_drop)
+        return max((pair for pair in self._contact_surfaces(x, y, feet, radius, max_rise, max_drop, walking=walking)
                     if pair[1] in allowed or pair[0] <= feet + 1e-7), default=None)
 
     def terrain_walkable(self, x, y, radius=0.22, feet=None):
@@ -387,14 +408,18 @@ class World:
         if self.heightfield is not None:
             contacts.extend((top, material) for top, material in self.heightfield.footprint(x, y, radius)
                             if abs(top - feet) <= tolerance)
-        contacts.extend((box.z1, box.material) for box in self._near_solids(x, y, radius)
-                        if abs(box.z1 - feet) <= tolerance
-                        and circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1))
+        for box in self._near_solids(x, y, radius):
+            if isinstance(box, SolidBox):
+                if abs(box.z1 - feet) <= tolerance and circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1):
+                    contacts.append((box.z1, box.material))
+            else:
+                contacts.extend((top, material) for top, material in box.footprint(x, y, radius)
+                                if abs(top - feet) <= tolerance)
         contact = max(contacts, default=None)
         return contact[1] if contact is not None else None
 
     def step_contact(self, x, y, feet, radius=0.22):
-        return any(abs(box.z1 - feet) < 1e-5 and circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1)
+        return any(box.stair and abs(box.z1 - feet) < 1e-5 and circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1)
                    for box in self._near_solids(x, y, radius))
 
     def collides(self, x: float, y: float, feet: float,

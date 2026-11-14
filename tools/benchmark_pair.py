@@ -42,16 +42,54 @@ def variant(engine, width=120, height=40, renderer_backend='cpu'):
     built = time.perf_counter()
     renderer = (engine["renderer"].Renderer(world) if renderer_backend == 'cpu'
                 else engine["renderer"].Renderer(world, backend=renderer_backend))
-    if renderer_backend == 'gpu' and getattr(renderer, 'backend_name', 'cpu') != 'gpu':
-        raise RuntimeError('GPU benchmark unavailable: ' + getattr(renderer, 'backend_error', 'unknown device error'))
     created = time.perf_counter()
-    renderer.frame(engine["player"].Player(), width, height)
+    try:
+        require_backend(renderer, renderer_backend)
+        renderer.frame(engine["player"].Player(), width, height)
+        require_backend(renderer, renderer_backend)
+    except BaseException:
+        renderer.close()
+        raise
     primed = time.perf_counter()
     return {"engine": engine, "world": world, "renderer": renderer,
             "soundscape": engine["soundscape"].Soundscape(world),
             "startup": {"build_ms": round((built - start) * 1000, 2),
                         "renderer_init_ms": round((created - built) * 1000, 2),
                         "first_frame_ms": round((primed - created) * 1000, 2)}}
+
+
+def require_backend(renderer, requested):
+    """Explicit comparisons cannot silently measure a replacement backend."""
+    actual = getattr(renderer, 'backend_name', 'cpu')
+    error = getattr(renderer, 'backend_error', '')
+    if requested != 'auto' and (actual != requested or (requested == 'gpu' and error)):
+        raise RuntimeError(f'{requested.upper()} benchmark unavailable: active backend {actual}; {error}')
+
+
+def load_role_manifest(path):
+    """Load explicit before/after poses for changed-map semantic comparisons.
+
+    Format: {"version": 1, "roles": {"role": {"before": {pose},
+    "after": {pose}}}}. Roles keep their existing simulation/input workload;
+    omitted roles are not measured or claimed. Every pose explicitly sets Z.
+    """
+    data = json.loads(Path(path).read_text(encoding='utf-8'))
+    if not isinstance(data, dict) or data.get('version') != 1 or not isinstance(data.get('roles'), dict):
+        raise ValueError('role manifest requires version 1 and a roles object')
+    roles = data['roles']
+    known = {**SCENARIOS, **EXTRA_SCENARIOS, **TERRAIN_SCENARIOS}
+    if not roles or set(roles) - set(known):
+        raise ValueError('role manifest must contain known, nonempty semantic roles')
+    allowed = {'x', 'y', 'z', 'yaw', 'pitch'}
+    for name, role in roles.items():
+        if not isinstance(role, dict) or set(role) != {'before', 'after'}:
+            raise ValueError(f'{name}: role requires exactly before and after poses')
+        for label, pose in role.items():
+            if (not isinstance(pose, dict) or not {'x', 'y', 'z'} <= set(pose)
+                    or set(pose) - allowed or any(isinstance(v, bool) or not isinstance(v, (int, float))
+                                                or not math.isfinite(v) for v in pose.values())):
+                raise ValueError(f'{name}/{label}: invalid explicit finite camera pose')
+    return roles
 
 
 def prepare(state, name, position):
@@ -205,8 +243,20 @@ def run(args, *, before=None, after=None, audio_factory=Audio,
                 current_entry[label] = summarize(state)
 
     try:
+        role_path = getattr(args, 'role_manifest', None)
+        role_poses = load_role_manifest(role_path) if role_path is not None else None
+        if role_poses is not None:
+            report.update(comparison='semantic roles across changed geometry; not same-geometry regression',
+                          role_manifest={'path': str(role_path),
+                                         'sha256': hashlib.sha256(Path(role_path).read_bytes()).hexdigest(),
+                                         'roles': role_poses},
+                          cameras={name: role['after'] for name, role in role_poses.items()},
+                          terrain_cameras={},
+                          scenarios={name: {'status': 'pending', 'passed': False} for name in role_poses},
+                          new_scenarios={})
         if before is None:
-            before = variant(load_engine(args.before_source.resolve(), "before_ascii3d"), args.width, args.height)
+            before = variant(load_engine(args.before_source.resolve(), "before_ascii3d"), args.width, args.height,
+                             getattr(args, 'before_renderer', 'cpu'))
         before["elevated_audio"] = args.before_elevated_audio
         if after is None:
             after = variant({name: importlib.import_module(f"ascii3d.{name}")
@@ -214,6 +264,10 @@ def run(args, *, before=None, after=None, audio_factory=Audio,
                             getattr(args, 'after_renderer', 'cpu'))
         after["elevated_audio"] = True
         states = {"before": before, "after": after}
+        report['requested_renderers'] = {'before': getattr(args, 'before_renderer', 'cpu'),
+                                         'after': getattr(args, 'after_renderer', 'cpu')}
+        for label, state in states.items():
+            require_backend(state['renderer'], report['requested_renderers'][label])
         report['renderer_backends'] = {label: getattr(state['renderer'], 'backend_name', 'cpu')
                                        for label, state in states.items()}
         report['gpu_adapters'] = {label: state['renderer'].ray_backend.adapter_info
@@ -232,7 +286,8 @@ def run(args, *, before=None, after=None, audio_factory=Audio,
             report["preflight"][name] = resolved[name]
             for label, state in states.items():
                 report["current_variant"] = label
-                resolved[name][label] = resolve_camera(state["world"], name, camera,
+                pose = role_poses[name][label] if role_poses is not None else camera
+                resolved[name][label] = resolve_camera(state["world"], name, pose,
                                                        player_type=state["engine"]["player"].Player)
         terrain = {}
         for name, camera in report["terrain_cameras"].items():
@@ -326,13 +381,17 @@ def run(args, *, before=None, after=None, audio_factory=Audio,
                            or health["recoveries"] or health["error"]):
             report["failed"].append("audio_health")
         report["complete"] = measurements_complete and not report["errors"]
-        if after is not None:
-            renderer = after['renderer']
-            report['after_renderer_health'] = {'backend': getattr(renderer, 'backend_name', 'cpu'),
-                                               'error': getattr(renderer, 'backend_error', '')}
-            if getattr(args, 'after_renderer', 'cpu') == 'gpu' and (
-                    report['after_renderer_health']['backend'] != 'gpu' or report['after_renderer_health']['error']):
-                report['failed'].append('gpu_backend')
+        for label, state in (('before', before), ('after', after)):
+            if state is not None:
+                renderer = state['renderer']
+                report[f'{label}_renderer_health'] = {'backend': getattr(renderer, 'backend_name', 'cpu'),
+                                                       'error': getattr(renderer, 'backend_error', '')}
+                try:
+                    require_backend(renderer, getattr(args, f'{label}_renderer', 'cpu'))
+                except RuntimeError as error:
+                    failure(error, f'{label}_renderer_health')
+                    report['complete'] = False
+                    report['failed'].append(f'{label}_backend')
         for state in (before, after):
             close = getattr(state['renderer'], 'close', None) if state is not None else None
             if close is not None:
@@ -355,10 +414,14 @@ def main(argv=None):
     parser.add_argument("--width", type=int, default=120)
     parser.add_argument("--height", type=int, default=40)
     parser.add_argument("--audio", action="store_true")
+    parser.add_argument('--before-renderer', choices=('cpu', 'gpu'), default='cpu',
+                        help='frozen renderer; explicit GPU measurements cannot pass after CPU fallback')
     parser.add_argument('--after-renderer', choices=('cpu', 'gpu', 'auto'), default='cpu',
                         help='current renderer; explicit GPU measurements cannot pass after CPU fallback')
     parser.add_argument("--before-elevated-audio", action="store_true",
                         help="sample listener height in a frozen control that supports elevated ambience")
+    parser.add_argument('--role-manifest', type=Path,
+                        help='version-1 JSON before/after poses for changed-map semantic-role comparisons')
     args = parser.parse_args(argv)
     if args.frames < 20 or args.frames % 2 or not (60 <= args.width <= 300 and 20 <= args.height <= 120):
         parser.error("use an even frame count >=20 and dimensions from 60x20 to 300x120")

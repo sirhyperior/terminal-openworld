@@ -26,7 +26,8 @@ def geometry_hash(world):
     digest.update(field.heights.tobytes())
     digest.update(field.enabled)
     digest.update(field.materials)
-    digest.update(repr([(box.x0, box.y0, box.z0, box.x1, box.y1, box.z1, box.material)
+    digest.update(repr([(box.x0, box.y0, box.z0, box.x1, box.y1, box.z1, box.material,
+                        getattr(box, 'stair', False), getattr(box, 'vertices', ()), getattr(box, 'faces', ()))
                         for box in world.solids]).encode())
     return digest.hexdigest()
 
@@ -36,6 +37,7 @@ def main(argv=None):
     parser.add_argument('--before-source', type=Path, required=True)
     parser.add_argument('--save', type=Path, required=True)
     parser.add_argument('--reference-label', default='explicit frozen source')
+    parser.add_argument('--before-renderer', choices=('cpu', 'gpu'), default='cpu')
     parser.add_argument('--after-renderer', choices=('cpu', 'gpu', 'auto'), default='cpu')
     parser.add_argument('--frames', type=int, default=60)
     parser.add_argument('--width', type=int, default=120)
@@ -69,7 +71,7 @@ def main(argv=None):
     phase = 'startup'
     try:
         before = pair.variant(pair.load_engine(args.before_source, 'same_geometry_before_ascii3d'),
-                              args.width, args.height)
+                              args.width, args.height, renderer_backend=args.before_renderer)
         after = pair.variant({name: importlib.import_module(f'ascii3d.{name}') for name in before['engine']},
                              args.width, args.height, renderer_backend=args.after_renderer)
         phase = 'geometry_preflight'
@@ -93,7 +95,8 @@ def main(argv=None):
             report = pair.run(args, before=before, after=after)
         report['control'] = f'{args.reference_label}; same-geometry diagnostic, not historical acceptance'
         report['geometry_sha256'] = fingerprints
-        report['geometry_hash_fields'] = ['voxel cells', 'field vertices/enabled/materials', 'solid bounds/materials']
+        report['geometry_hash_fields'] = ['voxel cells', 'field vertices/enabled/materials',
+                                         'solid bounds/materials/stair markers/vertices/faces']
         save_owned_report(args.save, report)
     except (Exception, KeyboardInterrupt) as error:
         report.update(complete=False, passed=False, phase=phase, status='incomplete')

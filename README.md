@@ -1,8 +1,15 @@
 # MONOLITH
 
 A dark fantasy first-person exploration sandbox drawn entirely with
-**white ASCII text on black**. Future structures, landscapes, NPCs and enemies
+**monochrome ASCII text on black**. Future structures, landscapes, NPCs and enemies
 follow that theme.
+
+The visual redesign is in progress. Interactive output now has 16 grayscale
+foreground levels; `--color-mode mono` keeps uniform-white output. The approved
+six-destination gothic world rebuild has not been authored yet, so the map
+described below is still the playable map. Full color waits for review of the
+completed grayscale world. See `PROJECT_STATUS.md` for the verified checkpoint.
+
 Explore a **512 by 512 world** with rolling highlands, valleys, a deep ravine,
 forested ridges and a castle hub. This is about **21 times the previous area**,
 with terrain rising from Z=1 to Z=20 and occupied floors and overlooks up to Z=27.
@@ -18,6 +25,9 @@ connect the **Hill Observatory**, **Splitstone Ravine** and **Far Citadel**. Eac
 new hall has three usable floors, windows, a balcony and a rooftop overlook,
 connected by real stairs. Walk along continuous hillsides and quarter-unit
 stone stair risers, with half-unit treads. Jump to cross gaps and climb crates.
+Walking follows continuous ground and authored stair treads. Ordinary blocks,
+low walls and battlements require jumping; their material does not make them
+automatic steps.
 Steep ravine slopes above 45 degrees and wooden guardrails remain obstacles.
 
 M shows a local terrain map that follows your position. `^` marks high ground,
@@ -170,6 +180,8 @@ python main.py --volume 0.35         # Master sound level, 0 to 1
 python main.py --sound-preview effects.wav # Export the original effects
 python main.py --audio-test          # Play river/effects and check playback health
 python main.py --max-cells 4800      # Optional viewport budget to reduce CPU use
+python main.py --color-mode gray    # Grayscale foregrounds on black (default)
+python main.py --color-mode mono    # Uniform-white terminal fallback
 python main.py --cell-aspect 0.5     # Font cell width divided by its height
 python main.py --snapshot            # One plain-text frame; no terminal needed
 python main.py --benchmark 120       # Time 120 frames without terminal output
@@ -177,10 +189,14 @@ python main.py --demo --frames 100   # A finite interactive smoke test
 python -m ascii3d                    # Alternate entry point
 ```
 
-Interactive startup shows a loading percentage and the current stage. The
+Interactive startup shows a MONOLITH title card, animated activity spinner,
+progress bar and rotating gameplay tips. Wide terminals also show elapsed time.
+The spinner and tips keep moving while a longer stage runs. The loading
 percentage counts completed startup phases, rather than predicting remaining
 time; it reaches 100% after the world, renderer, terminal and audio have been
-initialized. Snapshot, benchmark and redirected output omit the loading display.
+initialized. Animation stops before gameplay and on interrupted/failed startup.
+Snapshot, benchmark and redirected output omit the loading display and start no
+animation worker.
 
 The live viewport uses **every terminal column and row** by default, including
 the HUD. There is no fixed character budget or 180-column / 64-row ceiling.
@@ -325,7 +341,8 @@ locate expensive work; use the paired benchmark for performance acceptance.
 ## GPU rendering
 
 The playable game supports `--renderer auto|cpu|gpu`. Auto uses a hardware GPU
-when the optional dependency is available, with CPU fallback. GPU geometry uses
+when the optional dependency is available, with CPU fallback. GPU geometry includes exact convex-plane candidates and indexed solid bounds,
+with float64 refinement and uncertain-ray CPU fallback. It uses
 the same production shading, doors, actors, vegetation and HUD. Ambiguous rays
 retain the exact CPU path; missing/lost devices fall back without changing play.
 `--renderer cpu` forces the standard-library renderer.
@@ -378,3 +395,5 @@ the ground plane; Z is height. The castle ground and river bridge decks are at Z
 the river surface is at Z = 0.68 and its shallow bed at Z = 0.12. `scenery.py`
 controls height-aware grass placement and wind; `trees.py` renders the rounded tree
 crowns. Use `World.box()` to edit voxels so cached empty-space bounds invalidate.
+Use `World.add_stair_flight()` for walkable stairs. Its shared treads carry a
+stair marker; ordinary voxel boxes and unmarked `SolidBox` props stay obstacles.

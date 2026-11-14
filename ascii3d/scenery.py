@@ -9,6 +9,7 @@ from .player import Player
 from .geometry import Camera
 from .trees import Trees
 from .world import GRASS, World
+from .shading import DEFAULT_SHADING, ink
 
 
 @dataclass(frozen=True, slots=True)
@@ -169,6 +170,7 @@ class Scenery:
         width, height = len(pixels[0]), len(pixels)
         self.prepare(seconds)
         cam = Camera(player, width, height, focal, aspect)
+        cam.shading = getattr(self, "shading", DEFAULT_SHADING)
         budget = max(96, width * height // 3)
         self.stats = {"grass_budget": budget, "grass_candidates": 0, "grass_drawn": 0,
                       "grass_chunks": 0, "tree_samples": 0}
@@ -229,11 +231,16 @@ class Scenery:
                     scale = blade.height * 0.9
                     tip = project(blade.x + vx * scale, blade.y + vy * scale,
                                   blade.z + 0.015 + blade.height * (1 - bend * 0.30))
+                    grass = cam.shading.surface(GRASS, blade.x, blade.y, blade.z,
+                                                (0, 0, 1), base[2])
+                    direction = tip[0] - base[0] if tip is not None else 0
+                    glyph = ink("/" if direction > 0.2 else "\\" if direction < -0.2 else "|",
+                                grass.level, GRASS)
                     if tip is not None and abs(tip[1] - base[1]) < 1.5:
-                        drawn = stroke(pixels, depths, base, tip)
+                        drawn = stroke(pixels, depths, base, tip, char=glyph)
                     else:
                         mid = project(blade.x + vx * scale * 0.25, blade.y + vy * scale * 0.25,
                                       blade.z + 0.015 + blade.height * 0.55)
-                        drawn = stroke(pixels, depths, base, mid)
-                        drawn |= stroke(pixels, depths, mid, tip)
+                        drawn = stroke(pixels, depths, base, mid, char=glyph)
+                        drawn |= stroke(pixels, depths, mid, tip, char=glyph)
                     self.stats["grass_drawn"] += bool(drawn)

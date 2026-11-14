@@ -5,7 +5,7 @@ solid below a continuous triangulated vertex grid, independent of voxel storage.
 """
 
 from array import array
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import math
 
 
@@ -60,6 +60,7 @@ class SolidBox:
     y1: float
     z1: float
     material: int = 2
+    stair: bool = False
 
     def ray_hit(self, origin, direction, limit):
         return self._ray_query(origin, direction, limit, False)
@@ -127,6 +128,207 @@ class SolidBox:
     def overlaps(self, x, y, feet, radius, height):
         return (feet < self.z1 - EPSILON and feet + height > self.z0 + EPSILON
                 and circle_rect(x, y, radius, self.x0, self.y0, self.x1, self.y1))
+
+    def footprint(self, x, y, radius):
+        if circle_rect(x, y, radius, self.x0, self.y0, self.x1, self.y1):
+            return ((self.z1, self.material),)
+        return ()
+
+
+def _polygon_contains(vertices, x, y):
+    """Closed containment in an ordered convex polygon of either winding."""
+    sign = 0
+    for i, (ax, ay) in enumerate(vertices):
+        bx, by = vertices[(i + 1) % len(vertices)]
+        cross = (bx - ax) * (y - ay) - (by - ay) * (x - ax)
+        if abs(cross) > 1e-10:
+            direction = 1 if cross > 0 else -1
+            if sign and sign != direction:
+                return False
+            sign = direction
+    return True
+
+
+def _convex_hull(points):
+    points = sorted(set(points))
+    if len(points) <= 2:
+        return points
+    def half(sequence):
+        result = []
+        for p in sequence:
+            while len(result) > 1:
+                a, b = result[-2:]
+                if (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]) > 1e-12:
+                    break
+                result.pop()
+            result.append(p)
+        return result
+    return half(points)[:-1] + half(reversed(points))[:-1]
+
+
+@dataclass(frozen=True, slots=True)
+class ConvexSolid:
+    """Small closed convex piece shared by sight, collision and support.
+
+    Face indices follow their perimeter; either winding is accepted and is
+    normalized outward once. Concave structures are assemblies of pieces.
+    """
+
+    vertices: tuple[tuple[float, float, float], ...]
+    faces: tuple[tuple[int, ...], ...]
+    material: int = 2
+    stair: bool = field(default=False, init=False)
+    planes: tuple = field(init=False, repr=False)
+    edges: tuple = field(init=False, repr=False)
+    x0: float = field(init=False)
+    y0: float = field(init=False)
+    z0: float = field(init=False)
+    x1: float = field(init=False)
+    y1: float = field(init=False)
+    z1: float = field(init=False)
+
+    def __post_init__(self):
+        vertices = tuple(tuple(float(v) for v in point) for point in self.vertices)
+        faces = tuple(tuple(face) for face in self.faces)
+        if not 4 <= len(vertices) <= 32 or not 4 <= len(faces) <= 32:
+            raise ValueError('convex pieces require 4..32 vertices and faces')
+        if any(len(p) != 3 or not all(math.isfinite(v) for v in p) for p in vertices):
+            raise ValueError('convex vertices must be finite XYZ coordinates')
+        if len(set(vertices)) != len(vertices):
+            raise ValueError('convex vertices must be distinct')
+        center = tuple(sum(p[i] for p in vertices) / len(vertices) for i in range(3))
+        planes, ordered, edge_counts = [], [], {}
+        for face in faces:
+            if (len(face) < 3 or len(set(face)) != len(face)
+                    or any(type(i) is not int or not 0 <= i < len(vertices) for i in face)):
+                raise ValueError('faces require distinct valid vertex indices')
+            a, b, c = (vertices[face[i]] for i in range(3))
+            u, v = tuple(b[i] - a[i] for i in range(3)), tuple(c[i] - a[i] for i in range(3))
+            normal = (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
+            length = math.sqrt(sum(n * n for n in normal))
+            if length < 1e-10:
+                raise ValueError('face begins with collinear vertices')
+            normal = tuple(n / length for n in normal)
+            offset = sum(normal[i] * a[i] for i in range(3))
+            if sum(normal[i] * center[i] for i in range(3)) > offset:
+                normal, offset, face = tuple(-n for n in normal), -offset, tuple(reversed(face))
+            if offset - sum(normal[i] * center[i] for i in range(3)) < 1e-9:
+                raise ValueError('convex piece must have nonzero volume')
+            if any(sum(normal[i] * p[i] for i in range(3)) > offset + 1e-7 for p in vertices):
+                raise ValueError('piece is not convex')
+            if any(abs(sum(normal[i] * vertices[j][i] for i in range(3)) - offset) > 1e-7 for j in face):
+                raise ValueError('face is not planar')
+            for i, index in enumerate(face):
+                nxt, last = face[(i + 1) % len(face)], face[(i + 2) % len(face)]
+                a, b, c = vertices[index], vertices[nxt], vertices[last]
+                u, v = tuple(b[j] - a[j] for j in range(3)), tuple(c[j] - b[j] for j in range(3))
+                cross = (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
+                if sum(cross[j] * normal[j] for j in range(3)) < -1e-9:
+                    raise ValueError('face perimeter is not convex and ordered')
+                # Local turn signs alone also admit a self-intersecting star.
+                # Every face vertex must lie inside every oriented edge.
+                for other in face:
+                    v = tuple(vertices[other][j] - a[j] for j in range(3))
+                    cross = (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
+                    if sum(cross[j] * normal[j] for j in range(3)) < -1e-9:
+                        raise ValueError('face perimeter is not convex and ordered')
+                edge = tuple(sorted((index, nxt)))
+                edge_counts[edge] = edge_counts.get(edge, 0) + 1
+            ordered.append(face)
+            planes.append((*normal, offset))
+        if any(count != 2 for count in edge_counts.values()) or set(i for f in faces for i in f) != set(range(len(vertices))):
+            raise ValueError('convex piece must be closed with every vertex used')
+        for name, value in (('vertices', vertices), ('faces', tuple(ordered)), ('planes', tuple(planes)),
+                            ('edges', tuple(edge_counts))):
+            object.__setattr__(self, name, value)
+        for axis, names in enumerate((('x0', 'x1'), ('y0', 'y1'), ('z0', 'z1'))):
+            object.__setattr__(self, names[0], min(p[axis] for p in vertices))
+            object.__setattr__(self, names[1], max(p[axis] for p in vertices))
+
+    def ray_hit(self, origin, direction, limit):
+        enter, leave, normal = 0.0, limit, (0.0, 0.0, 1.0)
+        for nx, ny, nz, offset in self.planes:
+            numerator = offset - (nx * origin[0] + ny * origin[1] + nz * origin[2])
+            denominator = nx * direction[0] + ny * direction[1] + nz * direction[2]
+            if abs(denominator) < 1e-12:
+                if numerator < -1e-10:
+                    return None
+                continue
+            t = numerator / denominator
+            if denominator < 0:
+                if t > enter:
+                    enter, normal = t, (nx, ny, nz)
+            else:
+                leave = min(leave, t)
+            if enter > leave + 1e-10:
+                return None
+        return SurfaceHit(enter, self.material, normal) if leave >= 0 else None
+
+    def ray_entry(self, origin, direction, limit):
+        hit = self.ray_hit(origin, direction, limit)
+        return hit.distance if hit is not None else None
+
+    def overlaps(self, x, y, feet, radius, height):
+        bottom, top = feet + EPSILON, feet + height - EPSILON
+        if (bottom >= self.z1 or top <= self.z0 or bottom >= top
+                or not circle_rect(x, y, radius, self.x0, self.y0, self.x1, self.y1)):
+            return False
+        points = [(vx, vy) for vx, vy, vz in self.vertices if bottom <= vz <= top]
+        for first, second in self.edges:
+            a, b = self.vertices[first], self.vertices[second]
+            if abs(b[2] - a[2]) < 1e-12:
+                continue
+            for level in (bottom, top):
+                fraction = (level - a[2]) / (b[2] - a[2])
+                if 0 <= fraction <= 1:
+                    points.append((a[0] + fraction * (b[0] - a[0]), a[1] + fraction * (b[1] - a[1])))
+        hull = _convex_hull(points)
+        if len(hull) >= 3 and _polygon_contains(hull, x, y):
+            return True
+        for i, (ax, ay) in enumerate(hull):
+            bx, by = hull[(i + 1) % len(hull)]
+            dx, dy = bx - ax, by - ay
+            squared = dx * dx + dy * dy
+            t = max(0.0, min(1.0, ((x - ax) * dx + (y - ay) * dy) / squared)) if squared else 0.0
+            if (ax + t * dx - x) ** 2 + (ay + t * dy - y) ** 2 <= radius * radius + 1e-12:
+                return True
+        return False
+
+    def footprint(self, x, y, radius):
+        """Maximize each upward face over its exact intersection with a disk."""
+        if not circle_rect(x, y, radius, self.x0, self.y0, self.x1, self.y1):
+            return ()
+        results = []
+        for face, (nx, ny, nz, offset) in zip(self.faces, self.planes):
+            if nz <= 1e-10:
+                continue
+            vertices = tuple(self.vertices[i][:2] for i in face)
+            aa, bb, cc = -nx / nz, -ny / nz, offset / nz
+            candidates = [(x, y)] if _polygon_contains(vertices, x, y) else []
+            gradient = math.hypot(aa, bb)
+            if gradient:
+                px, py = x + radius * aa / gradient, y + radius * bb / gradient
+                if _polygon_contains(vertices, px, py):
+                    candidates.append((px, py))
+            for i, (px, py) in enumerate(vertices):
+                if (px - x) ** 2 + (py - y) ** 2 <= radius * radius + 1e-10:
+                    candidates.append((px, py))
+                qx, qy = vertices[(i + 1) % len(vertices)]
+                ex, ey = qx - px, qy - py
+                qa = ex * ex + ey * ey
+                if qa < 1e-20:
+                    continue
+                qb = 2 * ((px - x) * ex + (py - y) * ey)
+                qc = (px - x) ** 2 + (py - y) ** 2 - radius * radius
+                discriminant = qb * qb - 4 * qa * qc
+                if discriminant >= -1e-12:
+                    root = math.sqrt(max(0.0, discriminant))
+                    for t in ((-qb - root) / (2 * qa), (-qb + root) / (2 * qa)):
+                        if -1e-9 <= t <= 1 + 1e-9:
+                            candidates.append((px + t * ex, py + t * ey))
+            if candidates:
+                results.append((max(cc + aa * px + bb * py for px, py in candidates), self.material))
+        return tuple(results)
 
 
 class HeightField:

@@ -7,6 +7,8 @@ import shutil
 import sys
 import time
 
+from .presentation import StyledFrame
+
 
 def fit_viewport(columns: int, rows: int, max_cells: int | None = None) -> tuple[int, int]:
     """Use every native text cell unless an explicit render budget is supplied."""
@@ -667,15 +669,23 @@ class Terminal:
         if isinstance(self.keyboard, WindowsKeyboard):
             self.keyboard.set_mouse_capture(active)
 
-    def draw(self, lines: list[str]) -> None:
-        size = (len(lines[0]), len(lines), self.origin, self._terminal_size)
+    def draw(self, lines: list[str] | StyledFrame) -> None:
+        if isinstance(lines, StyledFrame):
+            width, height = lines.width, lines.height
+            output_rows = lines.ansi_rows()
+        else:
+            if not lines:
+                return
+            width, height = len(lines[0]), len(lines)
+            output_rows = lines
+        size = (width, height, self.origin, self._terminal_size)
         clear = "\x1b[2J" if size != self.last_size else ""
         self.last_size = size
         top, left = self.origin
         separator = "\r\n" + (f"\x1b[{left}G" if left > 1 else "")
         # Autowrap is disabled for the session. Writing the bottom-right cell
         # is safe because the last line has no trailing newline.
-        sys.stdout.write(clear + f"\x1b[{top};{left}H" + separator.join(lines))
+        sys.stdout.write(clear + f"\x1b[{top};{left}H" + separator.join(output_rows))
         sys.stdout.flush()
 
     def __exit__(self, exc_type, exc, traceback) -> None:

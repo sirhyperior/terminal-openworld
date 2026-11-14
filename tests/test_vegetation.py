@@ -7,7 +7,7 @@ from ascii3d.renderer import Renderer
 from ascii3d.scenery import Scenery
 from ascii3d.trees import Crown, Trees
 from ascii3d.terminal import fit_viewport
-from ascii3d.world import FLOOR, GRASS, Tree, World, build_world
+from ascii3d.world import FLOOR, GRASS, LEAVES, Tree, World, build_world
 from tools.benchmark import EXTRA_SCENARIOS, SCENARIOS
 
 
@@ -130,8 +130,8 @@ class VegetationTests(unittest.TestCase):
         self.assertFalse(self.world.collides(player.x, player.y, player.z))
         renderer = Renderer(self.world)
         pixels = renderer.scene(player, 100, 35)
-        canopy_chars = ":;ox*#%@"
-        self.assertGreater(sum(char in canopy_chars for row in pixels[:18] for char in row), 100)
+        self.assertGreater(sum(getattr(char, "material", None) == LEAVES
+                               for row in pixels[:18] for char in row), 100)
         self.assertLessEqual(renderer.scenery.stats["tree_samples"], 100 * 35 * 3)
 
     def test_near_plane_crown_is_not_discarded_with_visible_exit_in_front(self):

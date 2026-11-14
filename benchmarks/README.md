@@ -9,6 +9,29 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Grayscale redesign foundation (2026-11-14, incomplete milestone):**
+  [Checkpoint and approved world brief](visual-redesign-2026-11-14.md) records
+  shared shading, styled terminal output, exact convex geometry/GPU support,
+  failures and resume order. `visual-control-2026-11-14.zip` freezes the actual
+  working source including uncommitted movement/loading fixes. Preserve its
+  manifest, hotspot diagnostic and all initial failed test evidence. World
+  authoring remains outstanding. Final native475tests pass (one cursor skip).
+  Same-geometry/live-audio CPU1/34 andGPU4/34 role gates fail; complete raw reports
+  are retained with clean audio. No baseline or threshold was replaced.
+- **Richer loading presentation (2026-11-13):**
+  [Loading validation](loading-screen-2026-11-13.md) records truthful stage
+  percentages with a title, animated activity, bar and rotating tips. 435 native
+  tests pass on the initial presentation, with one sandbox cursor skip; 38 final
+  focused checks pass after responsive-layout/transition cleanup. An actual
+  30-frame GPU/audio smoke reaches 100 once, has no loading worker in gameplay,
+  and reports zero underruns/recoveries. No new gameplay timing baseline is claimed.
+- **Ordinary block climbing repair (2026-11-13):**
+  [Movement evidence](block-climbing-2026-11-13.md) records the reproduction,
+  shared stair/support repair, expected failing control and validation.
+  429 native tests pass with one sandbox cursor skip; all 13 authored flights
+  retain traversal/Foley. Matched 120x40/60-frame live-audio CPU ABBA against
+  a2049c3 passes **34/34**, with zero underruns/recoveries. This isolates the
+  movement fix and does not close the historical performance comparison.
 - **Abandoned color experiments (2026-11-13):** the user requested restoration
   to fd56e49 and deferred color. `abandoned-color-2026-11-13.zip` retains the
   generated reports, failed runs, partial samples and their original source

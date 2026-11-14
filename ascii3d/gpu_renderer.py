@@ -27,6 +27,45 @@ def voxel_data(cells):
     return array('I', iter(cells))
 
 
+def solid_geometry_data(solids):
+    """Pack real solid planes and a stackless conservative bounds hierarchy.
+
+    Bounds reject candidates only. Convex leaves retain every plane so a ray
+    through an empty part of a piece's AABB can still hit another solid behind.
+    The threaded hierarchy avoids a shader stack or a global solid scan.
+    """
+    packed, planes, nodes = bytearray(), array('f'), []
+    for solid in solids:
+        shape_planes = getattr(solid, 'planes', ())
+        packed.extend(struct.pack('<8f4I', solid.x0, solid.y0, solid.z0, solid.material,
+                                  solid.x1, solid.y1, solid.z1, 0,
+                                  len(planes) // 4, len(shape_planes), 0, 0))
+        planes.extend(value for plane in shape_planes for value in plane)
+
+    def build(indices):
+        lower = tuple(min(getattr(solids[i], name) for i in indices) for name in ('x0', 'y0', 'z0'))
+        upper = tuple(max(getattr(solids[i], name) for i in indices) for name in ('x1', 'y1', 'z1'))
+        index = len(nodes)
+        nodes.append(None)
+        leaf = 0
+        if len(indices) == 1:
+            leaf = indices[0] + 1
+        else:
+            axis = max(range(3), key=lambda a: upper[a] - lower[a])
+            low_name, high_name = (('x0', 'x1'), ('y0', 'y1'), ('z0', 'z1'))[axis]
+            indices.sort(key=lambda i: (getattr(solids[i], low_name) + getattr(solids[i], high_name), i))
+            middle = len(indices) // 2
+            build(indices[:middle])
+            build(indices[middle:])
+        nodes[index] = (*lower, 0, *upper, 0, len(nodes), leaf, 0, 0)
+
+    if solids:
+        build(list(range(len(solids))))
+    hierarchy = b''.join(struct.pack('<8f4I', *node) for node in nodes)
+    return (bytes(packed) or bytes(48), planes or array('f', [0] * 4),
+            hierarchy or bytes(48), len(nodes))
+
+
 class StaticGPU:
     """Persistent device, shader and static buffers; no GUI or display surface."""
 
@@ -51,17 +90,15 @@ class StaticGPU:
         field = world.heightfield
         packed_ground = array('I', ((enabled << 8) | material
                                    for enabled, material in zip(field.enabled, field.materials))) if field else array('I', [0])
-        packed_boxes = array('f', (value for box in world.solids
-                                  for value in (box.x0, box.y0, box.z0, box.material,
-                                                box.x1, box.y1, box.z1, 0))) or array('f', [0] * 8)
+        packed_boxes, planes, hierarchy, self.solid_node_count = solid_geometry_data(world.solids)
         data = [bytes(112), voxel_data(world.cells), array('f', field.heights) if field else array('f', [0]),
-                packed_ground, packed_boxes]
+                packed_ground, packed_boxes, planes, hierarchy]
         self.buffers = [self.device.create_buffer_with_data(data=value,
                         usage=wgpu.BufferUsage.STORAGE | (wgpu.BufferUsage.COPY_DST if i == 0 else 0))
                         for i, value in enumerate(data)]
         layout = self.device.create_bind_group_layout(entries=[
             {'binding': i, 'visibility': wgpu.ShaderStage.COMPUTE,
-             'buffer': {'type': 'storage' if i == 5 else 'read-only-storage'}} for i in range(6)])
+             'buffer': {'type': 'storage' if i == 7 else 'read-only-storage'}} for i in range(8)])
         self.layout = layout
         shader = self.device.create_shader_module(code=Path(__file__).with_name('gpu_static.wgsl').read_text())
         pipeline_layout = self.device.create_pipeline_layout(bind_group_layouts=[layout])
@@ -98,7 +135,7 @@ class StaticGPU:
         payload = struct.pack('<16f8I4f', player.x, player.y, player.eye_z, 0,
                               cy * cp, sy * cp, sp, 0, sy, -cy, 0, 0, -cy * sp, -sy * sp, cp, 0,
                               width, height, self.world.width, self.world.depth,
-                              self.world.height, len(self.world.solids), int(self.world.heightfield is not None), int(self.compact),
+                              self.world.height, self.solid_node_count, int(self.world.heightfield is not None), int(self.compact),
                               1 / focal, 1 / (focal * self.cell_aspect), 48, WATER_LEVEL)
         self.device.queue.write_buffer(self.buffers[0], 0, payload)
         encoder = self.device.create_command_encoder()

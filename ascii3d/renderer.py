@@ -8,6 +8,7 @@ from .doors import Door
 from .door_render import draw_doors
 from .combat_render import draw_combat, large_opaque_enemy
 from .geometry import Camera
+from .shading import Shading, ink
 from .scenery import Scenery
 from .world import (AIR, BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, WATER,
                     WATER_LEVEL, WOOD, World, river_center)
@@ -197,6 +198,9 @@ class Renderer:
         self._rows: list[float] = []
         self._focal = 1.0
         self.scenery = Scenery(world)
+        self.shading = Shading(world)
+        self._frame_styles = []
+        self._frame_materials = []
         self.skip_empty_space = skip_empty_space
         self.combat_depth_prepass = combat_depth_prepass and skip_empty_space
         self.combat_prepass_used = False
@@ -506,6 +510,9 @@ class Renderer:
 
         world = self.world
         self.scenery.prepare(time_seconds)
+        self.shading.prepare(player, time_seconds)
+        self.scenery.shading = self.shading
+        shade_surface = self.shading.surface
         self._update_chunks()
         chunk_tops, chunks_x = self._chunk_tops, (world.width + 1) // 2
         empty_bounds, chunk_count = self._empty_bounds, len(chunk_tops)
@@ -589,7 +596,7 @@ class Renderer:
         door_pixels = [[" "] * width for _ in range(height)] if world.doors else None
         door_depths = [[math.inf] * width for _ in range(height)] if world.doors else None
         if world.doors:
-            draw_doors(world, door_pixels, door_depths, player, self._focal, self.cell_aspect)
+            draw_doors(world, door_pixels, door_depths, player, self._focal, self.cell_aspect, self.shading)
 
         combat_depths = None
         self.combat_prepass_used = False
@@ -825,105 +832,34 @@ class Renderer:
                 # choose the same texel/wind cell at integer grid boundaries.
                 sample_distance = distance + 1e-8
                 hx, hy, hz = px + dx * sample_distance, py + dy * sample_distance, pz + dz * sample_distance
+                if normal is None:
+                    normal = ((-float(step_x), 0.0, 0.0) if axis == 0 else
+                              (0.0, -float(step_y), 0.0) if axis == 1 else
+                              (0.0, 0.0, -float(step_z)))
+                tone = shade_surface(material, hx, hy, hz, normal, distance)
                 if material == WATER:
                     wave = _river_ripple(hx, hy, time_seconds)
-                    # Points and foam have no direction. Skip current/projection
-                    # work for those samples, retaining the same visible pattern.
-                    if distance > 24:
-                        if wave <= 0.6:
-                            row.append(".")
-                            continue
-                    elif wave <= 0:
-                        row.append(":" if wave > -0.65 else ".")
-                        continue
+                    if distance > 24 and wave <= 0.6:
+                        glyph = "."
+                    elif distance <= 24 and wave <= 0:
+                        glyph = ":" if wave > -0.65 else "."
                     elif wave > 1.28 and distance < 18:
-                        row.append("*")
-                        continue
-                    # Differentiate perspective projection along the same local
-                    # current used by movement. The common focal/depth factor
-                    # cancels; dz supplies the vertical perspective term. Streaks
-                    # converge toward the horizon instead of facing screen X.
-                    flow_x, flow_y = current(hx)
-                    along_flow = cy * flow_x + sy * flow_y
-                    stroke = _flow_glyph(sy * flow_x - cy * flow_y - u * cp * along_flow,
-                                         aspect * dz * along_flow)
-                    row.append("~" if wave > 0.72 and stroke == "-" and distance <= 24 else stroke)
-                    continue
-                if axis == 0:
-                    a, b, light = hy, hz, (0.87 if step_x > 0 else 0.54)
-                elif axis == 1:
-                    a, b, light = hx, hz, (0.72 if step_y > 0 else 0.45)
-                else:
-                    a, b, light = hx, hy, (0.93 if step_z < 0 else 0.40)
-                if normal is not None and normal[2] > 0.0:
-                    # Continuous slope lighting replaces terrace-side shading;
-                    # flat stair treads retain the ordinary top-face light.
-                    light = max(0.25, min(0.97, 0.76 + 0.17 * normal[2]
-                                         - 0.16 * normal[0] - 0.12 * normal[1]))
-                fu, fv = a % 1.0, b % 1.0
-
-                if material == GRASS and ((axis == 2 and step_z < 0)
-                                          or (normal is not None and normal[2] > 0.0)):
+                        glyph = "*"
+                    else:
+                        flow_x, flow_y = current(hx)
+                        along_flow = cy * flow_x + sy * flow_y
+                        stroke = _flow_glyph(sy * flow_x - cy * flow_y - u * cp * along_flow,
+                                             aspect * dz * along_flow)
+                        glyph = "~" if wave > 0.72 and stroke == "-" and distance <= 24 else stroke
+                    row.append(ink(glyph, min(15, tone.level + (2 if wave > 1.28 else 0)), material))
+                elif material == GRASS and normal[2] > 0:
                     noise = (int(hx * 6.0) * 73856093 ^ int(hy * 6.0) * 19349663) & 15
                     wx, wy = self.scenery.wind_at(hx, hy)
-                    # A continuous turf layer covers every grass top, even
-                    # where individual blades become subpixel or leave the LOD.
                     wind = int((wx + wy * 0.6 + 0.6) * 3)
-                    if normal is None:
-                        row.append(",;\"'"[(noise // 4 + wind) % 4])
-                    else:
-                        # Restrained turf glyphs cover slopes continuously,
-                        # including at the horizon beyond the blade radius.
-                        fog = 1.0 / (1.0 + distance * 0.033)
-                        band = min(3, max(0, int(light * fog * 4)))
-                        row.append((".,", ",;", ';"', "\"'")[band][(noise + wind) % 2])
-                    continue
-                elif material == GRASS:
-                    # Terrace lips have directional shade, so a grassy rise
-                    # reads as a solid step instead of more flat turf noise.
-                    texture = 0.65 if fv > 0.18 else 0.32
-                elif material == PATH:
-                    noise = (int(hx * 10) * 17 + int(hy * 10) * 31) % 13
-                    texture = 0.35 if noise > 2 else 0.23
-                elif material in (WOOD, BRIDGE):
-                    # Crosswise deck planks; long grain on posts and rails.
-                    grain = (a * 8 + math.sin(b * 5) * 0.12) % 1.0
-                    texture = 0.75 if grain > 0.12 else 0.40
-                    if axis == 2 and (hy * 2.5) % 1.0 < 0.09:
-                        texture = 0.22
-                elif material == LEAVES:
-                    noise = (int(a * 7) * 37 ^ int(b * 7) * 19) % 9
-                    texture = 0.38 + noise * 0.045
-                elif material == FLOOR:
-                    # Large tiled floor with darker grout and a quiet checker.
-                    texture = 0.38 if (int(a) + int(b)) % 2 else 0.30
-                    if fu < 0.035 or fv < 0.035:
-                        texture = 0.18
-                elif material == METAL:
-                    texture = 0.9 if 0.09 < fu < 0.91 else 0.48
-                    if fv < 0.065 or fv > 0.935:
-                        texture = 1.0
-                    if 0.43 < fu < 0.57:
-                        texture = 0.72
-                elif material == CRATE:
-                    # Framed wood with diagonal bracing on every face.
-                    edge = fu < 0.09 or fu > 0.91 or fv < 0.09 or fv > 0.91
-                    brace = abs(fu - fv) < 0.065 or abs(fu + fv - 1) < 0.065
-                    texture = 0.94 if edge or brace else 0.42 + (int(a * 14) % 3) * 0.06
+                    glyph = (".,", ",;", ';"', "\"'")[min(3, tone.level // 3)][(noise + wind) % 2]
+                    row.append(ink(glyph, tone.level, material))
                 else:
-                    # Staggered masonry courses, including horizontal wall tops.
-                    course = int(b * 2)
-                    joint = (a + (course % 2) * 0.5) % 1.0
-                    texture = 0.84
-                    if (b * 2) % 1.0 < 0.075 or joint < 0.045:
-                        texture = 0.30
-
-                fog = 1.0 / (1.0 + distance * 0.033)
-                brightness = texture * light * fog * 1.30
-                if brightness > 1.0:
-                    brightness = 1.0
-                shade = int(brightness * ramp_max)
-                row.append(ramp[shade if shade > 0 else 1])
+                    row.append(tone)
             pixels.append(row)
             depths.append(depth_row)
         self.scenery.draw(pixels, depths, player, time_seconds, self._focal, self.cell_aspect)
@@ -1007,9 +943,31 @@ class Renderer:
         else:
             look, attack = ("ARROWS", "ENTER") if keyboard_look else ("MOUSE", "LMB")
             controls = f" WASD move {look} look {attack} attack E use H help P pause"
+        self._frame_styles = [bytearray([15]) * width, bytearray([6]) * width]
+        self._frame_styles += [bytearray(getattr(char, "level", 15) for char in row) for row in pixels]
+        self._frame_styles += [bytearray([6]) * width, bytearray([12]) * width, bytearray([10]) * width]
+        self._frame_materials = [bytearray([255]) * width for _ in range(2)]
+        self._frame_materials += [bytearray(getattr(char, "material", 255) for char in row) for row in pixels]
+        self._frame_materials += [bytearray([255]) * width for _ in range(3)]
         lines = [top, "-" * width] + ["".join(row) for row in pixels]
         lines += ["-" * width, status, controls]
         return [line[:width].ljust(width) for line in lines]
+
+    def styled_frame(self, *args, color_mode="gray", **kwargs):
+        """Render styled foregrounds while preserving the plain snapshot API."""
+        from .presentation import StyledFrame
+
+        if color_mode not in ("mono", "gray"):
+            raise ValueError("color mode must be mono or gray")
+        self._frame_styles = []
+        self._frame_materials = []
+        rows = self.frame(*args, **kwargs)
+        if color_mode == "mono":
+            return rows
+        height, width = len(rows), len(rows[0])
+        styles = self._frame_styles or [bytearray([15]) * width for _ in rows]
+        materials = self._frame_materials or [bytearray([255]) * width for _ in rows]
+        return StyledFrame(width, height, rows, styles, materials)
 
     def _map(self, pixels: list[list[str]], player: Player) -> None:
         # Large worlds keep a readable local chart rather than shrinking a

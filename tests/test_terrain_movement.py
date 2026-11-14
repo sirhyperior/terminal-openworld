@@ -15,9 +15,8 @@ class TerrainMovementTests(unittest.TestCase):
     def stairs(self, material=FLOOR):
         world = World.empty(20, 10, 14)
         world.box(0, 0, 0, 20, 10, 1, GRASS)
-        for step in range(5):
-            world.box(4 + step, 2, 1, 5 + step, 7, 2 + step, material)
-        world.box(9, 2, 0, 15, 7, 6, FLOOR)
+        world.add_stair_flight(4, 2, 5, 10, 1, 6, axis="x", material=material)
+        world.box(14, 2, 0, 19, 7, 6, FLOOR)
         return world
 
     def test_walk_and_sprint_climb_supported_stairs_and_emit_foley(self):
@@ -26,16 +25,16 @@ class TerrainMovementTests(unittest.TestCase):
                 world = self.stairs()
                 player = Player(x=2.5, y=4.5, yaw=0)
                 events = []
-                for _ in range(300):
+                for _ in range(600):
                     player.update(world, keys, 1 / 120)
                     events.extend(player.events)
                     self.assertFalse(world.collides(player.x, player.y, player.z))
-                    if player.x > 10:
+                    if player.x > 15:
                         break
-                self.assertGreater(player.x, 10)
+                self.assertGreater(player.x, 15)
                 self.assertAlmostEqual(player.z, 6, places=4)
                 steps = [event for event in events if event.name == "terrain_step"]
-                self.assertEqual(len(steps), 5)
+                self.assertEqual(len(steps), 20)
                 self.assertTrue(all(event.surface == "stone" for event in steps))
                 self.assertTrue(all(event.name in EFFECTS for event in events))
                 self.assertNotIn("jump", [event.name for event in events])
@@ -52,8 +51,7 @@ class TerrainMovementTests(unittest.TestCase):
                 player = Player(x=3.7, y=4.5, yaw=0)
                 if obstruction == "airborne":
                     player.grounded = False
-                    self.assertFalse(player._step_up(world, 3.9, 4.5))
-                    continue
+                    player.z, player.vertical_speed = 1.35, 0.5
                 for _ in range(60):
                     player.update(world, {"w"}, 1 / 120)
                 self.assertLessEqual(player.x, 4 - player.RADIUS + 1e-6)
@@ -61,13 +59,13 @@ class TerrainMovementTests(unittest.TestCase):
 
     def test_surface_queries_follow_top_floors_and_invalidate_on_box(self):
         world = self.stairs()
-        self.assertEqual(world.surface_height(5.5, 4.5), 3)
-        self.assertEqual(world.surface_material(5.5, 4.5), FLOOR)
-        world.box(5, 4, 8, 6, 5, 9, WOOD)
-        self.assertEqual(world.surface_height(5.5, 4.5), 9)
-        self.assertEqual(world.surface_material(5.5, 4.5), WOOD)
-        world.box(5, 4, 8, 6, 5, 9, AIR)
-        self.assertEqual(world.surface_height(5.5, 4.5), 3)
+        self.assertEqual(world.surface_height(7.5, 4.5), 3)
+        self.assertEqual(world.surface_material(7.5, 4.5), FLOOR)
+        world.box(7, 4, 8, 8, 5, 9, WOOD)
+        self.assertEqual(world.surface_height(7.5, 4.5), 9)
+        self.assertEqual(world.surface_material(7.5, 4.5), WOOD)
+        world.box(7, 4, 8, 8, 5, 9, AIR)
+        self.assertEqual(world.surface_height(7.5, 4.5), 3)
         self.assertEqual(world.surface_height(-0.2, 4.5), 0)
 
     def test_elevated_trunks_share_collision_and_exact_occlusion(self):
