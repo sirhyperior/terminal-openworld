@@ -81,6 +81,7 @@ class ActorQualityTests(unittest.TestCase):
                 _quad(camera, pixels, depths, *vertices, '#', material=material)
                 tokens = [char for row in pixels for char in row if isinstance(char, Ink)]
                 levels = {char.level for char in tokens}
+                self.assertGreaterEqual(min(levels), 4)
                 self.assertGreater(len(tokens), 100)
                 self.assertGreaterEqual(len(levels), 4)
                 self.assertGreaterEqual(max(levels) - min(levels), 5)
@@ -129,6 +130,7 @@ class ActorQualityTests(unittest.TestCase):
                 self.assertEqual({char.material for char in tokens}, {STONE})
                 levels = {char.level for char in tokens}
                 all_levels.update(levels)
+                self.assertGreaterEqual(min(levels), 4)
                 # Moonlit shoulder/helmet bevels remain distinct from carved
                 # vertical faces, including the shadow-facing back view.
                 self.assertGreaterEqual(max(levels) - min(levels), 6)

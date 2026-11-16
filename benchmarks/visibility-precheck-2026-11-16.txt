@@ -1,0 +1,60 @@
+test_emissive_shell_keeps_dim_edges_next_to_its_own_light (tests.test_surface_quality.SurfaceQualityTests.test_emissive_shell_keeps_dim_edges_next_to_its_own_light) ... ok
+test_light_direction_produces_a_large_readable_range_on_the_same_texture (tests.test_surface_quality.SurfaceQualityTests.test_light_direction_produces_a_large_readable_range_on_the_same_texture) ... 
+  test_light_direction_produces_a_large_readable_range_on_the_same_texture (tests.test_surface_quality.SurfaceQualityTests.test_light_direction_produces_a_large_readable_range_on_the_same_texture) (material=1) ... FAIL
+  test_light_direction_produces_a_large_readable_range_on_the_same_texture (tests.test_surface_quality.SurfaceQualityTests.test_light_direction_produces_a_large_readable_range_on_the_same_texture) (material=5) ... FAIL
+  test_light_direction_produces_a_large_readable_range_on_the_same_texture (tests.test_surface_quality.SurfaceQualityTests.test_light_direction_produces_a_large_readable_range_on_the_same_texture) (material=8) ... FAIL
+test_local_detail_translates_with_object_and_does_not_shimmer_with_time (tests.test_surface_quality.SurfaceQualityTests.test_local_detail_translates_with_object_and_does_not_shimmer_with_time) ... ok
+test_metal_highlight_depends_on_view_without_changing_material (tests.test_surface_quality.SurfaceQualityTests.test_metal_highlight_depends_on_view_without_changing_material) ... ok
+test_one_coplanar_stone_surface_contains_deep_creases_and_lit_detail (tests.test_surface_quality.SurfaceQualityTests.test_one_coplanar_stone_surface_contains_deep_creases_and_lit_detail) ... FAIL
+test_particle_materials_receive_depth_and_firelight_while_ui_stays_stable (tests.test_surface_quality.SurfaceQualityTests.test_particle_materials_receive_depth_and_firelight_while_ui_stays_stable) ... ok
+test_shadow_hues_and_pale_highlights_are_distinct_from_simple_rgb_scaling (tests.test_surface_quality.SurfaceQualityTests.test_shadow_hues_and_pale_highlights_are_distinct_from_simple_rgb_scaling) ... FAIL
+
+======================================================================
+FAIL: test_light_direction_produces_a_large_readable_range_on_the_same_texture (tests.test_surface_quality.SurfaceQualityTests.test_light_direction_produces_a_large_readable_range_on_the_same_texture) (material=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_surface_quality.py", line 45, in test_light_direction_produces_a_large_readable_range_on_the_same_texture
+    self.assertGreater(GRAY_LEVELS[bright.level], GRAY_LEVELS[dark.level] * 4)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 255 not greater than 348
+
+======================================================================
+FAIL: test_light_direction_produces_a_large_readable_range_on_the_same_texture (tests.test_surface_quality.SurfaceQualityTests.test_light_direction_produces_a_large_readable_range_on_the_same_texture) (material=5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_surface_quality.py", line 45, in test_light_direction_produces_a_large_readable_range_on_the_same_texture
+    self.assertGreater(GRAY_LEVELS[bright.level], GRAY_LEVELS[dark.level] * 4)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 252 not greater than 312
+
+======================================================================
+FAIL: test_light_direction_produces_a_large_readable_range_on_the_same_texture (tests.test_surface_quality.SurfaceQualityTests.test_light_direction_produces_a_large_readable_range_on_the_same_texture) (material=8)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_surface_quality.py", line 45, in test_light_direction_produces_a_large_readable_range_on_the_same_texture
+    self.assertGreater(GRAY_LEVELS[bright.level], GRAY_LEVELS[dark.level] * 4)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 248 not greater than 312
+
+======================================================================
+FAIL: test_one_coplanar_stone_surface_contains_deep_creases_and_lit_detail (tests.test_surface_quality.SurfaceQualityTests.test_one_coplanar_stone_surface_contains_deep_creases_and_lit_detail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_surface_quality.py", line 26, in test_one_coplanar_stone_surface_contains_deep_creases_and_lit_detail
+    self.assertGreater(GRAY_LEVELS[max(levels)] - GRAY_LEVELS[min(levels)], 190)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 177 not greater than 190
+
+======================================================================
+FAIL: test_shadow_hues_and_pale_highlights_are_distinct_from_simple_rgb_scaling (tests.test_surface_quality.SurfaceQualityTests.test_shadow_hues_and_pale_highlights_are_distinct_from_simple_rgb_scaling)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_surface_quality.py", line 76, in test_shadow_hues_and_pale_highlights_are_distinct_from_simple_rgb_scaling
+    self.assertLessEqual(GRAY_LEVELS[1], 20)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 78 not less than or equal to 20
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.006s
+
+FAILED (failures=5)

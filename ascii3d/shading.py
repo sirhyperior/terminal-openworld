@@ -13,6 +13,7 @@ from .palette import ARCANE, ASH, BONE, DUST, EMBER, FIRE, STRAW
 
 
 RAMP = "..,:;irsxXA#%@"
+MIN_SURFACE_LEVEL = 4
 ALBEDO = (0.0, 0.72, 0.64, 0.85, 0.59, 0.58, 0.74, 0.58, 0.54, 0.61, 0.64,
           1.0, 0.80, 0.90, 0.67, 0.90, 0.95, 0.95, 0.95, 0.70, 0.80, 0.65)
 
@@ -60,7 +61,10 @@ class Shading:
                 texture_position=None, texture_normal=None):
         nx, ny, nz = normal
         directional = max(0.0, -nx * 0.38 - ny * 0.48 + nz * 0.79)
-        light = 0.10 + directional * 0.90
+        emissive = material in (FIRE, EMBER, ARCANE)
+        # Shadow-facing surfaces need enough fill light to retain texture and
+        # character density; authored luminous shells keep their edge/core range.
+        light = 0.10 + directional * 0.90 if emissive else 0.30 + directional * 0.70
         # Broad stains establish form before fine grain. Both remain anchored
         # to world coordinates or the caller's moving object-local coordinates.
         tx, ty, tz = (x, y, z) if texture_position is None else texture_position
@@ -168,6 +172,10 @@ class Shading:
                 brightness += contribution
                 warmth += contribution
         brightness = min(1.0, max(emission, brightness))
+        if not emissive:
+            # Raise the full surface range before selecting BOTH ink and glyph.
+            # Brighter RGB alone still leaves shaded walls as almost empty dots.
+            brightness = 0.24 + brightness * 0.76
         level = max(1, min(15, int(brightness * 15 + 0.5)))
         if glyph is None:
             glyph = RAMP[min(len(RAMP) - 1, max(0, int(brightness * (len(RAMP) - 1))))]

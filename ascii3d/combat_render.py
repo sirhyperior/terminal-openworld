@@ -6,7 +6,7 @@ from .combat import (BURST_DURATION, FIRE_STAFF, MAX_FIREBALLS, CombatState,
                      Enemy, NAME_REACH, SWING_DURATION)
 from .geometry import Camera
 from .palette import ARCANE, BONE, EMBER, FIRE, STRAW
-from .shading import DEFAULT_SHADING, RAMP, Shading, ink
+from .shading import DEFAULT_SHADING, MIN_SURFACE_LEVEL, RAMP, Shading, ink
 from .world import METAL, STONE, WOOD
 
 
@@ -70,12 +70,14 @@ def _stroke(cam, pixels, depths, a, b, char=None, radius=0.0,
         token = shading.surface(material, x, y, z, surface_normal, distance, glyph=glyph,
                                 emission=emission, texture_position=(dx, dy, dz))
         if shade_bias:
-            token = ink(glyph, max(1, min(15, token.level + shade_bias)), material, token.effects)
+            token = ink(glyph, max(MIN_SURFACE_LEVEL, min(15, token.level + shade_bias)),
+                        material, token.effects)
         return token
 
     shader = sample if depth < 14 else None
     if shade_bias and shader is None:
-        tone = ink(glyph, max(1, min(15, tone.level + shade_bias)), material, tone.effects)
+        tone = ink(glyph, max(MIN_SURFACE_LEVEL, min(15, tone.level + shade_bias)),
+                   material, tone.effects)
     cam.stroke(pixels, depths, start, end, radius, tone, shader=shader)
 
 
@@ -143,7 +145,7 @@ def _surface_brush(cam, vertices, normal, material, emission):
                 if abs(abs(fu - 0.5) * 0.65 - (fv - 0.22)) < 0.04:
                     bias = -4
         if bias:
-            level = max(1, min(15, token.level + bias))
+            level = max(MIN_SURFACE_LEVEL, min(15, token.level + bias))
             token = ink(RAMP[min(len(RAMP) - 1, int(level / 15 * (len(RAMP) - 1)))],
                         level, material, token.effects)
         return token

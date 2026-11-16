@@ -1,0 +1,39 @@
+{
+  "control_commit": "e9e35b7",
+  "size": [
+    120,
+    40
+  ],
+  "time_seconds": 2.0,
+  "checks": [
+    {
+      "scene": "indoors",
+      "rows_equal": true,
+      "styles_equal": true,
+      "materials_equal": true,
+      "effects_equal": true
+    },
+    {
+      "scene": "great_hall",
+      "rows_equal": true,
+      "styles_equal": true,
+      "materials_equal": true,
+      "effects_equal": true
+    },
+    {
+      "scene": "tree_canopy",
+      "rows_equal": true,
+      "styles_equal": true,
+      "materials_equal": true,
+      "effects_equal": true
+    },
+    {
+      "scene": "warden",
+      "rows_equal": true,
+      "styles_equal": true,
+      "materials_equal": true,
+      "effects_equal": true
+    }
+  ],
+  "control_zip_sha256": "f53d0baf73eece278f33fab11e859171b50c49dad3c8666f50fbe118eafb690f"
+}

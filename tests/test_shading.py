@@ -14,6 +14,18 @@ from ascii3d.world import FLOOR, LEAVES, METAL, STONE, WATER, WOOD, Tree, World
 
 
 class SharedShadingTests(unittest.TestCase):
+    def test_shadow_surfaces_keep_dense_glyphs_and_texture_at_near_and_far_distances(self):
+        shading = Shading()
+        for material in (STONE, FLOOR, WOOD, LEAVES):
+            for distance in (2, 24, 48):
+                with self.subTest(material=material, distance=distance):
+                    samples = [shading.surface(material, 2, x / 4, y / 4,
+                                               (1, 0, 0), distance)
+                               for y in range(14) for x in range(14)]
+                    self.assertGreaterEqual(min(sample.level for sample in samples), 4)
+                    self.assertFalse(any(str(sample) in (' ', '.', ',') for sample in samples))
+                    self.assertGreaterEqual(len({sample.level for sample in samples}), 2)
+
     @staticmethod
     def world():
         world = World.empty(24, 24, 12)

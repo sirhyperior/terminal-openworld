@@ -6,8 +6,8 @@ import re
 from .palette import COLOR_CODES, GRAY_LEVELS, UI
 
 
-# Sixteen perceptually useful, neutral foreground levels. The lowest still
-# leaves a faint visible mark; empty/fully dark samples use a space instead.
+# Sixteen neutral foreground levels with readable shadows against black.
+# Empty samples use a space, so the raised foreground floor never lights sky.
 GRAY_CODES = tuple(f"\x1b[38;2;{level};{level};{level}m" for level in GRAY_LEVELS)
 WHITE_ON_BLACK = "\x1b[97;40m"
 _ASCII_ROW = re.compile(r"[ -~]*\Z")

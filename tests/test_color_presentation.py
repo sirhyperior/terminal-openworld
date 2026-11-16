@@ -5,8 +5,9 @@ import re
 import unittest
 from unittest.mock import patch
 
-from ascii3d.palette import (AIR, ARCANE, COLOR_CODES, COLOR_RGB, FIRE, GRASS,
-                             GRAY_LEVELS, LEAVES, STONE, UI, WATER, WOOD, color_rgb)
+from ascii3d.palette import (AIR, ARCANE, BONE, BRIDGE, COLOR_CODES, COLOR_RGB,
+                             CRATE, FIRE, FLOOR, GRASS, GRAY_LEVELS, LEAVES, METAL,
+                             PATH, STONE, STRAW, UI, WATER, WOOD, color_rgb)
 from ascii3d.presentation import GRAY_CODES, StyledFrame, WHITE_ON_BLACK
 from ascii3d.terminal import Terminal
 
@@ -15,6 +16,27 @@ ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 
 
 class ColorPaletteTests(unittest.TestCase):
+    def test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth(self):
+        self.assertGreaterEqual(GRAY_LEVELS[0], 100)
+        self.assertGreaterEqual(GRAY_LEVELS[8] - GRAY_LEVELS[1], 80)
+        for material in (STONE, FLOOR, METAL, CRATE, GRASS, WATER, WOOD,
+                         LEAVES, PATH, BRIDGE, STRAW, BONE):
+            for effects in range(16):
+                with self.subTest(material=material, effects=effects):
+                    brightness = [sum(channel * weight for channel, weight in
+                                      zip(color_rgb(material, level, effects),
+                                          (0.2126, 0.7152, 0.0722)))
+                                  for level in range(16)]
+                    self.assertGreaterEqual(brightness[0], 99)
+                    self.assertGreaterEqual(brightness[1], 105)
+                    self.assertGreaterEqual(brightness[8] - brightness[1], 40)
+                    self.assertEqual(brightness, sorted(brightness))
+        grass, water, wood = (color_rgb(material, 2) for material in (GRASS, WATER, WOOD))
+        self.assertGreater(grass[1], max(grass[0], grass[2]))
+        self.assertGreater(min(water[1], water[2]), water[0])
+        self.assertGreater(wood[0], wood[1])
+        self.assertEqual(color_rgb(AIR, 15), (0, 0, 0))
+
     def test_materials_have_recognizable_distinct_hues_and_bounded_intensities(self):
         grass, water, wood, fire, magic = (color_rgb(material, 15)
                                           for material in (GRASS, WATER, WOOD, FIRE, ARCANE))

@@ -21,9 +21,11 @@ class SurfaceQualityTests(unittest.TestCase):
                    for y in range(36) for x in range(36)]
         levels = {sample.level for sample in samples}
         self.assertGreaterEqual(len(levels), 10)
-        self.assertLessEqual(min(levels), 2)
+        self.assertGreaterEqual(min(levels), 4)
+        self.assertLessEqual(min(levels), 7)
         self.assertGreaterEqual(max(levels), 13)
-        self.assertGreater(GRAY_LEVELS[max(levels)] - GRAY_LEVELS[min(levels)], 190)
+        self.assertGreaterEqual(max(levels) - min(levels), 8)
+        self.assertGreaterEqual(GRAY_LEVELS[max(levels)] - GRAY_LEVELS[min(levels)], 90)
         self.assertGreaterEqual(len(set(map(str, samples))), 6)
         self.assertEqual({sample.material for sample in samples}, {STONE})
 
@@ -41,8 +43,9 @@ class SurfaceQualityTests(unittest.TestCase):
                                        tuple(-value for value in toward), 1,
                                        texture_position=(0.5, 0.5, 0),
                                        texture_normal=(0, 0, 1))
-                self.assertGreaterEqual(bright.level - dark.level, 6)
-                self.assertGreater(GRAY_LEVELS[bright.level], GRAY_LEVELS[dark.level] * 4)
+                self.assertGreaterEqual(dark.level, 4)
+                self.assertGreaterEqual(bright.level - dark.level, 4)
+                self.assertGreaterEqual(GRAY_LEVELS[bright.level] - GRAY_LEVELS[dark.level], 45)
 
     def test_local_detail_translates_with_object_and_does_not_shimmer_with_time(self):
         shading = Shading()
@@ -73,7 +76,7 @@ class SurfaceQualityTests(unittest.TestCase):
         self.assertGreater(bright[0] / bright[2], dark[0] / dark[2])
         dark, bright = color_rgb(GRASS, 3), color_rgb(GRASS, 12)
         self.assertGreater(dark[2] / dark[1], bright[2] / bright[1])
-        self.assertLessEqual(GRAY_LEVELS[1], 20)
+        self.assertGreaterEqual(GRAY_LEVELS[1], 100)
         self.assertGreaterEqual(GRAY_LEVELS[12], 220)
 
     def test_particle_materials_receive_depth_and_firelight_while_ui_stays_stable(self):

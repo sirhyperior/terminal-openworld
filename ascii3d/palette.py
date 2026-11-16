@@ -12,8 +12,11 @@ UI_ACCENT, UI_DANGER, UI_POSITIVE, UI_MUTED = range(16, 20)
 DUST, ASH = range(20, 22)
 UI = 255
 
-GRAY_LEVELS = (9, 16, 25, 36, 50, 67, 87, 110,
-               136, 162, 188, 211, 229, 242, 250, 255)
+# Lift shadow foregrounds above black while retaining sixteen ordered tones.
+# Glyph density, surface relief and depth still supply their existing contrast;
+# doing this in the shared palette also keeps biased actor recesses readable.
+GRAY_LEVELS = (100, 110, 121, 133, 146, 160, 176, 193,
+               209, 223, 235, 244, 250, 253, 254, 255)
 
 # Saturation is intentional: character density and lighting still reveal shape.
 # Palette construction compensates for hue luminance so the common low/mid

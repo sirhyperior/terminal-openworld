@@ -9,9 +9,11 @@ and gravel, green foliage, teal water, purple rune crystals and orange fire.
 Surface detail now varies within a body: stone has weathered grain and dark
 creases, timber has fibers, and metal has pale highlights that change with the
 view. Actor faces shade at individual characters, armor has broad bevels, and
-nearby tree trunks read as curved forms. Stronger grayscale contrast separates
-lit faces from recesses; distant surfaces cool and soften, while nearby visible
-fireballs cast warm light. The background remains black.
+nearby tree trunks read as curved forms. Shadow foregrounds stay visible against
+black in both color and grayscale. Ambient fill and denser shadow characters
+keep walls and shaded bodies readable, with distinct recesses and pale
+highlights. Distant surfaces cool and soften, while nearby visible fireballs cast
+warm light. The background remains black.
 
 Sparse dust and ash drift through the world. Small motes circle pickups, sparks
 trail fireballs and scatter at impacts, and bright fire cores fade toward dim

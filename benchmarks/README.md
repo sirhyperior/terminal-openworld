@@ -9,6 +9,14 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Stronger visibility (2026-11-16):** [Surface lighting adjustment](visibility-2026-11-16.md)
+  responds to the user's insufficient-shadow-visibility play report with ambient
+  fill, denser shadow glyphs and readable actor recesses. All 69 rendering tests
+  pass, including hardware parity; four scene depth buffers match. CPU/live-audio
+  incremental timing passes 34/34 roles, with zero underruns/recoveries. The earlier
+  [palette-only lift](shadow-readability-2026-11-16.md)
+  passed 34/34 timing roles but remained too dark for the user; its evidence and
+  all historical performance failures remain retained.
 - **Surface depth and particles (2026-11-14):** [Quality validation](visual-quality-2026-11-14.md)
   records per-character material shading, stronger relief and bounded depth-tested
   particles against the 96-file pre-quality color archive. The native 534-test
