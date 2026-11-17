@@ -5,6 +5,7 @@ import unittest
 
 from ascii3d.combat import FIRE_STAFF, WeaponPickup
 from ascii3d.player import Player
+from ascii3d.map_expansion import ASHGATE_OFFSET
 from ascii3d.surfaces import HeightField, SolidBox
 from ascii3d.world import AIR, FLOOR, GRASS, PATH, STONE, World, build_world
 
@@ -167,6 +168,9 @@ class BuiltWorldWalkingTests(unittest.TestCase):
             ("courtyard masonry", 70.5, 60.5, 1, math.pi / 2, "y", 61, 1),
         )
         for name, x, y, feet, yaw, axis, boundary, direction in cases:
+            dx, dy = ASHGATE_OFFSET
+            x, y = x + dx, y + dy
+            boundary += dx if axis == "x" else dy
             for keys in ({"w"}, {"w", "shift"}):
                 for dt in (1 / 120, 0.1):
                     with self.subTest(case=name, keys=keys, dt=dt):

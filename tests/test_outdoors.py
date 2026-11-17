@@ -6,8 +6,8 @@ from ascii3d.app import spawn_player
 from ascii3d.player import Player
 from ascii3d.renderer import Renderer, _river_ripple
 from ascii3d.scenery import Scenery, Wind
-from ascii3d.map_expansion import FIRST_BRIDGE_BOUNDS, EAST_BRIDGE_BOUNDS
-from ascii3d.terrain import NEW_BRIDGES
+from ascii3d.map_expansion import FIRST_BRIDGE_BOUNDS
+from ascii3d.terrain import RIVER_BRIDGES
 from ascii3d.world import (AIR, BRIDGE, FLOOR, GRASS, RIVERBED_LEVEL, WATER, WATER_LEVEL,
                            World, build_world, river_center)
 
@@ -22,29 +22,53 @@ class OutdoorMovementTests(unittest.TestCase):
         self.world = build_world()
 
     def test_north_gate_connects_fortress_and_meadow(self):
-        door = next(door for door in self.world.doors if door.name == "north castle gate")
+        door = next(door for door in self.world.doors if door.name == "Ashgate north gate")
         door.openness, door.target_open = 1, True
-        player = Player(x=55.5, y=71.0)
+        player = Player(x=128.5, y=117.0)
         advance(player, self.world, 2.5, {"w"})
-        self.assertGreater(player.y, 79)
+        self.assertGreater(player.y, 125)
         self.assertAlmostEqual(player.z, 1, places=5)
         self.assertFalse(self.world.collides(player.x, player.y, player.z))
 
     def test_entire_bridge_is_walkable_without_jumping(self):
-        player = Player(x=24.5, y=78.5)
+        x0, y0, x1, y1 = FIRST_BRIDGE_BOUNDS
+        player = Player(x=(x0 + x1) / 2, y=y0 - 1.5)
         for _ in range(840):
             player.update(self.world, {"w"}, 1 / 120)
             self.assertAlmostEqual(player.z, 1, places=5)
             self.assertFalse(player.in_water)
-        self.assertGreater(player.y, 101)
+        self.assertGreater(player.y, y1 + 2)
 
     def test_river_continues_on_both_sides_of_bridge(self):
         for x in range(self.world.width):
             y = math.floor(river_center(x + 0.5))
             expected = BRIDGE if any(bounds[0] <= x < bounds[2] for bounds in
-                                    (FIRST_BRIDGE_BOUNDS, EAST_BRIDGE_BOUNDS, *NEW_BRIDGES)) else WATER
+                                    RIVER_BRIDGES) else WATER
             self.assertEqual(self.world.get(x, y, 0), expected)
-        self.assertIn("BRIDGE", self.world.area(24.5, 86))
+        x0, y0, x1, y1 = FIRST_BRIDGE_BOUNDS
+        self.assertIn("BRIDGE", self.world.area((x0 + x1) / 2, (y0 + y1) / 2))
+
+    def test_all_river_bridges_connect_both_banks_without_jumping(self):
+        for bounds in RIVER_BRIDGES:
+            x0, y0, x1, y1 = bounds
+            x = (x0 + x1) / 2
+            for northbound in (True, False):
+                with self.subTest(bridge=bounds, northbound=northbound):
+                    y = y0 - 1.5 if northbound else y1 + 1.5
+                    player = Player(x=x, y=y, z=self.world.surface_height(x, y),
+                                    yaw=math.pi / 2 if northbound else -math.pi / 2)
+                    for _ in range(1200):
+                        player.update(self.world, {"w"}, 1 / 120)
+                        self.assertTrue(player.grounded)
+                        self.assertFalse(player.in_water)
+                        self.assertFalse(self.world.collides(player.x, player.y, player.z))
+                        if y0 + Player.RADIUS <= player.y <= y1 - Player.RADIUS:
+                            self.assertAlmostEqual(player.z, 1, places=5)
+                        if (northbound and player.y > y1 + 1
+                                or not northbound and player.y < y0 - 1):
+                            break
+                    else:
+                        self.fail("bridge route did not reach the opposite bank")
 
     def test_stepping_into_water_sinks_to_bed_and_current_drifts_east(self):
         player = Player(x=6.5, y=river_center(6.5) - 7)
@@ -69,10 +93,11 @@ class OutdoorMovementTests(unittest.TestCase):
         self.assertFalse(player.in_water)
 
     def test_bridge_rails_have_collision(self):
-        player = Player(x=24.5, y=86.5, yaw=0)
+        x0, y0, x1, y1 = FIRST_BRIDGE_BOUNDS
+        player = Player(x=(x0 + x1) / 2, y=(y0 + y1) / 2, yaw=0)
         advance(player, self.world, 2, {"w", "shift"})
-        self.assertLessEqual(player.x, 27 - Player.RADIUS + 1e-6)
-        self.assertGreater(player.x, 26.7)
+        self.assertLessEqual(player.x, x1 - Player.RADIUS + 1e-6)
+        self.assertGreater(player.x, x1 - 0.3)
 
 
 class AnimatedSceneryTests(unittest.TestCase):
@@ -137,7 +162,7 @@ class AnimatedSceneryTests(unittest.TestCase):
         world = World.empty(120, 120, 8)
         world.box(0, 0, 0, 120, 120, 1, WATER)
         renderer = Renderer(world)
-        player = Player(x=24.5, y=river_center(24.5), yaw=0, pitch=-0.35)
+        player = Player(x=24.5, y=60.5, yaw=0, pitch=-0.35)
         downstream = renderer.scene(player, 80, 28, time_seconds=0.7)
         self.assertGreater(sum(char in "|/\\" for row in downstream for char in row), 50)
         player.yaw = math.pi / 2
@@ -241,10 +266,12 @@ class AnimatedSceneryTests(unittest.TestCase):
         self.assertFalse(any(char in "/\\|'" for row in first for char in row))
 
     def test_scaled_map_shows_bridge_river_grass_at_small_sizes(self):
+        x0, y0, x1, y1 = FIRST_BRIDGE_BOUNDS
+        player = Player(x=(x0 + x1) / 2, y=(y0 + y1) / 2)
         for width, height in ((60, 20), (80, 24), (120, 40), (180, 64)):
             with self.subTest(size=(width, height)):
-                plain = self.renderer.frame(spawn_player(True), width, height)
-                mapped = self.renderer.frame(spawn_player(True), width, height, show_map=True)
+                plain = self.renderer.frame(player, width, height)
+                mapped = self.renderer.frame(player, width, height, show_map=True)
                 self.assertNotEqual(plain, mapped)
                 self.assertEqual(len(mapped), height)
                 self.assertTrue(all(len(line) == width for line in mapped))

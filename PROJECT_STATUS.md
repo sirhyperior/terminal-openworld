@@ -1,60 +1,75 @@
 # Project Status
 
-Last reviewed **2026-11-17**. [Repository rules](AGENTS.md) Â·
-[User backlog](backlog.md) Â· [Launch and controls](README.md).
+Last reviewed **2026-11-17**. [Repository rules](AGENTS.md) ¡¤
+[User backlog](backlog.md) ¡¤ [Launch and controls](README.md).
 
 ## Current checkpoint
 
-The default palette now uses graphite stone, wine-dark wood, heather foliage,
-indigo water and cold spellfire. Local gusts turn foliage toward lilac and
-silver, ash follows the wind, and aqua crests travel downstream. Architectural
-voxels cast west-lit shadows through real openings. Gray mode preserves tonal
-movement and the readable shadow floor. The changes are uncommitted for play
-review. Immediate control `5b5a263` includes the previous visibility lift.
+Uncommitted six-site map, dark-fantasy sound and stronger eye-level ash/dust are
+implemented. The user then clarified that blockiness means overall grid-shaped
+roads/building masses/orientations and the map, not decorative bevels.
+Latest changes give roads continuous capsule boundaries; Thornwatch rotates17¡Æ
+and Astral Reliquary-23¡Æ, including real floors/openings/stairs/collision.
+Their terrain pads, entrances, road ends, spawns and benchmark cameras rotate
+with them. The map uses fractional coverage and directional edge glyphs.
 
-[Moonlight evidence](benchmarks/moonlight-2026-11-17.md) records the reference
-inspection, three matched views, measurements and verification. The sampled
-views have identical before/after depth and occupied character counts. The
-33-test rendering group and 11-test hardware-parity/prepass group passed.
-The full suite, including the newest ash test, remains pending at the usage
-cutoff. Fullscreen appearance still needs user review.
+**The broader geometry work is unfinished.** Work stopped at the standing15%
+usage cutoff. No jobs remain active. Preserve the current failing shortcut test;
+do not mark overall blockiness complete or claim the current source passes the
+full suite. No implementation commit has been made; play review remains pending.
 
-## Remaining work
+## Verified evidence and limits
 
-- **Current incremental CPU timing failed in 7/34 roles.** Great hall frame
-  time rose 46.96% mean and 36.59% p95. Six other roles exceeded the 15% p95
-  gate. The matched live-audio run completed with zero underruns or recoveries.
-  Profile great hall and tree canopy first. No validation jobs remain active.
-- Historical performance gates remain open. [Benchmark index](benchmarks/README.md)
-  retains the original controls and failed runs, including the quality pass
-  and earlier GPU p95 regressions. The old lag position at (215.2, 187.4, Z10)
-  overlaps geometry. Reproduction in a playable camera remains open.
-- Quality GPU incremental timing and native output diagnostics remain pending.
-  Keep `quality_native_smoke_tmp.py` for those 120Ã—40/160Ã—50 checks. Resume
-  guidance is in [the quality report](benchmarks/visual-quality-2026-11-14.md).
-- The [six-landmark rebuild](benchmarks/visual-redesign-2026-11-14.md),
-  blocky geometry, optimization and sound overhaul remain in the backlog.
-  Physical mouse, speaker and fullscreen quality, POSIX held keys and Python
-  3.10 execution still need host review.
+[Detailed evidence](benchmarks/darkworld-2026-11-17.md) distinguishes these stages:
 
-## Resume
+- The first six-site version passed564 real-console tests (one desktop-pointer
+  opt-in skip),36 CPU/GPU complete frame pairs and live audio without underruns
+  or recoveries. It is frozen with a SHA256 manifest in
+  `benchmarks/darkworld-grid-control-2026-11-17.zip`. Those full-suite/parity
+  results **precede** the latest road/rotation/map edits.
+- Against46c36a3, matched120x40/60-frame styled/live-audio semantic timing passed
+  CPU12/34 and GPU19/34 roles. Every failed role is retained. No historical
+  baseline or15% mean/p95 threshold changed; fullscreen30+FPS is unverified.
+- Latest focused checks:19 road/elevated/presentation checks pass, including
+  actual GPU flat/sloping road materials;8 rotation/terrain checks pass,
+  including all12 highland flights both ways and every ground-to-roof path;
+ 6 map shape/cache checks pass. All destination spawns build without collision.
+- Latest continuous six-destination walk passes with rotated joins. The
+  ravine-to-Reliquary shortcut remains blocked near
+  **(340.76,306.5,Z10.64)** on `(326,306)->(350,306)`. The player stays grounded
+  and collision-free but cannot advance, suggesting a too-steep terrain grade.
+  The final changed point-material assertion was not rerun after cutoff.
 
-Play the new default color mode from the repository root. Run the suite in a
-native console to include Windows input checks.
+## Resume priorities
+
+1. Repair that shortcut grade/route without weakening slope limits or deleting
+   the regression. Re-run the exact route check below, then the full route group.
+2. Migrate the aggregate block-walking test: it assumes13 axis-aligned entries
+   in `_stair_keys`; current source has7 there and6 `(landmark,flight_key)`
+   entries in `_oriented_stairs`. Transform the latter through `to_world` and
+   add `landmark.angle` to movement headings. Preserve1040 contact coverage.
+3. Run the full current-source native suite, rotated hardware frame parity and
+   new performance/output checks. Rebuild a fresh semantic role manifest;
+   `darkworld-roles-2026-11-17.json` belongs to the first grid version.
+4. Continue overall massing/layout work and user fullscreen review; rotating
+   two otherwise rectangular halls does not finish the broader natural-form goal.
 
 ```powershell
-.\run.bat
-python -B main.py --renderer cpu --color-mode gray --keyboard-look
+python -B -m unittest tests.test_map_expansion.MapExpansionTests.test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height -v
 $env:MONOLITH_GPU_TESTS='1'
-.\.venv-gpu\Scripts\python.exe -B -m unittest discover -s tests -v
-.\.venv-gpu\Scripts\python.exe -B tools/profile_workloads.py great_hall tree_canopy --audio --save benchmarks/moonlight-profile-unused.txt
+.\.venv-gpu\Scripts\python.exe -B -m unittest tests.test_roads tests.test_oriented_architecture tests.test_terrain tests.test_map_shapes -v
+.\.venv-gpu\Scripts\python.exe -B validate_native_tmp.py
+.\run.bat
+python -B main.py --region thornwatch --keyboard-look
 ```
 
-Use an unused path for each benchmark. Run measurements serially. To reconstruct
-the immediate control for the moonlight comparison in a fresh directory:
+`validate_native_tmp.py` is retained for the pending full native rerun; it opens
+a hidden genuine console and reserves an unused `continuous-world-native-tests`
+report prefix. Use a new prefix after any run. `quality_native_smoke_tmp.py`
+remains for120x40/160x50 actual output. Temporary previews, extracted controls
+and caches were removed; extract the frozen grid control ZIP to a new directory
+before any incremental benchmark.
 
-```powershell
-git archive --format=zip --output=moonlight-control-tmp.zip 5b5a263 ascii3d tools
-Expand-Archive -LiteralPath moonlight-control-tmp.zip -DestinationPath moonlight-control-tmp
-.\.venv-gpu\Scripts\python.exe -B tools/benchmark_same_geometry.py --before-source moonlight-control-tmp --reference-label 5b5a263 --before-renderer cpu --after-renderer cpu --frames 60 --audio --presentation styled --before-color-mode color --after-color-mode color --save benchmarks/moonlight-cpu-next-unused.json
-```
+The old lag camera `(215.2,187.4,Z10)` referred to replaced geometry. Reproduce
+an equivalent spike at a clear playable camera on the new layout. Physical mouse,
+speaker/fullscreen review, POSIX held keys and Python3.10 execution remain open.

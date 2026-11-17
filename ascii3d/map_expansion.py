@@ -12,220 +12,222 @@ if TYPE_CHECKING:
 EXPANDED_WIDTH = 512
 EXPANDED_DEPTH = 512
 WORLD_HEIGHT = 32
-CASTLE_BOUNDS = (28, 24, 82, 76)
-CURTAIN_BOUNDS = (30, 26, 80, 74)
-RUIN_BOUNDS = (48, 97, 67, 109)
-LODGE_BOUNDS = (92, 40, 105, 54)
-FIRST_BRIDGE_BOUNDS = (22, 80, 27, 94)
-EAST_BRIDGE_BOUNDS = (84, 80, 89, 94)
-INDOOR_SPAWN = (55.5, 30.5, 1.0)
-OUTDOOR_SPAWN = (55.5, 20.5, 1.0)
-SWORD_POSITIONS = ((55.5, 32.5), (55.5, 22.5))
-STAFF_POSITION = (53.5, 103.5)
-DUMMY_POSITIONS = ((42.5, 48.5), (46.5, 48.5), (50.5, 48.5))
-WATCHSTONE_BOUNDS = (12, 99, 24, 106)
-WARDEN_POSITION = (18.5, 103.0, 1.0)
-# A known isolated tree, used for close/canopy rendering checks.
-CLOSE_TREE = (12.5, 34.5)
+# Ashgate reuses the proven courtyard/cloister circulation at its new site.
+ASHGATE_OFFSET = (73, 46)
+CASTLE_BOUNDS = (101, 70, 155, 122)
+CURTAIN_BOUNDS = (103, 72, 153, 120)
+RUIN_BOUNDS = (63, 242, 82, 254)
+LODGE_BOUNDS = (292, 120, 316, 144)  # Legacy import: now Thornwatch.
+FIRST_BRIDGE_BOUNDS = (86, 211, 91, 231)
+EAST_BRIDGE_BOUNDS = (302, 193, 307, 213)
+INDOOR_SPAWN = (128.5, 76.5, 1.0)
+OUTDOOR_SPAWN = (128.5, 66.5, 1.0)
+SWORD_POSITIONS = ((128.5, 78.5), (128.5, 68.5))
+STAFF_POSITION = (68.5, 248.5)
+DUMMY_POSITIONS = ((115.5, 94.5), (119.5, 94.5), (123.5, 94.5))
+WATCHSTONE_BOUNDS = (34, 242, 48, 256)
+WARDEN_POSITION = (41.5, 250.0, 1.0)
+CLOSE_TREE = (85.5, 80.5)
 
 
-def _castle(world):
+def _castle(world, offset=(0, 0)):
     from .world import AIR, CRATE, FLOOR, GRASS, METAL, PATH, WOOD
 
+    dx, dy = offset
+
+    def box(x0, y0, z0, x1, y1, z1, material=1):
+        world.box(x0 + dx, y0 + dy, z0, x1 + dx, y1 + dy, z1, material)
+
+    def stairs(x, y, *args, **kwargs):
+        return world.add_stair_flight(x + dx, y + dy, *args, **kwargs)
+
     # A broad enclosure with an open yard, roofed halls and four tall towers.
-    world.box(30, 26, 0, 80, 74, 1, FLOOR)
-    world.box(38, 40, 0, 61, 57, 1, PATH)
-    world.box(63, 39, 0, 76, 59, 1, GRASS)
+    box(30, 26, 0, 80, 74, 1, FLOOR)
+    box(38, 40, 0, 61, 57, 1, PATH)
+    box(63, 39, 0, 76, 59, 1, GRASS)
     for bounds in ((30, 26, 80, 28), (30, 72, 80, 74),
                    (30, 28, 32, 72), (78, 28, 80, 72)):
         x0, y0, x1, y1 = bounds
-        world.box(x0, y0, 1, x1, y1, 6)
+        box(x0, y0, 1, x1, y1, 6)
     # Curtain walk segments connect to the west cloister roof; taller corner
     # towers interrupt the ring rather than promising an unbroken circuit.
-    world.box(32, 28, 5, 78, 30, 6)
-    world.box(32, 70, 5, 78, 72, 6)
-    world.box(32, 30, 5, 34, 70, 6)
-    world.box(76, 30, 5, 78, 70, 6)
+    box(32, 28, 5, 78, 30, 6)
+    box(32, 70, 5, 78, 72, 6)
+    box(32, 30, 5, 34, 70, 6)
+    box(76, 30, 5, 78, 70, 6)
     for x in range(30, 80, 4):
         for y in (26, 73):
-            world.box(x, y, 6, min(x + 2, 80), y + 1, 7)
+            box(x, y, 6, min(x + 2, 80), y + 1, 7)
     for y in range(30, 72, 4):
         for x in (30, 79):
-            world.box(x, y, 6, x + 1, y + 2, 7)
+            box(x, y, 6, x + 1, y + 2, 7)
 
     # Standard gate openings: southern entrance, north trail, east/west meadows.
-    world.box(53, 26, 1, 58, 28, 4, AIR)
-    world.box(53, 72, 1, 58, 74, 4, AIR)
-    world.box(30, 45, 1, 32, 50, 4, AIR)
-    world.box(78, 45, 1, 80, 50, 4, AIR)
+    box(53, 26, 1, 58, 28, 4, AIR)
+    box(53, 72, 1, 58, 74, 4, AIR)
+    box(30, 45, 1, 32, 50, 4, AIR)
+    box(78, 45, 1, 80, 50, 4, AIR)
 
     # The south gatehouse is the indoor start. Its roof frames the open yard.
     for x in (49, 61):
-        world.box(x, 28, 1, x + 1, 36, 5)
-    world.box(49, 28, 5, 62, 36, 6, WOOD)
+        box(x, 28, 1, x + 1, 36, 5)
+    box(49, 28, 5, 62, 36, 6, WOOD)
     for x in (49, 61):
-        world.box(x, 30, 2, x + 1, 33, 4, AIR)
+        box(x, 30, 2, x + 1, 33, 4, AIR)
 
     # Covered west cloister: repeated open arches rather than extra doors.
-    world.box(32, 42, 5, 39, 63, 6)
+    box(32, 42, 5, 39, 63, 6)
     for y in (42, 47, 52, 57, 62):
-        world.box(38, y, 1, 39, y + 1, 5)
+        box(38, y, 1, 39, y + 1, 5)
     # The west approach uses the same quarter-unit stair geometry as the halls.
-    world.add_stair_flight(34, 32, 3, 10, 1, 6,
+    stairs(34, 32, 3, 10, 1, 6,
                            axis="y", direction=1, riser=0.25, material=FLOOR)
-    world.box(32, 42, 5, 37, 43, 6)
+    box(32, 42, 5, 37, 43, 6)
 
     # A central northern great hall, with south doors and a rear arch to the gate.
-    world.box(47, 61, 0, 65, 72, 1, WOOD)
+    box(47, 61, 0, 65, 72, 1, WOOD)
     for bounds in ((47, 61, 65, 62), (47, 71, 65, 72),
                    (47, 62, 48, 71), (64, 62, 65, 71)):
         x0, y0, x1, y1 = bounds
-        world.box(x0, y0, 1, x1, y1, 6)
-    world.box(53, 61, 1, 58, 62, 4, AIR)
-    world.box(53, 71, 1, 58, 72, 4, AIR)
+        box(x0, y0, 1, x1, y1, 6)
+    box(53, 61, 1, 58, 62, 4, AIR)
+    box(53, 71, 1, 58, 72, 4, AIR)
     for x in (47, 64):
         for y in (64, 68):
-            world.box(x, y, 2, x + 1, y + 2, 5, AIR)
+            box(x, y, 2, x + 1, y + 2, 5, AIR)
     for x in (50, 61):
         for y in (64, 68):
-            world.box(x, y, 1, x + 1, y + 1, 6, METAL)
-    world.box(47, 61, 6, 65, 72, 7, WOOD)
+            box(x, y, 1, x + 1, y + 1, 6, METAL)
+    box(47, 61, 6, 65, 72, 7, WOOD)
 
     # Hollow corner towers keep the castle silhouette legible from the meadow.
     for x in (28, 75):
         for y in (24, 69):
-            world.box(x, y, 1, x + 7, y + 7, 8)
-            world.box(x + 2, y + 2, 1, x + 5, y + 5, 7, AIR)
+            box(x, y, 1, x + 7, y + 7, 8)
+            box(x + 2, y + 2, 1, x + 5, y + 5, 7, AIR)
             inner_x = x + 5 if x == 28 else x
             inner_y = y + 4 if y == 24 else y + 1
-            world.box(inner_x, inner_y, 1, inner_x + 2, inner_y + 2, 4, AIR)
+            box(inner_x, inner_y, 1, inner_x + 2, inner_y + 2, 4, AIR)
             # Narrow windows and crenellations use the same opaque material.
             outer_y = y if y == 24 else y + 6
-            world.box(x + 3, outer_y, 3, x + 4, outer_y + 1, 5, AIR)
-            for dx, dy in ((0, 0), (3, 0), (6, 0), (0, 3),
+            box(x + 3, outer_y, 3, x + 4, outer_y + 1, 5, AIR)
+            for merlon_x, merlon_y in ((0, 0), (3, 0), (6, 0), (0, 3),
                            (6, 3), (0, 6), (3, 6), (6, 6)):
-                world.box(x + dx, y + dy, 8, x + dx + 1, y + dy + 1, 9)
+                box(x + merlon_x, y + merlon_y, 8, x + merlon_x + 1, y + merlon_y + 1, 9)
 
     # Jumpable crates and masonry occupy the edge of the court, off the routes.
-    world.box(65, 32, 1, 68, 35, 2, CRATE)
-    world.box(67, 34, 2, 68, 35, 3, CRATE)
-    world.box(68, 61, 1, 73, 62, 2)
-    world.box(68, 62, 1, 69, 66, 2)
+    box(65, 32, 1, 68, 35, 2, CRATE)
+    box(67, 34, 2, 68, 35, 3, CRATE)
+    box(68, 61, 1, 73, 62, 2)
+    box(68, 62, 1, 69, 66, 2)
 
 
-def _grounds(world):
-    from .world import AIR, BRIDGE, FLOOR, PATH, WOOD
+def _ashgate(world):
+    from .architecture import bevel_voxel_corners, pointed_arch, tapered_tower
+    from .world import AIR, STONE
 
-    # A loop on all four sides gives both castle gates and bridge approaches
-    # short, dry routes; paths stop at the water and bridges carry them across.
-    for bounds in ((53, 8, 58, 26), (22, 20, 89, 23),
-                   (21, 23, 24, 80), (85, 23, 88, 80),
-                   (24, 77, 86, 80), (53, 74, 58, 78),
-                   (24, 46, 31, 49), (79, 46, 93, 49),
-                   (14, 94, 101, 97), (54, 94, 59, 98),
-                   (22, 94, 27, 100), (84, 94, 89, 97)):
-        x0, y0, x1, y1 = bounds
-        world.box(x0, y0, 0, x1, y1, 1, PATH)
-    for x0, y0, x1, y1 in (FIRST_BRIDGE_BOUNDS, EAST_BRIDGE_BOUNDS):
-        world.box(x0, y0, 0, x1, y1, 1, BRIDGE)
-        for x in (x0 - 1, x1):
-            world.box(x, y0 + 1, 1, x + 1, y1 - 1, 2, WOOD)
-            for y in range(y0 + 1, y1 - 1, 4):
-                world.box(x, y, 1, x + 1, y + 1, 3, WOOD)
+    _castle(world, ASHGATE_OFFSET)
+    for x in (101, 148):
+        for y in (70, 115):
+            bevel_voxel_corners(world, x, y, 1, x + 7, y + 7, 8)
+    # Pointed gate crowns and lancets break up the older rectangular enclosure.
+    for x, y, width, axis, depth in ((126, 72, 5, "x", 2),
+                                      (126, 118, 5, "x", 2),
+                                      (103, 91, 5, "y", 2),
+                                      (151, 91, 5, "y", 2),
+                                      (126, 107, 5, "x", 1)):
+        pointed_arch(world, x, y, width, 1, 4, axis=axis, depth=depth)
+    # Spires sit on the hollow corner towers, preserving their interior rooms.
+    for x in (104.5, 151.5):
+        for y in (73.5, 118.5):
+            tapered_tower(world, x, y, 9, 6, radius=3.3)
+    # Repeated external buttresses leave gates and courtyard routes clear.
+    for x in (103, 152):
+        for y in (83, 103, 112):
+            world.box(x - 1, y, 1, x + 1, y + 2, 4, STONE)
+    for x in (120, 137):
+        for y in (110, 114):
+            pointed_arch(world, x, y, 2, 2, 3, axis="y")
+    # Broken masonry at the garden edge stays a jump-only prop.
+    world.box(141, 107, 2, 146, 108, 3, AIR)
 
-    # Northern ruined chapel and its western timber floor retain the fire staff.
-    world.box(49, 98, 0, 66, 108, 1, FLOOR)
-    world.box(50, 101, 0, 56, 107, 1, WOOD)
-    for bounds in ((48, 97, 67, 98), (48, 108, 67, 109),
-                   (48, 98, 49, 108), (66, 98, 67, 108)):
-        x0, y0, x1, y1 = bounds
-        world.box(x0, y0, 1, x1, y1, 5)
-    world.box(54, 97, 1, 59, 98, 4, AIR)
-    world.box(66, 102, 1, 67, 106, 5, AIR)
-    world.box(48, 101, 1, 49, 104, 4, AIR)
-    world.box(48, 105, 3, 52, 109, 5, AIR)
-    world.box(61, 105, 5, 67, 109, 6, WOOD)
 
-    # A small eastern lodge and western watchstones keep the meadow readable.
-    world.box(93, 41, 0, 104, 53, 1, WOOD)
-    for bounds in ((92, 40, 105, 41), (92, 53, 105, 54),
-                   (92, 41, 93, 53), (104, 41, 105, 53)):
-        x0, y0, x1, y1 = bounds
-        world.box(x0, y0, 1, x1, y1, 5)
-    world.box(92, 45, 1, 93, 50, 4, AIR)
-    for y in (42, 50):
-        world.box(104, y, 2, 105, y + 2, 4, AIR)
-    world.box(92, 47, 5, 105, 54, 6, WOOD)
-    world.box(12, 99, 0, 24, 106, 1, PATH)
-    world.box(12, 105, 1, 24, 106, 2)
-    for x in (12, 23):
-        world.box(x, 99, 1, x + 1, 100, 4)
-        world.box(x, 104, 1, x + 1, 105, 3)
+def _gravewood(world):
+    from .architecture import pointed_arch, tapered_tower
+    from .world import AIR, FLOOR, GRASS, PATH, STONE, WOOD
+
+    x0, y0, x1, y1 = RUIN_BOUNDS
+    world.box(32, 224, 0, 99, 273, 1, GRASS)
+    world.box(x0, y0, 0, x1, y1, 1, FLOOR)
+    world.box(65, 246, 0, 71, 252, 1, WOOD)
+    for bounds in ((x0, y0, x1, y0 + 1), (x0, y1 - 1, x1, y1),
+                   (x0, y0 + 1, x0 + 1, y1 - 1), (x1 - 1, y0 + 1, x1, y1 - 1)):
+        ax, ay, bx, by = bounds
+        world.box(ax, ay, 1, bx, by, 7, STONE)
+    pointed_arch(world, 69, y0, 5, 1, 5)
+    pointed_arch(world, 69, y1 - 1, 5, 1, 5)
+    pointed_arch(world, x1 - 1, 246, 5, 1, 5, axis="y")
+    pointed_arch(world, x0, 246, 4, 1, 5, axis="y")
+    # The roof has fallen away; two broken spires and surviving ribs frame sky.
+    tapered_tower(world, x0 + 1.5, y1 - 1.5, 6, 5, radius=2)
+    tapered_tower(world, x1 - 1.5, y1 - 1.5, 6, 4, radius=2)
+    world.box(76, 250, 6, 82, 254, 7, WOOD)
+    for x in (65, 79):
+        world.box(x, 243, 1, x + 1, 244, 5, STONE)
+    # Grave silhouettes leave every authored path and its shoulder clear.
+    from .terrain import _road_cells
+    roads = _road_cells()
+    for row in range(3):
+        for column in range(5):
+            x, y = 56 + column * 5, 228 + row * 4
+            if any((px, y) in roads for px in range(x - 1, x + 2)):
+                continue
+            world.box(x, y, 1, x + 1, y + 1, 3, STONE)
+            world.box(x - 1, y, 2, x + 2, y + 1, 3, STONE)
+    for x, y, high in ((34, 243, 4), (47, 243, 3), (34, 255, 3), (47, 255, 4)):
+        world.box(x, y, 1, x + 1, y + 1, high, STONE)
+    world.box(34, 255, 1, 48, 256, 2, STONE)
 
 
 def expand_world(world: "World") -> None:
-    """Build deterministic architecture into prefilled meadow/river terrain.
-
-    Rebuilding static scenery is idempotent; existing named doors keep their
-    animation state. Generic fixture worlds remain independent of this builder.
-    """
-    from .world import AIR, GRASS, Tree
-
-    if world.width < 112 or world.depth < 112 or world.height < 12:
-        raise ValueError("Castle grounds require a world of at least 112x112x12")
-    _castle(world)
-    _grounds(world)
-    existing_names = {door.name for door in world.doors}
-    for door in (Door("south castle gate", 53.05, 26.5, 4.9),
-                 Door("north castle gate", 53.05, 73.5, 4.9),
-                 Door("west castle gate", 30.5, 45.05, 4.9, math.pi / 2),
-                 Door("east castle gate", 79.5, 45.05, 4.9, math.pi / 2),
-                 Door("great hall doors", 53.05, 61.5, 4.9),
-                 Door("ruin doors", 54.05, 97.5, 4.9),
-                 Door("lodge doors", 92.5, 45.05, 4.9, math.pi / 2)):
-        if door.name not in existing_names:
-            world.doors.append(door)
-    # Sparse fixed groups frame the castle from every side without obstructing
-    # trails, doors, combat targets or bridge approaches. Grass stays chunked.
-    positions = ((12, 34), (12, 16), (25, 12), (43, 12), (72, 12), (94, 18),
-                 (9, 53), (13, 69), (38, 81), (68, 81), (101, 31), (105, 62),
-                 (99, 75), (8, 93), (35, 101), (77, 104), (101, 100), (39, 91))
-    for seed, (x, y) in enumerate(positions):
-        px, py = x + 0.5, y + 0.5
-        feet = world.surface_height(px, py)
-        if world.surface_material(px, py) == GRASS:
-            world.trees[x, y] = Tree(x + 0.5, y + 0.5,
-                                    0.18 + seed % 3 * 0.025,
-                                    feet + 3.0 + seed % 3 * 0.22, seed, base_z=feet)
+    """Author Ashgate and Gravewood using shared opaque geometry and panels."""
+    if world.width < 160 or world.depth < 274 or world.height < 16:
+        raise ValueError("Dark-fantasy grounds require at least 160x274x16")
+    # Runtime rebuilds leave immutable solids, panels and seeded trees intact.
+    if getattr(world, "_dark_grounds_built", False):
+        return
+    _ashgate(world)
+    _gravewood(world)
+    world.doors.extend((
+        Door("Ashgate south gate", 126.05, 72.5, 4.9),
+        Door("Ashgate north gate", 126.05, 119.5, 4.9),
+        Door("Ashgate west gate", 103.5, 91.05, 4.9, math.pi / 2),
+        Door("Ashgate east gate", 152.5, 91.05, 4.9, math.pi / 2),
+        Door("Ashgate hall doors", 126.05, 107.5, 4.9),
+        Door("Gravewood chapel doors", 69.05, 242.5, 4.9),
+    ))
+    world._dark_grounds_built = True
 
 
 def expanded_area_name(x: float, y: float) -> str | None:
-    """Describe static landmarks; World.area supplies material-aware meadow names."""
     if not (0 <= x < EXPANDED_WIDTH and 0 <= y < EXPANDED_DEPTH):
         return None
-    if 48 <= x < 67 and 97 <= y < 109:
-        return "NORTHERN RUINS"
-    if 12 <= x < 24 and 99 <= y < 106:
+    if 63 <= x < 82 and 242 <= y < 254:
+        return "GRAVEWOOD CHAPEL"
+    if 34 <= x < 48 and 242 <= y < 256:
         return "THE WATCHSTONES"
-    if 92 <= x < 105 and 40 <= y < 54:
-        return "EASTERN LODGE"
-    for bounds, name in ((FIRST_BRIDGE_BOUNDS, "WEST BRIDGE"), (EAST_BRIDGE_BOUNDS, "EAST BRIDGE")):
-        x0, y0, x1, y1 = bounds
-        if x0 <= x < x1 and y0 <= y < y1:
-            return name
-    if ((28 <= x < 35 or 75 <= x < 82)
-            and (24 <= y < 31 or 69 <= y < 76)):
-        return "CASTLE TOWERS"
-    if 30 <= x < 80 and 26 <= y < 74:
-        if 49 <= x < 62 and y < 36:
-            return "SOUTH GATEHOUSE"
-        if 47 <= x < 65 and y >= 61:
-            return "GREAT HALL"
-        if x < 39 and 42 <= y < 63:
-            return "WEST CLOISTER"
-        if 38 <= x < 53 and 40 <= y < 57:
-            return "TRAINING YARD"
-        if x >= 63 and 39 <= y < 59:
-            return "CASTLE GARDEN"
-        return "CASTLE COURTYARD"
+    if 32 <= x < 99 and 224 <= y < 273:
+        return "GRAVEWOOD"
+    if 101 <= x < 155 and 70 <= y < 122:
+        if 122 <= x < 135 and y < 82:
+            return "ASHGATE GATEHOUSE"
+        if 120 <= x < 138 and y >= 107:
+            return "ASHGATE GREAT HALL"
+        if x < 112 and 88 <= y < 109:
+            return "ASHGATE CLOISTER"
+        if 111 <= x < 126 and 86 <= y < 103:
+            return "ASHGATE TRAINING YARD"
+        if x >= 136 and 85 <= y < 105:
+            return "ASHGATE GARDEN"
+        return "ASHGATE"
     return None

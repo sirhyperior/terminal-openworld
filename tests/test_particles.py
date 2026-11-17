@@ -89,17 +89,67 @@ class ParticleTests(unittest.TestCase):
         fields = []
         # Hold the simulation time fixed so the local wind is the only input
         # changing either the cluster positions or the ash's silver tones.
-        for wind in ((0, 0), (0.9, 0.2)):
-            pixels, depths = self.buffers()
-            particles.draw(pixels, depths, self.player, 1.25, 69, 0.5,
-                           wind_at=lambda x, y: wind)
-            fields.append({(x, y): cell for y, row in enumerate(pixels) for x, cell in enumerate(row)
-                           if isinstance(cell, Ink)})
+        motes = ((32.1, 34, 2.4, 0.6, 0), (33.2, 34, 2.4, 1.3, 1))
+        with patch.object(particles, '_chunk', return_value=motes):
+            for wind in ((0, 0), (0.9, 0.2)):
+                pixels, depths = self.buffers()
+                particles.draw(pixels, depths, self.player, 1.25, 69, 0.5,
+                               wind_at=lambda x, y: wind)
+                fields.append({(x, y): cell for y, row in enumerate(pixels) for x, cell in enumerate(row)
+                               if isinstance(cell, Ink)})
         calm, gust = fields
         self.assertNotEqual(set(calm), set(gust))
         self.assertGreater(max(cell.level for cell in gust.values() if cell.material == ASH),
                            max(cell.level for cell in calm.values() if cell.material == ASH))
         self.assertLessEqual(max(cell.level for cell in gust.values() if cell.material == DUST), 6)
+
+    def test_eye_band_is_denser_at_different_heights_with_the_same_work_budget(self):
+        world = World.empty(128, 128, 32)
+        world.outdoor_bounds = (0, 0, 128, 128)
+        counts = []
+        for extra_motes in (0, Particles.EYE_MOTES_PER_CHUNK):
+            eye_band = total = 0
+            with patch.object(Particles, 'EYE_MOTES_PER_CHUNK', extra_motes):
+                for x in (25.5, 32.5, 40.5, 48.5):
+                    for z in (1, 2, 3, 4):
+                        for yaw in (0, math.pi / 2, math.pi, math.pi * 1.5):
+                            player = Player(x=x, y=40.5, z=z, yaw=yaw)
+                            pixels, depths = self.buffers()
+                            particles = Particles(world)
+                            particles.draw(pixels, depths, player, 1.25, 69, 0.5)
+                            eye_band += sum(cell != ' ' for row in pixels[14:21] for cell in row)
+                            total += particles.stats['particles_drawn']
+                            self.assertEqual(particles.stats['ambient_candidates'], 65)
+                            self.assertLessEqual(particles.stats['particles_drawn'],
+                                                 particles.stats['particle_draw_budget'])
+            counts.append((eye_band, total))
+        sparse, denser = counts
+        self.assertGreater(denser[0], sparse[0] * 1.70)
+        self.assertLess(denser[0], sparse[0] * 2.10)
+        self.assertLess(denser[1], sparse[1] * 1.50)
+
+    def test_extra_eye_motes_retain_world_positions_when_camera_height_changes(self):
+        self.world.outdoor_bounds = (0, 0, 64, 64)
+        particles = Particles(self.world)
+        # All chunks expose the same controlled world motes. Ordinary motes
+        # retain their broad height range; only the extras use the eye band.
+        ordinary = (32.5, 34, 6, 0, 1)
+        extra = (32.5, 34, self.player.eye_z, 0, 0)
+        values = (ordinary,) * Particles.MOTES_PER_CHUNK + (extra,)
+        fields = []
+        original = Camera.project
+
+        def observe(camera, x, y, z):
+            fields[-1].add((x, y, z))
+            return original(camera, x, y, z)
+
+        with patch.object(particles, '_chunk', return_value=values), patch.object(Camera, 'project', observe):
+            for rise in (0, 0.3):
+                self.player.z = 1 + rise
+                fields.append(set())
+                self.draw(particles, seconds=0)
+        self.assertEqual(fields[0], fields[1])
+        self.assertEqual(len(fields[0]), 2)
 
     def test_removing_an_invisible_source_does_not_reseed_visible_trails(self):
         hidden = Fireball(32.5, 10, 2.5, (1, 0, 0))

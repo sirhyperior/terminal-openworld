@@ -11,7 +11,7 @@ from ascii3d.world import AIR, GRASS, PATH, STONE, WOOD, World
 
 class SmoothTerrainContentTests(unittest.TestCase):
     def test_integer_planes_use_exact_voxels_while_fractional_neighbors_keep_shared_vertices(self):
-        world = World.empty(150, 80, 32)
+        world = World.empty(340, 180, 32)
         build_terrain(world)
         field = world.heightfield
         for x, y in ((40, 40), (111, 50)):
@@ -28,11 +28,11 @@ class SmoothTerrainContentTests(unittest.TestCase):
         self.assertEqual(world.surface_material(111.5, 50.5), PATH)
         self.assertAlmostEqual(world.surface_height(112.5, 50.5), before)
         # Exact integer building pads also fall back to their grass foundation.
-        self.assertEqual(field.enabled[50 * world.width + 140], 0)
-        self.assertEqual(world.surface_height(140.5, 50.5), 5)
+        self.assertEqual(field.enabled[130 * world.width + 300], 0)
+        self.assertEqual(world.surface_height(300.5, 130.5), 7)
 
     def test_elevations_vary_below_voxel_scale_and_join_hub_river_and_pads_continuously(self):
-        for x, y in ((200.2, 220.3), (320.2, 208.3), (130.2, 30.3)):
+        for x, y in ((250.2, 150.3), (320.2, 170.3), (130.2, 30.3)):
             with self.subTest(point=(x, y)):
                 height = terrain_height(x, y)
                 self.assertGreater(abs(height - round(height)), 1e-4)
@@ -47,8 +47,8 @@ class SmoothTerrainContentTests(unittest.TestCase):
                                         - terrain_height(x + dx, y + dy)), 1e-3)
 
     def test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape(self):
-        world = World.empty(180, 180, 32)
-        world.outdoor_bounds = (0, 0, 180, 180)
+        world = World.empty(340, 180, 32)
+        world.outdoor_bounds = (0, 0, 340, 180)
         build_terrain(world)
         field = world.heightfield
         self.assertIsNotNone(field)
@@ -68,15 +68,15 @@ class SmoothTerrainContentTests(unittest.TestCase):
                     self.assertEqual((low, high, feet), (foundation, foundation, foundation))
                 else:
                     self.assertAlmostEqual(feet, exact)
-        road_height = world.surface_height(124.5, 52.5)
+        road_height = world.surface_height(200.5, 99.5)
         scenery = Scenery(world)
-        self.assertIn((124, 52), [(x, y) for x, y, _ in scenery.grass_chunk(31, 13)])
+        self.assertIn((200, 99), [(x, y) for x, y, _ in scenery.grass_chunk(50, 24)])
         world.box(108, 56, 0, 109, 57, 1, WOOD)
         add_landmarks(world)
-        self.assertAlmostEqual(world.surface_height(124.5, 52.5), road_height)
-        self.assertEqual(world.surface_material(124.5, 52.5), PATH)
+        self.assertAlmostEqual(world.surface_height(200.5, 99.5), road_height)
+        self.assertEqual(world.surface_material(200.5, 99.5), PATH)
         self.assertEqual(world.surface_material(108.5, 56.5), WOOD)
-        self.assertNotIn((124, 52), [(x, y) for x, y, _ in scenery.grass_chunk(31, 13)])
+        self.assertNotIn((200, 99), [(x, y) for x, y, _ in scenery.grass_chunk(50, 24)])
         for tree in world.trees.values():
             self.assertAlmostEqual(tree.base_z, world.surface_height(tree.x, tree.y))
             self.assertEqual(world.surface_material(tree.x, tree.y), GRASS)

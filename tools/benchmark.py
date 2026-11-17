@@ -19,48 +19,59 @@ from ascii3d.soundscape import Soundscape
 from ascii3d.world import build_world, river_center
 
 
-SCENARIOS = {
-    "indoors": dict(x=55.5, y=30.5, yaw=math.pi / 2),
-    "courtyard": dict(x=55.5, y=42.5, yaw=math.pi / 2),
-    "meadow": dict(x=55.5, y=18.5, yaw=math.pi / 2, pitch=-0.06),
-    "grass_close": dict(x=12.5, y=31.5, yaw=math.pi / 2, pitch=-0.35),
-    "bridge": dict(x=24.5, y=86.5, yaw=math.pi / 2, pitch=-0.1),
-    "river": dict(x=8.5, y=river_center(8.5), z=0.12, yaw=0, pitch=-0.1),
-}
+SCENARIOS = {'indoors': {'x': 128.5, 'y': 76.5, 'yaw': 1.5707963267948966, 'z': 1},
+ 'courtyard': {'x': 128.5, 'y': 88.5, 'yaw': 1.5707963267948966, 'z': 1},
+ 'meadow': {'x': 128.5, 'y': 64.5, 'yaw': 1.5707963267948966, 'pitch': -0.06, 'z': 1},
+ 'grass_close': {'x': 85.5, 'y': 77.5, 'yaw': 1.5707963267948966, 'pitch': -0.35, 'z': 1},
+ 'bridge': {'x': 88.5, 'y': 218.5, 'yaw': 1.5707963267948966, 'pitch': -0.1, 'z': 1},
+ 'river': {'x': 8.5, 'y': 212.41284764356448, 'z': 0.12, 'yaw': 0, 'pitch': -0.1}}
 
-EXTRA_SCENARIOS = {
-    "ruins": dict(x=56.5, y=95, yaw=math.pi / 2, pitch=-0.06),
-    "lodge": dict(x=90, y=47.5, yaw=0, pitch=-0.06),
-    "east_bridge": dict(x=86.5, y=86.5, yaw=math.pi / 2, pitch=-0.1),
-    "watchstones": dict(x=18.5, y=97, yaw=math.pi / 2, pitch=-0.06),
-    "warden": dict(x=18.5, y=99.5, yaw=math.pi / 2, pitch=-0.06),
-    "staff": dict(x=53.5, y=101.5, yaw=math.pi / 2, pitch=-0.06),
-    "fireballs": dict(x=42.5, y=40.5, yaw=math.pi / 2),
-    "map": dict(x=55.5, y=42.5, yaw=math.pi / 2),
-    "training": dict(x=42.5, y=46.2, yaw=math.pi / 2),
-    "tree_close": dict(x=12.5, y=34.0, yaw=math.pi / 2, pitch=-0.35),
-    "tree_canopy": dict(x=12.5, y=33.95, z=2.25, yaw=math.pi / 2, pitch=0.65),
-    "river_diagonal": dict(x=70.5, y=river_center(70.5), z=0.12, yaw=math.pi / 4, pitch=-0.25),
-    "river_upstream": dict(x=70.5, y=river_center(70.5), z=0.12, yaw=math.pi, pitch=-0.25),
-    "castle_exterior": dict(x=20.5, y=16.5, yaw=0.6, pitch=0.08),
-    "great_hall": dict(x=55.5, y=65.5, yaw=math.pi / 2, pitch=0.12),
-    "wall_walk": dict(x=35.5, y=45.5, z=6, yaw=math.pi / 2, pitch=-0.15),
-    "west_meadow": dict(x=12.5, y=58.5, yaw=math.pi / 2, pitch=-0.1),
-    "east_meadow": dict(x=100.5, y=68.5, yaw=math.pi / 2, pitch=-0.1),
-}
+EXTRA_SCENARIOS = {'ruins': {'x': 71.5, 'y': 240, 'yaw': 1.5707963267948966, 'pitch': -0.06, 'z': 1},
+ 'lodge': {'x': 289.5, 'y': 132.5, 'yaw': 0, 'pitch': -0.06, 'z': 7},
+ 'east_bridge': {'x': 304.5, 'y': 207.5, 'yaw': 1.5707963267948966, 'pitch': -0.1, 'z': 1},
+ 'watchstones': {'x': 41.5, 'y': 239, 'yaw': 1.5707963267948966, 'pitch': -0.06, 'z': 1},
+ 'warden': {'x': 41.5, 'y': 246.5, 'yaw': 1.5707963267948966, 'pitch': -0.06, 'z': 1},
+ 'staff': {'x': 68.5, 'y': 246.5, 'yaw': 1.5707963267948966, 'pitch': -0.06, 'z': 1},
+ 'fireballs': {'x': 115.5, 'y': 86.5, 'yaw': 1.5707963267948966, 'z': 1},
+ 'map': {'x': 128.5, 'y': 88.5, 'yaw': 1.5707963267948966, 'z': 1},
+ 'training': {'x': 115.5, 'y': 92.2, 'yaw': 1.5707963267948966, 'z': 1},
+ 'tree_close': {'x': 85.5, 'y': 80.0, 'yaw': 1.5707963267948966, 'pitch': -0.35, 'z': 1},
+ 'tree_canopy': {'x': 85.5, 'y': 79.95, 'z': 2.25, 'yaw': 1.5707963267948966, 'pitch': 0.65},
+ 'river_diagonal': {'x': 70.5,
+                    'y': 217.02662981949743,
+                    'z': 0.12,
+                    'yaw': 0.7853981633974483,
+                    'pitch': -0.25},
+ 'river_upstream': {'x': 70.5,
+                    'y': 217.02662981949743,
+                    'z': 0.12,
+                    'yaw': 3.141592653589793,
+                    'pitch': -0.25},
+ 'castle_exterior': {'x': 93.5, 'y': 62.5, 'yaw': 0.6, 'pitch': 0.08, 'z': 1},
+ 'great_hall': {'x': 128.5, 'y': 111.5, 'yaw': 1.5707963267948966, 'pitch': 0.12, 'z': 1},
+ 'wall_walk': {'x': 108.5, 'y': 91.5, 'z': 6, 'yaw': 1.5707963267948966, 'pitch': -0.15},
+ 'west_meadow': {'x': 85.5, 'y': 104.5, 'yaw': 1.5707963267948966, 'pitch': -0.1, 'z': 1},
+ 'east_meadow': {'x': 164.5, 'y': 114.5, 'yaw': 1.5707963267948966, 'pitch': -0.1, 'z': 1}}
 
-TERRAIN_SCENARIOS = {
-    "ridge_approach": dict(x=128.5, y=52.5, yaw=0, pitch=0.05),
-    "ridge_upper": dict(x=148.5, y=52.5, z=10, yaw=0, pitch=-0.10),
-    "ridge_roof": dict(x=148.5, y=52.5, z=20, yaw=0.8, pitch=-0.15),
-    "highlands": dict(x=320.5, y=208.5, yaw=1.4, pitch=-0.15),
-    "ravine": dict(x=320.5, y=290.5, yaw=math.pi, pitch=-0.25),
-    "citadel_approach": dict(x=370.5, y=387.5, yaw=0, pitch=0.06),
-    "citadel_roof": dict(x=397.5, y=387.5, z=27, yaw=math.pi, pitch=-0.20),
-    "highland_map": dict(x=397.5, y=387.5, z=27, yaw=math.pi),
-    "terrace_walk": dict(x=124.5, y=52.5, yaw=0),
-    "stair_walk": dict(x=140.5, y=41.5, z=5, yaw=math.pi / 2),
-}
+TERRAIN_SCENARIOS = {'ridge_approach': {'x': 289.5, 'y': 132.5, 'z': 7, 'yaw': 0, 'pitch': 0.05},
+ 'ridge_upper': {'x': 304.5, 'y': 132.5, 'z': 12, 'yaw': 0, 'pitch': -0.1},
+ 'ridge_roof': {'x': 304.5, 'y': 132.5, 'z': 22, 'yaw': 0.8, 'pitch': -0.15},
+ 'highlands': {'x': 320.5, 'y': 170.5, 'yaw': 1.4, 'pitch': -0.15},
+ 'ravine': {'x': 310.5, 'y': 306.5, 'z': 9, 'yaw': 3.141592653589793, 'pitch': -0.25},
+ 'citadel_approach': {'x': 394.5, 'y': 436.5, 'z': 12, 'yaw': 0, 'pitch': 0.06},
+ 'citadel_roof': {'x': 420.5, 'y': 436.5, 'z': 27, 'yaw': 3.141592653589793, 'pitch': -0.2},
+ 'highland_map': {'x': 420.5, 'y': 436.5, 'z': 27, 'yaw': 3.141592653589793},
+ 'terrace_walk': {'x': 277.5, 'y': 132.5, 'yaw': 0},
+ 'stair_walk': {'x': 296.5, 'y': 121.5, 'z': 7, 'yaw': 1.5707963267948966}}
+
+# Camera roles follow the same authored transforms as walls, floors and stairs.
+from ascii3d.terrain import LANDMARKS
+for name, group in (("lodge", EXTRA_SCENARIOS), ("ridge_approach", TERRAIN_SCENARIOS),
+                    ("ridge_upper", TERRAIN_SCENARIOS), ("ridge_roof", TERRAIN_SCENARIOS),
+                    ("terrace_walk", TERRAIN_SCENARIOS), ("stair_walk", TERRAIN_SCENARIOS)):
+    camera = group[name]
+    camera["x"], camera["y"] = LANDMARKS[0].to_world(camera["x"], camera["y"])
+    camera["yaw"] += LANDMARKS[0].angle
 
 
 def resolve_camera(world, name, camera, *, natural=False, player_type=Player):

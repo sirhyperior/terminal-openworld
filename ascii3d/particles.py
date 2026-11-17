@@ -29,6 +29,8 @@ class Particles:
     CHUNK = 6
     VERTICAL_CHUNK = 4
     MOTES_PER_CHUNK = 6
+    EYE_MOTES_PER_CHUNK = 12
+    EYE_BAND_HALF_HEIGHT = 1.25
     MAX_CHUNKS = 64
     MAX_CANDIDATES = 256
     MAX_AMBIENT_CANDIDATES = 96
@@ -50,7 +52,7 @@ class Particles:
             self._chunks.move_to_end(key)
             return values
         values = []
-        for slot in range(self.MOTES_PER_CHUNK):
+        for slot in range(self.MOTES_PER_CHUNK + self.EYE_MOTES_PER_CHUNK):
             value = _seed(cx, cy, cz, slot)
             x = (cx + 0.12 + (value & 1023) / 1023 * 0.76) * self.CHUNK
             y = (cy + 0.12 + ((value >> 10) & 1023) / 1023 * 0.76) * self.CHUNK
@@ -193,14 +195,22 @@ class Particles:
                 # group of ash flakes. Quieter dust hangs closer to its home.
                 wind_x, wind_y = ((0, 0) if wind_at is None else
                                   wind_at((x + 0.5) * self.CHUNK, (y + 0.5) * self.CHUNK))
-                for px, py, pz, phase, value in self._chunk(x, y, z):
+                for slot, (px, py, pz, phase, value) in enumerate(self._chunk(x, y, z)):
                     if stats['ambient_candidates'] >= ambient_budget:
                         break
-                    material = ASH if value % 4 == 0 else DUST
-                    drift = 0.78 if material == ASH else 0.28
+                    extra = slot >= self.MOTES_PER_CHUNK
+                    if extra and abs(pz - player.eye_z) > self.EYE_BAND_HALF_HEIGHT + 0.26:
+                        continue
                     eddy = phase + seconds * 0.26
                     roll = math.sin(eddy)
                     lift = roll * 0.26
+                    # Prefer a denser set of fixed world motes near eye height.
+                    # Moving the camera changes selection, never positions;
+                    # the unchanged work budget keeps the wider field sparse.
+                    if extra and abs(pz + lift - player.eye_z) > self.EYE_BAND_HALF_HEIGHT:
+                        continue
+                    material = ASH if value % 4 == 0 else DUST
+                    drift = 0.78 if material == ASH else 0.28
                     wx = wind_x * drift + math.cos(eddy) * 0.13
                     wy = wind_y * drift + roll * 0.10
                     # Flakes catch a little silvery light as the gust lifts

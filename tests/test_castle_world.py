@@ -4,7 +4,7 @@ import math
 import unittest
 
 from ascii3d.combat import FIRE_STAFF, SWORD
-from ascii3d.map_expansion import (CASTLE_BOUNDS, DUMMY_POSITIONS, INDOOR_SPAWN,
+from ascii3d.map_expansion import (ASHGATE_OFFSET, CASTLE_BOUNDS, DUMMY_POSITIONS, INDOOR_SPAWN,
                                    OUTDOOR_SPAWN, STAFF_POSITION, SWORD_POSITIONS)
 from ascii3d.player import Player
 from ascii3d.world import AIR, GRASS, WATER, build_world, river_center
@@ -22,23 +22,27 @@ class CastleWorldTests(unittest.TestCase):
         self.assertGreater(y0, 15)
         self.assertGreater(self.world.width - x1, 15)
         self.assertGreater(self.world.depth - y1, 15)
-        for x, y in ((20, 50), (90, 60), (45, 16), (55, 80)):
+        for x, y in ((93, 96), (163, 106), (118, 62), (143, 126)):
             self.assertEqual(self.world.get(x, y, 0), GRASS)
             self.assertEqual(self.world.get(x, y, 1), AIR)
 
     def test_towers_crenellations_cloister_and_gatehouse_have_real_geometry(self):
+        dx, dy = ASHGATE_OFFSET
         for x, y in ((28, 24), (75, 24), (28, 69), (75, 69)):
+            x, y = x + dx, y + dy
             self.assertNotEqual(self.world.get(x, y, 8), AIR)
             self.assertEqual(self.world.get(x + 2, y + 2, 2), AIR)
             self.assertNotEqual(self.world.get(x + 2, y + 2, 7), AIR)
-        self.assertNotEqual(self.world.get(55, 30, 5), AIR)
-        self.assertNotEqual(self.world.get(36, 50, 5), AIR)
-        self.assertEqual(self.world.get(36, 50, 2), AIR)
+            self.assertAlmostEqual(self.world.solid_hit((x + 3.5, y + 3.5, 16),
+                                                        (0, 0, -1), 8), 1)
+        self.assertNotEqual(self.world.get(55 + dx, 30 + dy, 5), AIR)
+        self.assertNotEqual(self.world.get(36 + dx, 50 + dy, 5), AIR)
+        self.assertEqual(self.world.get(36 + dx, 50 + dy, 2), AIR)
         for step in range(20):
-            y = 32.25 + step * 0.5
+            y = 32.25 + dy + step * 0.5
             top = 1.25 + step * 0.25
-            self.assertAlmostEqual(self.world.surface_height(35.5, y), top)
-            self.assertAlmostEqual(self.world.solid_hit((35.5, y, top + 0.3),
+            self.assertAlmostEqual(self.world.surface_height(35.5 + dx, y), top)
+            self.assertAlmostEqual(self.world.solid_hit((35.5 + dx, y, top + 0.3),
                                                         (0, 0, -1), 0.5), 0.3)
 
     def test_sword_aliases_are_collectable_from_both_spawns_and_staff_from_ruins(self):
@@ -75,12 +79,13 @@ class CastleWorldTests(unittest.TestCase):
         self.assertTrue(all(enemy.hp == 3 for enemy in targets[1:]))
 
     def test_west_fine_steps_walk_to_cloister_roof_and_back(self):
-        player = Player(x=35.5, y=31, yaw=math.pi / 2)
+        dx, dy = ASHGATE_OFFSET
+        player = Player(x=35.5 + dx, y=31 + dy, yaw=math.pi / 2)
         for _ in range(600):
             player.update(self.world, {"w"}, 1 / 120)
-            if player.y > 42 and player.z >= 6:
+            if player.y > 42 + dy and player.z >= 6:
                 break
-        self.assertGreater(player.y, 42)
+        self.assertGreater(player.y, 42 + dy)
         self.assertGreaterEqual(player.z, 6)
         self.assertFalse(self.world.collides(player.x, player.y, player.z))
         player.yaw = -math.pi / 2
@@ -88,9 +93,9 @@ class CastleWorldTests(unittest.TestCase):
             player.update(self.world, {"w"}, 1 / 120)
             self.assertTrue(player.grounded)
             self.assertFalse(self.world.collides(player.x, player.y, player.z))
-            if player.y < 31.5:
+            if player.y < 31.5 + dy:
                 break
-        self.assertLess(player.y, 31.5)
+        self.assertLess(player.y, 31.5 + dy)
         self.assertAlmostEqual(player.z, 1)
 
     def test_river_stays_outside_castle_and_current_follows_its_centerline(self):

@@ -9,6 +9,7 @@ import unittest
 from ascii3d.audio_output import SAMPLE_RATE, StreamPacer
 from ascii3d.audio_process import ProcessAudio
 from ascii3d.events import GameEvent
+from ascii3d.map_expansion import FIRST_BRIDGE_BOUNDS
 from ascii3d.sound import Audio, Mixer, SoundBank
 from ascii3d.soundscape import Soundscape
 from ascii3d.world import GRASS, WATER, World, build_world
@@ -270,7 +271,8 @@ class RiverAudioTests(unittest.TestCase):
 
     def test_bridge_and_banks_have_audible_continuous_flow_without_footsteps(self):
         scene = Soundscape(build_world())
-        wind, river, pan = scene.at(24.5, 86.5, math.pi / 2)
+        x0, y0, x1, y1 = FIRST_BRIDGE_BOUNDS
+        wind, river, pan = scene.at((x0 + x1) / 2, (y0 + y1) / 2, math.pi / 2)
         self.assertGreater(river, 0.3)
         mixer = Mixer(SoundBank())
         pcm = array("h")

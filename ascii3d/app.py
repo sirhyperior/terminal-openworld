@@ -33,16 +33,24 @@ def spawn_player(outside: bool = False) -> Player:
     return Player(x=x, y=y, z=z, pitch=-0.06 if outside else 0.0)
 
 
-REGION_NAMES = ("ridge", "keep", "observatory", "citadel")
+REGION_NAMES = ("ashgate", "gravewood", "thornwatch", "abbey", "reliquary", "citadel",
+                "ridge", "keep", "observatory")
 
 
 def spawn_region(region: str) -> Player:
     from .terrain import LANDMARKS
 
-    landmark = LANDMARKS[REGION_NAMES.index(region)]
+    if region == "ashgate":
+        return spawn_player()
+    if region == "gravewood":
+        return Player(x=71.5, y=240.0, z=1.0, yaw=math.pi / 2, pitch=-0.06)
+    index = {"thornwatch": 0, "ridge": 0, "abbey": 1, "keep": 1,
+             "reliquary": 2, "observatory": 2, "citadel": 3}[region]
+    landmark = LANDMARKS[index]
     x0, y0, x1, _ = landmark.bounds
-    return Player(x=(x0 + x1) / 2 + 0.5, y=y0 - 2.5, z=float(landmark.base),
-                  yaw=math.pi / 2, pitch=-0.06)
+    x, y = landmark.to_world((x0 + x1) / 2 + .5, y0 - 2.5)
+    return Player(x=x, y=y, z=float(landmark.base),
+                  yaw=math.pi / 2 + landmark.angle, pitch=-0.06)
 
 
 class FrameRateCounter:

@@ -8,9 +8,13 @@ if TYPE_CHECKING:
     from .world import World
 
 
-HUB_SIZE = 112
-CANYON_BOUNDS = (270, 250, 350, 330)
-NEW_BRIDGES = ((224, 80, 229, 94), (395, 80, 400, 94))
+HUB_SIZE = 112  # Quiet southwest lowland, retained for small fixture worlds.
+CANYON_BOUNDS = (270, 294, 350, 346)
+from .map_expansion import FIRST_BRIDGE_BOUNDS, EAST_BRIDGE_BOUNDS
+
+NEW_BRIDGES = ((388, 207, 393, 231),)
+RIVER_BRIDGES = (FIRST_BRIDGE_BOUNDS, EAST_BRIDGE_BOUNDS, *NEW_BRIDGES)
+RAVINE_BRIDGE = (294, 304, 326, 309, 9)
 
 
 @dataclass(frozen=True, slots=True)
@@ -18,6 +22,23 @@ class Landmark:
     name: str
     bounds: tuple[int, int, int, int]
     base: int
+    angle: float = 0.0
+
+    def to_world(self, x: float, y: float) -> tuple[float, float]:
+        cx, cy = (self.bounds[0] + self.bounds[2]) / 2, (self.bounds[1] + self.bounds[3]) / 2
+        c, s = math.cos(self.angle), math.sin(self.angle)
+        return cx + c * (x - cx) - s * (y - cy), cy + s * (x - cx) + c * (y - cy)
+
+    def to_local(self, x: float, y: float) -> tuple[float, float]:
+        cx, cy = (self.bounds[0] + self.bounds[2]) / 2, (self.bounds[1] + self.bounds[3]) / 2
+        c, s = math.cos(self.angle), math.sin(self.angle)
+        return cx + c * (x - cx) + s * (y - cy), cy - s * (x - cx) + c * (y - cy)
+
+    @property
+    def world_bounds(self):
+        x0, y0, x1, y1 = self.bounds
+        points = [self.to_world(x, y) for x in (x0 - 3, x1 + 6) for y in (y0 - 3, y1 + 3)]
+        return min(x for x, _ in points), min(y for _, y in points), max(x for x, _ in points), max(y for _, y in points)
 
     @property
     def floors(self) -> tuple[int, int, int]:
@@ -29,24 +50,38 @@ class Landmark:
 
 
 LANDMARKS = (
-    Landmark("RIDGE HALL", (136, 40, 160, 64), 5),
-    Landmark("NORTHERN KEEP", (66, 190, 92, 216), 7),
-    Landmark("HILL OBSERVATORY", (214, 178, 238, 202), 10),
-    Landmark("FAR CITADEL", (382, 372, 412, 402), 12),
+    Landmark("THORNWATCH", (292, 120, 316, 144), 7, math.radians(17)),
+    Landmark("BLACK ABBEY", (202, 344, 230, 376), 4),
+    Landmark("ASTRAL RELIQUARY", (374, 270, 402, 298), 10, math.radians(-23)),
+    Landmark("MOURNING CITADEL", (402, 416, 438, 456), 12),
 )
 
-# Roads join existing dry hub routes to open arches in the new landmarks.
-# Each polyline endpoint is a route junction or building entrance.
+# All endpoints lie on dry, open approaches. Junctions form a six-site loop,
+# with an Ashgate-Abbey shortcut and a stone bridge across the riven valley.
 ROUTE_WAYPOINTS = (
-    ((88, 48), (88, 57), (108, 57), (124, 52), (136, 52)),
-    ((160, 52), (226, 52), (226, 144), (226, 178)),
-    ((226, 52), (330, 52), (397, 52), (397, 144), (397, 300), (397, 372)),
-    ((66, 103), (71, 103), (71, 113), (55, 113), (55, 144), (79, 144), (79, 190)),
-    ((92, 203), (150, 203), (180, 190), (214, 190)),
-    ((238, 190), (300, 190), (397, 300)),
-    ((79, 216), (79, 330), (112, 352), (318, 352), (382, 387)),
-    ((318, 352), (318, 450), (450, 450), (450, 170), (397, 170)),
+    ((152, 93), (170, 93), (230, 104), (270, 110), (304, 110), (304, 120)),
+    ((304, 144), (304, 193), (304, 213), (330, 240), (388, 252), (388, 270)),
+    ((388, 298), (388, 306), (388, 340), (420, 390), (420, 416)),
+    ((402, 436), (370, 436), (300, 406), (250, 388), (216, 388), (216, 376)),
+    ((202, 360), (160, 340), (120, 300), (88, 272), (72, 260), (72, 254)),
+    ((72, 242), (72, 236), (88, 236), (88, 231), (88, 211), (88, 160), (128, 136), (128, 120)),
+    ((128, 120), (128, 156), (150, 180), (150, 200), (88, 200), (88, 211)),
+    ((88, 231), (110, 250), (160, 300), (190, 320), (216, 332), (216, 344)),
+    ((230, 360), (250, 360), (270, 306), (294, 306), (326, 306), (350, 306), (388, 306)),
+    ((128, 60), (128, 72)),
+    ((103, 93), (88, 93), (88, 84)),
+    ((41, 242), (41, 238), (55, 238), (55, 248), (63, 248)),
+    ((128, 120), (128, 136)),
 )
+
+
+_ROTATED_NODES = {(304, 110): LANDMARKS[0], (304, 120): LANDMARKS[0],
+                  (304, 144): LANDMARKS[0], (388, 252): LANDMARKS[2],
+                  (388, 270): LANDMARKS[2], (388, 298): LANDMARKS[2],
+                  (388, 306): LANDMARKS[2]}
+ROUTE_WAYPOINTS = tuple(tuple(tuple(value - .5 for value in _ROTATED_NODES[node].to_world(node[0] + .5, node[1] + .5))
+                                  if node in _ROTATED_NODES else node for node in route)
+                        for route in ROUTE_WAYPOINTS)
 
 
 def _smooth_blend(value: float) -> float:
@@ -63,7 +98,7 @@ def terrain_height(x: float, y: float) -> float:
     # Preserve the river's low valley across the entire enlarged map. Its
     # centerline is shared with currents and the renderer, not approximated.
     river_distance = abs(y - river_center(x))
-    river_blend = _smooth_blend((river_distance - 8) / 18)
+    river_blend = _smooth_blend((river_distance - 16) / 36)
     hub_blend = _smooth_blend(max(x - HUB_SIZE, y - HUB_SIZE) / 30)
     hills = (8 + 3.0 * math.sin(x / 38) + 2.5 * math.cos(y / 49)
              + 2.0 * math.sin((x + y) / 71))
@@ -71,21 +106,27 @@ def terrain_height(x: float, y: float) -> float:
     valley = 5 * _smooth_blend(1 - abs(x - 150 - 0.18 * y) / 40)
     height = 1 + hub_blend * river_blend * max(0.0, hills + ridge - valley)
 
-    # A narrow ravine has steep sides and gradual entrances at either end.
+    # A scar in the uplands has one authored dry crossing. Its approaches
+    # blend to the deck, while the trench and sheer sides remain below it.
     x0, y0, x1, y1 = CANYON_BOUNDS
-    if x0 <= x < x1 and y0 <= y < y1:
-        cross = abs(x - 310 + 0.5 * (y - 290))
-        ends = _smooth_blend(min((y - y0) / 16, (y1 - y) / 16))
-        height -= 12 * _smooth_blend(1 - cross / 8) * ends
+    if x0 <= x <= x1 and y0 <= y <= y1:
+        cross = abs(x - 310)
+        ends = _smooth_blend(min((y - y0) / 12, (y1 - y) / 12))
+        crossing = (_smooth_blend(1 - abs(y - 306) / 14)
+                    * _smooth_blend(min((x - x0) / 12, (x1 - x) / 12))
+                    * _smooth_blend(min((y - y0) / 8, (y1 - y) / 8)))
+        height = height * (1 - crossing) + 9 * crossing
+        height -= 12 * _smooth_blend(1 - cross / 16) * ends
 
-    # Blend the hillside into supported building pads; no isolated vertical
-    # plinth forces a jump or traps a player at an entrance.
-    for landmark in LANDMARKS:
-        x0, y0, x1, y1 = landmark.bounds
-        distance = max(x0 - 4 - x, x - (x1 + 6), y0 - 4 - y, y - (y1 + 3), 0)
-        if distance < 18:
-            blend = _smooth_blend(distance / 18)
-            height = landmark.base * (1 - blend) + height * blend
+    pads = [(landmark.bounds, landmark.base, landmark) for landmark in LANDMARKS]
+    pads += [((98, 58, 161, 128), 1, None), ((31, 223, 100, 274), 1, None)]
+    for bounds, base, landmark in pads:
+        x0, y0, x1, y1 = bounds
+        lx, ly = landmark.to_local(x, y) if landmark is not None and landmark.angle else (x, y)
+        distance = max(x0 - 4 - lx, lx - (x1 + 6), y0 - 4 - ly, ly - (y1 + 3), 0)
+        if distance < 36:
+            blend = _smooth_blend(distance / 36)
+            height = base * (1 - blend) + height * blend
     return max(1.0, min(20.0, height))
 
 
@@ -128,7 +169,7 @@ def _road_cells():
     cells = set()
     for route in ROUTE_WAYPOINTS:
         for (x0, y0), (x1, y1) in zip(route, route[1:]):
-            length = max(abs(x1 - x0), abs(y1 - y0), 1)
+            length = math.ceil(max(abs(x1 - x0), abs(y1 - y0), 1))
             for step in range(length + 1):
                 x = round(x0 + (x1 - x0) * step / length)
                 y = round(y0 + (y1 - y0) * step / length)
@@ -147,56 +188,9 @@ def stair_routes(landmark: Landmark):
 
 
 def _building(world: "World", landmark: Landmark) -> None:
-    """One shared three-storey hall, configured by bounds and floor elevation."""
-    from .world import AIR, FLOOR, METAL, PATH, STONE, WOOD
+    from .architecture import build_landmark
 
-    x0, y0, x1, y1 = landmark.bounds
-    base, roof = landmark.base, landmark.roof
-    center_x, center_y = (x0 + x1) // 2, (y0 + y1) // 2
-    world.box(x0 - 3, y0 - 3, 0, x1 + 6, y1 + 3, base, STONE)
-    world.box(x0 - 3, y0 - 3, base - 1, x1 + 6, y1 + 3, base, PATH)
-    world.box(x0 - 3, y0 - 3, base, x1 + 6, y1 + 3, world.height, AIR)
-    for bounds in ((x0, y0, x1, y0 + 1), (x0, y1 - 1, x1, y1),
-                   (x0, y0 + 1, x0 + 1, y1 - 1), (x1 - 1, y0 + 1, x1, y1 - 1)):
-        ax, ay, bx, by = bounds
-        world.box(ax, ay, base, bx, by, roof, STONE)
-    for feet in (*landmark.floors, roof):
-        world.box(x0 + 1, y0 + 1, feet - 1, x1 - 1, y1 - 1, feet,
-                  FLOOR if feet == base else WOOD)
-    # Open arches are passageways, not exceptional doors or new interactions.
-    for x in (x0, x1 - 1):
-        world.box(x, center_y - 2, base, x + 1, center_y + 3, base + 3, AIR)
-    for y in (y0, y1 - 1):
-        world.box(center_x - 2, y, base, center_x + 3, y + 1, base + 3, AIR)
-    for feet in landmark.floors:
-        for x in (x0, x1 - 1):
-            for y in (y0 + 4, y1 - 7):
-                world.box(x, y, feet + 1, x + 1, y + 3, feet + 4, AIR)
-        for y in (y0, y1 - 1):
-            for x in (x0 + 5, x1 - 8):
-                world.box(x, y, feet + 1, x + 3, y + 1, feet + 4, AIR)
-    # Twenty quarter-unit risers share exact geometry with walking and rays.
-    # Open the upper slab for the complete flight, retaining a solid landing.
-    for cx, start_y, _, feet in stair_routes(landmark):
-        sx, sy = math.floor(cx) - 1, math.floor(start_y) + 1
-        world.box(sx, sy, feet + 4, sx + 3, sy + 10, feet + 5, AIR)
-        world.add_stair_flight(sx, sy, 3, 10, feet, feet + 5,
-                               axis="y", direction=1, riser=0.25, material=FLOOR)
-    # First-floor balcony with an open upper arch and a continuous safety rail.
-    feet = base + 5
-    world.box(x1 - 1, center_y - 2, feet, x1, center_y + 3, feet + 3, AIR)
-    world.box(x1 - 1, center_y - 4, feet - 1, x1 + 5, center_y + 5, feet, WOOD)
-    world.box(x1 + 4, center_y - 4, feet, x1 + 5, center_y + 5, feet + 1, WOOD)
-    for y in (center_y - 4, center_y + 4):
-        world.box(x1, y, feet, x1 + 4, y + 1, feet + 1, WOOD)
-    # A readable rooftop silhouette and enclosed overlook reached by flight 3.
-    for bounds in ((x0, y0, x1, y0 + 1), (x0, y1 - 1, x1, y1),
-                   (x0, y0 + 1, x0 + 1, y1 - 1), (x1 - 1, y0 + 1, x1, y1 - 1)):
-        ax, ay, bx, by = bounds
-        world.box(ax, ay, roof, bx, by, roof + 1, METAL)
-    for x in (x0, x1 - 2):
-        for y in (y0, y1 - 2):
-            world.box(x, y, roof + 1, x + 2, y + 2, roof + 2, STONE)
+    build_landmark(world, landmark)
 
 
 def add_landmarks(world: "World") -> None:
@@ -204,25 +198,11 @@ def add_landmarks(world: "World") -> None:
     from .world import AIR, BRIDGE, GRASS, PATH, WOOD, Tree
 
     roads = _road_cells()
-    painted_surface = False
-    for x, y in sorted(roads, key=lambda point: (point[1], point[0])):
-        if not (0 <= x < world.width and 0 <= y < world.depth):
-            continue
-        px, py = x + 0.5, y + 0.5
-        feet = world.surface_height(px, py)
-        # Routes repaint terrain, never a landmark's existing masonry/timber
-        # floor. Keeping those authored surfaces also preserves hub rebuilds.
-        if world.surface_material(px, py) in (GRASS, PATH):
-            field = world.heightfield
-            if field is not None and field.enabled[y * world.width + x]:
-                field.paint_cell(x, y, PATH)
-                painted_surface = True
-            elif float(feet).is_integer() and feet >= 1:
-                world.box(x, y, int(feet) - 1, x + 1, y + 1, int(feet), PATH)
-    if painted_surface:
-        # Direct material edits must invalidate resident grass and map caches.
-        world.revision += 1
-    for x0, y0, x1, y1 in NEW_BRIDGES:
+    from .roads import RoadNetwork
+    world.roads = RoadNetwork(tuple(tuple((x + .5, y + .5) for x, y in route)
+                                    for route in ROUTE_WAYPOINTS))
+    world.revision += 1
+    for x0, y0, x1, y1 in RIVER_BRIDGES:
         if x1 > world.width or y1 > world.depth:
             continue
         world.box(x0, y0, 0, x1, y1, 1, BRIDGE)
@@ -231,10 +211,34 @@ def add_landmarks(world: "World") -> None:
             world.box(x, y0 + 1, 1, x + 1, y1 - 1, 2, WOOD)
             for y in range(y0 + 1, y1 - 1, 4):
                 world.box(x, y, 1, x + 1, y + 1, 3, WOOD)
+    x0, y0, x1, y1, deck = RAVINE_BRIDGE
+    if x1 < world.width and y1 < world.depth:
+        world.box(x0, y0, deck - 1, x1, y1, deck, BRIDGE)
+        world.box(x0, y0, deck, x1, y1, world.height, AIR)
+        for y in (y0 - 1, y1):
+            world.box(x0, y, deck, x1, y + 1, deck + 1, WOOD)
+        # Slender piers descend into the trench; the deck is the only crossing.
+        for x in (300, 319):
+            world.box(x, y0, 1, x + 1, y1, deck - 1)
     for landmark in LANDMARKS:
         if (landmark.bounds[2] + 6 < world.width and landmark.bounds[3] + 3 < world.depth
                 and landmark.roof + 2 <= world.height):
             _building(world, landmark)
+    # Sparse wind-worn outcrops use real irregular surfaces, not square props.
+    from .rocks import add_rock
+    for seed, (x, y, width, depth, height) in enumerate((
+            (183.5, 122.5, 5, 4, 2.6), (264.5, 153.5, 4, 3, 2.1),
+            (284.5, 287.5, 5, 4, 3), (337.5, 331.5, 4, 5, 2.8),
+            (204.5, 391.5, 5, 3, 2.5), (96.5, 266.5, 3, 4, 1.8),
+            (58.5, 270.5, 4, 3, 1.7), (145.5, 99.5, 3, 3, 1.5))):
+        if not (width < x < world.width - width and depth < y < world.depth - depth):
+            continue
+        if world.surface_material(x, y) != GRASS:
+            continue
+        bottom = min(world.surface_height(x + dx, y + dy)
+                     for dx in (-width / 2, 0, width / 2)
+                     for dy in (-depth / 2, 0, depth / 2)) - 0.25
+        add_rock(world, x, y, bottom, width, depth, height, seed=seed)
     # Coarse seeded patches keep the enormous landscape populated without
     # turning collision/targeting into a global, per-frame generation job.
     for gy in range(9, world.depth - 5, 12):
@@ -243,7 +247,9 @@ def add_landmarks(world: "World") -> None:
             if seed % 5 == 0:
                 continue
             x, y = gx + seed % 5 - 2, gy + (seed >> 4) % 5 - 2
-            if x < HUB_SIZE and y < HUB_SIZE:
+            if (101 <= x < 156 and 69 <= y < 123
+                    or 33 <= x < 49 and 241 <= y < 257
+                    or 54 <= x < 84 and 226 <= y < 255):
                 continue
             px, py = x + 0.5, y + 0.5
             feet = world.surface_height(px, py)
@@ -251,6 +257,21 @@ def add_landmarks(world: "World") -> None:
                 continue
             world.trees[x, y] = Tree(px, py, 0.18 + seed % 3 * 0.02,
                                     feet + 3.5 + seed % 5 * 0.2, seed, base_z=feet)
+    for gx in range(26, 111, 7):
+        for gy in range(219, 282, 7):
+            seed = (gx * 73856093 ^ gy * 19349663) & 0xFFFFFFFF
+            x, y = gx + seed % 3, gy + (seed >> 4) % 3
+            if (x, y) in roads or (33 <= x < 49 and 241 <= y < 257) or (54 <= x < 84 and 226 <= y < 255):
+                continue
+            if world.surface_material(x + .5, y + .5) != GRASS:
+                continue
+            feet = world.surface_height(x + .5, y + .5)
+            world.trees[x, y] = Tree(x + .5, y + .5, .20, feet + 4.5 + seed % 4 * .3, seed, base_z=feet)
+    from .map_expansion import CLOSE_TREE
+    x, y = CLOSE_TREE
+    if x < world.width and y < world.depth and world.surface_material(x, y) == GRASS:
+        feet = world.surface_height(x, y)
+        world.trees[int(x), int(y)] = Tree(x, y, .20, feet + 4.0, 0, base_z=feet)
 
 
 def terrain_area_name(x: float, y: float) -> str | None:
@@ -258,23 +279,27 @@ def terrain_area_name(x: float, y: float) -> str | None:
 
     for landmark in LANDMARKS:
         x0, y0, x1, y1 = landmark.bounds
-        if x0 - 3 <= x < x1 + 6 and y0 - 3 <= y < y1 + 3:
+        lx, ly = landmark.to_local(x, y)
+        if x0 - 3 <= lx < x1 + 6 and y0 - 3 <= ly < y1 + 3:
             return landmark.name
     if x < HUB_SIZE and y < HUB_SIZE:
         return None
-    for bounds, name in zip(NEW_BRIDGES, ("HIGHLAND BRIDGE", "CITADEL BRIDGE")):
+    for bounds, name in zip(RIVER_BRIDGES, ("GRAVEWOOD BRIDGE", "THORN BRIDGE", "RELIQUARY BRIDGE")):
         x0, y0, x1, y1 = bounds
         if x0 <= x < x1 and y0 <= y < y1:
             return name
+    x0, y0, x1, y1, _ = RAVINE_BRIDGE
+    if x0 <= x < x1 and y0 <= y < y1:
+        return "RIVEN BRIDGE"
     if abs(y - river_center(x)) < 8:
         return None
     x0, y0, x1, y1 = CANYON_BOUNDS
     if x0 <= x < x1 and y0 <= y < y1:
-        return "SPLITSTONE RAVINE"
+        return "THE RIVEN VALE"
     if x > 350 and y > 330:
-        return "CITADEL HIGHLANDS"
+        return "MOURNING HIGHLANDS"
     if y > 300:
-        return "NORTHERN UPLANDS"
+        return "ASHEN UPLANDS"
     if y > 140:
-        return "ROLLING HIGHLANDS"
-    return "EASTERN RIDGES"
+        return "GRAVE HIGHLANDS"
+    return "THORN RIDGES"

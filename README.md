@@ -14,75 +14,73 @@ Gusts turn grass toward silver-blue and catch lilac edges in the canopy. Ash
 drifts farther on the same wind than the dimmer dust. Indigo river troughs
 break into narrow aqua crests that follow the bends downstream. Spellfire has
 a pale core, violet embers and a cold light that reaches nearby surfaces.
-Pause or open help to freeze the wind, current and particles together.
+Ash and dust concentrate around eye height, with almost twice as many visible
+near the horizon as the earlier sparse field. Pause or open help to freeze
+the wind, current and particles together.
 
 Use `--color-mode gray` for neutral grayscale or `--color-mode mono` for uniform
 white. Snapshots remain plain ASCII in every mode. Colors carry semantic material,
 light and depth data through the same opaque depth tests used by the world.
 
-The six-destination gothic world rebuild has not been authored yet, so the map
-described below remains the playable map. Earlier rendering performance failures
-remain open. See [the current checkpoint](PROJECT_STATUS.md) for validation
-and timing of the playable version.
+Explore a **512 by 512 world** with six connected dark-fantasy destinations:
 
-Explore a **512 by 512 world** with rolling highlands, valleys, a deep ravine,
-forested ridges and a castle hub. This is about **21 times the previous area**,
-with terrain rising from Z=1 to Z=20 and occupied floors and overlooks up to Z=27.
-Four towers and
-battlements frame an open courtyard, a roofed gatehouse, a great hall, a west
-cloister and a garden. Walk up the west steps to reach the cloister roof and
-nearby wall walk. Gravel trails circle the castle and lead to two bridges over
-the northern river, ruined chapel, watchstones and an eastern lodge.
+| Destination | What to explore |
+| --- | --- |
+| Ashgate (128,96) | Spired fortress, court, training yard, garden, cloister and wall walk |
+| Gravewood (72,248) | Grave rows, ruined staff chapel, irregular woods and the Warden's watchstones |
+| Thornwatch (304,132) | Ridge watchfort with narrow spires and an upper balcony |
+| Black Abbey (216,360) | Broken towers, breached nave and surviving pointed vault ribs |
+| Astral Reliquary (388,284) | Elevated galleries under a fractured octagonal roof |
+| Mourning Citadel (420,436) | Largest fortress, guarded terraces, three floors and a high overlook |
 
-Follow the gravel trail east around the lodge to **Ridge Hall**, or leave the
-ruined chapel through its east arch to reach the **Northern Keep**. Longer roads
-connect the **Hill Observatory**, **Splitstone Ravine** and **Far Citadel**. Each
-new hall has three usable floors, windows, a balcony and a rooftop overlook,
-connected by real stairs. Walk along continuous hillsides and quarter-unit
-stone stair risers, with half-unit treads. Jump to cross gaps and climb crates.
-Walking follows continuous ground and authored stair treads. Ordinary blocks,
-low walls and battlements require jumping; their material does not make them
-automatic steps.
-Steep ravine slopes above 45 degrees and wooden guardrails remain obstacles.
+Gravel roads form a loop between all six sites, with an Ashgate-Abbey shortcut
+and a crossing from the Abbey toward the Reliquary over the Riven Vale.
+Three timber bridges span the winding river through the middle of the map.
+Broad slopes blend into the roads and building approaches. Follow continuous
+hillsides and quarter-unit stone stair risers; jump to climb ordinary props.
+The four highland buildings each have three usable floors, real stairs, windows,
+a balcony and a rooftop overlook. Ashgate's west steps reach the cloister roof
+and adjacent wall walk. Pointed arches, tapered octagonal spires and sloping
+buttresses use the same opaque geometry for sight and collision. Diagonal
+tower corners, grass approaches and irregular stone outcrops soften the earlier
+layout. The latest working changes give roads continuous rounded boundaries
+and rotate Thornwatch by 17 degrees and the Reliquary by -23 degrees, including their
+walls, floors, stairways and openings. This broader geometry update is still
+under validation; see PROJECT_STATUS.md before treating it as accepted.
 
 M shows a local terrain map that follows your position. `^` marks high ground,
 `;` lower hills, `~` water and `=` bridges. Your direction marker moves over
 the map; the lower HUD shows your region, coordinates and elevation.
 
-The current working version shares continuous ground geometry across rendering, collision, vegetation,
+Continuous ground geometry is shared by rendering, collision, vegetation,
 targeting and footstep contacts. All thirteen stair flights use the same fine
-step mechanism, including the west cloister route. Native validation passes;
-physical visual/play review and performance acceptance remain pending. Progress and resume
-steps are tracked in `PROJECT_STATUS.md`.
+step mechanism. Frame-rate acceptance and physical fullscreen review remain
+open; see [the current checkpoint](PROJECT_STATUS.md).
 
-Seven wooden doors share **E** interaction, swinging animation and collision.
-Approach and look at a doorway to see its prompt. Doors stop or reopen if a leaf
-would hit you; step clear of the swing before closing.
+Six wooden doors use **E**, with shared swinging animation, sound and obstruction
+protection: Ashgate's four gates and hall doors, plus Gravewood's chapel doors.
+Other arches are open passageways. Look at a nearby door to see its prompt.
+Doors stop or reopen if a leaf would hit you; step clear before closing.
 
-Collect the upright **iron sword with E** near either starting entrance. Find
-the **fire staff** on the western timber floor inside the northern ruins
-(`53.5, 103.5`). Cross either river bridge, follow the north-bank trail toward
-the chapel and enter its south doors, then head left. **You can hold only one item**: collecting another drops your
-current item nearby, where you can collect it again. The E prompt shows which
-item will be dropped.
+Collect the upright **iron sword with E** near either Ashgate starting entrance.
+Find the **fire staff** on the western timber floor inside Gravewood Chapel
+(`68.5, 248.5`). **You can hold only one item**: collecting another drops the
+held item nearby. The prompt names the item that will be dropped.
 
-Press **left click** to swing the sword or shoot a fireball with the staff. Aim
-at the three passive dummies in the western training yard (`42.5-50.5, 48.5`)
-to see each target's name and health.
-Sword strikes need about 2.5 units of reach. Fireballs follow your aim, travel
-up to 28 units, and stop on walls, doors, tree trunks or the first target hit.
+Press **left click** to swing the sword or fire the staff. Ashgate's three
+passive training dummies stand at `(115.5-123.5, 94.5)`. Their names and health
+appear only when aimed at with clear sight. Sword reach is about 2.5 units;
+fireballs travel up to 28 units and stop at walls, doors, trunks or targets.
 The staff fires once per click with a 0.65-second cooldown and no ammo limit.
-Either weapon deals one damage; three hits knock the dummy down, and it resets
-after four seconds. The fixed support remains solid while it is down. R returns
-you to the entrance with your held item and world state preserved.
+Either weapon deals one damage. Three hits knock a dummy down; it resets after
+four seconds. Its fixed support stays solid while it is down.
 
-A **Watchstone Warden** guards the western watchstones (`12-24, 99-106`),
-across the river from the castle. This four-HP stone guardian notices players
-inside its grounds within 7.5 units, follows them, and raises its fists before
-slamming the ground at close range. Step away during its warning to dodge. It stays inside
-the watchstones and returns home when you leave. Defeat it with either weapon;
-it respawns at its original position after 12 seconds, waiting longer if the
-spot is occupied. The three training dummies remain passive.
+A **Watchstone Warden** guards the western Gravewood clearing (`34-48, 242-256`).
+This four-HP stone guardian notices players within 7.5 units, follows them,
+and raises its fists before a close ground slam. Step away during the warning.
+It stays in its clearing and returns home when you leave. Defeat it with either
+weapon; it respawns at home after 12 seconds, waiting if that spot is occupied.
+R returns you to your selected entrance with held item and world state preserved.
 
 The upper HUD shows your **10-point health bar**. A Warden hit costs two health.
 Defeat returns you to your starting entrance with full health, keeping your
@@ -107,25 +105,23 @@ To start in the southern meadow facing the castle:
 python main.py --outside
 ```
 
-To explore a new landmark immediately, use one of these starts. R and defeat
-return you to the selected entrance while preserving world state:
+Start at a destination directly. R and defeat return to the selected entrance
+while preserving inventory and world state:
 
 ```powershell
-python main.py --region ridge
-python main.py --region keep
-python main.py --region observatory
+python main.py --region ashgate
+python main.py --region gravewood
+python main.py --region thornwatch
+python main.py --region abbey
+python main.py --region reliquary
 python main.py --region citadel
 ```
 
-The landmark entrances are near `(148,38,Z5)`, `(79,188,Z7)`,
-`(226,176,Z10)` and `(397,370,Z12)`, respectively. The default castle starts and
-weapon locations remain as described below; landmark starts begin unarmed.
-
-The indoor start is the south gatehouse (`55.5, 30.5`); the outdoor start is
-`55.5, 20.5`. The courtyard connects to meadow gates on all four sides. Continue
-north through the great hall and north gate, then follow the trail west or east
-to a bridge. The lodge lies east of the castle. Press M for the local map;
-follow gravel roads and bridge crossings into the highlands.
+The old `ridge`, `keep` and `observatory` aliases select Thornwatch, Black Abbey
+and Astral Reliquary. The default indoor start is Ashgate's south gatehouse
+`(128.5, 76.5, Z1)`; `--outside` starts at `(128.5, 66.5, Z1)`. Look north to find
+the courtyard. Follow the north gate's road to the river or leave through the
+east gate toward Thornwatch. Use M for the local map.
 
 Short grass covers the outdoor ground, including the bridge approaches. Nearby
 blades are 0.09-0.24 world units tall, with a continuous turf texture filling in
@@ -187,7 +183,7 @@ and colors when it exits. Focus loss pauses play on Windows; press P to resume.
 ```powershell
 python main.py --demo                # Automatic walk; Esc still exits
 python main.py --outside             # Southern meadow facing the castle
-python main.py --region ridge        # Start at Ridge Hall in the new highlands
+python main.py --region thornwatch   # Start at the ridge watchfort
 python main.py --keyboard-look       # Arrows to look; Enter to attack
 python main.py --fps 30              # Lower the frame-rate cap
 python main.py --mute                # Start silently; F enables sound
@@ -236,20 +232,21 @@ changes it). Headless benchmark FPS excludes terminal output and cap waits.
 
 ## Sound
 
-Original fantasy-style Foley adds uneven wooden door creaks and quiet latches,
-distinct stone, grass, wood, water, gravel and metal footsteps and landings,
-cloth-like jumps, surface-specific contacts when climbing terrain and stairs,
-splashes, weapon pickup tones, dropped-item thuds, blade whooshes,
-fireball ignition/rush, impacts and fading embers, sharp sword impacts on enemies, dummy
-feedback and quiet interface
-cues. Meadow wind includes gentle gusts and grass rustle. The Warden has stone
-footsteps, an alert, an attack warning, hit/defeat and respawn feedback; player
-damage and entrance respawn have their own cues. Footsteps and landings use the supporting surface, including raised crate
-and bridge tops. Wind and river ambience change as you explore. Effects
-overlap, with distance attenuation and stereo positioning for nearby doors.
-Door opening, closing and obstruction cues each have three variations.
-Successful sword strikes play a distinct impact at the enemy and a softer
-whoosh; misses keep the full air-swing sound.
+Original procedural sound now emphasizes dark-fantasy materials: heavy boot
+contacts on stone, grass, wood, water, gravel and metal; cloth movement; grit,
+scrapes and damped body resonances. Weathered doors strain and release around
+wooden latches. Sword contacts have an immediate iron/wood impact, while the
+staff exhales cold spellfire with turbulent tails and crumbling embers.
+The Warden uses low, inharmonic stone weight for movement, warnings, impacts,
+collapse and return. Player damage and respawn use their own cues. Interface
+feedback is subdued parchment/leather movement. Gusting wind and flowing water
+use textured turbulence. All sounds are synthesized locally, without recordings.
+
+Footsteps and landings follow the actual supporting material, including stairs,
+raised crates and bridge tops. Recurring contacts and relic effects have
+repeatable variations. Effects overlap with distance attenuation and stereo
+positioning. Confirmed sword hits lead with the impact and a softer whoosh;
+misses keep the full air swing.
 Pause/help hush the environment while preserving menu feedback. F toggles sound;
 the header shows its state. Mute, pause, volume changes, and stopped voices fade
 smoothly. Lost output devices retry automatically; F also requests a retry when
@@ -319,7 +316,8 @@ The `--audio` run includes live ambience/effect mixing and needs a Windows audio
 device. `doors-audio-current.json` records that mode with the interactive doors;
 new baselines must use the same audio mode. Door panels supply early ray limits,
 so static geometry hidden behind a closed door is not traversed.
-`--extra-scenes` adds ruins, lodge, east bridge, watchstones, an active Warden, equipped sword
+`--extra-scenes` keeps stable workload names for chapel, watchfort, east bridge,
+watchstones, an active Warden, equipped sword
 combat, the staff pickup, live fireballs, the map overlay, close trees, river
 angles, castle exterior, great hall and roof views. Audio-enabled measurements
 include actual listener-position river/wind sampling. Saved camera coordinates

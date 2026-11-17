@@ -2,6 +2,7 @@ import math
 import unittest
 
 from ascii3d.geometry import Camera
+from ascii3d.map_expansion import CLOSE_TREE
 from ascii3d.player import Player
 from ascii3d.renderer import Renderer
 from ascii3d.scenery import Scenery
@@ -59,7 +60,7 @@ class VegetationTests(unittest.TestCase):
         self.assertEqual(still, renderer.scene(player, 100, 36, time_seconds=2))
 
     def test_trunk_collision_is_circular_and_foliage_is_soft(self):
-        tree = self.world.trees[12, 34]
+        tree = self.world.trees[tuple(map(int, CLOSE_TREE))]
         self.assertTrue(self.world.collides(tree.x, tree.y, 1))
         self.assertFalse(self.world.collides(tree.x + 0.4, tree.y + 0.4, 1))
         self.assertFalse(self.world.collides(tree.x + 1, tree.y, tree.height + 0.2))

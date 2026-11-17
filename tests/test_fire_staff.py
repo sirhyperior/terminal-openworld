@@ -29,10 +29,10 @@ class FireStaffTests(unittest.TestCase):
         self.assertIs(self.combat.held_item, self.staff)
         return events
 
-    def test_live_staff_is_on_accessible_floor_inside_northern_ruins(self):
+    def test_live_staff_is_on_accessible_floor_inside_gravewood_chapel(self):
         world = build_world()
         staff, = [item for item in world.combat.pickups if item.weapon == FIRE_STAFF]
-        self.assertEqual(world.area(staff.x, staff.y), "NORTHERN RUINS")
+        self.assertEqual(world.area(staff.x, staff.y), "GRAVEWOOD CHAPEL")
         player = Player(x=staff.x, y=staff.y - 2)
         self.assertFalse(world.collides(player.x, player.y, player.z))
         self.assertFalse(world.collides(staff.x, staff.y, staff.z))

@@ -34,7 +34,7 @@ def surface_kind(world, x: float, y: float, feet: float, in_water: bool = False)
     cz = round(feet) - 1
     # Contact resolution can leave a tiny positive gap above a voxel top.
     if abs(feet - (cz + 1)) <= _CONTACT_TOLERANCE:
-        material = world.get(cx, cy, cz)
+        material = world.ground_material(x, y, world.get(cx, cy, cz))
         if material in _MATERIALS:
             return _MATERIALS[material]
         nearest, surface = _CONTACT_RADIUS ** 2, None
@@ -43,7 +43,7 @@ def surface_kind(world, x: float, y: float, feet: float, in_water: bool = False)
                 dx = max(sx - x, 0.0, x - (sx + 1))
                 dy = max(sy - y, 0.0, y - (sy + 1))
                 distance = dx * dx + dy * dy
-                material = world.get(sx, sy, cz)
+                material = world.ground_material(sx + .5, sy + .5, world.get(sx, sy, cz))
                 if distance < nearest and material in _MATERIALS:
                     nearest, surface = distance, _MATERIALS[material]
         if surface is not None:

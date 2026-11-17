@@ -154,9 +154,9 @@ class SmoothMovementTests(unittest.TestCase):
 
     def test_castle_west_flight_walks_both_directions_without_jumping(self):
         world = build_world()
-        player = Player(x=35.5, y=31.5, yaw=math.pi / 2)
+        player = Player(x=108.5, y=77.5, yaw=math.pi / 2)
         events = []
-        for destination, yaw, height in ((42.5, math.pi / 2, 6), (31.5, -math.pi / 2, 1)):
+        for destination, yaw, height in ((88.5, math.pi / 2, 6), (77.5, -math.pi / 2, 1)):
             player.yaw = yaw
             for _ in range(600):
                 player.update(world, {"w"}, 1 / 120)

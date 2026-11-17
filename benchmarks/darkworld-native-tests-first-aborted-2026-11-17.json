@@ -1,0 +1,6 @@
+{
+  "complete": false,
+  "passed": false,
+  "reason": "Temporary test wrapper lacked __main__ guard; spawned audio workers reexecuted exclusive report creation and failed. Parent stopped with Ctrl+C. Engine unchanged; wrapper repaired before new run.",
+  "exit_code": -1073741510
+}

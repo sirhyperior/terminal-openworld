@@ -96,6 +96,9 @@ output; wall-clock rate caps are only for immediately returning sinks.
 - `world.py`, `map_expansion.py`, `terrain.py`, `player.py`: materials/layout,
   highlands, shared multilevel landmarks, collision, stairs, movement, jumping,
   water current and player health.
+- `architecture.py`, `orientation.py`, `rocks.py`: shared gothic pieces, exact
+  rotated authoring and seeded opaque outcrops.
+- `roads.py`: bounded continuous road boundaries shared by presentation and contacts.
 - `surfaces.py`: shared continuous ground triangles, exact circular support,
   analytic ray hits, convex pieces and fractional stair solids.
 - `palette.py`, `shading.py`, `presentation.py`: shared semantic material lighting,

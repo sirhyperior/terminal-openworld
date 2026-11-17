@@ -177,7 +177,7 @@ class ConvexSolid:
     vertices: tuple[tuple[float, float, float], ...]
     faces: tuple[tuple[int, ...], ...]
     material: int = 2
-    stair: bool = field(default=False, init=False)
+    stair: bool = False
     planes: tuple = field(init=False, repr=False)
     edges: tuple = field(init=False, repr=False)
     x0: float = field(init=False)

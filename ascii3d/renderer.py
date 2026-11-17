@@ -540,6 +540,7 @@ class Renderer:
         sky_horizon = self._prepare_horizon(player, cp, sp) if skip_empty else None
         horizon_scale = 128 / math.tau
         current, aspect = world.current, self.cell_aspect
+        ground_material = world.ground_material
         origin = (px, py, pz)
         geometry_hit = None
         if world.geometry_present:
@@ -846,6 +847,8 @@ class Renderer:
                     normal = ((-float(step_x), 0.0, 0.0) if axis == 0 else
                               (0.0, -float(step_y), 0.0) if axis == 1 else
                               (0.0, 0.0, -float(step_z)))
+                if material == GRASS and normal[2] > 0:
+                    material = ground_material(hx, hy, material)
                 if material == WATER:
                     tone = shade_surface(material, hx, hy, hz, normal, distance)
                     wave = _river_ripple(hx, hy, time_seconds)
@@ -1023,43 +1026,120 @@ class Renderer:
         self._write(pixels, left, top, "+" + "-" * map_width + "+")
         key = (world.revision, len(pixels[0]), len(pixels), len(world.trees), origin_x, origin_y)
         if key != self._map_key:
-            rows = []
+            offsets = (1 / 6, 1 / 2, 5 / 6)
+
+            def line_glyph(samples):
+                # Infer a stroke in map-cell coordinates, including the
+                # north-up inversion. Solid interiors retain their fill;
+                # partial footprints describe their real oblique boundary.
+                count = len(samples)
+                mean_x = sum(point[0] for point in samples) / count
+                mean_y = sum(point[1] for point in samples) / count
+                xx = sum((point[0] - mean_x) ** 2 for point in samples)
+                yy = sum((point[1] - mean_y) ** 2 for point in samples)
+                xy = sum((point[0] - mean_x) * (point[1] - mean_y) for point in samples)
+                angle = math.atan2(2 * xy, xx - yy) / 2
+                if abs(angle) < math.pi / 8:
+                    return "-"
+                if abs(angle) > math.pi * 3 / 8:
+                    return "|"
+                return "\\" if angle > 0 else "/"
+
+            rows, coverage, strokes = [], {}, []
             for row in range(map_height):
-                y0 = origin_y + span_y - 1 - int(row * 2 * scale)
-                y1 = max(origin_y, origin_y + span_y - int((row + 1) * 2 * scale))
+                north = origin_y + span_y - row * 2 * scale
+                south = max(origin_y, north - 2 * scale)
                 chars = []
                 for column in range(map_width):
-                    x0 = origin_x + int(column * scale)
-                    x1 = min(origin_x + span_x, origin_x + int((column + 1) * scale))
-                    priority, char = 0, " "
-                    for y in range(y1, y0 + 1):
-                        for x in range(x0, x1):
+                    west = origin_x + column * scale
+                    east = min(origin_x + span_x, west + scale)
+                    groups = {}
+                    for fy in offsets:
+                        y = south + fy * (north - south)
+                        for fx in offsets:
+                            x = west + fx * (east - west)
                             surface = world.surface_height(x, y)
                             material = world.surface_material(x, y)
-                            if (x, y) in world.trees:
-                                rank, symbol = 5, "#"
-                            elif material == BRIDGE:
-                                rank, symbol = 4, "="
+                            if material == BRIDGE:
+                                rank, kind = 4, BRIDGE
                             elif material == WATER:
-                                rank, symbol = 3, "~"
+                                rank, kind = 3, WATER
                             elif material == PATH:
-                                rank, symbol = 4, "."
+                                rank, kind = 4, PATH
                             elif material == GRASS:
-                                rank, symbol = 2, ("^" if surface >= 8 else ";" if surface > 1 else ",")
+                                rank, kind = 2, GRASS
                             elif material:
-                                rank, symbol = 6, "#"
+                                rank, kind = 6, -1
                             else:
-                                rank, symbol = 0, " "
-                            if rank >= priority:
-                                identity = LEAVES if (x, y) in world.trees else material
-                                priority, char = rank, ink(symbol, 10, identity)
-                    chars.append(char)
+                                rank, kind = 0, AIR
+                            groups.setdefault((rank, kind), []).append((fx, -fy, material, surface))
+                    for (_, kind), samples in groups.items():
+                        coverage[row, column, kind] = samples
+                    # One tiny corner cannot expand into a filled map tile.
+                    # Narrow roads/walls remain readable with two samples.
+                    eligible = [(rank, len(samples), kind, samples)
+                                for (rank, kind), samples in groups.items()
+                                if rank <= 2 or len(samples) >= 2]
+                    if not eligible:
+                        chars.append(" ")
+                        continue
+                    _, count, kind, samples = max(eligible, key=lambda entry: entry[:3])
+                    materials = {}
+                    for _, _, material, _ in samples:
+                        materials[material] = materials.get(material, 0) + 1
+                    material = max(materials, key=lambda value: (materials[value], value))
+                    if kind == -1:
+                        symbol = "#"
+                        if count < 7:
+                            strokes.append((row, column, kind, material))
+                    elif kind == PATH:
+                        symbol = "."
+                        strokes.append((row, column, kind, material))
+                    elif kind == BRIDGE:
+                        symbol = "="
+                    elif kind == WATER:
+                        symbol = "~"
+                    elif kind == GRASS:
+                        surface = sum(point[3] for point in samples) / count
+                        symbol = "^" if surface >= 8 else ";" if surface > 1 else ","
+                    else:
+                        symbol = " "
+                    chars.append(ink(symbol, 10, material))
                 rows.append(["|", *chars, "|"])
+            # A clipped stroke can look horizontal inside one character.
+            # Infer its direction from a small physical-space neighborhood
+            # of those same samples, never another world query or global scan.
+            for row, column, kind, material in strokes:
+                samples = []
+                possible = 0
+                for dy in (-1, 0, 1):
+                    for dx in (-2, -1, 0, 1, 2):
+                        if not (0 <= row + dy < map_height and 0 <= column + dx < map_width):
+                            continue
+                        possible += 9
+                        samples.extend((dx + fx, 2 * (dy + 1 + fy))
+                                       for fx, fy, _, _ in coverage.get((row + dy, column + dx, kind), ()))
+                if kind == PATH and len(samples) >= possible * 0.8:
+                    continue
+                rows[row][column + 1] = ink(line_glyph(samples), 10, material)
+            # Tree centers are indexed in world tiles; overlay their symbols
+            # once per cached local chart without inflating their whole tile
+            # into an architectural block or scanning the global population.
+            for y in range(origin_y, origin_y + span_y):
+                for x in range(origin_x, origin_x + span_x):
+                    tree = world.trees.get((x, y))
+                    if tree is None:
+                        continue
+                    column = min(map_width - 1, max(0, int((tree.x - origin_x) / scale)))
+                    row = min(map_height - 1, max(0, int((origin_y + span_y - tree.y) / (2 * scale))))
+                    old = rows[row][column + 1]
+                    if not isinstance(old, Ink) or old.material in (AIR, GRASS):
+                        rows[row][column + 1] = ink("*", 10, LEAVES)
             self._map_rows, self._map_key = rows, key
         for row, line in enumerate(self._map_rows):
             self._write(pixels, left, top + row + 1, line)
         marker_x = left + 1 + min(map_width - 1, max(0, int((player.x - origin_x) / scale)))
-        marker_y = top + 1 + min(map_height - 1, max(0, int((origin_y + span_y - 1 - player.y) / (2 * scale))))
+        marker_y = top + 1 + min(map_height - 1, max(0, int((origin_y + span_y - player.y) / (2 * scale))))
         direction = (">", "^", "<", "v")[int((player.yaw + math.pi / 4) / (math.pi / 2)) % 4]
         pixels[marker_y][marker_x] = ink(direction, 15, UI_ACCENT)
         self._write(pixels, left, top + map_height + 1, "+" + "-" * map_width + "+")

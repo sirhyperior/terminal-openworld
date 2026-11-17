@@ -117,7 +117,7 @@ class TerrainSoundTests(unittest.TestCase):
             player = spawn_region(region)
             self.assertFalse(world.collides(player.x, player.y, player.z), region)
             self.assertTrue(world.collides(player.x, player.y, player.z - 0.05), region)
-            self.assertGreater(player.z, 1)
+            self.assertGreaterEqual(player.z, 1)
 
 
 if __name__ == "__main__":

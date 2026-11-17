@@ -1,4 +1,4 @@
-"""Original fantasy Foley, bounded stereo mixing, and asynchronous Windows output.
+"""Original dark-fantasy Foley and bounded asynchronous stereo playback.
 
 Synthesis is performed once before play. Gameplay only queues semantic events;
 the renderer never opens devices, writes files, or generates audio samples.
@@ -26,14 +26,14 @@ EFFECTS = {
     "jump": 0.18, "land": 0.26, "water_splash": 0.32,
     "land_stone": 0.28, "land_grass": 0.27, "land_wood": 0.32,
     "land_water": 0.38, "land_gravel": 0.31, "land_metal": 0.38,
-    "door_open": 0.70, "door_close": 0.65, "door_blocked": 0.18,
+    "door_open": 0.88, "door_close": 0.82, "door_blocked": 0.22,
     "sword_pickup": 0.42, "sword_swing": 0.29, "sword_hit": 0.34,
     "sword_miss": 0.18, "attack_empty": 0.15,
-    "staff_pickup": 0.48, "item_drop": 0.24,
+    "staff_pickup": 0.62, "item_drop": 0.24,
     "fireball_cast": 0.65, "fireball_hit": 0.42,
     "fireball_impact": 0.38, "fireball_fizzle": 0.24,
     "dummy_down": 0.58, "dummy_reset": 0.48,
-    "enemy_alert": 0.65, "enemy_step": 0.24, "enemy_attack": 0.42,
+    "enemy_alert": 0.78, "enemy_step": 0.24, "enemy_attack": 0.42,
     "enemy_miss": 0.22, "enemy_hurt": 0.28,
     "enemy_down": 0.85, "enemy_respawn": 0.90,
     "player_hurt": 0.30, "player_down": 0.80, "player_respawn": 0.60,
@@ -61,8 +61,8 @@ def _door_creak(name, rng, rate, duration):
     # Each state is [feedback, damping squared, excitation gain, mix gain,
     # previous sample, older sample]. Short decays leave audible release gaps.
     modes = []
-    for frequency, decay, gain in ((183, 0.016, 0.60), (487, 0.008, 0.32),
-                                    (1127, 0.004, 0.16)):
+    for frequency, decay, gain in ((111, 0.022, 0.66), (293, 0.012, 0.34),
+                                    (713, 0.006, 0.16)):
         angle = math.tau * frequency * rng.uniform(0.94, 1.06) / rate
         damping = math.exp(-1 / (rate * decay))
         modes.append([2 * damping * math.cos(angle), damping * damping,
@@ -99,163 +99,225 @@ def _door_creak(name, rng, rate, duration):
         yield value
 
 
+# Frequencies are deliberately inharmonic: these are damped material bodies,
+# not pitched notes. The same model serves boots, debris, weapons and masonry.
+_MATERIAL_MODES = {
+    "stone": ((91, 0.024, 0.65), (217, 0.016, 0.30), (563, 0.009, 0.12)),
+    "grass": ((73, 0.016, 0.50), (173, 0.009, 0.14)),
+    "wood": ((106, 0.048, 0.64), (267, 0.024, 0.34), (631, 0.012, 0.12)),
+    "water": ((133, 0.025, 0.25), (379, 0.014, 0.18)),
+    "gravel": ((97, 0.020, 0.45), (431, 0.010, 0.19), (937, 0.006, 0.10)),
+    "metal": ((181, 0.095, 0.42), (497, 0.062, 0.22), (1129, 0.038, 0.11)),
+}
+# Surface-dependent boot, scrape and toe-release amounts. Both ordinary steps
+# and hard landings use these contacts, so elevated floors keep the same voice.
+_CONTACT_TEXTURES = {
+    "stone": (0.46, 0.16, 27), "grass": (0.22, 0.68, 17),
+    "wood": (0.38, 0.24, 24), "water": (0.12, 0.95, 11),
+    "gravel": (0.62, 0.38, 16), "metal": (0.33, 0.18, 31),
+}
+
+
+class _Body:
+    """Noise/impulse-excited, decaying modes; constructed only during loading."""
+
+    def __init__(self, modes, rate, pitch=1.0):
+        self.modes = []
+        for frequency, decay, gain in modes:
+            angle = math.tau * frequency * pitch / rate
+            damping = math.exp(-1 / (rate * decay))
+            self.modes.append([2 * damping * math.cos(angle), damping * damping,
+                               math.sin(angle) * gain, 0.0, 0.0])
+
+    def sample(self, excitation):
+        value = 0.0
+        for mode in self.modes:
+            current = excitation * mode[2] + mode[0] * mode[3] - mode[1] * mode[4]
+            mode[4], mode[3] = mode[3], current
+            value += current
+        return value
+
+
+def _gesture(t, start, length):
+    """A soft-edged contact/rush that occupies one authored time window."""
+    progress = (t - start) / length
+    return math.sin(math.pi * progress) ** 2 if 0 < progress < 1 else 0.0
+
+
 def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
-    """Layer filtered noise, resonances, and short echoes; no sampled game audio."""
+    """Build original weathered Foley, cold spellfire and turbulent ambience.
+
+    Impacts excite irregular material resonances, while movement is filtered
+    cloth/air/stone noise. No external recordings, speech, or musical UI tones.
+    All filtering, synthesis and room tails finish before gameplay begins.
+    """
     ambient = name in ("wind", "river")
     duration = 6.0 if ambient else EFFECTS[name]
-    rng = random.Random(4127 + sum(map(ord, name)) * 31 + variation * 701)
+    rng = random.Random(7129 + sum(map(ord, name)) * 43 + variation * 719)
     result = array("h")
-    low = slow = 0.0
-    pitch = 0.94 + variation * 0.055
+    low = slow = air = 0.0
+    # Rate-independent filters keep previews at other sample rates recognizable.
+    low_alpha = 1 - math.exp(-math.tau * 760 / rate)
+    slow_alpha = 1 - math.exp(-math.tau * 105 / rate)
+    air_alpha = 1 - math.exp(-math.tau * 2400 / rate)
+    pitch = 0.93 + variation * 0.057
+    surface = name.split("_", 1)[1] if name.startswith(("step_", "land_")) else "stone"
+    surface = surface if surface in _MATERIAL_MODES else "stone"
+    modes = _MATERIAL_MODES[surface]
+    if name in ("sword_pickup", "sword_hit"):
+        modes = ((307, 0.022, 0.45), (839, 0.014, 0.23), (1877, 0.008, 0.10))
+    elif name.startswith("enemy_"):
+        modes = ((58, 0.062, 0.65), (137, 0.039, 0.32), (367, 0.021, 0.15))
+    elif name.startswith("fireball_") or name in ("staff_pickup", "player_respawn"):
+        modes = ((71, 0.075, 0.42), (127, 0.058, 0.28), (229, 0.039, 0.17))
+    elif name in ("player_hurt", "player_down"):
+        modes = ((62, 0.026, 0.62), (149, 0.015, 0.27))
+    elif name in ("dummy_down", "dummy_reset", "item_drop"):
+        modes = _MATERIAL_MODES["wood"]
+    elif name == "wind":
+        modes = ((137, 0.010, 0.12), (331, 0.006, 0.06))
+    elif name == "river":
+        modes = ((273, 0.013, 0.13), (617, 0.007, 0.08))
+    body = _Body(modes, rate, pitch)
     door = _door_creak(name, rng, rate, duration) if name in _DOOR_STRAINS else None
+    # Deterministic irregular chips/drops rather than periodic digital rattles.
+    contacts = [(rng.uniform(0.018, duration * 0.68), rng.uniform(0.015, 0.045),
+                 rng.uniform(0.12, 0.38)) for _ in range(5)]
     for index in range(round(duration * rate)):
         t = index / rate
         noise = rng.uniform(-1, 1)
-        low += (noise - low) * 0.17
-        slow += (noise - slow) * 0.008
+        low += (noise - low) * low_alpha
+        slow += (noise - slow) * slow_alpha
+        air += (noise - air) * air_alpha
+        grit, breath = noise - air, air - low
+        chips = sum(_gesture(t, start, length) * gain for start, length, gain in contacts)
+        transient = math.exp(-t * 44)
+        excitation, value = 0.0, 0.0
         if name == "wind":
-            # Soft broad gusts with a little grass rustle remain audible on
-            # small speakers, without a whistle or a constant bright hiss.
-            gust = (0.70 + 0.18 * math.sin(math.tau * t / duration)
-                    + 0.12 * math.sin(math.tau * t * 3 / duration + 1.1))
-            rustle = max(0.0, math.sin(math.tau * t * 2 / duration + 0.4)) ** 3
-            value = (low * 0.65 + slow * 2.6
-                     + (noise - low) * rustle * 0.07) * gust
+            gust = (0.66 + 0.20 * math.sin(math.tau * t / duration + 0.7)
+                    + 0.14 * math.sin(math.tau * t * 3 / duration + 1.9))
+            leaves = max(0, math.sin(math.tau * t * 2 / duration + 0.6)) ** 4
+            value = (slow * 3.3 + low * 0.65 + breath * leaves * 0.18) * gust
+            # A distant hollow moan is turbulent noise, without a steady drone.
+            excitation = low * gust * (0.25 + leaves * 0.45)
         elif name == "river":
-            # Layered rushing/babbling noise, without the old steady tonal hum.
-            flow = 0.85 + 0.10 * math.sin(math.tau * t / duration) + 0.05 * math.sin(math.tau * t * 3 / duration)
-            value = (low * 1.1 + slow * 1.8 + (noise - low) * 0.14) * flow
-        elif name == "terrain_step":
-            body = math.sin(math.tau * t * 95 * pitch) * math.exp(-t * 32)
-            value = body * 0.65 + low * math.exp(-t * 18) * 0.5
-        elif name.startswith("step_"):
-            body = math.exp(-t * 32) * math.sin(math.tau * pitch * (95 * t - 45 * t * t))
-            if name == "step_stone":
-                value = body * 0.7 + noise * math.exp(-t * 38) * 0.65 + low * math.exp(-t * 15) * 0.35
-            elif name == "step_grass":
-                value = body * 0.35 + (noise - low) * math.exp(-t * 26) * 0.30 + low * math.exp(-t * 13) * 0.7
-            elif name == "step_wood":
-                value = body * 0.85 + math.sin(math.tau * t * 245 * pitch) * math.exp(-t * 26) * 0.25 + noise * math.exp(-t * 60) * 0.35
-            elif name == "step_gravel":
-                grains = 0.35 + 0.65 * math.sin(t * 217 * pitch) ** 8
-                value = body * 0.38 + (noise - low) * grains * math.exp(-t * 15) * 0.9 + low * math.exp(-t * 22) * 0.5
-            elif name == "step_metal":
-                ring = math.sin(math.tau * t * 390 * pitch) * 0.32 + math.sin(math.tau * t * 721 * pitch) * 0.13
-                value = body * 0.62 + ring * math.exp(-t * 17) + noise * math.exp(-t * 65) * 0.4
-            else:
-                value = low * math.exp(-t * 12) + math.sin(math.tau * (240 * t - 280 * t * t)) * math.exp(-t * 17) * 0.3
-        elif name.startswith("land_"):
-            body = math.sin(math.tau * t * 64 * pitch) * math.exp(-t * 24)
-            if name == "land_grass":
-                value = body * 0.5 + low * math.exp(-t * 17) * 1.1 + (noise - low) * math.exp(-t * 18) * 0.15
-            elif name == "land_wood":
-                value = body * 0.95 + math.sin(math.tau * t * 181 * pitch) * math.exp(-t * 18) * 0.3 + noise * math.exp(-t * 45) * 0.3
-            elif name == "land_gravel":
-                crunch = (noise - low) * (0.3 + 0.7 * math.sin(t * 193) ** 8)
-                value = body * 0.65 + crunch * math.exp(-t * 13) * 0.9 + low * math.exp(-t * 19) * 0.7
-            elif name == "land_metal":
-                ring = math.sin(math.tau * t * 293) * 0.28 + math.sin(math.tau * t * 547) * 0.16
-                value = body * 0.85 + ring * math.exp(-t * 12) + noise * math.exp(-t * 48) * 0.45
-            elif name == "land_water":
-                value = body * 0.2 + (low * 1.6 + noise * 0.15) * math.exp(-t * 10)
-                value += math.sin(math.tau * (225 * t - 210 * t * t)) * math.exp(-t * 12) * 0.28
-            else:
-                value = body * 0.9 + low * math.exp(-t * 22) * 1.4 + noise * math.exp(-t * 45) * 0.28
+            flow = 0.82 + 0.13 * math.sin(math.tau * t * 2 / duration + 0.4)
+            eddy = 0.5 + 0.5 * math.sin(math.tau * t * 7 / duration + 1.3)
+            value = (slow * 2.2 + low * 1.15 + breath * 0.22) * flow
+            excitation = (breath * eddy + noise * max(0, abs(noise) - 0.84) * 0.25) * 0.45
+        elif name.startswith(("step_", "land_")) or name in ("terrain_step", "land", "enemy_step"):
+            landing = name.startswith("land")
+            crack, scrape, decay = _CONTACT_TEXTURES[surface]
+            heel = math.exp(-t * (28 if landing else 42))
+            toe = _gesture(t, 0.045, 0.095 if landing else 0.075)
+            excitation = (noise * heel + low * toe * 0.28) * (1.2 if landing else 0.85)
+            value = (slow * 2.7 + low * 0.75 + grit * crack) * heel
+            value += (breath * scrape + low * 0.30) * toe
+            if surface == "water":
+                value += (low * 1.8 + breath * 0.5) * math.exp(-t * 11)
+            elif surface == "gravel":
+                value += (grit * chips * 1.6 + low * 0.35) * math.exp(-t * decay)
+            elif surface == "grass":
+                value += breath * (0.5 + chips) * math.exp(-t * decay)
+            if name == "enemy_step":
+                excitation *= 1.45
+                value = (slow * 4.1 + low * 1.3 + grit * 0.18) * math.exp(-t * 26)
+                value += breath * chips * math.exp(-t * 16)
         elif door is not None:
             value = next(door)
-        elif name == "land":
-            value = (math.sin(math.tau * t * 76 * pitch) * 0.75 + low * 1.4) * math.exp(-t * 22)
+        elif name in ("jump", "attack_empty"):
+            cloth = _gesture(t, 0.005, duration * 0.90)
+            value = (low * 1.1 + breath * 0.35) * cloth + slow * transient * 0.8
         elif name == "water_splash":
-            value = (low * 1.5 + noise * 0.17 + math.sin(math.tau * (280 * t - 250 * t * t)) * 0.2) * math.exp(-t * 10)
-        elif name == "jump":
-            value = (noise - low) * math.sin(math.pi * t / duration) ** 1.4 * 0.22 + low * math.exp(-t * 16) * 0.6
+            value = (low * 1.8 + breath * 0.43 + grit * 0.07) * math.exp(-t * 10)
+            value += breath * chips * 0.7
+            excitation = low * math.exp(-t * 16) * 0.35
         elif name == "sword_pickup":
-            ring = math.sin(math.tau * t * 615) * 0.2 + math.sin(math.tau * t * 1013) * 0.10
-            value = ring * math.exp(-t * 11) + low * math.exp(-t * 28) * 0.7 + noise * math.exp(-t * 60) * 0.2
+            draw = _gesture(t, 0.015, 0.20)
+            value = breath * draw * 0.55 + low * math.exp(-t * 27) * 0.8
+            excitation = noise * transient * 0.65 + grit * draw * 0.12
         elif name == "staff_pickup":
-            shimmer = (math.sin(math.tau * t * 523 * pitch) * 0.32
-                       + math.sin(math.tau * t * 784 * pitch) * 0.18)
-            value = shimmer * math.exp(-t * 8) + low * math.exp(-t * 22) * 0.5
+            # Old wood knocks, then an unpitched breath through cold relic metal.
+            breath_in = _gesture(t, 0.065, 0.48)
+            excitation = low * breath_in * 0.9 + noise * transient * 0.22
+            value = slow * 2.1 * breath_in + breath * chips * 0.17
         elif name == "item_drop":
-            value = (math.sin(math.tau * t * 117 * pitch) * 0.65
-                     + low * 1.1 + noise * 0.12) * math.exp(-t * 28)
+            excitation = noise * transient + noise * _gesture(t, 0.066, 0.025) * 0.4
+            value = (slow * 2.0 + low * 1.2 + grit * 0.16) * math.exp(-t * 25)
         elif name == "fireball_cast":
-            # Ignition crack, rushing flame and a short falling fiery tail.
-            rush = math.sin(math.pi * min(1, t / 0.38)) ** 1.5 if t < 0.38 else 0
-            value = (low * 1.4 + (noise - low) * 0.20) * (rush + math.exp(-t * 25) * 0.5)
-            value += math.sin(math.tau * pitch * (210 * t - 100 * t * t)) * math.exp(-t * 9) * 0.45
+            rush = _gesture(t, 0.035, 0.42)
+            tear = math.exp(-t * 48)
+            excitation = (low * rush + noise * tear * 0.30) * 1.1
+            value = (slow * 2.1 + low * 1.2 + breath * 0.38) * rush
+            value += grit * tear * 0.45 + breath * chips * math.exp(-t * 5) * 0.25
         elif name in ("fireball_hit", "fireball_impact"):
-            value = (low * 1.6 + noise * 0.25) * math.exp(-t * 15)
-            value += math.sin(math.tau * t * 69 * pitch) * math.exp(-t * 20) * 0.9
+            excitation = noise * math.exp(-t * 32) * 1.4
+            value = (slow * 3.4 + low * 1.8 + grit * 0.34) * math.exp(-t * 20)
+            value += breath * chips * math.exp(-t * 9) * 0.8
             if name == "fireball_hit":
-                value += (noise - low) * math.exp(-t * 70) * 0.8
+                value += grit * math.exp(-t * 85) * 0.7
         elif name == "fireball_fizzle":
-            value = (noise - low) * math.sin(math.pi * t / duration) * math.exp(-t * 12) * 0.65
+            ember = _gesture(t, 0.002, duration * 0.97)
+            value = (breath * 0.75 + low * 0.55) * ember * math.exp(-t * 8)
+            value += grit * chips * 0.25
         elif name in ("sword_swing", "sword_miss"):
-            sweep = math.sin(math.pi * t / duration) ** (2 if name == "sword_swing" else 1.2)
-            value = ((noise - low) * 0.25 + low * 0.8) * sweep
-            value += slow * math.exp(-t * 12) * (0.4 if name == "sword_swing" else 0.15)
+            sweep = _gesture(t, 0.015, duration * 0.90)
+            value = (low * 1.15 + breath * 0.50) * sweep
+            value += grit * chips * 0.04 + slow * sweep * 0.75
         elif name == "sword_hit":
-            # A dry contact crack, solid thwack and brief blade bite. Keep the
-            # impact immediate so it reads differently from the airy swing.
-            body = math.sin(math.tau * t * 153 * pitch) * math.exp(-t * 26) * 0.85
-            crack = (noise - low) * math.exp(-t * 90) * 0.80
-            crunch = low * math.exp(-t * 35) * 1.1
-            blade = (math.sin(math.tau * t * 1673 * pitch) * 0.22
-                     + math.sin(math.tau * t * 2531 * pitch) * 0.10) * math.exp(-t * 75)
-            value = body + crack + crunch + blade
+            # Immediate blade bite, compact impact body and a short iron shiver.
+            excitation = noise * math.exp(-t * 65) * 1.6
+            value = (slow * 3.2 + low * 1.6 + grit * 0.78) * math.exp(-t * 43)
         elif name in ("dummy_down", "dummy_reset"):
-            settle = t if name == "dummy_down" else duration - t
-            pulse = math.exp(-settle * 13) + 0.45 * math.exp(-abs(settle - 0.16) * 50)
-            creak = math.sin(math.tau * (119 * t + 6 * math.sin(t * 23))) * 0.18
-            value = (low * 1.1 + math.sin(math.tau * t * 83) * 0.6) * pulse
-            value += creak * math.sin(math.pi * t / duration) + noise * pulse * 0.13
-        elif name == "enemy_step":
-            # The guardian's weight adds a low stone knock under the scrape.
-            value = (math.sin(math.tau * t * 73 * pitch) * 0.85
-                     + low * 1.0) * math.exp(-t * 30)
-            value += (noise - low) * math.exp(-t * 20) * 0.20
+            rising = name == "dummy_reset"
+            motion = _gesture(t, 0.02, duration * 0.90) if rising else math.exp(-t * 12)
+            bumps = chips if rising else chips * math.exp(-t * 6)
+            excitation = noise * (motion * 0.45 + bumps)
+            value = (slow * 1.9 + low * 1.1) * motion + breath * bumps * 0.45
         elif name in ("enemy_alert", "enemy_respawn"):
             rising = name == "enemy_respawn"
-            envelope = math.sin(math.pi * t / duration) ** (1.5 if rising else 0.8)
-            rumble = math.sin(math.tau * pitch * (61 * t + 9 * t * t))
-            resonance = math.sin(math.tau * t * 183 * pitch) * 0.22
-            value = (rumble * 0.65 + resonance + slow * 2.2) * envelope
-            value += low * (0.35 if rising else 0.65) * math.exp(-t * 12)
+            strain = _gesture(t, 0.015, duration * 0.96)
+            crumble = chips + 0.16
+            excitation = (low * 1.5 + grit * crumble * 0.38) * strain
+            value = (slow * 3.5 + low * 0.9 + breath * crumble * 0.65) * strain
+            if not rising:
+                value += (low * 1.8 + grit * 0.27) * transient
         elif name == "enemy_attack":
-            # A rising stone grind telegraphs the strike, leaving time to dodge.
-            progress = t / duration
-            grind = (low * 1.3 + (noise - low) * 0.18)
-            tension = math.sin(math.tau * pitch * (97 * t + 130 * t * t)) * 0.35
-            value = (grind + tension) * math.sin(math.pi * progress) ** 0.8
-        elif name == "enemy_miss":
-            value = (low * 1.4 + noise * 0.15) * math.exp(-t * 24)
-            value += math.sin(math.tau * t * 87 * pitch) * math.exp(-t * 26) * 0.65
-        elif name == "enemy_hurt":
-            value = (noise * 0.30 + low * 1.1) * math.exp(-t * 32)
-            value += (math.sin(math.tau * t * 307 * pitch) * 0.45
-                      + math.sin(math.tau * t * 479 * pitch) * 0.20) * math.exp(-t * 21)
+            # A grinding intake precedes the slam; its duration stays aligned
+            # with the simulation's existing dodge warning.
+            strain = _gesture(t, 0.005, duration * 0.98)
+            excitation = (low * 1.5 + grit * chips * 0.42) * strain
+            value = (slow * 3.8 + low * 1.0 + breath * (0.3 + chips)) * strain
+        elif name in ("enemy_miss", "enemy_hurt"):
+            excitation = noise * math.exp(-t * 39) * 1.35
+            value = (slow * 2.6 + low * 1.3 + grit * (0.55 if name == "enemy_hurt" else 0.22)) * transient
+            value += breath * chips * math.exp(-t * 15)
         elif name == "enemy_down":
-            collapse = math.exp(-t * 9) + 0.55 * math.exp(-abs(t - 0.19) * 38)
-            value = (low * 1.5 + noise * 0.14) * collapse
-            value += math.sin(math.tau * pitch * (81 * t - 18 * t * t)) * math.exp(-t * 8) * 0.65
+            collapse = math.exp(-t * 9) + chips * math.exp(-t * 3) * 0.8
+            excitation = (noise * 0.75 + low) * collapse
+            value = (slow * 3.5 + low * 1.6 + grit * 0.23) * collapse
         elif name == "player_hurt":
-            value = (math.sin(math.tau * t * 61 * pitch) * 0.9
-                     + low * 1.1 + noise * 0.10) * math.exp(-t * 22)
-            value += (noise - low) * math.exp(-t * 55) * 0.4
+            excitation = noise * math.exp(-t * 36) * 1.0
+            value = (slow * 2.5 + low * 1.4 + grit * 0.22) * math.exp(-t * 28)
+            value += breath * _gesture(t, 0.04, 0.16) * 0.25
         elif name == "player_down":
-            falling = math.sin(math.tau * pitch * (106 * t - 45 * t * t))
-            value = (falling * 0.65 + slow * 2.4) * math.sin(math.pi * t / duration) * math.exp(-t * 3)
+            retreat = _gesture(t, 0.015, duration * 0.96) * math.exp(-t * 2)
+            excitation = low * retreat * 1.2
+            value = (slow * 3.8 + low * 0.45) * retreat
         elif name == "player_respawn":
-            rise = math.sin(math.pi * t / duration) ** 1.5
-            value = (math.sin(math.tau * t * 262 * pitch) * 0.25
-                     + math.sin(math.tau * t * 393 * pitch) * 0.16
-                     + low * 0.65) * rise
-        elif name == "attack_empty":
-            value = low * math.exp(-t * 25) * 0.8 + (noise - low) * math.sin(math.pi * t / duration) ** 2 * 0.16
+            wake = _gesture(t, 0.015, duration * 0.96)
+            excitation = low * wake * 0.9
+            value = (slow * 2.9 + breath * 0.28) * wake
         else:
-            # Leather/paper-like UI feedback, with a small muted wooden click.
-            value = low * math.exp(-t * 25) * 0.65 + math.sin(math.tau * t * 430 * pitch) * math.exp(-t * 75) * 0.15
+            # Parchment, leather and a wooden catch distinguish map/help/pause
+            # without confirmation beeps or fantasy reward jingles.
+            paper = name in ("ui_map", "ui_help")
+            fold = _gesture(t, 0.003, duration * (0.90 if paper else 0.65))
+            click = math.exp(-t * (58 if name == "ui_toggle" else 39))
+            value = (breath * (0.7 if paper else 0.20) + low * 0.8) * fold
+            value += slow * click * 1.2 + grit * click * 0.12
+            excitation = noise * click * (0.10 if paper else 0.26)
+        value += body.sample(excitation)
         if not ambient:
             value *= min(1, t / 0.003, (duration - t) / 0.008)
         result.append(round(max(-0.95, min(0.95, value)) * 18000))
@@ -265,13 +327,21 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
             f = index / fade
             result[-fade + index] = round(result[-fade + index] * (1 - f) + result[index] * f)
         result = result[fade:]
-    elif name in ("step_stone", "land", "land_stone"):
-        for delay, gain in ((round(rate * 0.027), 0.15), (round(rate * 0.061), 0.07)):
-            original = result[:]
+    else:
+        # Small, dark reflections belong to masonry/ritual effects. These are
+        # baked samples, so room tails add no voices or device work in gameplay.
+        echoes = ()
+        if name in ("step_stone", "land", "land_stone", "enemy_step"):
+            echoes = ((0.023, 0.12), (0.051, 0.045))
+        elif name in ("staff_pickup", "fireball_cast", "enemy_alert", "enemy_down", "player_respawn"):
+            echoes = ((0.043, 0.17), (0.097, 0.08))
+        original = result[:]
+        for seconds, gain in echoes:
+            delay = round(rate * seconds)
             for index in range(delay, len(result)):
                 result[index] = max(-30000, min(30000, result[index] + round(original[index - delay] * gain)))
-    # Apply the final envelope AFTER echoes, and join ambient loops smoothly.
-    # Otherwise a voice/loop can stop at a nonzero sample and produce a click.
+    # Final fades follow all echoes. Loop joins remain smooth in either stereo
+    # channel; mute/pause/voice-stealing fades continue to live in Mixer.
     fade = min(len(result) // 4, max(2, round(rate * 0.008)))
     if ambient:
         join = (result[0] + result[-1]) / 2
@@ -288,22 +358,23 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
     rms = math.sqrt(sum(sample * sample for sample in result) / max(1, len(result)))
     target_db = (-17 if name == "river" else -19) if ambient else (-28 if name.startswith("ui_") or name in ("interaction_miss", "attack_empty", "sword_miss") else -21)
     if name == "sword_hit":
-        target_db = -18  # Contact must remain clear over its simultaneous whoosh.
+        target_db = -18
     elif name in ("player_hurt", "enemy_attack"):
         target_db = -19
     elif name in ("enemy_step", "enemy_hurt"):
         target_db = -24
     gain = min(3.0, 32768 * 10 ** (target_db / 20) / max(1, rms),
                27000 / max(1, max(map(abs, result))))
-    result = array("h", (round(sample * gain) for sample in result))
-    return result
+    return array("h", (round(sample * gain) for sample in result))
 
 
 class SoundBank:
     def __init__(self):
         varied = {"sword_swing", "sword_hit", "fireball_cast", "fireball_hit",
-                  "fireball_impact", "enemy_step", "enemy_hurt", "enemy_attack",
-                  *_DOOR_STRAINS}
+                  "fireball_impact", "staff_pickup", "item_drop", "water_splash",
+                  "dummy_down", "dummy_reset", "enemy_step", "enemy_hurt",
+                  "enemy_attack", "enemy_alert", "enemy_down", "enemy_respawn",
+                  "player_hurt", *_DOOR_STRAINS}
         self.clips = {name: tuple(synthesize(name, v)
                                  for v in range(3 if name.startswith("step_") or name in varied else 1))
                       for name in EFFECTS}

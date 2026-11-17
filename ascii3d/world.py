@@ -17,7 +17,7 @@ RIVERBED_LEVEL = 0.12
 
 
 def river_center(x: float) -> float:
-    return 86.0 + 1.6 * math.sin(x * 0.18) + 0.45 * math.sin(x * 0.43)
+    return 210.0 + 8.0 * math.sin(x / 55) + 3.0 * math.sin(x / 21)
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,6 +73,7 @@ class World:
     combat: CombatState = field(default_factory=CombatState)
     _surfaces: dict[tuple[int, int], tuple[int, int]] = field(default_factory=dict, repr=False)
     heightfield: HeightField | None = field(default=None, repr=False)
+    roads: object | None = field(default=None, repr=False)
     solids: list[SolidBox | ConvexSolid] = field(default_factory=list, repr=False)
     _solid_chunks: dict = field(default_factory=dict, repr=False)
     _stair_keys: set = field(default_factory=set, repr=False)
@@ -343,19 +344,22 @@ class World:
                 top, material = ground, self.heightfield.material_at(x, y)
         for box in self._near_solids(x, y):
             if isinstance(box, SolidBox):
-                if box.x0 <= x < box.x1 and box.y0 <= y < box.y1 and box.z1 > top:
+                if box.x0 <= x < box.x1 and box.y0 <= y < box.y1 and box.z1 >= top - 1e-8:
                     top, material = box.z1, box.material
             else:
                 for surface, kind in box.footprint(x, y, 0.0):
-                    if surface > top:
+                    if surface >= top - 1e-8:
                         top, material = surface, kind
         return top, material
 
     def surface_height(self, x: float, y: float) -> float:
         return self._point_surface(x, y)[0]
 
+    def ground_material(self, x: float, y: float, material: int) -> int:
+        return self.roads.material_at(x, y, material) if self.roads is not None else material
+
     def surface_material(self, x: float, y: float) -> int:
-        return self._point_surface(x, y)[1]
+        return self.ground_material(x, y, self._point_surface(x, y)[1])
 
     def _contact_surfaces(self, x, y, feet, radius, max_rise, max_drop, *, walking=False):
         low, high = feet - max_drop, feet + max_rise
@@ -371,7 +375,7 @@ class World:
                     yield box.z1, box.material
             else:
                 for top, material in box.footprint(x, y, radius):
-                    if walking and top > feet + 1e-7:
+                    if walking and not box.stair and top > feet + 1e-7:
                         continue
                     if low - 1e-7 <= top <= high + 1e-7:
                         yield top, material
@@ -415,11 +419,14 @@ class World:
             else:
                 contacts.extend((top, material) for top, material in box.footprint(x, y, radius)
                                 if abs(top - feet) <= tolerance)
-        contact = max(contacts, default=None)
-        return contact[1] if contact is not None else None
+        contact = max(enumerate(contacts), key=lambda entry: (entry[1][0], entry[0]), default=None)
+        return self.ground_material(x, y, contact[1][1]) if contact is not None else None
 
     def step_contact(self, x, y, feet, radius=0.22):
-        return any(box.stair and abs(box.z1 - feet) < 1e-5 and circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1)
+        return any(box.stair and abs(box.z1 - feet) < 1e-5
+                   and (circle_rect(x, y, radius, box.x0, box.y0, box.x1, box.y1)
+                        if isinstance(box, SolidBox) else any(abs(top - feet) < 1e-5
+                            for top, _ in box.footprint(x, y, radius)))
                    for box in self._near_solids(x, y, radius))
 
     def collides(self, x: float, y: float, feet: float,
@@ -550,7 +557,7 @@ class World:
     @staticmethod
     def current(x: float) -> tuple[float, float]:
         # Downstream is east; its north/south component follows the river bends.
-        slope = 0.288 * math.cos(x * 0.18) + 0.1935 * math.cos(x * 0.43)
+        slope = 8 / 55 * math.cos(x / 55) + 3 / 21 * math.cos(x / 21)
         return 0.55, 0.55 * slope
 
     def area(self, x: float, y: float) -> str:
@@ -560,7 +567,8 @@ class World:
         if self.outdoor_bounds:
             material = self.get(int(x), int(y), 0)
             if material == BRIDGE:
-                return "TIMBER BRIDGE"
+                from .terrain import terrain_area_name
+                return terrain_area_name(x, y) or "TIMBER BRIDGE"
             if material == WATER:
                 return "FLOWING RIVER"
             from .terrain import terrain_area_name
@@ -568,7 +576,7 @@ class World:
                 return name
             if abs(y - river_center(x)) < 5:
                 return "RIVERBANK"
-            return "NORTH MEADOW" if y > river_center(x) else "CASTLE MEADOW"
+            return "GRAVEWOOD MARCHES" if y > river_center(x) else "ASHGATE MARCHES"
         return "THE COURTYARD"
 
 

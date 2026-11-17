@@ -123,15 +123,15 @@ class WorldAndRenderingTests(unittest.TestCase):
         for door in self.world.doors:
             door.openness = 1.0
             door.target_open = True
-        for x, y in ((55.5, 26.5), (55.5, 73.5), (30.5, 47.5), (79.5, 47.5), (55.5, 61.5)):
+        for x, y in ((128.5, 72.5), (128.5, 119.5), (103.5, 93.5), (152.5, 93.5), (128.5, 107.5)):
             with self.subTest(door=(x, y)):
                 self.assertFalse(self.world.collides(x, y, 1))
-        self.assertTrue(self.world.collides(30.5, 30.5, 1))
+        self.assertTrue(self.world.collides(103.5, 76.5, 1))
 
     def test_arch_and_roof_exist_above_walkable_space(self):
-        self.assertEqual(self.world.get(55, 26, 2), AIR)
-        self.assertNotEqual(self.world.get(55, 26, 4), AIR)
-        self.assertNotEqual(self.world.get(55, 30, 5), AIR)
+        self.assertEqual(self.world.get(128, 72, 2), AIR)
+        self.assertNotEqual(self.world.get(128, 72, 5), AIR)
+        self.assertNotEqual(self.world.get(128, 76, 5), AIR)
 
     def test_default_frame_is_rectangular_plain_ascii(self):
         frame = self.renderer.frame(Player(), 120, 40)

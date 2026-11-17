@@ -9,6 +9,12 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Six-site dark world, sound and particles (2026-11-17):**
+  [Implementation and validation](darkworld-2026-11-17.md) records the new map,
+  stronger eye-level particles, sound replacement and initial blockiness work.
+  The version-1 role manifest locks old/new playable poses against `46c36a3`.
+  These are semantic comparisons across different maps, not identical geometry.
+
 - **Moonlit palette (2026-11-17):** [Color, shadow and motion evidence](moonlight-2026-11-17.md)
   covers the new color ramps, directional shadows, wind and current response,
   three matched playable views and the incremental comparison against `5b5a263`.

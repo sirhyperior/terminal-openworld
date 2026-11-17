@@ -6,6 +6,7 @@ import unittest
 from ascii3d.combat import (ATTACK_COOLDOWN, ATTACK_REACH, CombatState, Enemy,
                             WeaponPickup)
 from ascii3d.doors import Door
+from ascii3d.map_expansion import DUMMY_POSITIONS, OUTDOOR_SPAWN
 from ascii3d.player import Player
 from ascii3d.sound import EFFECTS
 from ascii3d.world import FLOOR, WATER, Tree, World, build_world
@@ -182,8 +183,8 @@ class CombatTests(unittest.TestCase):
         self.assertEqual(sum(enemy.behavior is None for enemy in world.combat.enemies), 3)
         self.assertEqual(sum(enemy.behavior is not None for enemy in world.combat.enemies), 1)
         self.assertIsNotNone(world.interaction_target(Player()))
-        self.assertFalse(world.collides(55.5, 20.5, 1))
-        self.assertTrue(world.collides(42.5, 48.5, 1))
+        self.assertFalse(world.collides(*OUTDOOR_SPAWN))
+        self.assertTrue(world.collides(*DUMMY_POSITIONS[0], 1))
 
 
 if __name__ == "__main__":

@@ -36,7 +36,7 @@ class CameraPreflightTests(unittest.TestCase):
         self.assertEqual(resolve_camera(world, "roof", {"x": 2, "y": 3, "z": 7}, natural=True)["z"], 7)
         self.assertEqual(resolve_camera(world, "castle", {"x": 2, "y": 3})["z"], Player().z)
         world.walk_support.assert_not_called()
-        self.assertEqual(TERRAIN_SCENARIOS["stair_walk"]["y"], 41.5)
+        self.assertEqual(TERRAIN_SCENARIOS["stair_walk"]["y"], 121.5)
 
     def test_invalid_explicit_camera_is_rejected_instead_of_moved(self):
         world = Mock()

@@ -8,7 +8,7 @@ import random
 from .player import Player
 from .geometry import Camera
 from .trees import Trees
-from .world import GRASS, World
+from .world import GRASS, PATH, World
 from .shading import DEFAULT_SHADING, ink
 
 
@@ -122,12 +122,14 @@ class Scenery:
         if self._override_blades is not None or not self.wind:
             return ()
         world = self.world
+        roads = getattr(world, "roads", None)
         x0, y0, x1, y1 = world.outdoor_bounds
         patches = []
         for y in range(max(y0, cy * self.CHUNK), min(y1, (cy + 1) * self.CHUNK)):
             for x in range(max(x0, cx * self.CHUNK), min(x1, (cx + 1) * self.CHUNK)):
                 z = world.surface_height(x + 0.5, y + 0.5)
-                if z < 1 or world.surface_material(x + 0.5, y + 0.5) != GRASS:
+                material = world.surface_material(x + 0.5, y + 0.5)
+                if z < 1 or (material != GRASS and not (roads is not None and material == PATH)):
                     continue
                 # Per-cell seeding makes eviction/revisit and generation order
                 # independent of the world's dimensions and previous travel.
@@ -141,10 +143,13 @@ class Scenery:
                     by = y + (b + rng.uniform(0.15, 0.85)) / 4
                     if tree and (bx - tree.x) ** 2 + (by - tree.y) ** 2 < (tree.radius + 0.03) ** 2:
                         continue
+                    # Consume the same seed values even when a road masks a
+                    # root, so its exposed neighbors retain their positions.
+                    blade_height = rng.uniform(0.09, 0.24)
+                    phase = rng.uniform(0, math.tau)
                     if world.surface_material(bx, by) != GRASS:
                         continue
-                    blades.append(Blade(bx, by, rng.uniform(0.09, 0.24),
-                                        rng.uniform(0, math.tau), world.surface_height(bx, by)))
+                    blades.append(Blade(bx, by, blade_height, phase, world.surface_height(bx, by)))
                 patches.append((x, y, blades))
         self._chunks[key] = patches
         if len(self._chunks) > self.MAX_GRASS_CHUNKS:
