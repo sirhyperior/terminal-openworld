@@ -174,7 +174,7 @@ class Scenery:
         budget = max(96, width * height // 3)
         self.stats = {"grass_budget": budget, "grass_candidates": 0, "grass_drawn": 0,
                       "grass_chunks": 0, "tree_samples": 0}
-        self.trees.draw(pixels, depths, cam, self.stats)
+        self.trees.draw(pixels, depths, cam, self.stats, wind_at=self.wind_at if self.wind else None)
         if not self.wind:
             return
         chunks = []
@@ -232,10 +232,10 @@ class Scenery:
                     tip = project(blade.x + vx * scale, blade.y + vy * scale,
                                   blade.z + 0.015 + blade.height * (1 - bend * 0.30))
                     grass = cam.shading.surface(GRASS, blade.x, blade.y, blade.z,
-                                                (0, 0, 1), base[2])
+                                                (0, 0, 1), base[2], foliage_turn=vx + vy * 0.6)
                     direction = tip[0] - base[0] if tip is not None else 0
                     glyph = ink("/" if direction > 0.2 else "\\" if direction < -0.2 else "|",
-                                grass.level, GRASS, grass.effects)
+                                grass.level, grass.material, grass.effects)
                     if tip is not None and abs(tip[1] - base[1]) < 1.5:
                         drawn = stroke(pixels, depths, base, tip, char=glyph)
                     else:

@@ -9,6 +9,9 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Moonlit palette (2026-11-17):** [Color, shadow and motion evidence](moonlight-2026-11-17.md)
+  covers the new color ramps, directional shadows, wind and current response,
+  three matched playable views and the incremental comparison against `5b5a263`.
 - **Stronger visibility (2026-11-16):** [Surface lighting adjustment](visibility-2026-11-16.md)
   responds to the user's insufficient-shadow-visibility play report with ambient
   fill, denser shadow glyphs and readable actor recesses. All 69 rendering tests

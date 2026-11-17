@@ -1,4 +1,4 @@
-"""Bounded foreground palettes for semantic materials, depth and firelight.
+"""Bounded dark-fantasy foreground ramps for materials, depth and spectral light.
 
 The first eleven identifiers deliberately match the world's material IDs.
 Later identifiers describe rendered details only; they never change collision
@@ -10,83 +10,75 @@ AIR, STONE, FLOOR, METAL, CRATE, GRASS, WATER, WOOD, LEAVES, PATH, BRIDGE = rang
 FIRE, EMBER, ARCANE, STRAW, BONE = range(11, 16)
 UI_ACCENT, UI_DANGER, UI_POSITIVE, UI_MUTED = range(16, 20)
 DUST, ASH = range(20, 22)
+WIND_GRASS, WIND_LEAVES, WATER_CREST = range(22, 25)
 UI = 255
 
-# Lift shadow foregrounds above black while retaining sixteen ordered tones.
-# Glyph density, surface relief and depth still supply their existing contrast;
-# doing this in the shared palette also keeps biased actor recesses readable.
-GRAY_LEVELS = (100, 110, 121, 133, 146, 160, 176, 193,
-               209, 223, 235, 244, 250, 253, 254, 255)
+# Keep the readable shadow floor while leaving room for the brightest glyphs
+# to separate in gray mode. Sky is always an empty black cell.
+GRAY_LEVELS = (100, 106, 113, 121, 130, 141, 154, 169,
+               186, 198, 210, 221, 232, 242, 250, 255)
 
-# Saturation is intentional: character density and lighting still reveal shape.
-# Palette construction compensates for hue luminance so the common low/mid
-# levels do not become much darker than their grayscale counterparts.
-BASE_COLORS = {
-    STONE: (158, 180, 213), FLOOR: (209, 180, 135),
-    METAL: (157, 202, 232), CRATE: (183, 112, 49),
-    GRASS: (78, 195, 85), WATER: (51, 179, 207),
-    WOOD: (176, 106, 51), LEAVES: (42, 175, 103),
-    PATH: (186, 150, 83), BRIDGE: (161, 112, 67),
-    FIRE: (255, 105, 23), EMBER: (250, 65, 22),
-    ARCANE: (170, 98, 255), STRAW: (222, 166, 70),
-    BONE: (233, 222, 181), UI_ACCENT: (85, 205, 225),
-    UI_DANGER: (255, 86, 79), UI_POSITIVE: (91, 222, 139),
-    UI_MUTED: (137, 157, 184),
-    DUST: (202, 180, 133), ASH: (142, 164, 196),
+# Four painted stops per material: recess, shade, lit face and rim. Ordinary
+# surfaces share a graphite recess. Their midtones carry most of the local
+# color; the brightest stone stays pewter so magic can reach paper white.
+_GRAPHITE = (100, 102, 113)
+_RAMPS = {
+    STONE: (_GRAPHITE, (123, 130, 146), (165, 170, 186), (225, 229, 237)),
+    FLOOR: (_GRAPHITE, (138, 127, 142), (181, 164, 178), (229, 218, 225)),
+    METAL: (_GRAPHITE, (109, 135, 158), (143, 182, 202), (239, 248, 250)),
+    CRATE: (_GRAPHITE, (147, 122, 134), (199, 160, 172), (232, 208, 211)),
+    GRASS: (_GRAPHITE, (141, 122, 158), (190, 161, 192), (226, 209, 215)),
+    WATER: (_GRAPHITE, (104, 128, 168), (133, 176, 221), (183, 217, 239)),
+    WOOD: (_GRAPHITE, (145, 123, 135), (195, 164, 174), (223, 211, 214)),
+    LEAVES: (_GRAPHITE, (123, 126, 154), (171, 165, 202), (211, 210, 228)),
+    PATH: (_GRAPHITE, (137, 135, 136), (189, 183, 178), (232, 229, 217)),
+    BRIDGE: (_GRAPHITE, (137, 126, 148), (185, 165, 183), (222, 209, 215)),
+    FIRE: ((82, 100, 155), (79, 151, 196), (130, 219, 231), (255, 255, 255)),
+    EMBER: ((110, 94, 141), (133, 116, 185), (158, 166, 216), (211, 225, 244)),
+    ARCANE: ((106, 95, 136), (155, 116, 185), (206, 153, 225), (248, 231, 255)),
+    STRAW: (_GRAPHITE, (139, 129, 136), (183, 166, 162), (226, 215, 204)),
+    BONE: (_GRAPHITE, (139, 136, 145), (193, 186, 186), (247, 242, 232)),
+    DUST: (_GRAPHITE, (144, 129, 152), (173, 163, 190), (211, 207, 221)),
+    ASH: (_GRAPHITE, (123, 137, 147), (154, 178, 185), (209, 224, 225)),
+    WIND_GRASS: (_GRAPHITE, (134, 141, 168), (175, 185, 215), (226, 232, 243)),
+    WIND_LEAVES: (_GRAPHITE, (149, 132, 166), (191, 168, 205), (229, 215, 235)),
+    WATER_CREST: (_GRAPHITE, (109, 143, 157), (128, 201, 204), (210, 244, 239)),
+    UI_ACCENT: (_GRAPHITE, (128, 145, 166), (171, 190, 215), (215, 231, 246)),
+    UI_DANGER: ((136, 84, 103), (180, 105, 130), (222, 143, 157), (254, 191, 199)),
+    UI_POSITIVE: (_GRAPHITE, (115, 147, 144), (151, 189, 178), (206, 238, 221)),
+    UI_MUTED: (_GRAPHITE, (126, 131, 143), (157, 164, 174), (199, 205, 216)),
 }
+_MIST = (_GRAPHITE, (120, 133, 150), (154, 168, 187), (180, 193, 211))
+_SPECTRAL_LIGHT = ((95, 106, 122), (99, 146, 165), (133, 205, 216), (224, 249, 250))
 
 
-def _material_row(material, base):
-    peak = max(base)
-    normalized = tuple(channel / peak for channel in base)
+def _mix(left, right, fraction):
+    return tuple(round(a + (b - a) * fraction) for a, b in zip(left, right))
+
+
+def _tones(stops):
+    # Levels 0, 5, 10, 15 land exactly on the authored stops.
+    return tuple(_mix(stops[group], stops[group + 1], step / 5)
+                 for group in range(3) for step in range(5)) + (stops[-1],)
+
+
+def _material_row(material, stops):
+    if material in (UI_ACCENT, UI_DANGER, UI_POSITIVE, UI_MUTED):
+        return _tones(stops) * 16
     values = []
-    for effects in range(16):
-        fog, warmth = effects >> 2, effects & 3
-        # UI cues do not inherit the scene's atmospheric effects.
-        interface = material in (UI_ACCENT, UI_DANGER, UI_POSITIVE, UI_MUTED)
-        if interface:
-            fog = warmth = 0
-        luminance = sum(channel * weight for channel, weight in
-                        zip(normalized, (0.2126, 0.7152, 0.0722)))
-        fog_amount = (0.0, 0.15, 0.30, 0.45)[fog]
+    for fog in (0.0, 0.20, 0.43, 0.68):
         if material in (FIRE, EMBER, ARCANE):
-            fog_amount *= 0.55
-        distant = (luminance * 0.65, luminance * 0.82, luminance * 1.10)
-        color = tuple(a * (1 - fog_amount) + b * fog_amount
-                      for a, b in zip(normalized, distant))
-        warm_amount = (0.0, 0.18, 0.36, 0.60)[warmth]
-        color = tuple(a * (1 - warm_amount) + b * warm_amount
-                      for a, b in zip(color, (1.0, 0.34, 0.08)))
-        for level_index, level in enumerate(GRAY_LEVELS):
-            # A shadow is not just the same saturated hue with a smaller RGB.
-            # Cooler, quieter recesses and pale highlights reveal local volume.
-            shade = color
-            if not interface and material not in (FIRE, EMBER, ARCANE):
-                shadow = max(0.0, (7 - level_index) / 7) * 0.48
-                quiet = sum(color) / 3
-                cool = (quiet * 0.64, quiet * 0.82, quiet * 1.12)
-                shade = tuple(a * (1 - shadow) + b * shadow for a, b in zip(color, cool))
-            # Hot cores approach white while the lower-intensity surrounding
-            # glyphs retain the flame or magic hue. This needs no bloom overlay.
-            white = 0.0
-            if material in (FIRE, EMBER):
-                white = max(0.0, (level_index - 10) / 5) ** 1.6
-            elif material == ARCANE:
-                white = max(0.0, (level_index - 11) / 4) * 0.60
-            elif not interface:
-                polish = (0.80 if material == METAL else 0.58 if material == WATER else
-                          0.45 if material in (STONE, FLOOR, BONE) else 0.26)
-                white = max(0.0, (level_index - 10) / 5) ** 2 * polish
-            lit = tuple(channel * (1 - white) + white for channel in shade)
-            luminance = sum(channel * weight for channel, weight in
-                            zip(lit, (0.2126, 0.7152, 0.0722)))
-            scale = level / luminance
-            values.append(tuple(max(0, min(255, round(channel * scale))) for channel in lit))
+            fog *= 0.5
+        for glow in (0.0, 0.24, 0.46, 0.72):
+            # A distant lit surface recedes into the same mist as its neighbor.
+            lit = (_mix(a, b, glow) for a, b in zip(stops, _SPECTRAL_LIGHT))
+            veiled = tuple(_mix(a, b, fog) for a, b in zip(lit, _MIST))
+            values.extend(_tones(veiled))
     return tuple(values)
 
 
 _NEUTRAL_ROW = tuple((level, level, level) for _ in range(16) for level in GRAY_LEVELS)
-_RGB_ROWS = {material: _material_row(material, base) for material, base in BASE_COLORS.items()}
+_RGB_ROWS = {material: _material_row(material, stops) for material, stops in _RAMPS.items()}
 _RGB_ROWS[AIR] = ((0, 0, 0),) * 256
 COLOR_RGB = tuple(_RGB_ROWS.get(material, _NEUTRAL_ROW) for material in range(256))
 
@@ -110,7 +102,7 @@ COLOR_CODES = tuple(_CODE_ROWS.get(material, _NEUTRAL_CODES) for material in ran
 
 
 def color_rgb(material: int, level: int, effects: int = 0) -> tuple[int, int, int]:
-    """Look up one foreground color; effects packs two fog and two warmth bits."""
+    """Look up one foreground color from two fog and two local light bits."""
     if (type(material) is not int or not 0 <= material <= 255
             or type(level) is not int or not 0 <= level < 16
             or type(effects) is not int or not 0 <= effects < 16):

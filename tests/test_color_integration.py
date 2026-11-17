@@ -1,12 +1,11 @@
 """Color changes presentation without changing gameplay visibility or sizing."""
 
-from dataclasses import replace
-import math
 import unittest
+from unittest.mock import patch
 
 from ascii3d.combat import Fireball
-from ascii3d.palette import (GRASS, STONE, WATER, UI_ACCENT, UI_DANGER,
-                             UI_POSITIVE, color_rgb)
+from ascii3d.palette import (GRASS, LEAVES, STONE, WATER, UI_ACCENT, UI_DANGER,
+                             UI_POSITIVE, WATER_CREST, WIND_GRASS, WIND_LEAVES, color_rgb)
 from ascii3d.player import Player
 from ascii3d.renderer import Renderer
 from ascii3d.shading import Shading
@@ -47,7 +46,45 @@ class ColorIntegrationTests(unittest.TestCase):
         self.assertGreater(near.level, far.level)
         self.assertNotEqual(color_rgb(GRASS, 8, near.effects), color_rgb(GRASS, 8, far.effects))
 
-    def test_only_visible_fire_changes_warmth_and_coincident_offset_is_safe(self):
+    def test_grass_and_crowns_take_their_color_from_the_local_wind(self):
+        world = World.empty(32, 32, 16)
+        world.outdoor_bounds = (0, 0, 32, 32)
+        world.box(0, 0, 0, 32, 32, 1, GRASS)
+        world.trees[14, 12] = Tree(14.5, 12.5)
+        renderer = Renderer(world, particles=False)
+        self.addCleanup(renderer.close)
+        player = Player(x=14.5, y=4.5)
+        for wind, grass, leaves, absent in (((0, 0), GRASS, LEAVES, WIND_LEAVES),
+                                            ((1, 0), WIND_GRASS, WIND_LEAVES, LEAVES)):
+            with self.subTest(wind=wind), patch.object(renderer.scenery, 'wind_at', return_value=wind):
+                pixels = renderer.scene(player, 90, 32, time_seconds=0.8)
+                materials = {getattr(cell, 'material', None) for row in pixels for cell in row}
+                self.assertIn(grass, materials)
+                self.assertIn(leaves, materials)
+                self.assertNotIn(absent, materials)
+                # Both the detailed strokes and the distant ground take the gust.
+                self.assertTrue(any(cell in "/\\|" and getattr(cell, 'material', None) == grass
+                                    for row in pixels for cell in row))
+                self.assertTrue(any(cell in ".,;\"'" and getattr(cell, 'material', None) == grass
+                                    for row in pixels for cell in row))
+
+    def test_river_color_rides_the_crests_and_repeats_at_frozen_time(self):
+        world = World.empty(48, 48, 8)
+        world.box(0, 0, 0, 48, 48, 1, WATER)
+        renderer = Renderer(world, particles=False)
+        self.addCleanup(renderer.close)
+        player = Player(x=20.5, y=8.5, pitch=-0.35)
+        start = renderer.styled_frame(player, 80, 30, time_seconds=0.5)
+        moving = renderer.styled_frame(player, 80, 30, time_seconds=1.5)
+        frozen = renderer.styled_frame(player, 80, 30, time_seconds=0.5)
+        self.assertEqual(start.ansi_rows(), frozen.ansi_rows())
+        swapped = sum({a, b} == {WATER, WATER_CREST} for row, other in
+                      zip(start.materials, moving.materials) for a, b in zip(row, other))
+        self.assertGreater(swapped, 30)
+        self.assertEqual(start.effects, moving.effects)
+        self.assertNotEqual(start.styles, moving.styles)
+
+    def test_only_visible_fire_tints_a_surface_and_coincident_offset_is_safe(self):
         world = World.empty(12, 12, 8)
         world.combat.fireballs = [Fireball(4, 2, 2, (0, 1, 0))]
         shading = Shading(world)

@@ -14,6 +14,41 @@ from ascii3d.world import FLOOR, LEAVES, METAL, STONE, WATER, WOOD, Tree, World
 
 
 class SharedShadingTests(unittest.TestCase):
+    def test_moon_shadows_match_light_rays_through_voxels_and_arch_openings(self):
+        world = World.empty(14, 10, 8)
+        world.box(2, 1, 2, 5, 9, 6, STONE)
+        world.box(2, 3, 2, 5, 6, 5, 0)
+        world.box(7, 4, 1, 8, 8, 3, METAL)
+        world.box(5, 1, 3, 7, 3, 6, WATER)
+        renderer = Renderer(world)
+        self.addCleanup(renderer.close)
+        renderer.prepare_world()
+        sky = renderer.shading.moonlight
+        direction = (-math.sqrt(0.5), 0, math.sqrt(0.5))
+        for x in range(world.width):
+            for y in range(world.depth):
+                for z in range(world.height):
+                    for fraction in (0.13, 0.82):
+                        point = (x + fraction, y + 0.5, z + 0.41)
+                        self.assertEqual(sky.blocked(*point),
+                                         not world.line_clear(point, direction, 16), point)
+
+    def test_carving_a_window_lights_the_same_floor_with_readable_shadows(self):
+        world = self.world()
+        world.box(4, 2, 3, 5, 9, 5, STONE)
+        renderer = Renderer(world)
+        self.addCleanup(renderer.close)
+        sample = (FLOOR, 7.32, 5.47, 1, (0, 0, 1), 2)
+        renderer.prepare_world()
+        shadow = renderer.shading.surface(*sample)
+        self.assertGreaterEqual(shadow.level, 4)
+        self.assertNotIn(str(shadow), (' ', '.', ','))
+        world.box(4, 5, 3, 5, 6, 5, 0)
+        renderer.prepare_world()
+        lit = renderer.shading.surface(*sample)
+        self.assertGreaterEqual(lit.level - shadow.level, 2)
+        self.assertEqual(lit.material, shadow.material)
+
     def test_shadow_surfaces_keep_dense_glyphs_and_texture_at_near_and_far_distances(self):
         shading = Shading()
         for material in (STONE, FLOOR, WOOD, LEAVES):

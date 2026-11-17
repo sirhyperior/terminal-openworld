@@ -83,6 +83,24 @@ class ParticleTests(unittest.TestCase):
         self.assertEqual(first_points, captured)
         self.assertNotEqual(self.tokens(first), self.tokens(moved))
 
+    def test_same_local_gust_carries_and_lights_ash_while_dust_stays_quiet(self):
+        self.world.outdoor_bounds = (0, 0, 64, 64)
+        particles = Particles(self.world)
+        fields = []
+        # Hold the simulation time fixed so the local wind is the only input
+        # changing either the cluster positions or the ash's silver tones.
+        for wind in ((0, 0), (0.9, 0.2)):
+            pixels, depths = self.buffers()
+            particles.draw(pixels, depths, self.player, 1.25, 69, 0.5,
+                           wind_at=lambda x, y: wind)
+            fields.append({(x, y): cell for y, row in enumerate(pixels) for x, cell in enumerate(row)
+                           if isinstance(cell, Ink)})
+        calm, gust = fields
+        self.assertNotEqual(set(calm), set(gust))
+        self.assertGreater(max(cell.level for cell in gust.values() if cell.material == ASH),
+                           max(cell.level for cell in calm.values() if cell.material == ASH))
+        self.assertLessEqual(max(cell.level for cell in gust.values() if cell.material == DUST), 6)
+
     def test_removing_an_invisible_source_does_not_reseed_visible_trails(self):
         hidden = Fireball(32.5, 10, 2.5, (1, 0, 0))
         visible = Fireball(32.5, 34, 2.5, (1, 0, 0))

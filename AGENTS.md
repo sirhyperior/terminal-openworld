@@ -10,6 +10,8 @@ Space jumping, readable environments and keyboard accessibility. Use Python
 The world's standing theme is **dark fantasy**. Future structures, terrain,
 NPCs, enemies and environmental details must fit that theme in their design,
 names and atmosphere while preserving readable navigation and interactions.
+Use a stylized night palette with visible shaded forms and sparse highlights.
+Tie shifting surface colors to the wind, water or light acting on them.
 
 - At session start or resume, read [PROJECT_STATUS.md](PROJECT_STATUS.md), then
   [backlog.md](backlog.md). Consider that

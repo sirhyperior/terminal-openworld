@@ -4,21 +4,17 @@ A dark fantasy first-person exploration sandbox drawn entirely with
 **colored ASCII text on black**. Future structures, landscapes, NPCs and enemies
 follow that theme.
 
-Interactive output uses rich material colors: cool stone and steel, warm timber
-and gravel, green foliage, teal water, purple rune crystals and orange fire.
-Surface detail now varies within a body: stone has weathered grain and dark
-creases, timber has fibers, and metal has pale highlights that change with the
-view. Actor faces shade at individual characters, armor has broad bevels, and
-nearby tree trunks read as curved forms. Shadow foregrounds stay visible against
-black in both color and grayscale. Ambient fill and denser shadow characters
-keep walls and shaded bodies readable, with distinct recesses and pale
-highlights. Distant surfaces cool and soften, while nearby visible fireballs cast
-warm light. The background remains black.
+Stone runs from graphite to pewter, timber has a muted wine tint, and pale
+gravel marks a route through heather-colored grass. Moonlight enters from the
+west. Walls, roofs and bridge decks cast shadows across floors and figures.
+Mortar, wood grain and armor bevels still catch enough light to read in shade.
+Distant silhouettes soften toward blue-gray against the black sky.
 
-Sparse dust and ash drift through the world. Small motes circle pickups, sparks
-trail fireballs and scatter at impacts, and bright fire cores fade toward dim
-embers. Particles stay behind walls and bodies, keep aimed labels readable, and
-freeze with the environment when paused or viewing help.
+Gusts turn grass toward silver-blue and catch lilac edges in the canopy. Ash
+drifts farther on the same wind than the dimmer dust. Indigo river troughs
+break into narrow aqua crests that follow the bends downstream. Spellfire has
+a pale core, violet embers and a cold light that reaches nearby surfaces.
+Pause or open help to freeze the wind, current and particles together.
 
 Use `--color-mode gray` for neutral grayscale or `--color-mode mono` for uniform
 white. Snapshots remain plain ASCII in every mode. Colors carry semantic material,
@@ -26,9 +22,8 @@ light and depth data through the same opaque depth tests used by the world.
 
 The six-destination gothic world rebuild has not been authored yet, so the map
 described below remains the playable map. Earlier rendering performance failures
-remain open. The latest quality pass is measured against the preceding color
-version, with correctness and timing results reported separately.
-See `PROJECT_STATUS.md` for the latest verification and review limits.
+remain open. See [the current checkpoint](PROJECT_STATUS.md) for validation
+and timing of the playable version.
 
 Explore a **512 by 512 world** with rolling highlands, valleys, a deep ravine,
 forested ridges and a castle hub. This is about **21 times the previous area**,
@@ -200,7 +195,7 @@ python main.py --volume 0.35         # Master sound level, 0 to 1
 python main.py --sound-preview effects.wav # Export the original effects
 python main.py --audio-test          # Play river/effects and check playback health
 python main.py --max-cells 4800      # Optional viewport budget to reduce CPU use
-python main.py --color-mode color   # Rich material colors on black (default)
+python main.py --color-mode color   # Dark-fantasy palette on black (default)
 python main.py --color-mode gray    # Neutral grayscale foregrounds
 python main.py --color-mode mono    # Uniform-white terminal fallback
 python main.py --cell-aspect 0.5     # Font cell width divided by its height

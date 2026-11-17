@@ -451,7 +451,7 @@ def _draw_equipped(combat, cam, pixels, depths, player):
 
 
 def draw_combat(combat: CombatState, world, pixels, depths, player,
-                focal, aspect, time_seconds, *, labels=True, depth_only=False):
+                focal, aspect, time_seconds, *, labels=True, depth_only=False, moonlight=None):
     if not pixels or not pixels[0]:
         return
     if not (combat.pickups or combat.enemies or combat.held_item
@@ -462,6 +462,7 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
     cam.depth_only = depth_only
     cam.shading = DEFAULT_SHADING if depth_only else Shading(world)
     if not depth_only:
+        cam.shading.moonlight = moonlight
         cam.shading.prepare(player, time_seconds)
     pickup_budget = min(MAX_PICKUP_DRAWS, max(1, width * height // 240))
     for pickup in combat.pickups:

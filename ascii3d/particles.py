@@ -74,7 +74,7 @@ class Particles:
                 and abs(right) <= max(0.0, depth) * camera.width / (2 * camera.fx) + radius
                 and abs(up) <= max(0.0, depth) * camera.height / (2 * camera.fy) + radius)
 
-    def draw(self, pixels, depths, player, time_seconds, focal, aspect):
+    def draw(self, pixels, depths, player, time_seconds, focal, aspect, *, wind_at=None):
         """Composite points without changing any opaque depth or world state.
 
         Ambient dust is restricted to authored environments. Generic geometry
@@ -189,17 +189,26 @@ class Particles:
             for _, x, y, z in nearby:
                 if stats['ambient_candidates'] >= ambient_budget or stats['particle_candidates'] >= budget:
                     break
+                # The same local gust that rolls the canopy carries a loose
+                # group of ash flakes. Quieter dust hangs closer to its home.
+                wind_x, wind_y = ((0, 0) if wind_at is None else
+                                  wind_at((x + 0.5) * self.CHUNK, (y + 0.5) * self.CHUNK))
                 for px, py, pz, phase, value in self._chunk(x, y, z):
                     if stats['ambient_candidates'] >= ambient_budget:
                         break
-                    sway = seconds * 0.32 + px * 0.07 + py * 0.05
-                    wx = math.sin(sway) * 0.35 + math.sin(seconds * 0.21 + phase) * 0.10
-                    wy = math.cos(seconds * 0.28 + px * 0.05 - py * 0.06) * 0.30 + math.sin(phase) * 0.08
-                    lift = math.sin(seconds * 0.21 + phase) * 0.32
-                    pulse = 0.5 + 0.5 * math.sin(seconds * 0.65 + phase)
                     material = ASH if value % 4 == 0 else DUST
-                    level = 4 + (value % 3) + int(pulse * 3)
-                    glyph = "'" if value % 7 == 0 else "."
+                    drift = 0.78 if material == ASH else 0.28
+                    eddy = phase + seconds * 0.26
+                    roll = math.sin(eddy)
+                    lift = roll * 0.26
+                    wx = wind_x * drift + math.cos(eddy) * 0.13
+                    wy = wind_y * drift + roll * 0.10
+                    # Flakes catch a little silvery light as the gust lifts
+                    # them. Dust retains a subdued, steady tone in still air.
+                    level = 4 + value % 3
+                    if material == ASH:
+                        level += max(0, min(3, round((wind_x + wind_y * 0.6) * 4)))
+                    glyph = "'" if material == ASH else "."
                     if not emit(px + wx, py + wy, pz + lift, material, level, glyph,
                                 'ambient', self.AMBIENT_RADIUS):
                         break

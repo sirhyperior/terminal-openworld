@@ -1,4 +1,4 @@
-"""Rich material colors retain safe terminal sizing and fallback behavior."""
+"""Dark-fantasy material ramps, terminal sizing and fallback behavior."""
 
 import io
 import re
@@ -7,7 +7,8 @@ from unittest.mock import patch
 
 from ascii3d.palette import (AIR, ARCANE, BONE, BRIDGE, COLOR_CODES, COLOR_RGB,
                              CRATE, FIRE, FLOOR, GRASS, GRAY_LEVELS, LEAVES, METAL,
-                             PATH, STONE, STRAW, UI, WATER, WOOD, color_rgb)
+                             PATH, STONE, STRAW, UI, WATER, WATER_CREST,
+                             WIND_GRASS, WIND_LEAVES, WOOD, color_rgb)
 from ascii3d.presentation import GRAY_CODES, StyledFrame, WHITE_ON_BLACK
 from ascii3d.terminal import Terminal
 
@@ -20,7 +21,8 @@ class ColorPaletteTests(unittest.TestCase):
         self.assertGreaterEqual(GRAY_LEVELS[0], 100)
         self.assertGreaterEqual(GRAY_LEVELS[8] - GRAY_LEVELS[1], 80)
         for material in (STONE, FLOOR, METAL, CRATE, GRASS, WATER, WOOD,
-                         LEAVES, PATH, BRIDGE, STRAW, BONE):
+                         LEAVES, PATH, BRIDGE, STRAW, BONE,
+                         WIND_GRASS, WIND_LEAVES, WATER_CREST):
             for effects in range(16):
                 with self.subTest(material=material, effects=effects):
                     brightness = [sum(channel * weight for channel, weight in
@@ -31,21 +33,23 @@ class ColorPaletteTests(unittest.TestCase):
                     self.assertGreaterEqual(brightness[1], 105)
                     self.assertGreaterEqual(brightness[8] - brightness[1], 40)
                     self.assertEqual(brightness, sorted(brightness))
-        grass, water, wood = (color_rgb(material, 2) for material in (GRASS, WATER, WOOD))
-        self.assertGreater(grass[1], max(grass[0], grass[2]))
-        self.assertGreater(min(water[1], water[2]), water[0])
-        self.assertGreater(wood[0], wood[1])
+        recesses = {color_rgb(material, 0) for material in (STONE, GRASS, WOOD, WATER)}
+        self.assertEqual(len(recesses), 1)
+        recess = recesses.pop()
+        self.assertLess(max(recess) - min(recess), 16)
         self.assertEqual(color_rgb(AIR, 15), (0, 0, 0))
 
     def test_materials_have_recognizable_distinct_hues_and_bounded_intensities(self):
-        grass, water, wood, fire, magic = (color_rgb(material, 15)
+        grass, water, wood, fire, magic = (color_rgb(material, 10)
                                           for material in (GRASS, WATER, WOOD, FIRE, ARCANE))
-        self.assertGreater(grass[1], max(grass[0], grass[2]))
-        self.assertGreater(min(water[1], water[2]), water[0])
-        self.assertGreater(wood[0], wood[1])
-        self.assertEqual(fire, (255, 255, 255))
-        self.assertGreater(color_rgb(FIRE, 9)[0], color_rgb(FIRE, 9)[1])
-        self.assertGreater(magic[2], magic[1])
+        self.assertGreater(min(grass[0], grass[2]) - grass[1], 20)
+        self.assertGreater(water[2] - water[1], 30)
+        self.assertGreater(wood[0], wood[2])
+        self.assertGreater(wood[2], wood[1])
+        self.assertGreater(min(fire[1], fire[2]) - fire[0], 50)
+        self.assertEqual(color_rgb(FIRE, 15), (255, 255, 255))
+        self.assertGreater(min(magic[0], magic[2]) - magic[1], 40)
+        self.assertLess(max(color_rgb(STONE, 15)), min(color_rgb(FIRE, 15)))
         for material in (STONE, GRASS, LEAVES, WATER, WOOD, FIRE, ARCANE):
             colors = [color_rgb(material, level) for level in range(16)]
             brightness = [sum(channel * weight for channel, weight in
@@ -56,13 +60,25 @@ class ColorPaletteTests(unittest.TestCase):
             self.assertTrue(all(0 <= value <= 255 for rgb in colors for value in rgb))
             self.assertGreater(sum(colors[-1]), sum(colors[0]))
 
-    def test_depth_cools_and_softens_color_while_firelight_warms_it(self):
+    def test_moving_strokes_share_recesses_and_take_on_a_distinct_lit_tint(self):
+        for resting, lifted in ((GRASS, WIND_GRASS), (LEAVES, WIND_LEAVES),
+                                (WATER, WATER_CREST)):
+            self.assertEqual(color_rgb(resting, 0), color_rgb(lifted, 0))
+            body, rim = color_rgb(resting, 10), color_rgb(lifted, 10)
+            self.assertGreater(max(abs(a - b) for a, b in zip(body, rim)), 18)
+            self.assertGreater(sum(rim), sum(body))
+        crest, trough = color_rgb(WATER_CREST, 10), color_rgb(WATER, 10)
+        self.assertLess(abs(crest[2] - crest[1]), 8)
+        self.assertGreater(trough[2] - trough[1], 30)
+
+    def test_distance_mutes_local_hue_and_firelight_casts_a_cold_glow(self):
         near = color_rgb(GRASS, 10)
         far = color_rgb(GRASS, 10, 3 << 2)
-        warm = color_rgb(GRASS, 10, 3)
-        self.assertGreater(far[2] / far[1], near[2] / near[1])
+        lit = color_rgb(GRASS, 10, 3)
+        self.assertGreater(far[2] - far[0], near[2] - near[0])
         self.assertLess(max(far) - min(far), max(near) - min(near))
-        self.assertGreater(warm[0] / warm[1], near[0] / near[1])
+        self.assertGreater(min(lit[1], lit[2]) - lit[0], 30)
+        self.assertGreater(sum(lit), sum(near))
         self.assertNotEqual(color_rgb(STONE, 10, 12), color_rgb(STONE, 10, 15))
 
     def test_neutral_unknown_materials_and_ui_ignore_scene_effects(self):

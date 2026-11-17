@@ -5,11 +5,12 @@ with the winning glyph, without allocating an object for each scene cell.
 Plain text consumers still receive ordinary characters when joining rows.
 """
 
+from array import array
 from functools import lru_cache
 import math
 
 from .world import BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, STONE, WATER, WOOD
-from .palette import ARCANE, ASH, BONE, DUST, EMBER, FIRE, STRAW
+from .palette import ARCANE, BONE, EMBER, FIRE, STRAW, WIND_GRASS, WIND_LEAVES
 
 
 RAMP = "..,:;irsxXA#%@"
@@ -35,6 +36,40 @@ def ink(glyph: str, level: int, material: int = STONE, effects: int = 0) -> Ink:
     return Ink(glyph, max(0, min(15, level)), material, effects)
 
 
+class VoxelMoonlight:
+    """First opaque voxel seen from the western sky along (-1, 0, 1).
+
+    Along each light ray, y and x + z are constant. A unit voxel projects
+    onto two adjacent x + z intervals. In the first its front is the west
+    face; in the second its front is the top. Within each interval these
+    faces always sort in the same order, so one integer stores the exact
+    first face for every point in the interval, including window openings.
+    """
+
+    def __init__(self, world):
+        self.span = world.width + world.height
+        self.depth = world.depth
+        self.rows = [array("I", [0xffffffff]) * self.span
+                     for _ in range(world.depth)]
+
+    def add(self, x, y, z):
+        row = self.rows[y]
+        band, west = x + z, 2 * x
+        if west < row[band]:
+            row[band] = west
+        if west + 1 < row[band + 1]:
+            row[band + 1] = west + 1
+
+    def blocked(self, x, y, z):
+        diagonal = x + z
+        if not (0 <= y < self.depth and 0 <= diagonal < self.span):
+            return False
+        band = int(diagonal)
+        face = self.rows[int(y)][band]
+        entry_x = (face >> 1) + (diagonal - band if face & 1 else 0)
+        return x > entry_x + 1e-6
+
+
 class Shading:
     """Bounded material lighting; visibility queries never change simulation."""
 
@@ -43,6 +78,7 @@ class Shading:
 
     def __init__(self, world=None):
         self.world = world
+        self.moonlight = None
         self.lights = ()
         self._visibility = {}
         self.eye = None
@@ -58,7 +94,7 @@ class Shading:
         self.lights = tuple((ball.x, ball.y, ball.z) for ball in balls[:self.MAX_LIGHTS])
 
     def surface(self, material, x, y, z, normal, distance, *, glyph=None, emission=0.0,
-                texture_position=None, texture_normal=None):
+                texture_position=None, texture_normal=None, foliage_turn=None):
         nx, ny, nz = normal
         directional = max(0.0, -nx * 0.38 - ny * 0.48 + nz * 0.79)
         emissive = material in (FIRE, EMBER, ARCANE)
@@ -76,6 +112,7 @@ class Shading:
                 if material not in (WOOD, BRIDGE, CRATE, PATH, STRAW) else 0.0)
         grain = (int(tx * 11) * 37 ^ int(ty * 11) * 19 ^ int(tz * 11) * 7) & 15
         texture = 0.78 + broad * 0.27 + fine * 0.11
+        pigment = material
         if material in (WOOD, BRIDGE, CRATE):
             fiber = math.sin(a * 17.0 + math.sin(b * 0.93) * 0.45)
             texture = 0.78 + broad * 0.26
@@ -108,6 +145,14 @@ class Shading:
                 texture *= 0.42
         elif material in (GRASS, LEAVES):
             texture = 0.80 + broad * 0.24 + fine * 0.10 + grain * 0.008
+            if foliage_turn is not None:
+                # A gust turns the exposed side of leaf clusters into the
+                # light first. Their attached texture breaks up the moving
+                # edge while the underlying form and shadow rays stay fixed.
+                exposure = foliage_turn + broad * 0.17 - nx * 0.19 + nz * 0.16 - 0.47
+                texture += max(-0.08, min(0.22, exposure * 0.38))
+                if exposure > 0:
+                    pigment = WIND_GRASS if material == GRASS else WIND_LEAVES
         elif material == STRAW:
             strand = math.sin(a * 23 + b * 1.7)
             texture = 0.77 + broad * 0.22 + strand * 0.16
@@ -135,9 +180,14 @@ class Shading:
                         light += specular ** (24 if material == METAL else 40) * 0.72
             else:
                 light += directional ** 12 * 0.30
+        # Sample outside the receiver to keep a lit roof or wall from
+        # shadowing its own front face. Sky fill keeps sheltered routes legible.
+        if (self.moonlight is not None and not emissive
+                and self.moonlight.blocked(x + nx * 1e-5, y + ny * 1e-5, z + nz * 1e-5)):
+            light = 0.24 + (light - 0.24) * 0.42
         albedo = ALBEDO[material] if 0 <= material < len(ALBEDO) else 0.65
         brightness = albedo * max(0.08, texture) * light * 1.52 / (1 + max(0.0, distance) * 0.036)
-        warmth = 0.0
+        firelight = 0.0
         # Emissive shells carry their authored edge/core intensity. Lighting
         # them from their own source erases that gradient and wastes shadow rays.
         lights = () if emission > 0 and material in (FIRE, EMBER, ARCANE) else self.lights
@@ -170,7 +220,7 @@ class Shading:
                 # firelight must not wash a dark crack into a flat bright face.
                 contribution = facing * (1 - square / 36) * 0.90 * albedo * max(0.08, texture)
                 brightness += contribution
-                warmth += contribution
+                firelight += contribution
         brightness = min(1.0, max(emission, brightness))
         if not emissive:
             # Raise the full surface range before selecting BOTH ink and glyph.
@@ -182,8 +232,8 @@ class Shading:
         # Explicit depth and light metadata travel with the depth-test winner.
         # These bands only affect foreground color; they never change geometry.
         fog = 0 if distance < 12 else 1 if distance < 24 else 2 if distance < 36 else 3
-        warm = 0 if warmth < 0.08 else 1 if warmth < 0.22 else 2 if warmth < 0.40 else 3
-        return ink(glyph, level, material, (fog << 2) | warm)
+        glow = 0 if firelight < 0.08 else 1 if firelight < 0.22 else 2 if firelight < 0.40 else 3
+        return ink(glyph, level, pigment, (fog << 2) | glow)
 
 
 DEFAULT_SHADING = Shading()

@@ -8,8 +8,8 @@ from .doors import Door
 from .door_render import draw_doors
 from .combat_render import draw_combat, large_opaque_enemy
 from .geometry import Camera
-from .shading import Ink, Shading, ink
-from .palette import UI_ACCENT, UI_DANGER, UI_POSITIVE
+from .shading import Ink, MIN_SURFACE_LEVEL, Shading, VoxelMoonlight, ink
+from .palette import UI_ACCENT, UI_DANGER, UI_POSITIVE, WATER_CREST
 from .scenery import Scenery
 from .particles import Particles
 from .world import (AIR, BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, WATER,
@@ -258,15 +258,20 @@ class Renderer:
         chunks_x = (world.width + 1) // 2
         tops = [0] * (chunks_x * ((world.depth + 1) // 2))
         occupied = [0] * len(tops)
+        moonlight = VoxelMoonlight(world)
         for z in range(world.height):
             for y in range(world.depth):
                 offset = (z * world.depth + y) * world.width
                 chunk_row = (y >> 1) * chunks_x
                 for x in range(world.width):
-                    if world.cells[offset + x]:
+                    material = world.cells[offset + x]
+                    if material:
                         index = chunk_row + (x >> 1)
                         tops[index] = z + 1
                         occupied[index] |= 1 << z
+                        if material != WATER:
+                            moonlight.add(x, y, z)
+        self.shading.moonlight = moonlight
         self._chunk_tops = tops
         blocks_x, blocks_y = (chunks_x + 1) // 2, (((world.depth + 1) // 2) + 1) // 2
         block_tops = [0] * (blocks_x * blocks_y)
@@ -841,36 +846,40 @@ class Renderer:
                     normal = ((-float(step_x), 0.0, 0.0) if axis == 0 else
                               (0.0, -float(step_y), 0.0) if axis == 1 else
                               (0.0, 0.0, -float(step_z)))
-                tone = shade_surface(material, hx, hy, hz, normal, distance)
                 if material == WATER:
+                    tone = shade_surface(material, hx, hy, hz, normal, distance)
                     wave = _river_ripple(hx, hy, time_seconds)
                     if distance > 24 and wave <= 0.6:
                         glyph = "."
                     elif distance <= 24 and wave <= 0:
                         glyph = ":" if wave > -0.65 else "."
-                    elif wave > 1.28 and distance < 18:
-                        glyph = "*"
                     else:
                         flow_x, flow_y = current(hx)
                         along_flow = cy * flow_x + sy * flow_y
                         stroke = _flow_glyph(sy * flow_x - cy * flow_y - u * cp * along_flow,
                                              aspect * dz * along_flow)
                         glyph = "~" if wave > 0.72 and stroke == "-" and distance <= 24 else stroke
-                    row.append(ink(glyph, min(15, tone.level + (2 if wave > 1.28 else 0)), material, tone.effects))
+                    # Silver-blue ribbons ride the downstream crests. The
+                    # troughs give them contrast in both color and gray.
+                    level = max(MIN_SURFACE_LEVEL, min(15, tone.level + round(wave * 2)))
+                    row.append(ink(glyph, level, WATER_CREST if wave > 0.55 else WATER, tone.effects))
                 elif material == GRASS and normal[2] > 0:
                     noise = (int(hx * 6.0) * 73856093 ^ int(hy * 6.0) * 19349663) & 15
                     wx, wy = self.scenery.wind_at(hx, hy)
-                    wind = int((wx + wy * 0.6 + 0.6) * 3)
+                    turn = wx + wy * 0.6
+                    tone = shade_surface(material, hx, hy, hz, normal, distance, foliage_turn=turn)
+                    wind = int((turn + 0.6) * 3)
                     glyph = (".,", ",;", ';"', "\"'")[min(3, tone.level // 3)][(noise + wind) % 2]
-                    row.append(ink(glyph, tone.level, material, tone.effects))
+                    row.append(ink(glyph, tone.level, tone.material, tone.effects))
                 else:
-                    row.append(tone)
+                    row.append(shade_surface(material, hx, hy, hz, normal, distance))
             pixels.append(row)
             depths.append(depth_row)
         self.scenery.draw(pixels, depths, player, time_seconds, self._focal, self.cell_aspect)
         draw_combat(world.combat, world, pixels, depths, player,
-                    self._focal, self.cell_aspect, time_seconds)
-        self.particles.draw(pixels, depths, player, time_seconds, self._focal, self.cell_aspect)
+                    self._focal, self.cell_aspect, time_seconds, moonlight=self.shading.moonlight)
+        self.particles.draw(pixels, depths, player, time_seconds, self._focal,
+                            self.cell_aspect, wind_at=self.scenery.wind_at)
         self.scenery.stats.update(self.particles.stats)
         return pixels
 

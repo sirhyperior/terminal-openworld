@@ -79,7 +79,7 @@ class Trees:
                     return total
         return total
 
-    def draw(self, pixels, depths, camera: Camera, stats):
+    def draw(self, pixels, depths, camera: Camera, stats, wind_at=None):
         pixel_budget = camera.width * camera.height * 3
         stats["tree_pixel_budget"] = pixel_budget
         stats["tree_samples"] = 0
@@ -88,7 +88,7 @@ class Trees:
             for crown in self._crowns_for(distance_squared, tree):
                 if stats["tree_samples"] >= pixel_budget:
                     return
-                self._crown(crown, pixels, depths, camera, stats, pixel_budget)
+                self._crown(crown, pixels, depths, camera, stats, pixel_budget, wind_at)
 
     @staticmethod
     def _trunk(tree: Tree, pixels, depths, camera):
@@ -132,7 +132,7 @@ class Trees:
                                 shader=brush(start, tip, str(branch)) if distance < 20 else None)
 
     @staticmethod
-    def _crown(crown, pixels, depths, cam, stats, budget):
+    def _crown(crown, pixels, depths, cam, stats, budget, wind_at=None):
         sqrt = math.sqrt
         dx, dy, dz = crown.x - cam.x, crown.y - cam.y, crown.z - cam.z
         for (nx, ny, nz), offset in cam.frustum:
@@ -149,7 +149,8 @@ class Trees:
         center_depth = ((crown.x - cam.x) * cam.cy + (crown.y - cam.y) * cam.sy) * cam.cp + (crown.z - cam.z) * cam.sp
         nearest = center_depth - max(crown.rx, crown.ry, crown.rz)
         columns = [(x + 0.5 - cam.width / 2) / cam.fx for x in range(x0, x1 + 1)]
-        palette = " .,:;ox*#%@"
+        shading = getattr(cam, "shading", DEFAULT_SHADING)
+        foliage_turn = None
         near = cam.NEAR
         cy, sy, cp, sp = cam.cy, cam.sy, cam.cp, cam.sp
         # A scanline's ray is base + u * (sy, -cy, 0). Its ellipsoid
@@ -213,9 +214,11 @@ class Trees:
                 hx, hy, hz = ox + dx * depth, oy + dy * depth, oz + dz * depth
                 nx, ny, nz = hx * ix, hy * iy, hz * iz
                 normal_length = sqrt(nx * nx + ny * ny + nz * nz)
-                shading = getattr(cam, "shading", DEFAULT_SHADING)
+                if foliage_turn is None and wind_at is not None:
+                    wx, wy = wind_at(crown.x, crown.y)
+                    foliage_turn = wx + wy * 0.6
                 pixels[y][x] = shading.surface(LEAVES, hx + crown.x, hy + crown.y,
                     hz + crown.z, (nx / normal_length, ny / normal_length, nz / normal_length), depth,
-                    texture_position=(hx + crown.x, hy + crown.y, hz))
+                    texture_position=(hx + crown.x, hy + crown.y, hz), foliage_turn=foliage_turn)
                 depth_row[x] = depth
         stats["tree_samples"] = samples
