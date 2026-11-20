@@ -84,6 +84,27 @@ class ColorIntegrationTests(unittest.TestCase):
         self.assertEqual(start.effects, moving.effects)
         self.assertNotEqual(start.styles, moving.styles)
 
+        def glints(frame):
+            return {(x, y) for y, row in enumerate(frame.rows) for x, glyph in enumerate(row)
+                    if glyph == '+' and frame.materials[y][x] == WATER_CREST
+                    and frame.styles[y][x] == 15}
+
+        # Bright points remain a small part of the water and travel with it.
+        bright = glints(start)
+        self.assertTrue(bright)
+        next_bright = glints(moving)
+        for points in (bright, next_bright):
+            self.assertLessEqual(len(points), 4)
+            self.assertTrue(all(abs(x - xx) > 2 or abs(y - yy) > 1
+                                for x, y in points for xx, yy in points if (x, y) != (xx, yy)))
+        self.assertNotEqual(bright, next_bright)
+        # A roof and west wall remove the glints without hiding the river.
+        world.box(0, 0, 4, 48, 48, 5, STONE)
+        world.box(0, 0, 1, 1, 48, 4, STONE)
+        sheltered = renderer.styled_frame(player, 80, 30, time_seconds=0.5)
+        self.assertTrue(any(WATER_CREST in row for row in sheltered.materials))
+        self.assertFalse(bright & glints(sheltered))
+
     def test_only_visible_fire_tints_a_surface_and_coincident_offset_is_safe(self):
         world = World.empty(12, 12, 8)
         world.combat.fireballs = [Fireball(4, 2, 2, (0, 1, 0))]

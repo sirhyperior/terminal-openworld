@@ -9,6 +9,11 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Dim ash and sparse glints (2026-11-21):**
+  [Appearance and performance evidence](moon-glints-2026-11-21.md) records the
+  sparse highlights and subdued palette, and preserves the earlier
+  broad-contrast experiment and its live-audio startup failures.
+
 - **Six-site dark world, sound and particles (2026-11-17):**
   [Implementation and validation](darkworld-2026-11-17.md) records the new map,
   stronger eye-level particles, sound replacement and initial blockiness work.

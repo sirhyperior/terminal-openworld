@@ -29,11 +29,13 @@ class Particles:
     CHUNK = 6
     VERTICAL_CHUNK = 4
     MOTES_PER_CHUNK = 6
-    EYE_MOTES_PER_CHUNK = 12
+    EYE_MOTES_PER_CHUNK = 24
     EYE_BAND_HALF_HEIGHT = 1.25
     MAX_CHUNKS = 64
     MAX_CANDIDATES = 256
     MAX_AMBIENT_CANDIDATES = 96
+    MAX_AMBIENT_SAMPLES = 256
+    MAX_AMBIENT_GLINTS = 2
     MAX_DRAWS = 128
     MAX_PICKUP_SOURCES = 16
     AMBIENT_RADIUS = 18.0
@@ -88,8 +90,11 @@ class Particles:
         budget = min(self.MAX_CANDIDATES, max(24, cells // 18)) if cells else 0
         draw_budget = min(self.MAX_DRAWS, max(12, cells // 60)) if cells else 0
         ambient_budget = min(self.MAX_AMBIENT_CANDIDATES, max(12, cells // 64)) if cells else 0
+        sample_budget = min(self.MAX_AMBIENT_SAMPLES, max(48, cells // 18)) if cells else 0
         stats = dict(particle_budget=budget, particle_candidates=0, particle_draw_budget=draw_budget,
                      particles_drawn=0, ambient_candidates=0, dynamic_candidates=0,
+                     ambient_samples=0, ambient_sample_budget=sample_budget,
+                     ambient_glint_candidates=0, ambient_glints=0,
                      particle_sources=0, particle_chunks=len(self._chunks), particle_occluded=0,
                      particle_protected=0)
         self.stats = stats
@@ -98,7 +103,7 @@ class Particles:
         camera = Camera(player, width, height, focal, aspect)
         projected = []
 
-        def emit(x, y, z, material, level, glyph, kind, limit):
+        def emit(x, y, z, material, level, glyph, kind, limit, projected_point=None):
             if stats['particle_candidates'] >= budget:
                 return False
             stats['particle_candidates'] += 1
@@ -106,7 +111,7 @@ class Particles:
             if not (0 <= x < self.world.width and 0 <= y < self.world.depth
                     and 0 <= z < self.world.height):
                 return True
-            point = camera.project(x, y, z)
+            point = camera.project(x, y, z) if projected_point is None else projected_point
             if point is None or point[2] > limit:
                 return True
             px, py, depth = point
@@ -185,19 +190,24 @@ class Particles:
                     for x in range(cx - 2, cx + 3):
                         px, py, pz = (x + 0.5) * self.CHUNK, (y + 0.5) * self.CHUNK, (z + 0.5) * self.VERTICAL_CHUNK
                         if self._visible_source(camera, px, py, pz, 4.8):
-                            square = (px - player.x) ** 2 + (py - player.y) ** 2 + (pz - player.eye_z) ** 2
+                            along = (px - player.x) * camera.cy + (py - player.y) * camera.sy
+                            square = ((px - player.x) ** 2 + (py - player.y) ** 2
+                                      + 4 * (pz - player.eye_z) ** 2 + max(0, -along) * 36)
                             nearby.append((square, x, y, z))
             nearby.sort()
             for _, x, y, z in nearby:
-                if stats['ambient_candidates'] >= ambient_budget or stats['particle_candidates'] >= budget:
+                if (stats['ambient_candidates'] >= ambient_budget or stats['particle_candidates'] >= budget
+                        or stats['ambient_samples'] >= sample_budget):
                     break
                 # The same local gust that rolls the canopy carries a loose
                 # group of ash flakes. Quieter dust hangs closer to its home.
                 wind_x, wind_y = ((0, 0) if wind_at is None else
                                   wind_at((x + 0.5) * self.CHUNK, (y + 0.5) * self.CHUNK))
                 for slot, (px, py, pz, phase, value) in enumerate(self._chunk(x, y, z)):
-                    if stats['ambient_candidates'] >= ambient_budget:
+                    if (stats['ambient_candidates'] >= ambient_budget
+                            or stats['ambient_samples'] >= sample_budget):
                         break
+                    stats['ambient_samples'] += 1
                     extra = slot >= self.MOTES_PER_CHUNK
                     if extra and abs(pz - player.eye_z) > self.EYE_BAND_HALF_HEIGHT + 0.26:
                         continue
@@ -213,14 +223,33 @@ class Particles:
                     drift = 0.78 if material == ASH else 0.28
                     wx = wind_x * drift + math.cos(eddy) * 0.13
                     wy = wind_y * drift + roll * 0.10
-                    # Flakes catch a little silvery light as the gust lifts
-                    # them. Dust retains a subdued, steady tone in still air.
+                    px, py, pz = px + wx, py + wy, pz + lift
+                    point = camera.project(px, py, pz)
+                    if point is None or point[2] > self.AMBIENT_RADIUS:
+                        continue
+                    column, row = round(point[0]), round(point[1])
+                    if not (0 <= column < width and 0 <= row < height):
+                        continue
+                    if point[2] >= depths[row][column] - 0.015:
+                        stats['particle_occluded'] += 1
+                        continue
+                    # Preserve the dark field. Rare, short glints catch wind
+                    # on rising ash; ordinary bodies never share their peak.
                     level = 4 + value % 3
+                    glyph = "'" if material == ASH else "."
                     if material == ASH:
                         level += max(0, min(3, round((wind_x + wind_y * 0.6) * 4)))
-                    glyph = "'" if material == ASH else "."
-                    if not emit(px + wx, py + wy, pz + lift, material, level, glyph,
-                                'ambient', self.AMBIENT_RADIUS):
+                        if (roll > 0.7 and point[2] < 12
+                                and stats['ambient_glint_candidates'] < self.MAX_AMBIENT_GLINTS):
+                            strength = min(1, math.hypot(wind_x, wind_y))
+                            if strength > 0.25 and math.sin(phase + seconds * 2.6) > 0.97:
+                                glyph = "*"
+                                # Compensate the standard fade only for this
+                                # tiny accent, leaving steady haze subdued.
+                                level = 14 + ((value >> 2) & 1) + int(point[2] / 8)
+                                stats['ambient_glint_candidates'] += 1
+                    if not emit(px, py, pz, material, level, glyph,
+                                'ambient', self.AMBIENT_RADIUS, point):
                         break
 
         # Nearest first plus a cell stamp keeps distant points from painting
@@ -241,9 +270,12 @@ class Particles:
                     or (isinstance(old, Ink) and old.material in _UI_MATERIALS)):
                 stats['particle_protected'] += 1
                 continue
-            if isinstance(old, Ink) and old.material in (FIRE, ARCANE) and old.level >= level:
+            if (isinstance(old, Ink) and old.material in (FIRE, ARCANE)
+                    and (material in (ASH, DUST) or old.level >= level)):
                 continue
             pixels[row][column] = ink(glyph, level, material, effects)
             stamped.add(cell)
             stats['particles_drawn'] += 1
+            if material == ASH and glyph == "*":
+                stats['ambient_glints'] += 1
         stats['particle_chunks'] = len(self._chunks)

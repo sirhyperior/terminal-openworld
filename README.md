@@ -10,13 +10,12 @@ west. Walls, roofs and bridge decks cast shadows across floors and figures.
 Mortar, wood grain and armor bevels still catch enough light to read in shade.
 Distant silhouettes soften toward blue-gray against the black sky.
 
-Gusts turn grass toward silver-blue and catch lilac edges in the canopy. Ash
-drifts farther on the same wind than the dimmer dust. Indigo river troughs
-break into narrow aqua crests that follow the bends downstream. Spellfire has
-a pale core, violet embers and a cold light that reaches nearby surfaces.
-Ash and dust concentrate around eye height, with almost twice as many visible
-near the horizon as the earlier sparse field. Pause or open help to freeze
-the wind, current and particles together.
+Gusts turn grass toward silver-blue and catch lilac edges in the canopy. A
+denser drift of dim ash and dust hangs near eye height, with occasional bright
+flecks as the wind lifts the ash. Indigo water carries aqua crests and a few
+pinpricks of moonlight downstream. Spellfire has a pale core, violet embers and
+a cold light that reaches nearby surfaces. Pause or open help to freeze the
+wind, current and particles together.
 
 Use `--color-mode gray` for neutral grayscale or `--color-mode mono` for uniform
 white. Snapshots remain plain ASCII in every mode. Colors carry semantic material,

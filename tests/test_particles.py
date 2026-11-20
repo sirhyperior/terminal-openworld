@@ -6,12 +6,13 @@ from unittest.mock import patch
 
 from ascii3d.combat import FIRE_STAFF, Fireball, FireBurst, WeaponPickup
 from ascii3d.geometry import Camera
-from ascii3d.palette import ARCANE, ASH, DUST, EMBER, UI_ACCENT
+from ascii3d.palette import ARCANE, ASH, DUST, EMBER, FIRE, UI_ACCENT
 from ascii3d.particles import Particles
 from ascii3d.player import Player
+from ascii3d.renderer import Renderer
 from ascii3d.shading import Ink, ink
 from ascii3d.sound import EFFECTS
-from ascii3d.world import GRASS, STONE, World
+from ascii3d.world import GRASS, STONE, World, build_world
 
 
 class ParticleTests(unittest.TestCase):
@@ -103,37 +104,95 @@ class ParticleTests(unittest.TestCase):
                            max(cell.level for cell in calm.values() if cell.material == ASH))
         self.assertLessEqual(max(cell.level for cell in gust.values() if cell.material == DUST), 6)
 
-    def test_eye_band_is_denser_at_different_heights_with_the_same_work_budget(self):
+    def test_eye_band_stays_populated_across_heights_with_bounded_inspection(self):
         world = World.empty(128, 128, 32)
         world.outdoor_bounds = (0, 0, 128, 128)
-        counts = []
-        for extra_motes in (0, Particles.EYE_MOTES_PER_CHUNK):
-            eye_band = total = 0
-            with patch.object(Particles, 'EYE_MOTES_PER_CHUNK', extra_motes):
-                for x in (25.5, 32.5, 40.5, 48.5):
-                    for z in (1, 2, 3, 4):
-                        for yaw in (0, math.pi / 2, math.pi, math.pi * 1.5):
-                            player = Player(x=x, y=40.5, z=z, yaw=yaw)
-                            pixels, depths = self.buffers()
-                            particles = Particles(world)
-                            particles.draw(pixels, depths, player, 1.25, 69, 0.5)
-                            eye_band += sum(cell != ' ' for row in pixels[14:21] for cell in row)
-                            total += particles.stats['particles_drawn']
-                            self.assertEqual(particles.stats['ambient_candidates'], 65)
-                            self.assertLessEqual(particles.stats['particles_drawn'],
-                                                 particles.stats['particle_draw_budget'])
-            counts.append((eye_band, total))
-        sparse, denser = counts
-        self.assertGreater(denser[0], sparse[0] * 1.70)
-        self.assertLess(denser[0], sparse[0] * 2.10)
-        self.assertLess(denser[1], sparse[1] * 1.50)
+        eye_band = total = 0
+        for x in (25.5, 32.5, 40.5, 48.5):
+            for z in (1, 2, 3, 4):
+                for yaw in (0, math.pi / 2, math.pi, math.pi * 1.5):
+                    player = Player(x=x, y=40.5, z=z, yaw=yaw)
+                    pixels, depths = self.buffers()
+                    particles = Particles(world)
+                    particles.draw(pixels, depths, player, 1.25, 69, 0.5)
+                    eye_band += sum(cell != ' ' for row in pixels[14:21] for cell in row)
+                    total += particles.stats['particles_drawn']
+                    self.assertLessEqual(particles.stats['ambient_candidates'], 65)
+                    self.assertLessEqual(particles.stats['ambient_samples'],
+                                         particles.stats['ambient_sample_budget'])
+                    self.assertLessEqual(particles.stats['ambient_sample_budget'],
+                                         Particles.MAX_AMBIENT_SAMPLES)
+                    self.assertLessEqual(particles.stats['particles_drawn'],
+                                         particles.stats['particle_draw_budget'])
+        self.assertGreater(eye_band, total * 0.35)
+        self.assertGreater(total, 64 * 30)
+
+    def test_real_indoor_and_open_views_have_visible_readable_motes(self):
+        world = build_world()
+        renderer = Renderer(world)
+        for x, y, minimum in ((128.5, 76.5, 30), (128.5, 111.5, 20),
+                              (128.5, 88.5, 30), (72.5, 247.5, 25)):
+            with self.subTest(camera=(x, y)):
+                pixels = renderer.scene(Player(x=x, y=y, z=1), 120, 40, 1.25)
+                motes = [cell for row in pixels for cell in row
+                         if isinstance(cell, Ink) and cell.material in (DUST, ASH)]
+                self.assertGreaterEqual(len(motes), minimum)
+                bodies = [cell for cell in motes if cell != '*']
+                sparks = [cell for cell in motes if cell == '*']
+                self.assertLessEqual(sum(cell.level for cell in bodies) / len(bodies), 6.5)
+                self.assertTrue(all(cell.level <= 9 for cell in bodies))
+                self.assertLessEqual(len(sparks), 2)
+                self.assertTrue(all(14 <= cell.level <= 15 for cell in sparks))
+                self.assertTrue(all(str(cell) in ('.', "'", '*') for cell in motes))
+
+    def test_only_selected_ash_glints_while_dust_and_other_ash_keep_steady_bodies(self):
+        self.world.outdoor_bounds = (0, 0, 64, 64)
+        particles = Particles(self.world)
+        motes = ((32, 34, 2.4, math.pi / 2, 0),
+                 (33, 34, 2.4, 1.1, 96),
+                 (31, 34, 2.4, math.pi / 2, 1))
+        levels = []
+        glyphs = []
+        with patch.object(particles, '_chunk', return_value=motes):
+            for seconds in (0, math.pi / (2 * 0.26)):
+                pixels, depths = self.buffers()
+                particles.draw(pixels, depths, self.player, seconds, 69, 0.5,
+                               wind_at=lambda x, y: (0.9, 0.2))
+                levels.append({material: sorted(cell.level for row in pixels for cell in row
+                                                if isinstance(cell, Ink) and cell.material == material)
+                               for material in (ASH, DUST)})
+                glyphs.append([str(cell) for row in pixels for cell in row if isinstance(cell, Ink)])
+        self.assertEqual(levels[0][DUST], levels[1][DUST])
+        self.assertEqual(levels[0][ASH][0], levels[1][ASH][0])
+        self.assertGreater(levels[0][ASH][1], levels[1][ASH][1])
+        self.assertEqual(glyphs[0].count('*'), 1)
+        self.assertNotIn('*', glyphs[1])
+        self.assertNotIn(':', glyphs[0])
+        self.assertNotIn('+', glyphs[0])
+
+    def test_many_eligible_ash_seeds_have_only_two_brief_bright_accents(self):
+        self.world.outdoor_bounds = (0, 0, 64, 64)
+        particles = Particles(self.world)
+        motes = tuple((30 + index * 0.12, 34, 2.4, math.pi / 2, 0) for index in range(30))
+        with patch.object(particles, '_chunk', return_value=motes):
+            for seconds, expected in ((0, 2), (0.25, 0)):
+                pixels, depths = self.buffers()
+                particles.draw(pixels, depths, self.player, seconds, 69, 0.5,
+                               wind_at=lambda x, y: (0.9, 0.2))
+                ash = [cell for row in pixels for cell in row
+                       if isinstance(cell, Ink) and cell.material == ASH]
+                sparks = [cell for cell in ash if cell == '*']
+                self.assertEqual(len(sparks), expected)
+                self.assertEqual(particles.stats['ambient_glints'], expected)
+                self.assertTrue(all(14 <= cell.level <= 15 for cell in sparks))
+                self.assertTrue(all(cell.level <= 9 for cell in ash if cell != '*'))
 
     def test_extra_eye_motes_retain_world_positions_when_camera_height_changes(self):
         self.world.outdoor_bounds = (0, 0, 64, 64)
         particles = Particles(self.world)
         # All chunks expose the same controlled world motes. Ordinary motes
         # retain their broad height range; only the extras use the eye band.
-        ordinary = (32.5, 34, 6, 0, 1)
+        ordinary = (32.5, 34, 4, 0, 1)
         extra = (32.5, 34, self.player.eye_z, 0, 0)
         values = (ordinary,) * Particles.MOTES_PER_CHUNK + (extra,)
         fields = []
@@ -190,6 +249,17 @@ class ParticleTests(unittest.TestCase):
             self.assertEqual(self.tokens(pixels), before)
             self.assertEqual(particles.stats['particles_drawn'], 0)
             self.assertGreater(particles.stats['particle_protected'], 0)
+
+    def test_bright_ambient_motes_never_overpaint_even_dim_spellfire(self):
+        self.world.outdoor_bounds = (0, 0, 64, 64)
+        particles = Particles(self.world)
+        for material in (FIRE, ARCANE):
+            pixels, depths = self.buffers()
+            pixels = [[ink('*', 1, material)] * 120 for _ in range(35)]
+            before = self.tokens(pixels)
+            particles.draw(pixels, depths, self.player, 1, 69, 0.5)
+            self.assertEqual(self.tokens(pixels), before)
+            self.assertEqual(particles.stats['particles_drawn'], 0)
 
     def test_sparse_field_and_work_budget_do_not_grow_with_world_size(self):
         for size in (64, 512):

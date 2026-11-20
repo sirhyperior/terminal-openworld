@@ -524,6 +524,8 @@ class Renderer:
         self.scenery.shading = self.shading
         shade_surface = self.shading.surface
         self._update_chunks()
+        moonlight = self.shading.moonlight
+        river_glints = {}
         chunk_tops, chunks_x = self._chunk_tops, (world.width + 1) // 2
         empty_bounds, chunk_count = self._empty_bounds, len(chunk_tops)
         empty_columns = self._empty_columns
@@ -862,10 +864,22 @@ class Renderer:
                         stroke = _flow_glyph(sy * flow_x - cy * flow_y - u * cp * along_flow,
                                              aspect * dz * along_flow)
                         glyph = "~" if wave > 0.72 and stroke == "-" and distance <= 24 else stroke
-                    # Silver-blue ribbons ride the downstream crests. The
-                    # troughs give them contrast in both color and gray.
-                    level = max(MIN_SURFACE_LEVEL, min(15, tone.level + round(wave * 2)))
-                    row.append(ink(glyph, level, WATER_CREST if wave > 0.55 else WATER, tone.effects))
+                    crest = wave > 0.55
+                    level = tone.level + round(wave * 2)
+                    # Let one cell flash per passing stripe. Close perspective
+                    # can magnify a stripe into a broad band across the screen.
+                    if (len(river_glints) < 4 and wave > 0.92
+                            and distance < 26 and tone.level >= 9):
+                        phase = (hx - time_seconds * 0.9) * 4.8 + hy * 0.47
+                        stripe = floor(phase / math.tau)
+                        if (stripe not in river_glints and math.sin(phase) > 0.96
+                                and not any(abs(column_index - x) <= 2 and abs(row_index - y) <= 1
+                                            for x, y in river_glints.values())
+                                and (moonlight is None or not moonlight.blocked(hx, hy, hz + 1e-5))):
+                            river_glints[stripe] = (column_index, row_index)
+                            level, glyph = 15, "+"
+                    row.append(ink(glyph, max(MIN_SURFACE_LEVEL, min(15, level)),
+                                   WATER_CREST if crest else WATER, tone.effects))
                 elif material == GRASS and normal[2] > 0:
                     noise = (int(hx * 6.0) * 73856093 ^ int(hy * 6.0) * 19349663) & 15
                     wx, wy = self.scenery.wind_at(hx, hy)
