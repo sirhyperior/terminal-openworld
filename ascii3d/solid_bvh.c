@@ -42,6 +42,8 @@ typedef struct {
     Hit *hit;
 } Trace;
 
+#include "voxel_trace.h"
+
 /* Use divisions and X/Y/Z order to match SolidBox._ray_query exactly. */
 static int slab(const Bounds *bounds, const Trace *ray, double *entry, double *normal) {
     double enter = 0.0, leave = ray->limit;
@@ -397,3 +399,6 @@ EXPORT int monolith_heightfield_hit(const HeightFieldData *field, double ox, dou
     }
     return 0;
 }
+
+#include "gpu_refine.h"
+#include "surface_lighting.h"

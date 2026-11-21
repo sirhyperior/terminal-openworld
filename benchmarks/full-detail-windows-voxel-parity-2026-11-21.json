@@ -1,0 +1,1442 @@
+{
+  "method": "Same native solids and continuous terrain, alternating Python and compiled voxel traversal. Exact pre-scenery opaque depths and styled output on each static camera pose and simulation time.",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.14.4",
+  "sources": {
+    "ascii3d\\renderer.py": "2fad133bcfe097a2e95e6c93aca1a5e0a0401d4053b79fffa8d6e5a86af9a490",
+    "ascii3d\\voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+    "ascii3d\\native_solids.py": "6366d0d7e5497cc451d70531b466b691be0dac6f991b1df9db6345bdbde2d1f7",
+    "monolith_voxel_probe.dll": "0eba09c54b2af5ac178c979eef053e5583e47ecd9083c8bde70f1855bf1eff17"
+  },
+  "pairs": [
+    {
+      "role": "indoors",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "indoors",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "indoors",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "courtyard",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "courtyard",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "courtyard",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "meadow",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "meadow",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "meadow",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "grass_close",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "grass_close",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "grass_close",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "bridge",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "bridge",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "bridge",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "river",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "river",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "river",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ruins",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ruins",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ruins",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "lodge",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "lodge",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "lodge",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "east_bridge",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "east_bridge",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "east_bridge",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "watchstones",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "watchstones",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "watchstones",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "warden",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "warden",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "warden",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "staff",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "staff",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "staff",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "fireballs",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "fireballs",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "fireballs",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "map",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "map",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "map",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "training",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "training",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "training",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "tree_close",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "tree_close",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "tree_close",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "tree_canopy",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "tree_canopy",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "tree_canopy",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "river_diagonal",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "river_diagonal",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "river_diagonal",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "river_upstream",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "river_upstream",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "river_upstream",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "castle_exterior",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "castle_exterior",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "castle_exterior",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "great_hall",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "great_hall",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "great_hall",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "wall_walk",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "wall_walk",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "wall_walk",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "west_meadow",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "west_meadow",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "west_meadow",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "east_meadow",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "east_meadow",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "east_meadow",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ridge_approach",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ridge_approach",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ridge_approach",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ridge_upper",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ridge_upper",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ridge_upper",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ridge_roof",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ridge_roof",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ridge_roof",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "highlands",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "highlands",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "highlands",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ravine",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ravine",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "ravine",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "citadel_approach",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "citadel_approach",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "citadel_approach",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "citadel_roof",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "citadel_roof",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "citadel_roof",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "highland_map",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "highland_map",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "highland_map",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "terrace_walk",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "terrace_walk",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "terrace_walk",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "stair_walk",
+      "width": 160,
+      "height": 50,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "stair_walk",
+      "width": 240,
+      "height": 80,
+      "tilt": 0,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    },
+    {
+      "role": "stair_walk",
+      "width": 80,
+      "height": 60,
+      "tilt": 0.35,
+      "checks": {
+        "glyphs": true,
+        "foreground": true,
+        "materials": true,
+        "effects": true,
+        "ansi": true,
+        "opaque_depths": true
+      }
+    }
+  ],
+  "failed": 0
+}

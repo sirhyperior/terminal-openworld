@@ -362,10 +362,12 @@ The playable game supports `--renderer auto|cpu|native|gpu`. Auto prefers a
 hardware GPU, then the optional compiled solid library, then the Python CPU
 renderer. `--renderer cpu` selects the standard-library Python path.
 
-The optional native library accelerates exact float64 solid and continuous
-terrain traversal. Coincident solid hits use the Python grid query. Build
-or rebuild the library from the repository root. The normal launcher picks
-up the result automatically.
+The optional native library accelerates exact float64 voxel, solid and
+continuous terrain traversal, as well as exact refinement of GPU candidates.
+It also batches lighting for static opaque surfaces in scenes without local
+firelight. Coincident solid hits use the Python grid query. Build or rebuild
+the library from the repository root. The normal launcher picks up the result
+automatically.
 
 ```bash
 cc -std=c11 -O3 -ffp-contract=off -fexcess-precision=standard -fPIC -shared \
@@ -377,6 +379,13 @@ From a Windows x64 Developer Command Prompt with MSVC installed:
 ```bat
 cl /nologo /std:c11 /O2 /fp:strict /LD ascii3d\solid_bvh.c /link /OUT:ascii3d\monolith_solid_bvh.dll
 run.bat --renderer native
+```
+
+From PowerShell with 64-bit MinGW GCC installed:
+
+```powershell
+gcc -std=c11 -O3 -ffp-contract=off -fexcess-precision=standard -shared ascii3d/solid_bvh.c -o ascii3d/monolith_solid_bvh.dll
+.\run.bat
 ```
 
 GPU geometry includes exact convex-plane candidates and indexed solid bounds,
@@ -394,11 +403,9 @@ python -m venv .venv-gpu
 .\.venv-gpu\Scripts\python.exe -B main.py --renderer gpu
 ```
 
-`run.bat` prefers this local environment when present. Full GPU performance
-acceptance remains open: the latest original-control comparison passes 14/24
-views. GPU rendering improves several expensive views but still regresses some
-cheaper ones. See [current evidence](benchmarks/smooth-performance-2026-11-12.md)
-before treating GPU availability as a whole-game FPS guarantee.
+`run.bat` prefers this local environment when present. Full-detail frame
+times vary by scene and terminal size. The latest matched Windows runs
+and native console timings are in the [benchmark report](benchmarks/full-detail-windows-2026-11-21.md).
 
 The separate `tools/gpu_prototype.py` remains a static-stage diagnostic with
 simplified ASCII shading. It excludes doors, actors, vegetation and HUD; its

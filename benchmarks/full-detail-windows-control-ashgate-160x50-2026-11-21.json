@@ -1,0 +1,2845 @@
+{
+  "version": 1,
+  "python": "3.14.4",
+  "platform": "win32",
+  "settings": {
+    "fps_cap": 40,
+    "renderer_requested": "auto",
+    "color_mode": "color",
+    "max_cells": null,
+    "keyboard_look": true,
+    "start_muted": false,
+    "presentation": "hidden classic native Windows console",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "source": "427dc70",
+    "scene": "ashgate",
+    "frames_requested": 60,
+    "console_before": {
+      "input_mode": 503,
+      "output_mode": 3,
+      "width": 160,
+      "height": 50,
+      "buffer_width": 160,
+      "buffer_height": 50,
+      "attributes": 7,
+      "cursor_visible": true,
+      "cursor": [
+        0,
+        0
+      ],
+      "screen_hash": "a606080d2e49d3550387ecdae98d195812450e3f869817ef8b0a4171e4db9927",
+      "font": {
+        "face": "\uad74\ub9bc\uccb4",
+        "width": 5,
+        "height": 10
+      }
+    },
+    "wave_out_devices": 3,
+    "audio": {
+      "available": true,
+      "enabled": true,
+      "error": "",
+      "blocks_rendered": 52,
+      "recoveries": 0,
+      "underruns": 0,
+      "max_write_gap_ms": 55.7184999997844
+    },
+    "console_after": {
+      "input_mode": 503,
+      "output_mode": 3,
+      "width": 160,
+      "height": 50,
+      "buffer_width": 160,
+      "buffer_height": 50,
+      "attributes": 7,
+      "cursor_visible": true,
+      "cursor": [
+        0,
+        3
+      ],
+      "screen_hash": "2e78414b7af4b97c7373e7cfe6445dbea23911c3d256d334aff98d3d3b381f67",
+      "font": {
+        "face": "\uad74\ub9bc\uccb4",
+        "width": 5,
+        "height": 10
+      }
+    }
+  },
+  "exit_status": 0,
+  "frames_completed": 60,
+  "frames_retained": 60,
+  "measurement": {
+    "interval_ms": "frame start to next frame start, when observed",
+    "input_ms": "input, terminal sizing and mouse capture",
+    "audio_ms": "soundscape, audio controls and interface event dispatch",
+    "simulation_ms": "game simulation and its audio event dispatch",
+    "draw_ms": "terminal encoding, write and flush",
+    "gpu_stats": "GPU query stages and fallback rays when available",
+    "summary": "nearest-rank p95 of the retained frames"
+  },
+  "summary": {
+    "interval_ms": {
+      "count": 59,
+      "mean": 37.718492,
+      "p95": 44.288
+    },
+    "input_ms": {
+      "count": 60,
+      "mean": 0.078322,
+      "p95": 0.1361
+    },
+    "audio_ms": {
+      "count": 60,
+      "mean": 0.032325,
+      "p95": 0.0455
+    },
+    "simulation_ms": {
+      "count": 60,
+      "mean": 0.415878,
+      "p95": 0.629
+    },
+    "render_ms": {
+      "count": 60,
+      "mean": 30.794592,
+      "p95": 35.8628
+    },
+    "draw_ms": {
+      "count": 60,
+      "mean": 6.381435,
+      "p95": 7.8914
+    },
+    "encode_ms": {
+      "count": 60,
+      "mean": 1.246167,
+      "p95": 1.55
+    },
+    "write_flush_ms": {
+      "count": 60,
+      "mean": 5.115472,
+      "p95": 6.4099
+    },
+    "output_bytes": {
+      "count": 60,
+      "mean": 53624.433333,
+      "p95": 60862
+    },
+    "work_ms": {
+      "count": 60,
+      "mean": 37.702552,
+      "p95": 43.657
+    },
+    "cap_requested_ms": {
+      "count": 60,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "cap_actual_ms": {
+      "count": 60,
+      "mean": 0.0,
+      "p95": 0.0
+    }
+  },
+  "frames": [
+    {
+      "pose": [
+        128.5,
+        76.5,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 1,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 1.0927000002993736,
+        "decode_ms": 0.003200000719516538,
+        "refine_ms": 4.58729999991192,
+        "fallback_rays": 112,
+        "rebuilds": 0
+      },
+      "input_ms": 0.2399,
+      "audio_ms": 0.0518,
+      "simulation_ms": 0.5399,
+      "render_ms": 33.6438,
+      "draw_ms": 5.1836,
+      "work_ms": 39.659,
+      "encode_ms": 0.9443,
+      "write_flush_ms": 4.2205,
+      "output_bytes": 49817,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 39.707
+    },
+    {
+      "pose": [
+        128.5,
+        76.61333333333334,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 2,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6745999999111518,
+        "decode_ms": 0.002599999788799323,
+        "refine_ms": 4.234399999404559,
+        "fallback_rays": 199,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0981,
+      "audio_ms": 0.0238,
+      "simulation_ms": 0.4249,
+      "render_ms": 34.2682,
+      "draw_ms": 5.9857,
+      "work_ms": 40.8007,
+      "encode_ms": 1.2663,
+      "write_flush_ms": 4.699,
+      "output_bytes": 46971,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 40.8487
+    },
+    {
+      "pose": [
+        128.5,
+        76.75500000000002,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 3,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7127000008040341,
+        "decode_ms": 0.0031999989005271345,
+        "refine_ms": 4.461600001377519,
+        "fallback_rays": 1,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0642,
+      "audio_ms": 0.0315,
+      "simulation_ms": 0.4514,
+      "render_ms": 25.9771,
+      "draw_ms": 5.0565,
+      "work_ms": 31.5807,
+      "encode_ms": 1.0921,
+      "write_flush_ms": 3.949,
+      "output_bytes": 47801,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 31.6174
+    },
+    {
+      "pose": [
+        128.5,
+        76.86833333333337,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 4,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7585000003018649,
+        "decode_ms": 0.002599999788799323,
+        "refine_ms": 4.5988000001671026,
+        "fallback_rays": 337,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0592,
+      "audio_ms": 0.0244,
+      "simulation_ms": 0.3496,
+      "render_ms": 32.8101,
+      "draw_ms": 6.6612,
+      "work_ms": 39.9045,
+      "encode_ms": 1.4128,
+      "write_flush_ms": 5.2293,
+      "output_bytes": 48233,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 39.9523
+    },
+    {
+      "pose": [
+        128.5,
+        77.01000000000005,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 5,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.9096999983739806,
+        "decode_ms": 0.0030000010156072676,
+        "refine_ms": 4.807999999684398,
+        "fallback_rays": 55,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0913,
+      "audio_ms": 0.0372,
+      "simulation_ms": 0.6478,
+      "render_ms": 31.391,
+      "draw_ms": 5.0398,
+      "work_ms": 37.2071,
+      "encode_ms": 1.0352,
+      "write_flush_ms": 3.9887,
+      "output_bytes": 46654,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 37.245
+    },
+    {
+      "pose": [
+        128.5,
+        77.12333333333339,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 6,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7329999989451608,
+        "decode_ms": 0.002800001311697997,
+        "refine_ms": 4.065899998749956,
+        "fallback_rays": 25,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0568,
+      "audio_ms": 0.0257,
+      "simulation_ms": 0.3665,
+      "render_ms": 32.7022,
+      "draw_ms": 6.3841,
+      "work_ms": 39.5353,
+      "encode_ms": 1.309,
+      "write_flush_ms": 5.0503,
+      "output_bytes": 45618,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 39.584
+    },
+    {
+      "pose": [
+        128.5,
+        77.26500000000007,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 7,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7571999994979706,
+        "decode_ms": 0.0032999996619764715,
+        "refine_ms": 4.603499999575433,
+        "fallback_rays": 0,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0743,
+      "audio_ms": 0.0313,
+      "simulation_ms": 0.5213,
+      "render_ms": 29.877,
+      "draw_ms": 6.5834,
+      "work_ms": 37.0873,
+      "encode_ms": 1.3473,
+      "write_flush_ms": 5.2131,
+      "output_bytes": 46086,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 37.134
+    },
+    {
+      "pose": [
+        128.5,
+        77.37833333333342,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 8,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7838000001356704,
+        "decode_ms": 0.0032999996619764715,
+        "refine_ms": 4.863800000748597,
+        "fallback_rays": 15,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0787,
+      "audio_ms": 0.0326,
+      "simulation_ms": 0.6929,
+      "render_ms": 28.0339,
+      "draw_ms": 5.2548,
+      "work_ms": 34.0929,
+      "encode_ms": 0.993,
+      "write_flush_ms": 4.2375,
+      "output_bytes": 46358,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 34.1341
+    },
+    {
+      "pose": [
+        128.5,
+        77.5200000000001,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 9,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.716499998816289,
+        "decode_ms": 0.002300001142430119,
+        "refine_ms": 4.180199999609613,
+        "fallback_rays": 17,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0583,
+      "audio_ms": 0.0277,
+      "simulation_ms": 0.4709,
+      "render_ms": 27.101,
+      "draw_ms": 5.1506,
+      "work_ms": 32.8085,
+      "encode_ms": 1.0532,
+      "write_flush_ms": 4.0844,
+      "output_bytes": 46965,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 32.8436
+    },
+    {
+      "pose": [
+        128.5,
+        77.6050000000001,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 10,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6591000001208158,
+        "decode_ms": 0.002599999788799323,
+        "refine_ms": 4.164699999819277,
+        "fallback_rays": 74,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0807,
+      "audio_ms": 0.0251,
+      "simulation_ms": 0.3217,
+      "render_ms": 27.2687,
+      "draw_ms": 5.8868,
+      "work_ms": 33.583,
+      "encode_ms": 1.1835,
+      "write_flush_ms": 4.686,
+      "output_bytes": 47431,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 33.6244
+    },
+    {
+      "pose": [
+        128.5,
+        77.74666666666678,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 11,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7619999996677507,
+        "decode_ms": 0.002800001311697997,
+        "refine_ms": 4.201199999442906,
+        "fallback_rays": 42,
+        "rebuilds": 0
+      },
+      "input_ms": 0.1401,
+      "audio_ms": 0.0307,
+      "simulation_ms": 0.449,
+      "render_ms": 27.2132,
+      "draw_ms": 5.2378,
+      "work_ms": 33.0708,
+      "encode_ms": 1.0822,
+      "write_flush_ms": 4.1372,
+      "output_bytes": 48843,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 33.11
+    },
+    {
+      "pose": [
+        128.5,
+        77.83166666666679,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 12,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7787000013195211,
+        "decode_ms": 0.002200000380980782,
+        "refine_ms": 4.675899999710964,
+        "fallback_rays": 13,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0678,
+      "audio_ms": 0.0261,
+      "simulation_ms": 0.3484,
+      "render_ms": 31.4862,
+      "draw_ms": 5.8025,
+      "work_ms": 37.731,
+      "encode_ms": 1.2433,
+      "write_flush_ms": 4.539,
+      "output_bytes": 46627,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 37.7759
+    },
+    {
+      "pose": [
+        128.5,
+        77.97333333333347,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 13,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7705999996687751,
+        "decode_ms": 0.00270000055024866,
+        "refine_ms": 4.223600000841543,
+        "fallback_rays": 12,
+        "rebuilds": 0
+      },
+      "input_ms": 0.068,
+      "audio_ms": 0.0292,
+      "simulation_ms": 0.4668,
+      "render_ms": 26.9354,
+      "draw_ms": 5.9511,
+      "work_ms": 33.4505,
+      "encode_ms": 1.2552,
+      "write_flush_ms": 4.6796,
+      "output_bytes": 49388,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 33.4894
+    },
+    {
+      "pose": [
+        128.5,
+        78.08666666666682,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 14,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.8682000006956514,
+        "decode_ms": 0.0026999987312592566,
+        "refine_ms": 4.716299999927287,
+        "fallback_rays": 0,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0602,
+      "audio_ms": 0.0268,
+      "simulation_ms": 0.3768,
+      "render_ms": 35.302,
+      "draw_ms": 6.4746,
+      "work_ms": 42.2404,
+      "encode_ms": 1.3046,
+      "write_flush_ms": 5.146,
+      "output_bytes": 49373,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 42.2901
+    },
+    {
+      "pose": [
+        128.5,
+        78.2283333333335,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 15,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 1.162599999588565,
+        "decode_ms": 0.003200000719516538,
+        "refine_ms": 4.832000000533299,
+        "fallback_rays": 0,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0775,
+      "audio_ms": 0.0387,
+      "simulation_ms": 0.5179,
+      "render_ms": 31.2294,
+      "draw_ms": 6.4626,
+      "work_ms": 38.3261,
+      "encode_ms": 1.1973,
+      "write_flush_ms": 5.2389,
+      "output_bytes": 50324,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 38.3778
+    },
+    {
+      "pose": [
+        128.5,
+        78.37000000000018,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 16,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.8097000009001931,
+        "decode_ms": 0.002599999788799323,
+        "refine_ms": 4.493200000069919,
+        "fallback_rays": 66,
+        "rebuilds": 0
+      },
+      "input_ms": 0.1215,
+      "audio_ms": 0.0365,
+      "simulation_ms": 0.4364,
+      "render_ms": 30.3917,
+      "draw_ms": 5.4012,
+      "work_ms": 36.3873,
+      "encode_ms": 1.0651,
+      "write_flush_ms": 4.3123,
+      "output_bytes": 48851,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 36.4357
+    },
+    {
+      "pose": [
+        128.5,
+        78.48333333333352,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 17,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7636000009370036,
+        "decode_ms": 0.0027999994927085936,
+        "refine_ms": 4.199799999696552,
+        "fallback_rays": 12,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0747,
+      "audio_ms": 0.0317,
+      "simulation_ms": 0.3652,
+      "render_ms": 27.3314,
+      "draw_ms": 5.6613,
+      "work_ms": 33.4643,
+      "encode_ms": 1.1565,
+      "write_flush_ms": 4.4837,
+      "output_bytes": 49955,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 33.5124
+    },
+    {
+      "pose": [
+        128.5,
+        78.59666666666686,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 18,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7504999994125683,
+        "decode_ms": 0.003600000127335079,
+        "refine_ms": 5.030800000895397,
+        "fallback_rays": 108,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0681,
+      "audio_ms": 0.0298,
+      "simulation_ms": 0.3779,
+      "render_ms": 42.9618,
+      "draw_ms": 7.0087,
+      "work_ms": 50.4463,
+      "encode_ms": 1.55,
+      "write_flush_ms": 5.4322,
+      "output_bytes": 49788,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 50.4994
+    },
+    {
+      "pose": [
+        128.5,
+        78.76666666666688,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 19,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.8213999990402954,
+        "decode_ms": 0.0026000016077887267,
+        "refine_ms": 4.681200000050012,
+        "fallback_rays": 45,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0771,
+      "audio_ms": 0.0357,
+      "simulation_ms": 0.5595,
+      "render_ms": 28.9437,
+      "draw_ms": 5.9681,
+      "work_ms": 35.5841,
+      "encode_ms": 1.0612,
+      "write_flush_ms": 4.8768,
+      "output_bytes": 49756,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 35.6959
+    },
+    {
+      "pose": [
+        128.5,
+        78.88000000000022,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 20,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 1.263199999812059,
+        "decode_ms": 0.00270000055024866,
+        "refine_ms": 4.449899999599438,
+        "fallback_rays": 63,
+        "rebuilds": 0
+      },
+      "input_ms": 0.1655,
+      "audio_ms": 0.0455,
+      "simulation_ms": 0.4523,
+      "render_ms": 32.8281,
+      "draw_ms": 5.8391,
+      "work_ms": 39.3305,
+      "encode_ms": 1.1431,
+      "write_flush_ms": 4.6755,
+      "output_bytes": 51103,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 39.378
+    },
+    {
+      "pose": [
+        128.5,
+        79.0216666666669,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 21,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7191000004240777,
+        "decode_ms": 0.002999999196617864,
+        "refine_ms": 4.435200000443729,
+        "fallback_rays": 34,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0726,
+      "audio_ms": 0.0302,
+      "simulation_ms": 0.4594,
+      "render_ms": 32.6187,
+      "draw_ms": 5.7595,
+      "work_ms": 38.9404,
+      "encode_ms": 1.1154,
+      "write_flush_ms": 4.6197,
+      "output_bytes": 51227,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 38.9861
+    },
+    {
+      "pose": [
+        128.5,
+        79.16333333333358,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 22,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7956999997986713,
+        "decode_ms": 0.0022999993234407157,
+        "refine_ms": 4.474700001082965,
+        "fallback_rays": 3,
+        "rebuilds": 0
+      },
+      "input_ms": 0.1131,
+      "audio_ms": 0.0363,
+      "simulation_ms": 0.629,
+      "render_ms": 30.9666,
+      "draw_ms": 6.9698,
+      "work_ms": 38.7148,
+      "encode_ms": 1.3074,
+      "write_flush_ms": 5.6314,
+      "output_bytes": 52279,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 38.7742
+    },
+    {
+      "pose": [
+        128.5,
+        79.30500000000026,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 23,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.886499999978696,
+        "decode_ms": 0.002499999027349986,
+        "refine_ms": 4.436799999893992,
+        "fallback_rays": 42,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0856,
+      "audio_ms": 0.0388,
+      "simulation_ms": 0.4826,
+      "render_ms": 33.7093,
+      "draw_ms": 6.0701,
+      "work_ms": 40.3864,
+      "encode_ms": 1.2142,
+      "write_flush_ms": 4.8306,
+      "output_bytes": 52169,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 40.4344
+    },
+    {
+      "pose": [
+        128.5,
+        79.4183333333336,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 24,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6923999990249285,
+        "decode_ms": 0.0029000002541579306,
+        "refine_ms": 5.69790000008652,
+        "fallback_rays": 176,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0961,
+      "audio_ms": 0.0666,
+      "simulation_ms": 0.4858,
+      "render_ms": 32.8243,
+      "draw_ms": 7.1207,
+      "work_ms": 40.5935,
+      "encode_ms": 1.348,
+      "write_flush_ms": 5.7342,
+      "output_bytes": 52037,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 40.6436
+    },
+    {
+      "pose": [
+        128.5,
+        79.56000000000029,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 25,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7315999991988065,
+        "decode_ms": 0.0029000002541579306,
+        "refine_ms": 5.128000000695465,
+        "fallback_rays": 38,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0723,
+      "audio_ms": 0.0345,
+      "simulation_ms": 0.4877,
+      "render_ms": 30.2123,
+      "draw_ms": 5.5561,
+      "work_ms": 36.3629,
+      "encode_ms": 1.0777,
+      "write_flush_ms": 4.4591,
+      "output_bytes": 52894,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 36.4045
+    },
+    {
+      "pose": [
+        128.5,
+        79.70166666666697,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 26,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7120999998733168,
+        "decode_ms": 0.00270000055024866,
+        "refine_ms": 4.535800000667223,
+        "fallback_rays": 2,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0717,
+      "audio_ms": 0.0293,
+      "simulation_ms": 0.4269,
+      "render_ms": 28.2677,
+      "draw_ms": 9.5455,
+      "work_ms": 38.3411,
+      "encode_ms": 2.5305,
+      "write_flush_ms": 6.9908,
+      "output_bytes": 51688,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 38.3911
+    },
+    {
+      "pose": [
+        128.5,
+        79.81500000000031,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 27,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.8388999995077029,
+        "decode_ms": 0.0032999996619764715,
+        "refine_ms": 5.760300000474672,
+        "fallback_rays": 1,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0941,
+      "audio_ms": 0.0364,
+      "simulation_ms": 0.517,
+      "render_ms": 37.6512,
+      "draw_ms": 6.471,
+      "work_ms": 44.7697,
+      "encode_ms": 1.3547,
+      "write_flush_ms": 5.0993,
+      "output_bytes": 51717,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 44.8072
+    },
+    {
+      "pose": [
+        128.5,
+        79.98500000000033,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 28,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.845300000946736,
+        "decode_ms": 0.0022999993234407157,
+        "refine_ms": 4.605699999956414,
+        "fallback_rays": 11,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0642,
+      "audio_ms": 0.0275,
+      "simulation_ms": 0.5896,
+      "render_ms": 27.6523,
+      "draw_ms": 5.764,
+      "work_ms": 34.0976,
+      "encode_ms": 1.1793,
+      "write_flush_ms": 4.5662,
+      "output_bytes": 54985,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 34.1331
+    },
+    {
+      "pose": [
+        128.5,
+        80.09833333333367,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 29,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7054999987303745,
+        "decode_ms": 0.002099999619531445,
+        "refine_ms": 5.130200001076446,
+        "fallback_rays": 12,
+        "rebuilds": 0
+      },
+      "input_ms": 0.1361,
+      "audio_ms": 0.029,
+      "simulation_ms": 0.3781,
+      "render_ms": 30.4672,
+      "draw_ms": 5.5652,
+      "work_ms": 36.5756,
+      "encode_ms": 1.1714,
+      "write_flush_ms": 4.3781,
+      "output_bytes": 52163,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 36.6096
+    },
+    {
+      "pose": [
+        128.5,
+        80.21166666666701,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 30,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.727000000551925,
+        "decode_ms": 0.002099999619531445,
+        "refine_ms": 3.889999999955762,
+        "fallback_rays": 160,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0599,
+      "audio_ms": 0.0237,
+      "simulation_ms": 0.3654,
+      "render_ms": 27.3745,
+      "draw_ms": 5.5819,
+      "work_ms": 33.4054,
+      "encode_ms": 1.2341,
+      "write_flush_ms": 4.3318,
+      "output_bytes": 52912,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 33.4383
+    },
+    {
+      "pose": [
+        128.5,
+        80.32500000000036,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 31,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6584000002476387,
+        "decode_ms": 0.0020000006770715117,
+        "refine_ms": 3.9746999991621124,
+        "fallback_rays": 247,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0554,
+      "audio_ms": 0.0239,
+      "simulation_ms": 0.3056,
+      "render_ms": 33.7107,
+      "draw_ms": 6.2671,
+      "work_ms": 40.3627,
+      "encode_ms": 1.1928,
+      "write_flush_ms": 5.0531,
+      "output_bytes": 50959,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 40.4075
+    },
+    {
+      "pose": [
+        128.5,
+        80.46666666666704,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 32,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.8441999998467509,
+        "decode_ms": 0.0025000008463393897,
+        "refine_ms": 4.796699999133125,
+        "fallback_rays": 177,
+        "rebuilds": 0
+      },
+      "input_ms": 0.086,
+      "audio_ms": 0.0307,
+      "simulation_ms": 0.4194,
+      "render_ms": 32.9395,
+      "draw_ms": 6.1236,
+      "work_ms": 39.5992,
+      "encode_ms": 1.2839,
+      "write_flush_ms": 4.8238,
+      "output_bytes": 52493,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 39.6358
+    },
+    {
+      "pose": [
+        128.5,
+        80.60833333333372,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 33,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6575999996130122,
+        "decode_ms": 0.0026000016077887267,
+        "refine_ms": 4.044899998916662,
+        "fallback_rays": 14,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0614,
+      "audio_ms": 0.0266,
+      "simulation_ms": 0.3838,
+      "render_ms": 27.2243,
+      "draw_ms": 5.558,
+      "work_ms": 33.2541,
+      "encode_ms": 1.0668,
+      "write_flush_ms": 4.4754,
+      "output_bytes": 52751,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 33.2884
+    },
+    {
+      "pose": [
+        128.5,
+        80.72166666666706,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 34,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6042000004526926,
+        "decode_ms": 0.0020000006770715117,
+        "refine_ms": 4.033600000184379,
+        "fallback_rays": 0,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0543,
+      "audio_ms": 0.0238,
+      "simulation_ms": 0.2916,
+      "render_ms": 26.8016,
+      "draw_ms": 6.0866,
+      "work_ms": 33.2579,
+      "encode_ms": 1.0849,
+      "write_flush_ms": 4.9863,
+      "output_bytes": 54524,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 33.2986
+    },
+    {
+      "pose": [
+        128.5,
+        80.8350000000004,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 35,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6611999997403473,
+        "decode_ms": 0.0022999993234407157,
+        "refine_ms": 4.111399999601417,
+        "fallback_rays": 90,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0648,
+      "audio_ms": 0.0284,
+      "simulation_ms": 0.3379,
+      "render_ms": 30.3083,
+      "draw_ms": 9.6595,
+      "work_ms": 40.3989,
+      "encode_ms": 1.2187,
+      "write_flush_ms": 8.4178,
+      "output_bytes": 54298,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 40.4395
+    },
+    {
+      "pose": [
+        128.5,
+        80.97666666666709,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 36,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7626999995409278,
+        "decode_ms": 0.0029000002541579306,
+        "refine_ms": 4.372999999759486,
+        "fallback_rays": 70,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0783,
+      "audio_ms": 0.0333,
+      "simulation_ms": 0.4259,
+      "render_ms": 30.5414,
+      "draw_ms": 5.6495,
+      "work_ms": 36.7284,
+      "encode_ms": 1.1326,
+      "write_flush_ms": 4.4988,
+      "output_bytes": 53411,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 36.7642
+    },
+    {
+      "pose": [
+        128.5,
+        81.09000000000043,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 37,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6721000008838018,
+        "decode_ms": 0.002499999027349986,
+        "refine_ms": 3.988700000263634,
+        "fallback_rays": 86,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0643,
+      "audio_ms": 0.0252,
+      "simulation_ms": 0.3328,
+      "render_ms": 31.2727,
+      "draw_ms": 6.3458,
+      "work_ms": 38.0408,
+      "encode_ms": 1.1752,
+      "write_flush_ms": 5.1565,
+      "output_bytes": 55479,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 38.0782
+    },
+    {
+      "pose": [
+        128.5,
+        81.23166666666711,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 38,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.662200000078883,
+        "decode_ms": 0.0027999994927085936,
+        "refine_ms": 4.322500000853324,
+        "fallback_rays": 148,
+        "rebuilds": 0
+      },
+      "input_ms": 0.064,
+      "audio_ms": 0.0256,
+      "simulation_ms": 0.3849,
+      "render_ms": 35.2911,
+      "draw_ms": 7.8914,
+      "work_ms": 43.657,
+      "encode_ms": 1.5093,
+      "write_flush_ms": 6.3607,
+      "output_bytes": 56254,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 43.7038
+    },
+    {
+      "pose": [
+        128.5,
+        81.37333333333379,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 39,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7731000005151145,
+        "decode_ms": 0.002499999027349986,
+        "refine_ms": 4.270100000212551,
+        "fallback_rays": 16,
+        "rebuilds": 0
+      },
+      "input_ms": 0.1162,
+      "audio_ms": 0.0341,
+      "simulation_ms": 0.6706,
+      "render_ms": 29.1063,
+      "draw_ms": 6.5233,
+      "work_ms": 36.4505,
+      "encode_ms": 1.3867,
+      "write_flush_ms": 5.1203,
+      "output_bytes": 56228,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 36.4893
+    },
+    {
+      "pose": [
+        128.5,
+        81.48666666666713,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 40,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.732399999833433,
+        "decode_ms": 0.002200000380980782,
+        "refine_ms": 4.859900000155903,
+        "fallback_rays": 5,
+        "rebuilds": 0
+      },
+      "input_ms": 0.059,
+      "audio_ms": 0.0322,
+      "simulation_ms": 0.2955,
+      "render_ms": 30.88,
+      "draw_ms": 5.9661,
+      "work_ms": 37.2328,
+      "encode_ms": 1.2063,
+      "write_flush_ms": 4.7417,
+      "output_bytes": 55738,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 37.2675
+    },
+    {
+      "pose": [
+        128.5,
+        81.62833333333381,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 41,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6166000002849614,
+        "decode_ms": 0.0022999993234407157,
+        "refine_ms": 3.9230000002135057,
+        "fallback_rays": 15,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0561,
+      "audio_ms": 0.0241,
+      "simulation_ms": 0.3573,
+      "render_ms": 28.6837,
+      "draw_ms": 7.3848,
+      "work_ms": 36.506,
+      "encode_ms": 1.3697,
+      "write_flush_ms": 5.9968,
+      "output_bytes": 54929,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 36.5459
+    },
+    {
+      "pose": [
+        128.5,
+        81.74166666666716,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 42,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.753100001020357,
+        "decode_ms": 0.0024000000848900527,
+        "refine_ms": 4.632099999071215,
+        "fallback_rays": 68,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0703,
+      "audio_ms": 0.0283,
+      "simulation_ms": 0.3956,
+      "render_ms": 31.124,
+      "draw_ms": 6.6215,
+      "work_ms": 38.2397,
+      "encode_ms": 1.3594,
+      "write_flush_ms": 5.2491,
+      "output_bytes": 55210,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 38.282
+    },
+    {
+      "pose": [
+        128.5,
+        81.88333333333384,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 43,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7248000001709443,
+        "decode_ms": 0.003099999958067201,
+        "refine_ms": 4.641999999876134,
+        "fallback_rays": 8,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0653,
+      "audio_ms": 0.0266,
+      "simulation_ms": 0.4061,
+      "render_ms": 30.5936,
+      "draw_ms": 6.3871,
+      "work_ms": 37.4787,
+      "encode_ms": 1.2681,
+      "write_flush_ms": 5.103,
+      "output_bytes": 56688,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 37.5144
+    },
+    {
+      "pose": [
+        128.5,
+        81.99666666666718,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 44,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6914999994478421,
+        "decode_ms": 0.002499999027349986,
+        "refine_ms": 4.391000000396161,
+        "fallback_rays": 99,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0609,
+      "audio_ms": 0.0301,
+      "simulation_ms": 0.3496,
+      "render_ms": 31.1343,
+      "draw_ms": 5.913,
+      "work_ms": 37.4879,
+      "encode_ms": 1.1435,
+      "write_flush_ms": 4.7565,
+      "output_bytes": 56085,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 37.5203
+    },
+    {
+      "pose": [
+        128.5,
+        82.13833333333386,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 45,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.6589000004169066,
+        "decode_ms": 0.0018999999156221747,
+        "refine_ms": 4.786700001204736,
+        "fallback_rays": 170,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0529,
+      "audio_ms": 0.0228,
+      "simulation_ms": 0.3567,
+      "render_ms": 29.4785,
+      "draw_ms": 6.351,
+      "work_ms": 36.2619,
+      "encode_ms": 1.0468,
+      "write_flush_ms": 5.2809,
+      "output_bytes": 57631,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 36.307
+    },
+    {
+      "pose": [
+        128.5,
+        82.2516666666672,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 46,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7002000002103159,
+        "decode_ms": 0.0025000008463393897,
+        "refine_ms": 4.6738999990338925,
+        "fallback_rays": 43,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0926,
+      "audio_ms": 0.0436,
+      "simulation_ms": 0.3234,
+      "render_ms": 27.7542,
+      "draw_ms": 6.4299,
+      "work_ms": 34.6437,
+      "encode_ms": 1.1328,
+      "write_flush_ms": 5.2809,
+      "output_bytes": 58286,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 34.678
+    },
+    {
+      "pose": [
+        128.5,
+        82.36500000000055,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 47,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7517000012740027,
+        "decode_ms": 0.001999998858082108,
+        "refine_ms": 4.1947000008804025,
+        "fallback_rays": 18,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0616,
+      "audio_ms": 0.0327,
+      "simulation_ms": 0.2816,
+      "render_ms": 27.2554,
+      "draw_ms": 5.9674,
+      "work_ms": 33.5987,
+      "encode_ms": 1.1419,
+      "write_flush_ms": 4.8129,
+      "output_bytes": 58638,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 33.6292
+    },
+    {
+      "pose": [
+        128.5,
+        82.4783333333339,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 48,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7303000002139015,
+        "decode_ms": 0.002300001142430119,
+        "refine_ms": 4.244399999151938,
+        "fallback_rays": 91,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0476,
+      "audio_ms": 0.0314,
+      "simulation_ms": 0.3002,
+      "render_ms": 28.2675,
+      "draw_ms": 6.8612,
+      "work_ms": 35.5079,
+      "encode_ms": 1.1693,
+      "write_flush_ms": 5.6719,
+      "output_bytes": 58884,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 35.5452
+    },
+    {
+      "pose": [
+        128.5,
+        82.59166666666724,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 49,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.8312999998452142,
+        "decode_ms": 0.0022999993234407157,
+        "refine_ms": 3.977100001065992,
+        "fallback_rays": 206,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0535,
+      "audio_ms": 0.0327,
+      "simulation_ms": 0.2962,
+      "render_ms": 37.2076,
+      "draw_ms": 6.6626,
+      "work_ms": 44.2526,
+      "encode_ms": 1.2593,
+      "write_flush_ms": 5.3884,
+      "output_bytes": 59293,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 44.288
+    },
+    {
+      "pose": [
+        128.5,
+        82.76166666666725,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 50,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.786599999628379,
+        "decode_ms": 0.00270000055024866,
+        "refine_ms": 4.001299999799812,
+        "fallback_rays": 127,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0522,
+      "audio_ms": 0.0316,
+      "simulation_ms": 0.3995,
+      "render_ms": 28.6754,
+      "draw_ms": 7.7396,
+      "work_ms": 36.8983,
+      "encode_ms": 1.6469,
+      "write_flush_ms": 6.0654,
+      "output_bytes": 60770,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 36.9518
+    },
+    {
+      "pose": [
+        128.5,
+        82.8750000000006,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 51,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7602000005135778,
+        "decode_ms": 0.003099999958067201,
+        "refine_ms": 5.475800000567688,
+        "fallback_rays": 1,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0938,
+      "audio_ms": 0.0472,
+      "simulation_ms": 0.3855,
+      "render_ms": 33.4111,
+      "draw_ms": 6.4793,
+      "work_ms": 40.4169,
+      "encode_ms": 1.1189,
+      "write_flush_ms": 5.3429,
+      "output_bytes": 60216,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 40.4506
+    },
+    {
+      "pose": [
+        128.5,
+        83.01666666666728,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 52,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.9310999994340818,
+        "decode_ms": 0.0021000014385208488,
+        "refine_ms": 4.793199999767239,
+        "fallback_rays": 17,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0456,
+      "audio_ms": 0.0315,
+      "simulation_ms": 0.4113,
+      "render_ms": 32.3861,
+      "draw_ms": 6.4774,
+      "work_ms": 39.3519,
+      "encode_ms": 1.5115,
+      "write_flush_ms": 4.9532,
+      "output_bytes": 60172,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 39.3864
+    },
+    {
+      "pose": [
+        128.5,
+        83.15833333333396,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 53,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.9267000004911097,
+        "decode_ms": 0.0027999994927085936,
+        "refine_ms": 5.496700001458521,
+        "fallback_rays": 19,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0486,
+      "audio_ms": 0.0307,
+      "simulation_ms": 0.4102,
+      "render_ms": 32.8556,
+      "draw_ms": 7.0127,
+      "work_ms": 40.3578,
+      "encode_ms": 1.2251,
+      "write_flush_ms": 5.7703,
+      "output_bytes": 59927,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 40.4098
+    },
+    {
+      "pose": [
+        128.5,
+        83.30000000000064,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 54,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7569999997940613,
+        "decode_ms": 0.0022999993234407157,
+        "refine_ms": 4.1751000007934636,
+        "fallback_rays": 63,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0924,
+      "audio_ms": 0.0327,
+      "simulation_ms": 0.3802,
+      "render_ms": 30.0849,
+      "draw_ms": 9.8231,
+      "work_ms": 40.4133,
+      "encode_ms": 1.7539,
+      "write_flush_ms": 8.0446,
+      "output_bytes": 62532,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 40.4596
+    },
+    {
+      "pose": [
+        128.5,
+        83.41333333333398,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 55,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 1.4544000005116686,
+        "decode_ms": 0.002899998435168527,
+        "refine_ms": 4.830100000617676,
+        "fallback_rays": 8,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0857,
+      "audio_ms": 0.0416,
+      "simulation_ms": 0.364,
+      "render_ms": 27.7106,
+      "draw_ms": 6.2592,
+      "work_ms": 34.4611,
+      "encode_ms": 1.1511,
+      "write_flush_ms": 5.0925,
+      "output_bytes": 60409,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 34.4977
+    },
+    {
+      "pose": [
+        128.5,
+        83.55500000000066,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 56,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.7676999994146172,
+        "decode_ms": 0.002599999788799323,
+        "refine_ms": 4.536300000836491,
+        "fallback_rays": 324,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0785,
+      "audio_ms": 0.037,
+      "simulation_ms": 0.3522,
+      "render_ms": 35.8628,
+      "draw_ms": 6.084,
+      "work_ms": 42.4145,
+      "encode_ms": 1.1751,
+      "write_flush_ms": 4.8896,
+      "output_bytes": 61084,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 42.4495
+    },
+    {
+      "pose": [
+        128.5,
+        83.69666666666734,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 57,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.943199998800992,
+        "decode_ms": 0.00270000055024866,
+        "refine_ms": 4.19760000113456,
+        "fallback_rays": 67,
+        "rebuilds": 0
+      },
+      "input_ms": 0.056,
+      "audio_ms": 0.0318,
+      "simulation_ms": 0.3471,
+      "render_ms": 27.0011,
+      "draw_ms": 6.3684,
+      "work_ms": 33.8044,
+      "encode_ms": 1.1839,
+      "write_flush_ms": 5.1692,
+      "output_bytes": 60862,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 33.8396
+    },
+    {
+      "pose": [
+        128.5,
+        83.81000000000068,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 58,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.8811000006971881,
+        "decode_ms": 0.002099999619531445,
+        "refine_ms": 4.076400000485592,
+        "fallback_rays": 14,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0569,
+      "audio_ms": 0.0307,
+      "simulation_ms": 0.3078,
+      "render_ms": 28.066,
+      "draw_ms": 7.6834,
+      "work_ms": 36.1448,
+      "encode_ms": 1.2536,
+      "write_flush_ms": 6.4099,
+      "output_bytes": 60592,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 36.1845
+    },
+    {
+      "pose": [
+        128.5,
+        83.92333333333403,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 59,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.8701999995537335,
+        "decode_ms": 0.0024000000848900527,
+        "refine_ms": 4.624699999112636,
+        "fallback_rays": 24,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0695,
+      "audio_ms": 0.0355,
+      "simulation_ms": 0.3341,
+      "render_ms": 30.2619,
+      "draw_ms": 6.4545,
+      "work_ms": 37.1555,
+      "encode_ms": 1.1739,
+      "write_flush_ms": 5.2567,
+      "output_bytes": 62513,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": 37.2015
+    },
+    {
+      "pose": [
+        128.5,
+        84.06500000000071,
+        1.0,
+        1.5707963267948966,
+        0.0
+      ],
+      "frame": 60,
+      "viewport": [
+        160,
+        50
+      ],
+      "terminal": [
+        160,
+        50
+      ],
+      "scene_samples": [
+        160,
+        45
+      ],
+      "backend": "gpu",
+      "active": true,
+      "sound_on": true,
+      "mouse_captured": null,
+      "gpu_stats": {
+        "query_readback_ms": 0.693299998602015,
+        "decode_ms": 0.0026000016077887267,
+        "refine_ms": 4.883799998424365,
+        "fallback_rays": 12,
+        "rebuilds": 0
+      },
+      "input_ms": 0.0679,
+      "audio_ms": 0.039,
+      "simulation_ms": 0.3875,
+      "render_ms": 32.3453,
+      "draw_ms": 6.4578,
+      "work_ms": 39.2975,
+      "encode_ms": 1.2002,
+      "write_flush_ms": 5.239,
+      "output_bytes": 60597,
+      "cap_requested_ms": 0.0,
+      "cap_actual_ms": 0.0,
+      "interval_ms": null
+    }
+  ]
+}

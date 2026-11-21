@@ -9,6 +9,10 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Full-resolution Windows optimization (2026-11-21):**
+  [Matched live-audio and native console runs](full-detail-windows-2026-11-21.md)
+  track the batch GPU refinement, voxel traversal and surface lighting changes.
+
 - **Full-resolution retry (2026-11-21):**
   [Restored detail and exact acceleration](full-detail-retry-2026-11-21.md)
   tracks parity with the pre-cloud renderer and timings with every scene cell

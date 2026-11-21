@@ -199,7 +199,7 @@ def add_presentation_arguments(parser):
 def hashes(root):
     return {str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in sorted(path for path in (root / "ascii3d").iterdir()
-                               if path.suffix in ('.py', '.wgsl', '.c') or path.stem == 'monolith_solid_bvh')}
+                               if path.suffix in ('.py', '.wgsl', '.c', '.h') or path.stem == 'monolith_solid_bvh')}
 
 
 def save_report(path, report, *, initial=False):

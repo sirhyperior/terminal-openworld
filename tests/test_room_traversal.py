@@ -2,6 +2,7 @@
 
 import math
 import unittest
+from unittest.mock import patch
 
 from ascii3d.doors import Door
 from ascii3d.player import Player
@@ -90,6 +91,41 @@ class RoomTraversalTests(unittest.TestCase):
         self.assertEqual(blocked, Renderer(world, skip_empty_space=False).scene(player, 80, 26))
         world.box(10, 11, 1, 15, 12, 6, AIR)
         self.assertEqual(before, fast.scene(player, 80, 26))
+
+    def test_native_viewport_preserves_depths_panels_and_water_after_edit(self):
+        world = roofed_world()
+        native = Renderer(world, backend='native')
+        if native.solid_library is None or native.solid_library.voxel_frame is None:
+            self.skipTest('optional native viewport kernel has not been built')
+        reference = Renderer(world)
+        world.doors.append(Door('room door', 13, 18, 5))
+        world.box(3, 3, 0, 34, 40, 1, WATER)
+        world.box(3, 20, 3, 34, 26, 4, BRIDGE)
+
+        def view(renderer, player):
+            depths = []
+
+            def preserve(pixels, opaque_depths, *args):
+                depths.extend(tuple(row) for row in opaque_depths)
+
+            with patch.object(renderer.scenery, 'draw', side_effect=preserve):
+                frame = renderer.styled_frame(player, 81, 32, time_seconds=1.5, color_mode='color')
+            return frame.ansi_rows(), depths
+
+        for openness in (0, 0.48, 1):
+            world.doors[0].openness = openness
+            for pitch in (-0.65, -0.3, 0.0, 0.5):
+                with self.subTest(openness=openness, pitch=pitch):
+                    player = Player(x=15.5, y=7.5, z=0.12, yaw=math.pi / 2, pitch=pitch)
+                    self.assertEqual(view(native, player), view(reference, player))
+                    self.assertIsNotNone(native._native_voxels)
+
+        player = Player(x=15.5, y=7.5, z=0.12, yaw=math.pi / 2)
+        before = view(native, player)
+        world.box(13, 10, 1, 18, 13, 6, FLOOR)
+        after = view(native, player)
+        self.assertNotEqual(before, after)
+        self.assertEqual(after, view(reference, player))
 
     def test_cached_room_prism_contains_only_air_and_stays_below_roof(self):
         world = roofed_world()

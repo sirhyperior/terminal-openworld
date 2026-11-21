@@ -148,11 +148,12 @@ class Trees:
         constant = ox * bx + oy * by + oz * bz - 1
         center_depth = ((crown.x - cam.x) * cam.cy + (crown.y - cam.y) * cam.sy) * cam.cp + (crown.z - cam.z) * cam.sp
         nearest = center_depth - max(crown.rx, crown.ry, crown.rz)
-        columns = [(x + 0.5 - cam.width / 2) / cam.fx for x in range(x0, x1 + 1)]
         shading = getattr(cam, "shading", DEFAULT_SHADING)
         foliage_turn = None
         near = cam.NEAR
         cy, sy, cp, sp = cam.cy, cam.sy, cam.cp, cam.sp
+        columns = [(x + 0.5 - cam.width / 2) / cam.fx for x in range(x0, x1 + 1)]
+        column_offsets = [(u * sy, u * cy) for u in columns]
         # A scanline's ray is base + u * (sy, -cy, 0). Its ellipsoid
         # discriminant is quadratic in u, so conservative root intervals skip
         # only proven misses. Inside/near-tangent cases keep the scalar path.
@@ -165,12 +166,13 @@ class Trees:
             v = (cam.height / 2 - y - 0.5) / cam.fy
             base_x, base_y = cy * (cp - v * sp), sy * (cp - v * sp)
             dz = sp + v * cp
+            vertical_square, vertical_dot = dz * dz * iz, dz * bz
             depth_row = depths[y]
             left, right = x0, x1
             if constant > 0 and quadratic < -1e-12:
                 linear_a = 2 * (base_x * sy * ix - base_y * cy * iy)
-                base_a = base_x * base_x * ix + base_y * base_y * iy + dz * dz * iz
-                base_b = base_x * bx + base_y * by + dz * bz
+                base_a = base_x * base_x * ix + base_y * base_y * iy + vertical_square
+                base_b = base_x * bx + base_y * by + vertical_dot
                 linear = 2 * ray_dot * base_b - linear_a * constant
                 zero = base_b * base_b - base_a * constant
                 determinant = linear * linear - 4 * quadratic * zero
@@ -194,10 +196,10 @@ class Trees:
                 if samples > budget:
                     stats["tree_samples"] = budget
                     return
-                u = columns[x - x0]
-                dx, dy = base_x + u * sy, base_y - u * cy
-                a = dx * dx * ix + dy * dy * iy + dz * dz * iz
-                b = dx * bx + dy * by + dz * bz
+                offset_x, offset_y = column_offsets[x - x0]
+                dx, dy = base_x + offset_x, base_y - offset_y
+                a = dx * dx * ix + dy * dy * iy + vertical_square
+                b = dx * bx + dy * by + vertical_dot
                 discriminant = b * b - a * constant
                 if discriminant < 0:
                     continue

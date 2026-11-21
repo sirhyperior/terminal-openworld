@@ -1,5 +1,6 @@
 """Perspective voxel and continuous-surface rays, sharing exact depth tests."""
 
+from array import array
 import heapq
 import math
 
@@ -8,7 +9,7 @@ from .doors import Door
 from .door_render import draw_doors
 from .combat_render import draw_combat, large_opaque_enemy
 from .geometry import Camera
-from .shading import Ink, MIN_SURFACE_LEVEL, Shading, VoxelMoonlight, ink
+from .shading import Ink, MIN_SURFACE_LEVEL, Shading, VoxelMoonlight, grass_ink, ink
 from .palette import UI_ACCENT, UI_DANGER, UI_POSITIVE, WATER_CREST
 from .scenery import Scenery
 from .particles import Particles
@@ -214,6 +215,7 @@ class Renderer:
         self._empty_bounds = []
         self._empty_columns = []
         self._room_bounds = []
+        self._native_voxels = None
         self._map_key = None
         self._map_rows = []
         self._ceiling_key = None
@@ -226,6 +228,7 @@ class Renderer:
         self.cache_stats = {}
         self.ray_backend = None
         self.solid_library = None
+        self._native_shading = None
         self.backend_name = 'cpu'
         self.backend_error = ''
         if backend not in ('cpu', 'native', 'gpu', 'auto'):
@@ -236,6 +239,10 @@ class Renderer:
 
                 self.solid_library = SolidLibrary()
                 self.backend_name = 'native'
+                if self.solid_library.shade_surfaces is not None:
+                    from .native_shading import NativeShading
+
+                    self._native_shading = NativeShading(self.solid_library.shade_surfaces)
             except (AttributeError, OSError) as error:
                 if backend == 'native':
                     self.backend_error = str(error)
@@ -394,6 +401,7 @@ class Renderer:
                     if tops[index] > level:
                         rooms[base + index] = rectangle
         self._room_bounds = rooms
+        self._native_voxels = None
         self.cache_stats = {"chunks": len(tops), "room_union_cells": union_cells,
                             "room_union_budget": len(tops) * world.height * 9,
                             "room_overlap_fallback_runs": fallback_runs}
@@ -539,6 +547,11 @@ class Renderer:
         shade_surface = self.shading.surface
         self._update_chunks()
         moonlight = self.shading.moonlight
+        native_shading = self._native_shading
+        shade_samples = None
+        if native_shading is not None and native_shading.available(self.shading):
+            shade_samples = array("d")
+            shade_destinations = []
         river_glints = {}
         chunk_tops, chunks_x = self._chunk_tops, (world.width + 1) // 2
         empty_bounds, chunk_count = self._empty_bounds, len(chunk_tops)
@@ -654,6 +667,21 @@ class Renderer:
                 self.close()
                 self.backend_name = 'native' if self.solid_library is not None else 'cpu'
 
+        native_voxels = None
+        if gpu_hits is None and skip_empty and self.solid_library is not None:
+            cast = self.solid_library.voxel_frame
+            if cast is not None:
+                if self._native_voxels is None:
+                    from .native_solids import NativeVoxelGrid
+
+                    self._native_voxels = NativeVoxelGrid(cast, world, chunk_tops, empty_bounds,
+                                                         empty_columns, room_bounds, WATER, WATER_LEVEL)
+                native_voxels = self._native_voxels.frame(origin, (cy, sy, cp, sp), local_ceiling,
+                                                         self._columns, self._rows, door_depths, combat_depths)
+        if native_voxels is not None:
+            voxel_depths, voxel_faces, first_empty = native_voxels
+        voxel_iterations = range(110) if native_voxels is None else ()
+
         for row_index, v in enumerate(self._rows):
             row = []
             depth_row = []
@@ -717,20 +745,38 @@ class Renderer:
                                     continue
                                 voxel_sky = True
                         step_x, step_y = (1 if dx >= 0 else -1), (1 if dy >= 0 else -1)
-                        delta_x = 1.0 / dx if dx > 1e-12 else -1.0 / dx if dx < -1e-12 else 1e30
-                        delta_y = 1.0 / dy if dy > 1e-12 else -1.0 / dy if dy < -1e-12 else 1e30
-                        side_x = ((start_x + 1 - px) if step_x > 0 else (px - start_x)) * delta_x
-                        side_y = ((start_y + 1 - py) if step_y > 0 else (py - start_y)) * delta_y
-                    side_z = initial_z
-                    inverse_x, inverse_y = step_x * delta_x, step_y * delta_y
-                    ray_bounds = empty_bounds if delta_x <= delta_y else empty_columns
-                    x, y, z = start_x, start_y, start_z
+                        if native_voxels is None:
+                            delta_x = 1.0 / dx if dx > 1e-12 else -1.0 / dx if dx < -1e-12 else 1e30
+                            delta_y = 1.0 / dy if dy > 1e-12 else -1.0 / dy if dy < -1e-12 else 1e30
+                            side_x = ((start_x + 1 - px) if step_x > 0 else (px - start_x)) * delta_x
+                            side_y = ((start_y + 1 - py) if step_y > 0 else (py - start_y)) * delta_y
+                    if native_voxels is None:
+                        side_z = initial_z
+                        inverse_x, inverse_y = step_x * delta_x, step_y * delta_y
+                        ray_bounds = empty_bounds if delta_x <= delta_y else empty_columns
+                        x, y, z = start_x, start_y, start_z
                     material, axis, distance = 0, 0, 0.0
                     analytic_hit = None
                     gpu_normal = None
                     early_query = early_ground and query_analytic and step_z < 0 and early_misses < 4
+                if native_voxels is not None and not voxel_sky:
+                    index = row_index * width + column_index
+                    face = voxel_faces[index]
+                    distance, material, axis = voxel_depths[index], face >> 2, face & 3
+                    if early_query:
+                        # Batch traversal records the first empty boundary. Keep
+                        # the same analytic limit and miss budget as Python DDA.
+                        early_limit = min(ray_limit, first_empty[index] + 1e-8)
+                        if early_limit >= analytic_near and early_depth <= early_limit:
+                            analytic_hit = geometry_hit(origin, (dx, dy, dz), early_limit)
+                            if analytic_hit is not None:
+                                material, query_analytic = AIR, False
+                            elif early_limit >= ray_limit:
+                                query_analytic = False
+                            else:
+                                early_misses += 1
                 # Rays walk the voxel grid exactly, without a sampling step size.
-                for _ in range(0 if voxel_sky else 110):
+                for _ in () if voxel_sky else voxel_iterations:
                     if skip_empty and step_z > 0 and z >= local_ceiling:
                         break
                     chunk_index = (y >> 1) * chunks_x + (x >> 1)
@@ -897,18 +943,25 @@ class Renderer:
                             level, glyph = 15, "+"
                     row.append(ink(glyph, max(MIN_SURFACE_LEVEL, min(15, level)),
                                    WATER_CREST if crest else WATER, tone.effects))
-                elif material == GRASS and normal[2] > 0:
-                    noise = (int(hx * 6.0) * 73856093 ^ int(hy * 6.0) * 19349663) & 15
-                    wx, wy = self.scenery.wind_at(hx, hy)
-                    turn = wx + wy * 0.6
-                    tone = shade_surface(material, hx, hy, hz, normal, distance, foliage_turn=turn)
-                    wind = int((turn + 0.6) * 3)
-                    glyph = (".,", ",;", ';"', "\"'")[min(3, tone.level // 3)][(noise + wind) % 2]
-                    row.append(ink(glyph, tone.level, tone.material, tone.effects))
                 else:
-                    row.append(shade_surface(material, hx, hy, hz, normal, distance))
+                    grass_surface = material == GRASS and normal[2] > 0
+                    turn = 0.0
+                    if grass_surface:
+                        wx, wy = self.scenery.wind_at(hx, hy)
+                        turn = wx + wy * 0.6
+                    if shade_samples is not None and 0 <= material <= 255:
+                        shade_samples.extend((hx, hy, hz, *normal, distance, material, turn))
+                        shade_destinations.append((row, column_index))
+                        row.append(" ")
+                    elif grass_surface:
+                        tone = shade_surface(material, hx, hy, hz, normal, distance, foliage_turn=turn)
+                        row.append(grass_ink(tone, hx, hy, turn))
+                    else:
+                        row.append(shade_surface(material, hx, hy, hz, normal, distance))
             pixels.append(row)
             depths.append(depth_row)
+        if shade_samples is not None:
+            native_shading.finish(self.shading, shade_samples, shade_destinations)
         self.scenery.draw(pixels, depths, player, time_seconds, self._focal, self.cell_aspect)
         draw_combat(world.combat, world, pixels, depths, player,
                     self._focal, self.cell_aspect, time_seconds, moonlight=self.shading.moonlight)

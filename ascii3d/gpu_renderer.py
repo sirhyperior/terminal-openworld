@@ -6,6 +6,7 @@ from pathlib import Path
 import struct
 import time
 
+from .native_solids import NativeGPURefiner, SolidLibrary
 from .world import WATER, WATER_LEVEL
 
 
@@ -284,11 +285,27 @@ class GPUBackend:
         self.rebuilds = 0
         self._size = None
         self._columns = self._rows = ()
+        self._native_library = None
+        try:
+            self._native_library = SolidLibrary()
+        except (AttributeError, OSError):
+            pass
+        self._native_refiner = self._prepare_refiner()
+
+    def _prepare_refiner(self):
+        library = self._native_library
+        if library is not None and library.gpu_refine is not None:
+            try:
+                return NativeGPURefiner(library, self.world, WATER_LEVEL)
+            except (BufferError, TypeError, ValueError):
+                pass
+        return None
 
     def render(self, player, width, height):
         if self.gpu._signature() != self.gpu.signature:
             self.gpu.close()
             self.gpu = StaticGPU(self.world, self.adapter_info['backend_type'], self.cell_aspect, compact=True)
+            self._native_refiner = self._prepare_refiner()
             self.rebuilds += 1
         origin = player.x, player.y, player.eye_z
         # A float32 origin straddling a grid plane cannot establish which side
@@ -302,9 +319,7 @@ class GPUBackend:
         queried = time.perf_counter()
         if memoryview(raw).nbytes != width * height * _COMPACT_RECORD.size:
             raise ValueError('GPU readback size does not match the viewport')
-        records = _COMPACT_RECORD.iter_unpack(raw)
         decoded = time.perf_counter()
-        results, fallbacks = [], 0
         if self._size != (width, height):
             focal = width / (2 * math.tan(math.radians(82) / 2))
             self._columns = [(x + 0.5 - width / 2) / focal for x in range(width)]
@@ -312,28 +327,37 @@ class GPUBackend:
             self._size = width, height
         cy, sy = math.cos(player.yaw), math.sin(player.yaw)
         cp, sp = math.cos(player.pitch), math.sin(player.pitch)
-        offsets = [(u * sy, u * cy) for u in self._columns]
-        world = self.world
-        for v in self._rows:
-            forward = cp - v * sp
-            base_x, base_y, dz = cy * forward, sy * forward, sp + v * cp
-            for offset_x, offset_y in offsets:
-                voxel, field, solid, flags = next(records)
-                if flags & 64:
-                    result = None
-                elif voxel or field or solid:
-                    direction = base_x + offset_x, base_y - offset_y, dz
-                    result = _refine_compact(world, origin, direction, voxel, field, solid)
-                else:
-                    result = self.MISS
-                results.append(result)
-                fallbacks += result is None
+        if self._native_refiner is not None:
+            results = self._native_refiner.refine(raw, self._columns, self._rows, origin,
+                                                  cy, sy, cp, sp, self.MISS)
+            fallbacks = results.count(None)
+        else:
+            records = _COMPACT_RECORD.iter_unpack(raw)
+            results, fallbacks = [], 0
+            offsets = [(u * sy, u * cy) for u in self._columns]
+            world = self.world
+            for v in self._rows:
+                forward = cp - v * sp
+                base_x, base_y, dz = cy * forward, sy * forward, sp + v * cp
+                for offset_x, offset_y in offsets:
+                    voxel, field, solid, flags = next(records)
+                    if flags & 64:
+                        result = None
+                    elif voxel or field or solid:
+                        direction = base_x + offset_x, base_y - offset_y, dz
+                        result = _refine_compact(world, origin, direction, voxel, field, solid)
+                    else:
+                        result = self.MISS
+                    results.append(result)
+                    fallbacks += result is None
         self.last_stats = {'query_readback_ms': (queried - start) * 1000,
-                           # Records decode as they are consumed by refinement.
+                           # Decoding is included in the refinement stage.
                            'decode_ms': (decoded - queried) * 1000,
                            'refine_ms': (time.perf_counter() - decoded) * 1000,
+                           'native_refinement': self._native_refiner is not None,
                            'fallback_rays': fallbacks, 'rebuilds': self.rebuilds}
         return results
 
     def close(self):
+        self._native_refiner = None
         self.gpu.close()

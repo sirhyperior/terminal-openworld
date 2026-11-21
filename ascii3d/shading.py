@@ -14,11 +14,14 @@ from .palette import ARCANE, BONE, EMBER, FIRE, STRAW, WIND_GRASS, WIND_LEAVES
 
 
 RAMP = "..,:;irsxXA#%@"
+_RAMP_MAX = len(RAMP) - 1
 MIN_SURFACE_LEVEL = 4
 ALBEDO = (0.0, 0.72, 0.64, 0.85, 0.59, 0.58, 0.74, 0.58, 0.54, 0.61, 0.64,
           1.0, 0.80, 0.90, 0.67, 0.90, 0.95, 0.95, 0.95, 0.70, 0.80, 0.65)
+_ALBEDO_COUNT = len(ALBEDO)
 _TEXTURE_AXES = frozenset((STONE, FLOOR, WOOD, BRIDGE, CRATE, STRAW, BONE, METAL))
 _TEXTURE_GRAIN = frozenset((STONE, FLOOR, GRASS, LEAVES, PATH))
+GRASS_GLYPHS = (".,", ",;", ';"', "\"'")
 
 
 class Ink(str):
@@ -38,6 +41,13 @@ def ink(glyph: str, level: int, material: int = STONE, effects: int = 0) -> Ink:
     return Ink(glyph, max(0, min(15, level)), material, effects)
 
 
+def grass_ink(tone, x, y, turn):
+    noise = (int(x * 6.0) * 73856093 ^ int(y * 6.0) * 19349663) & 15
+    wind = int((turn + 0.6) * 3)
+    glyph = GRASS_GLYPHS[min(3, tone.level // 3)][(noise + wind) % 2]
+    return ink(glyph, tone.level, tone.material, tone.effects)
+
+
 class VoxelMoonlight:
     """First opaque voxel seen from the western sky along (-1, 0, 1).
 
@@ -51,8 +61,9 @@ class VoxelMoonlight:
     def __init__(self, world):
         self.span = world.width + world.height
         self.depth = world.depth
-        self.rows = [array("I", [0xffffffff]) * self.span
-                     for _ in range(world.depth)]
+        self.faces = array("I", [0xffffffff]) * (self.span * self.depth)
+        faces = memoryview(self.faces)
+        self.rows = [faces[y * self.span:(y + 1) * self.span] for y in range(self.depth)]
 
     def add(self, x, y, z):
         row = self.rows[y]
@@ -98,7 +109,9 @@ class Shading:
     def surface(self, material, x, y, z, normal, distance, *, glyph=None, emission=0.0,
                 texture_position=None, texture_normal=None, foliage_turn=None):
         nx, ny, nz = normal
-        directional = max(0.0, -nx * 0.38 - ny * 0.48 + nz * 0.79)
+        directional = -nx * 0.38 - ny * 0.48 + nz * 0.79
+        if not directional > 0.0:
+            directional = 0.0
         emissive = material in (FIRE, EMBER, ARCANE)
         # Shadow-facing surfaces need enough fill light to retain texture and
         # character density; authored luminous shells keep their edge/core range.
@@ -194,12 +207,37 @@ class Shading:
         if (self.moonlight is not None and not emissive
                 and self.moonlight.blocked(x + nx * 1e-5, y + ny * 1e-5, z + nz * 1e-5)):
             light = 0.24 + (light - 0.24) * 0.42
-        albedo = ALBEDO[material] if 0 <= material < len(ALBEDO) else 0.65
-        brightness = albedo * max(0.08, texture) * light * 1.52 / (1 + max(0.0, distance) * 0.036)
+        albedo = ALBEDO[material] if 0 <= material < _ALBEDO_COUNT else 0.65
+        texture = texture if texture > 0.08 else 0.08
+        depth = distance if distance > 0.0 else 0.0
+        brightness = albedo * texture * light * 1.52 / (1 + depth * 0.036)
         firelight = 0.0
         # Emissive shells carry their authored edge/core intensity. Lighting
         # them from their own source erases that gradient and wastes shadow rays.
-        lights = () if emission > 0 and emissive else self.lights
+        lights = self.lights
+        if lights and not (emission > 0 and emissive):
+            brightness, firelight = self._illuminate(
+                x, y, z, nx, ny, nz, albedo, texture, brightness, lights)
+        # All diffuse contributions are nonnegative. The upper bound also
+        # keeps the rounded foreground level and glyph index in their ranges.
+        brightness = brightness if brightness > emission else emission
+        if not brightness < 1.0:
+            brightness = 1.0
+        if not emissive:
+            # Raise the full surface range before selecting BOTH ink and glyph.
+            # Brighter RGB alone still leaves shaded walls as almost empty dots.
+            brightness = 0.24 + brightness * 0.76
+        level = int(brightness * 15 + 0.5) or 1
+        if glyph is None:
+            glyph = RAMP[int(brightness * _RAMP_MAX)]
+        # Explicit depth and light metadata travel with the depth-test winner.
+        # These bands only affect foreground color; they never change geometry.
+        fog = 0 if distance < 12 else 1 if distance < 24 else 2 if distance < 36 else 3
+        glow = 0 if firelight < 0.08 else 1 if firelight < 0.22 else 2 if firelight < 0.40 else 3
+        return ink(glyph, level, pigment, (fog << 2) | glow)
+
+    def _illuminate(self, x, y, z, nx, ny, nz, albedo, texture, brightness, lights):
+        firelight = 0.0
         for index, source in enumerate(lights):
             dx, dy, dz = source[0] - x, source[1] - y, source[2] - z
             square = dx * dx + dy * dy + dz * dz
@@ -227,22 +265,10 @@ class Shading:
             if visible:
                 # The same material relief modulates local diffuse light;
                 # firelight must not wash a dark crack into a flat bright face.
-                contribution = facing * (1 - square / 36) * 0.90 * albedo * max(0.08, texture)
+                contribution = facing * (1 - square / 36) * 0.90 * albedo * texture
                 brightness += contribution
                 firelight += contribution
-        brightness = min(1.0, max(emission, brightness))
-        if not emissive:
-            # Raise the full surface range before selecting BOTH ink and glyph.
-            # Brighter RGB alone still leaves shaded walls as almost empty dots.
-            brightness = 0.24 + brightness * 0.76
-        level = max(1, min(15, int(brightness * 15 + 0.5)))
-        if glyph is None:
-            glyph = RAMP[min(len(RAMP) - 1, max(0, int(brightness * (len(RAMP) - 1))))]
-        # Explicit depth and light metadata travel with the depth-test winner.
-        # These bands only affect foreground color; they never change geometry.
-        fog = 0 if distance < 12 else 1 if distance < 24 else 2 if distance < 36 else 3
-        glow = 0 if firelight < 0.08 else 1 if firelight < 0.22 else 2 if firelight < 0.40 else 3
-        return ink(glyph, level, pigment, (fog << 2) | glow)
+        return brightness, firelight
 
 
 DEFAULT_SHADING = Shading()

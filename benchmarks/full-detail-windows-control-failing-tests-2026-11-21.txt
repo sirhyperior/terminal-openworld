@@ -1,0 +1,118 @@
+test_only_unraised_natural_cameras_follow_circular_support (tests.test_benchmark_pair.CameraPreflightTests.test_only_unraised_natural_cameras_follow_circular_support) ... FAIL
+test_all_thirteen_flights_walk_and_sprint_both_directions_with_contact_foley (tests.test_block_walking.BuiltWorldWalkingTests.test_all_thirteen_flights_walk_and_sprint_both_directions_with_contact_foley) ... FAIL
+test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height (tests.test_map_expansion.MapExpansionTests.test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height) ... 
+  test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height (tests.test_map_expansion.MapExpansionTests.test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height) (route=((230, 360), (250, 360), (270, 306), (294, 306), (326, 306), (350, 306), (396.7517028177349, 304.01599363843525))) ... FAIL
+test_three_river_bridges_are_dry_and_rails_have_collision (tests.test_map_expansion.MapExpansionTests.test_three_river_bridges_are_dry_and_rails_have_collision) ... 
+  test_three_river_bridges_are_dry_and_rails_have_collision (tests.test_map_expansion.MapExpansionTests.test_three_river_bridges_are_dry_and_rails_have_collision) (bridge=(388, 207, 393, 231)) ... FAIL
+test_scenery_is_hidden_behind_solid_walls (tests.test_outdoors.AnimatedSceneryTests.test_scenery_is_hidden_behind_solid_walls) ... FAIL
+test_all_river_bridges_connect_both_banks_without_jumping (tests.test_outdoors.OutdoorMovementTests.test_all_river_bridges_connect_both_banks_without_jumping) ... 
+  test_all_river_bridges_connect_both_banks_without_jumping (tests.test_outdoors.OutdoorMovementTests.test_all_river_bridges_connect_both_banks_without_jumping) (bridge=(388, 207, 393, 231), northbound=True) ... FAIL
+  test_all_river_bridges_connect_both_banks_without_jumping (tests.test_outdoors.OutdoorMovementTests.test_all_river_bridges_connect_both_banks_without_jumping) (bridge=(388, 207, 393, 231), northbound=False) ... FAIL
+test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape (tests.test_smooth_content.SmoothTerrainContentTests.test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape) ... FAIL
+test_continuous_routes_are_walkable_from_ashgate_to_thornwatch (tests.test_terrain.TerrainTests.test_continuous_routes_are_walkable_from_ashgate_to_thornwatch) ... FAIL
+test_three_river_crossings_keep_long_routes_dry (tests.test_terrain.TerrainTests.test_three_river_crossings_keep_long_routes_dry) ... FAIL
+
+======================================================================
+FAIL: test_only_unraised_natural_cameras_follow_circular_support (tests.test_benchmark_pair.CameraPreflightTests.test_only_unraised_natural_cameras_follow_circular_support)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\.perf-attempt-control\tests\test_benchmark_pair.py", line 39, in test_only_unraised_natural_cameras_follow_circular_support
+    self.assertEqual(TERRAIN_SCENARIOS["stair_walk"]["y"], 121.5)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 119.76601227696759 != 121.5
+
+======================================================================
+FAIL: test_all_thirteen_flights_walk_and_sprint_both_directions_with_contact_foley (tests.test_block_walking.BuiltWorldWalkingTests.test_all_thirteen_flights_walk_and_sprint_both_directions_with_contact_foley)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\.perf-attempt-control\tests\test_block_walking.py", line 197, in test_all_thirteen_flights_walk_and_sprint_both_directions_with_contact_foley
+    self.assertEqual(len(flights), 13)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 7 != 13
+
+======================================================================
+FAIL: test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height (tests.test_map_expansion.MapExpansionTests.test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height) (route=((230, 360), (250, 360), (270, 306), (294, 306), (326, 306), (350, 306), (396.7517028177349, 304.01599363843525)))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\.perf-attempt-control\tests\test_map_expansion.py", line 103, in test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height
+    self.assertLess(math.hypot(target_x - player.x, target_y - player.y), 0.04,
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    (route, (target_x, target_y), player))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 9.740320522033869 not less than 0.04 : (((230, 360), (250, 360), (270, 306), (294, 306), (326, 306), (350, 306), (396.7517028177349, 304.01599363843525)), (350.5, 306.5), Player(x=340.75967947796613, y=306.5000000022978, z=10.643287527385194, yaw=6.283185306942993, pitch=0.0, vertical_speed=0.0, grounded=True, stride=458.22650001607553, moving=False, running=False, in_water=False, max_hp=10, hp=10))
+
+======================================================================
+FAIL: test_three_river_bridges_are_dry_and_rails_have_collision (tests.test_map_expansion.MapExpansionTests.test_three_river_bridges_are_dry_and_rails_have_collision) (bridge=(388, 207, 393, 231))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\.perf-attempt-control\tests\test_map_expansion.py", line 57, in test_three_river_bridges_are_dry_and_rails_have_collision
+    self.assertGreater(player.y, y1 + 1)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 230.7733333333357 not greater than 232
+
+======================================================================
+FAIL: test_scenery_is_hidden_behind_solid_walls (tests.test_outdoors.AnimatedSceneryTests.test_scenery_is_hidden_behind_solid_walls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\.perf-attempt-control\tests\test_outdoors.py", line 265, in test_scenery_is_hidden_behind_solid_walls
+    self.assertEqual(first, renderer.scene(player, 80, 26, time_seconds=2))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [['r'[3162 chars]X', 'r', 'r', 'X', 'X', 'X', 'X', 'X', 'X', 'X[7234 chars]'x']] != [['r'[3162 chars]X', '.', 'r', 'X', 'X', 'X', 'X', 'X', 'X', 'X[7234 chars]'x']]
+
+First differing element 7:
+['s',[332 chars]#', 'A', 'X', 'X', 'r', 'r', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
+['s',[332 chars]#', 'A', 'X', 'X', '.', 'r', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
+
+Diff is 18805 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_all_river_bridges_connect_both_banks_without_jumping (tests.test_outdoors.OutdoorMovementTests.test_all_river_bridges_connect_both_banks_without_jumping) (bridge=(388, 207, 393, 231), northbound=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\.perf-attempt-control\tests\test_outdoors.py", line 71, in test_all_river_bridges_connect_both_banks_without_jumping
+    self.fail("bridge route did not reach the opposite bank")
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: bridge route did not reach the opposite bank
+
+======================================================================
+FAIL: test_all_river_bridges_connect_both_banks_without_jumping (tests.test_outdoors.OutdoorMovementTests.test_all_river_bridges_connect_both_banks_without_jumping) (bridge=(388, 207, 393, 231), northbound=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\.perf-attempt-control\tests\test_outdoors.py", line 62, in test_all_river_bridges_connect_both_banks_without_jumping
+    self.assertTrue(player.grounded)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape (tests.test_smooth_content.SmoothTerrainContentTests.test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\.perf-attempt-control\tests\test_smooth_content.py", line 79, in test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape
+    self.assertNotIn((200, 99), [(x, y) for x, y, _ in scenery.grass_chunk(50, 24)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (200, 99) unexpectedly found in [(200, 96), (201, 96), (202, 96), (203, 96), (200, 97), (201, 97), (202, 97), (203, 97), (200, 98), (201, 98), (202, 98), (203, 98), (200, 99), (201, 99), (202, 99), (203, 99)]
+
+======================================================================
+FAIL: test_continuous_routes_are_walkable_from_ashgate_to_thornwatch (tests.test_terrain.TerrainTests.test_continuous_routes_are_walkable_from_ashgate_to_thornwatch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\.perf-attempt-control\tests\test_terrain.py", line 55, in test_continuous_routes_are_walkable_from_ashgate_to_thornwatch
+    self.assertLessEqual(abs(terrain_height(x + 0.5, y + 0.5)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             - terrain_height(x + dx + 0.5, y + dy + 0.5)), 1)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.0701294479773669 not less than or equal to 1
+
+======================================================================
+FAIL: test_three_river_crossings_keep_long_routes_dry (tests.test_terrain.TerrainTests.test_three_river_crossings_keep_long_routes_dry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\.perf-attempt-control\tests\test_terrain.py", line 178, in test_three_river_crossings_keep_long_routes_dry
+    self.assertGreater(player.y, y1 + 0.5)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 230.7533333333356 not greater than 231.5
+
+----------------------------------------------------------------------
+Ran 9 tests in 20.218s
+
+FAILED (failures=10)

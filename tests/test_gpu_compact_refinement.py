@@ -8,9 +8,10 @@ import unittest
 from unittest.mock import Mock
 
 from ascii3d.gpu_renderer import GPUBackend, camera_rays, refine
+from ascii3d.native_solids import NativeGPURefiner, SolidLibrary
 from ascii3d.player import Player
-from ascii3d.surfaces import HeightField, SolidBox
-from ascii3d.world import FLOOR, GRASS, METAL, STONE, WATER, World
+from ascii3d.surfaces import ConvexSolid, HeightField, SolidBox
+from ascii3d.world import FLOOR, GRASS, METAL, STONE, WATER, WATER_LEVEL, World
 
 
 def synthetic_hits(world, player, width, height, aspect, rng):
@@ -72,9 +73,22 @@ class GPUCompactRefinementTests(unittest.TestCase):
         backend.gpu = SimpleNamespace(signature=(1,), _signature=lambda: (1,), query=Mock())
         backend.rebuilds = 0
         backend._size = None
+        backend._native_refiner = None
         return backend
 
     def test_seeded_mixed_records_match_previous_path_after_pose_and_size_changes(self):
+        self.check_seeded_mixed_records()
+
+    def test_native_batch_matches_previous_path_after_pose_and_size_changes(self):
+        try:
+            library = SolidLibrary()
+        except (AttributeError, OSError):
+            self.skipTest('optional native solid library not built')
+        if library.gpu_refine is None:
+            self.skipTest('optional native GPU refiner not built')
+        self.check_seeded_mixed_records(library)
+
+    def check_seeded_mixed_records(self, library=None):
         world = World.empty(32, 32, 12)
         world.box(0, 0, 0, 32, 32, 1, FLOOR)
         world.box(3, 6, 0, 13, 13, 1, WATER)
@@ -82,8 +96,12 @@ class GPUCompactRefinementTests(unittest.TestCase):
             1.2 + 0.025 * x + 0.012 * y for y in range(33) for x in range(33)])
         world.add_solid(SolidBox(2, 16, 1, 16, 17, 5, STONE))
         world.add_solid(SolidBox(17, 4, 0, 18, 27, 4, METAL))
+        world.add_solid(ConvexSolid(((5, 6, 1), (11, 6, 1), (5, 12, 1), (5, 6, 7)),
+                                    ((0, 2, 1), (0, 1, 3), (0, 3, 2), (1, 2, 3)), STONE))
         aspect = 0.7
         backend = self.fake_backend(world, aspect)
+        if library is not None:
+            backend._native_refiner = NativeGPURefiner(library, world, WATER_LEVEL)
         rng = random.Random(520826)
         player = Player(x=8.25, y=4.4, z=2.1)
         for width, height, yaw, pitch in ((41, 19, 1.4, -0.2), (41, 19, 0.2, 0.17),

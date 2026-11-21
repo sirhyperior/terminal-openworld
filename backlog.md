@@ -1,6 +1,5 @@
 The following is NOT listed according to priority, but the user may choose a certain task to operate on at present time.
 When a milestone is complete, remove it from the list and reassign the numbering to any remaining tasks.
 
-1. Optimization - recently codex on cloud environment has gone through the optimization progress. however, in doing so it severely dropped visibility and graphic quality. not the optimization i was going for. revert back to the old graphics and system- without changing the visuals too much this time, retry optimization. again, the goal is stable 30+ fps in full screen.
-2. remove "blockiness" - parts of the world still feel blocky and made of squares/rectangles. i want this gone. make everything look natural. The user clarified that this means continuous road edges (especially diagonals), arbitrary building orientations/masses and the overall map, not just bevels or decorative details. Work on continuous roads, true rotated landmarks and fractional map sampling is in progress.
-3. Severe lag spike near 215.2,187.4, 10.0. The map has been replaced; reproduce any equivalent spike in a clear, playable camera on the new layout.
+1. Optimization - pretty improved compared to before, but not quite enough. targetting 30+ fps in full screen.
+2. Loading Screen - make it better, like a real game loading screen.

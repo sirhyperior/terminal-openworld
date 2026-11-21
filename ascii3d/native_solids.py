@@ -1,9 +1,12 @@
 """Optional float64 geometry queries through a prebuilt C library."""
 
 from array import array
-from ctypes import CDLL, POINTER, Structure, byref, c_double, c_int, c_int32, c_uint8
+from ctypes import CDLL, POINTER, Structure, byref, c_double, c_int, c_int32, c_uint8, c_uint16, c_uint32
+from itertools import chain
 from pathlib import Path
+import math
 import os
+import struct
 import sys
 
 from .surfaces import ConvexSolid, HeightField, SolidBox, SurfaceHit
@@ -50,6 +53,37 @@ class _HeightFieldData(Structure):
                 ('chunk_rows', c_int32), ('chunk_size', c_int32), ('maximum', c_double)]
 
 
+class _VoxelPrism(Structure):
+    _fields_ = [(name, c_int32) for name in ('low_x', 'low_y', 'high_x', 'high_y', 'bottom', 'ceiling')]
+
+
+class _VoxelGrid(Structure):
+    _fields_ = [('cells', POINTER(c_uint8)), ('tops', POINTER(c_int32)),
+                ('bounds', POINTER(c_uint32)), ('columns', POINTER(c_uint32)),
+                ('rooms', POINTER(c_uint32)), ('prisms', POINTER(_VoxelPrism)),
+                ('width', c_int32), ('depth', c_int32), ('height', c_int32),
+                ('chunks_x', c_int32), ('chunk_count', c_int32), ('water', c_int32),
+                ('water_level', c_double)]
+
+
+class _GPUScene(Structure):
+    _fields_ = [('cells', POINTER(c_uint8)), ('materials', POINTER(c_uint8)),
+                ('heights', POINTER(c_double)), ('shapes', POINTER(_Shape)),
+                ('planes', POINTER(_Plane)), ('width', c_uint32), ('depth', c_uint32),
+                ('cell_count', c_uint32), ('shape_count', c_uint32), ('water_level', c_double)]
+
+
+def _pack_shape(box, planes):
+    if type(box) not in (SolidBox, ConvexSolid):
+        raise TypeError('Native geometry requires built-in shapes')
+    if not isinstance(box.material, int) or not -(2 ** 31) <= box.material < 2 ** 31:
+        raise TypeError('Native solid materials must fit a signed 32-bit integer')
+    box_planes = box.planes if type(box) is ConvexSolid else ()
+    shape = _Shape(_Bounds.from_box(box), box.material, len(planes), len(box_planes))
+    planes.extend(_Plane(_Vector(nx, ny, nz), offset) for nx, ny, nz, offset in box_planes)
+    return shape
+
+
 class SolidLibrary:
     def __init__(self, path=None):
         if path is None:
@@ -70,6 +104,72 @@ class SolidLibrary:
             self.heightfield_trace.argtypes = (POINTER(_HeightFieldData), c_double, c_double, c_double,
                                                c_double, c_double, c_double, c_double, c_double, POINTER(_Hit))
             self.heightfield_trace.restype = c_int
+        self.voxel_frame = getattr(library, 'monolith_voxel_frame', None)
+        if self.voxel_frame is not None:
+            self.voxel_frame.argtypes = (POINTER(_VoxelGrid), *(c_double,) * 7, c_int, c_int, c_int,
+                                         *(POINTER(c_double),) * 5, POINTER(c_uint16), POINTER(c_double))
+            self.voxel_frame.restype = None
+        self.shade_surfaces = getattr(library, 'monolith_shade_batch', None)
+        self.gpu_refine = getattr(library, 'monolith_gpu_refine', None)
+        if self.gpu_refine is not None:
+            self.gpu_refine.argtypes = (POINTER(_GPUScene), POINTER(c_uint32), POINTER(_Hit),
+                                       POINTER(c_double), POINTER(c_double), c_uint32, c_uint32,
+                                       c_double, c_double, c_double, c_double, c_double, c_double, c_double)
+            self.gpu_refine.restype = None
+
+
+class NativeVoxelGrid:
+    """Batch the static voxel DDA with the same world and prism caches as Python."""
+
+    def __init__(self, cast, world, tops, bounds, columns, rooms, water, water_level):
+        prism_ids = {None: 0}
+        prisms = array('i', [0] * 6)
+
+        def indexes(cache):
+            ids = array('I')
+            for prism in cache:
+                index = prism_ids.get(prism)
+                if index is None:
+                    index = prism_ids[prism] = len(prism_ids)
+                    prisms.extend(prism)
+                    if len(prism) == 5:
+                        prisms.append(0)
+                ids.append(index)
+            return (c_uint32 * len(ids)).from_buffer(ids)
+
+        chunks_x = (world.width + 1) // 2
+        cells = (c_uint8 * len(world.cells)).from_buffer(world.cells)
+        packed_bounds, packed_columns, packed_rooms = map(indexes, (bounds, columns, rooms))
+        packed_prisms = (_VoxelPrism * len(prism_ids)).from_buffer(prisms)
+        self._data = _VoxelGrid(cells, (c_int32 * len(tops))(*tops), packed_bounds, packed_columns,
+                                packed_rooms, packed_prisms, world.width, world.depth, world.height,
+                                chunks_x, len(tops), water, water_level)
+        self._cast = cast
+        self._viewport = None
+
+    def frame(self, origin, camera, ceiling, columns, rows, panels, combat):
+        data = self._data
+        if not (all(math.isfinite(value) for value in camera)
+                and all(0 <= value < bound for value, bound in zip(origin, (data.width, data.depth, data.height)))):
+            return None
+        if self._viewport is None or self._viewport[0] is not columns or self._viewport[1] is not rows:
+            width, height = len(columns), len(rows)
+            if any(not math.isfinite(value) or abs(value) > 1000 for value in (*columns, *rows)):
+                return None
+            size = width * height
+            self._viewport = (columns, rows, (c_double * width)(*columns), (c_double * height)(*rows),
+                              (c_double * size)(), (c_uint16 * size)(), (c_double * size)())
+        _, _, native_columns, native_rows, depths, faces, first_empty = self._viewport
+
+        def depth_buffer(source):
+            if source is None:
+                return None
+            buffer = array('d', chain.from_iterable(source))
+            return (c_double * len(buffer)).from_buffer(buffer)
+
+        self._cast(byref(data), *origin, *camera, ceiling, len(columns), len(rows), native_columns,
+                   native_rows, depth_buffer(panels), depth_buffer(combat), depths, faces, first_empty)
+        return depths, faces, first_empty
 
 
 class NativeSolidTree:
@@ -84,16 +184,7 @@ class NativeSolidTree:
             nodes.append(None)
             if boxes:
                 first = len(shapes)
-                for box in boxes:
-                    if type(box) not in (SolidBox, ConvexSolid):
-                        raise TypeError('Native solid tree requires built-in shapes')
-                    if not isinstance(box.material, int) or not -(2 ** 31) <= box.material < 2 ** 31:
-                        raise TypeError('Native solid materials must fit a signed 32-bit integer')
-                    box_planes = box.planes if type(box) is ConvexSolid else ()
-                    shapes.append(_Shape(_Bounds.from_box(box), box.material,
-                                         len(planes), len(box_planes)))
-                    planes.extend(_Plane(_Vector(nx, ny, nz), offset)
-                                  for nx, ny, nz, offset in box_planes)
+                shapes.extend(_pack_shape(box, planes) for box in boxes)
                 node = _Node(_Bounds.from_box(bounds), -1, -1, first, len(boxes))
             else:
                 node = _Node(_Bounds.from_box(bounds), pack(left), pack(right), 0, 0)
@@ -113,6 +204,47 @@ class NativeSolidTree:
             return None, False
         normal = hit.normal
         return SurfaceHit(hit.distance, hit.material, (normal[0], normal[1], normal[2])), bool(hit.tied)
+
+
+class NativeGPURefiner:
+    """Refine a whole readback in one call, retaining exact Python fallbacks."""
+
+    _record = struct.Struct('=4d2i')
+
+    def __init__(self, library, world, water_level):
+        if library.gpu_refine is None or sys.byteorder != 'little':
+            raise ValueError('Native compact GPU refinement is unavailable')
+        self._refine = library.gpu_refine
+        cells = (c_uint8 * len(world.cells)).from_buffer(world.cells)
+        field = world.heightfield
+        heights = materials = None
+        if field is not None:
+            if type(field) is not HeightField or (field.width, field.depth) != (world.width, world.depth):
+                raise TypeError('Native GPU refinement requires a matching built-in heightfield')
+            heights = (c_double * len(field.heights)).from_buffer(field.heights)
+            materials = (c_uint8 * len(field.materials)).from_buffer(field.materials)
+        planes = []
+        shapes = [_pack_shape(box, planes) for box in world.solids]
+        self._scene = _GPUScene(cells, materials, heights, (_Shape * len(shapes))(*shapes),
+                                (_Plane * len(planes))(*planes), world.width, world.depth,
+                                len(cells), len(shapes), water_level)
+        self._size = None
+
+    def refine(self, raw, columns, rows, origin, cy, sy, cp, sp, miss):
+        width, height = len(columns), len(rows)
+        if self._size != (width, height):
+            self._columns = (c_double * width)(*columns)
+            self._rows = (c_double * height)(*rows)
+            self._output = (_Hit * (width * height))()
+            self._size = width, height
+        record_type = c_uint32 * (width * height * 4)
+        records = record_type.from_buffer_copy(raw) if memoryview(raw).readonly else record_type.from_buffer(raw)
+        self._refine(byref(self._scene), records, self._output, self._columns, self._rows,
+                     width, height, *origin, cy, sy, cp, sp)
+        return [None if axis < 0 else miss if not material else
+                (distance, material, None, axis - 4) if axis >= 4 else
+                (distance, material, (nx, ny, nz), axis)
+                for distance, nx, ny, nz, material, axis in self._record.iter_unpack(self._output)]
 
 
 class NativeHeightField:

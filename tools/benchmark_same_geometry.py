@@ -37,7 +37,7 @@ def main(argv=None):
     parser.add_argument('--before-source', type=Path, required=True)
     parser.add_argument('--save', type=Path, required=True)
     parser.add_argument('--reference-label', default='explicit frozen source')
-    parser.add_argument('--before-renderer', choices=('cpu', 'native', 'gpu'), default='cpu')
+    parser.add_argument('--before-renderer', choices=('cpu', 'native', 'gpu', 'auto'), default='cpu')
     parser.add_argument('--after-renderer', choices=('cpu', 'native', 'gpu', 'auto'), default='cpu')
     parser.add_argument('--frames', type=int, default=60)
     parser.add_argument('--width', type=int, default=120)
