@@ -9,6 +9,11 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Full-resolution retry (2026-11-21):**
+  [Restored detail and exact acceleration](full-detail-retry-2026-11-21.md)
+  tracks parity with the pre-cloud renderer and timings with every scene cell
+  traced. The adaptive results below are retained as historical evidence.
+
 - **Fullscreen terminal follow-up (2026-11-21):**
   [Graphical output and Thornwatch replay](optimization-fullscreen-output-2026-11-21.md)
   records changed-span output, GPU and terminal timing diagnostics, the

@@ -190,7 +190,6 @@ python main.py --volume 0.35         # Master sound level, 0 to 1
 python main.py --sound-preview effects.wav # Export the original effects
 python main.py --audio-test          # Play river/effects and check playback health
 python main.py --max-cells 4800      # Optional viewport budget to reduce CPU use
-python main.py --full-detail        # Trace every scene cell in live play
 python main.py --color-mode color   # Dark-fantasy palette on black (default)
 python main.py --color-mode gray    # Neutral grayscale foregrounds
 python main.py --color-mode mono    # Uniform-white terminal fallback
@@ -211,13 +210,10 @@ initialized. Animation stops before gameplay and on interrupted/failed startup.
 Snapshot, benchmark and redirected output omit the loading display and start no
 animation worker.
 
-The live viewport uses **every terminal column and row** by default. During
-play, the game adjusts how many world rays it traces based on measured frame
-time, including terminal output. In demanding views, multiple display cells
-share one scene sample. The HUD, prompts, map, labels and reticle are drawn at
-the terminal's native character size. Use `--full-detail` to trace every
-scene cell. `--cell-aspect` adjusts perspective for the font cell's
-width-to-height ratio.
+The live viewport uses **every terminal column and row** by default and
+traces one ray per scene cell. The HUD, prompts, map, labels and reticle are
+drawn at the terminal's native character size. `--cell-aspect` adjusts
+perspective for the font cell's width-to-height ratio.
 
 Use `--max-cells 4800` to limit rendering work on a large terminal. An explicit
 budget of at least 1,200 cells scales and centers the viewport while keeping
@@ -366,9 +362,10 @@ The playable game supports `--renderer auto|cpu|native|gpu`. Auto prefers a
 hardware GPU, then the optional compiled solid library, then the Python CPU
 renderer. `--renderer cpu` selects the standard-library Python path.
 
-The optional native library accelerates exact float64 solid traversal and
-retains the Python grid query for coincident hits. Build it once from the
-repository root. The normal launcher picks up the result automatically.
+The optional native library accelerates exact float64 solid and continuous
+terrain traversal. Coincident solid hits use the Python grid query. Build
+or rebuild the library from the repository root. The normal launcher picks
+up the result automatically.
 
 ```bash
 cc -std=c11 -O3 -ffp-contract=off -fexcess-precision=standard -fPIC -shared \

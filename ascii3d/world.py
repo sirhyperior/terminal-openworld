@@ -79,6 +79,7 @@ class World:
     _stair_keys: set = field(default_factory=set, repr=False)
     _solid_query_cache: tuple | None = field(default=None, repr=False)
     _native_solid_cache: tuple | None = field(default=None, repr=False)
+    _native_heightfield_cache: tuple | None = field(default=None, repr=False)
 
     def __post_init__(self):
         if not isinstance(self.trees, _TreeMap):
@@ -319,6 +320,22 @@ class World:
         ground_bounds = enclosing(ground_boxes)
         if solid_bounds is None and ground_bounds is None:
             return None
+        if ground_bounds is not None:
+            trace_ground = ground.ray_hit
+            if solid_library is not None and solid_library.heightfield_trace is not None:
+                cached = self._native_heightfield_cache
+                if cached is None or cached[0] is not solid_library or cached[1] is not ground:
+                    from .native_solids import NativeHeightField
+
+                    try:
+                        native_ground = NativeHeightField(solid_library, ground).ray_hit
+                    except TypeError:
+                        native_ground = None
+                    self._native_heightfield_cache = solid_library, ground, native_ground
+                else:
+                    native_ground = cached[2]
+                if native_ground is not None:
+                    trace_ground = native_ground
 
         def query(origin, direction, limit):
             hit = None
@@ -327,7 +344,7 @@ class World:
                 if min(origin[2], end_z) <= ground_bounds.z1 + 1e-7:
                     entry = ground_bounds.ray_entry(origin, direction, limit)
                     if entry is not None:
-                        hit = ground.ray_hit(origin, direction, limit, minimum=entry)
+                        hit = trace_ground(origin, direction, limit, minimum=entry)
                         if hit is not None:
                             limit = hit.distance
             if solid_bounds is not None:

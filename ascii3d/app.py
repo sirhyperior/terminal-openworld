@@ -69,42 +69,6 @@ class FrameRateCounter:
         return (len(self._starts) - 1) / elapsed if elapsed > 0 else 0.0
 
 
-class SceneBudget:
-    """Use full loop work time to budget world samples independently of the HUD."""
-
-    START_CELLS = 640
-    MIN_CELLS = 128
-
-    def __init__(self, fps: int):
-        self.target = 0.94 / min(fps, 36)
-        self.cells = self.START_CELLS
-        self.viewport = (0, 0)
-        self.full_cells = 0
-        self.fast_frames = 0
-
-    def for_viewport(self, width: int, height: int) -> int:
-        size = width, height
-        if self.viewport != size:
-            self.viewport = size
-            self.full_cells = width * (height - 5)
-            self.cells = min(self.cells, self.full_cells)
-            self.fast_frames = 0
-        return self.cells
-
-    def observe(self, work_seconds: float) -> None:
-        if work_seconds > self.target:
-            self.fast_frames = 0
-            ratio = max(0.35, min(0.90, 0.90 * self.target / work_seconds))
-            self.cells = max(self.MIN_CELLS, int(self.cells * ratio))
-        elif work_seconds < self.target * 0.83:
-            self.fast_frames += 1
-            if self.fast_frames == 12:
-                self.cells = min(self.full_cells, max(self.cells + 16, int(self.cells * 1.12)))
-                self.fast_frames = 0
-        else:
-            self.fast_frames = 0
-
-
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="MONOLITH: a real 3D world rendered as ASCII on black.")
     parser.add_argument("--snapshot", action="store_true", help="print one plain ASCII frame and exit")
@@ -125,8 +89,6 @@ def main(argv: list[str] | None = None) -> int:
                         help="use arrows to look and Enter to attack instead of mouse capture")
     parser.add_argument("--max-cells", type=positive_int,
                         help="optional live viewport character budget, at least 1200 (default: fill terminal)")
-    parser.add_argument("--full-detail", action="store_true",
-                        help="trace every live scene cell instead of adapting detail to frame time")
     parser.add_argument("--frames", type=positive_int, help="exit after this many frames")
     parser.add_argument("--frame-timing", type=Path, metavar="PATH",
                         help="save a gameplay timing report on exit")
@@ -156,7 +118,7 @@ def main(argv: list[str] | None = None) -> int:
 
         frame_timing = FrameTiming(args.frame_timing, {
             "fps_cap": args.fps, "renderer_requested": args.renderer, "color_mode": args.color_mode,
-            "adaptive_detail": not args.full_detail, "max_cells": args.max_cells,
+            "max_cells": args.max_cells,
             "keyboard_look": keyboard_look, "start_muted": args.mute,
         })
     if args.sound_preview:
@@ -232,7 +194,6 @@ def main(argv: list[str] | None = None) -> int:
             previous = time.perf_counter()
             accumulator, frame_count, demo_time = 0.0, 0, 0.0
             frame_rate = FrameRateCounter()
-            scene_budget = None if args.full_detail else SceneBudget(args.fps)
             simulation_time = 0.0
             notice, notice_until = ("Audio output unavailable" if not audio.available else ""), 4.0
             jump_pending = attack_pending = False
@@ -367,13 +328,11 @@ def main(argv: list[str] | None = None) -> int:
                 if frame_timing is not None:
                     simulation_end = time.perf_counter()
                 mouse_captured = terminal.mouse_captured if not keyboard_look and not args.demo else None
-                scene_cells = scene_budget.for_viewport(width, height) if scene_budget is not None and playable else None
                 frame = renderer.styled_frame(player, width, height, fps, show_map, help_open, paused,
                                               time_seconds=simulation_time,
                                               notice=notice if simulation_time < notice_until else "", sound_on=audio.enabled,
                                               keyboard_look=keyboard_look,
-                                              mouse_captured=mouse_captured, color_mode=args.color_mode,
-                                              scene_cells=scene_cells)
+                                              mouse_captured=mouse_captured, color_mode=args.color_mode)
                 if frame_timing is not None:
                     render_end = time.perf_counter()
                 terminal.draw(frame)
@@ -383,17 +342,14 @@ def main(argv: list[str] | None = None) -> int:
                     break
                 work_end = time.perf_counter()
                 work_seconds = work_end - start
-                if not last_frame and active and scene_budget is not None:
-                    scene_budget.observe(work_seconds)
                 remaining = 0.0 if last_frame else 1 / args.fps - work_seconds
                 timing_sample = None
                 if frame_timing is not None:
-                    projection = getattr(renderer, "_projection", None) if playable else None
                     encode, write, output_bytes = getattr(terminal, "output_timing", (None, None, None))
                     gpu = getattr(renderer, "ray_backend", None)
                     timing_sample = frame_timing.record(
                         frame=frame_count, viewport=(width, height), terminal=terminal._terminal_size,
-                        scene_budget_cells=scene_cells, scene_samples=projection[:2] if projection is not None else None,
+                        scene_samples=(width, height - 5) if playable else None,
                         backend=renderer.backend_name, active=active, sound_on=audio.enabled,
                         mouse_captured=mouse_captured,
                         gpu_stats=dict(gpu.last_stats) if gpu is not None else None,

@@ -18,7 +18,7 @@ class GameLoopTests(unittest.TestCase):
     def run_frames(self, script, world, player, *, demo=False, frame_work=None,
                    clock_tick=1 / 60, advance_sleep=False, sizes=None, mouse=None, keyboard_look=False,
                    fail_render=False, capture_error="", native_mouse=None, region=None, max_cells=None,
-                   color_mode=None, full_detail=False):
+                   color_mode=None):
         events, states, pauses, frames = [], [], [], []
         self.capture_states = []
         self.color_modes = []
@@ -144,8 +144,6 @@ class GameLoopTests(unittest.TestCase):
                 args.extend(("--max-cells", str(max_cells)))
             if color_mode is not None:
                 args.extend(("--color-mode", color_mode))
-            if full_detail:
-                args.append("--full-detail")
             self.assertEqual(main(args), 1 if fail_render else 0)
         self.assertTrue(all(event.name in EFFECTS for event in events))
         return events, states, pauses, frames
@@ -187,29 +185,14 @@ class GameLoopTests(unittest.TestCase):
                 self.assertEqual(self.terminal_budgets, [budget])
                 self.assertEqual(frames[0][0][1:3], (240, 80))
 
-    def test_live_scene_budget_shrinks_after_expensive_output_and_recovers_with_headroom(self):
-        size = 240, 80
-        work = [{"output": 0.080}, {"output": 0.024}] + [{"output": 0.005}] * 25
-        _, _, _, frames = self.run_frames(
-            [((), ())] * len(work), self.make_world(), Player(x=8.5, y=4.5),
-            sizes=[size] * len(work), frame_work=work, clock_tick=0,
-            advance_sleep=True, keyboard_look=True)
-        budgets = [frame[1]["scene_cells"] for frame in frames]
-        self.assertEqual([frame[0][1:3] for frame in frames], [size] * len(work))
-        self.assertLess(budgets[1], budgets[0])
-        self.assertEqual(budgets[1], budgets[2])
-        self.assertEqual(budgets[2], budgets[3])
-        self.assertGreater(budgets[-1], budgets[2])
-        self.assertTrue(all(0 < budget < size[0] * (size[1] - 5) for budget in budgets))
-
-    def test_full_detail_disables_live_scene_budget(self):
+    def test_slow_frames_keep_native_scene_resolution(self):
         size = 240, 80
         _, _, _, frames = self.run_frames(
             [((), ())] * 2, self.make_world(), Player(x=8.5, y=4.5),
             sizes=[size] * 2, frame_work=[{"output": 0.080}, {}], clock_tick=0,
-            keyboard_look=True, full_detail=True)
-        self.assertEqual([frame[0][1:3] for frame in frames], [size] * 2)
-        self.assertEqual([frame[1]["scene_cells"] for frame in frames], [None, None])
+            keyboard_look=True)
+        self.assertEqual([frame[0][1:3] for frame in frames], [size, size])
+        self.assertTrue(all("scene_cells" not in kwargs for _, kwargs in frames))
 
     def test_viewport_budget_below_playable_minimum_is_rejected_before_loading(self):
         for budget in ("0", "1199"):

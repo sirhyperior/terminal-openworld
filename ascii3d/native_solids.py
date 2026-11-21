@@ -1,11 +1,12 @@
-"""Optional float64 solid tree queries through a prebuilt C library."""
+"""Optional float64 geometry queries through a prebuilt C library."""
 
-from ctypes import CDLL, POINTER, Structure, byref, c_double, c_int, c_int32
+from array import array
+from ctypes import CDLL, POINTER, Structure, byref, c_double, c_int, c_int32, c_uint8
 from pathlib import Path
 import os
 import sys
 
-from .surfaces import ConvexSolid, SolidBox, SurfaceHit
+from .surfaces import ConvexSolid, HeightField, SolidBox, SurfaceHit
 
 
 _Vector = c_double * 3
@@ -38,6 +39,17 @@ class _Hit(Structure):
                 ('material', c_int32), ('tied', c_int32)]
 
 
+class _HeightChunk(Structure):
+    _fields_ = [('high', c_double), ('slope_x', c_double), ('slope_y', c_double), ('upper', c_double)]
+
+
+class _HeightFieldData(Structure):
+    _fields_ = [('heights', POINTER(c_double)), ('enabled', POINTER(c_uint8)),
+                ('materials', POINTER(c_uint8)), ('chunks', POINTER(_HeightChunk)),
+                ('width', c_int32), ('depth', c_int32), ('chunk_columns', c_int32),
+                ('chunk_rows', c_int32), ('chunk_size', c_int32), ('maximum', c_double)]
+
+
 class SolidLibrary:
     def __init__(self, path=None):
         if path is None:
@@ -53,6 +65,11 @@ class SolidLibrary:
                                c_double, c_double, c_double, c_double, c_double, c_double,
                                c_double, c_double, POINTER(_Hit))
         self.trace.restype = c_int
+        self.heightfield_trace = getattr(library, 'monolith_heightfield_hit', None)
+        if self.heightfield_trace is not None:
+            self.heightfield_trace.argtypes = (POINTER(_HeightFieldData), c_double, c_double, c_double,
+                                               c_double, c_double, c_double, c_double, c_double, POINTER(_Hit))
+            self.heightfield_trace.restype = c_int
 
 
 class NativeSolidTree:
@@ -96,3 +113,53 @@ class NativeSolidTree:
             return None, False
         normal = hit.normal
         return SurfaceHit(hit.distance, hit.material, (normal[0], normal[1], normal[2])), bool(hit.tied)
+
+
+class NativeHeightField:
+    """Reuse the field's exact chunk bounds and live elevation/material buffers."""
+
+    def __init__(self, library, field):
+        if type(field) is not HeightField:
+            raise TypeError('Native terrain requires a built-in heightfield')
+        self.field = field
+        self._trace = library.heightfield_trace
+        self._revision = None
+        self._data = None
+
+    def _prepare(self):
+        field = self.field
+        width, depth, chunk_size = field.width, field.depth, field.CHUNK
+        if not all(0 < value < 2 ** 31 for value in (width, depth, chunk_size)):
+            return None
+        height_count, cell_count = (width + 1) * (depth + 1), width * depth
+        if not (len(field.heights) == height_count and len(field.enabled) == len(field.materials) == cell_count):
+            return None
+        try:
+            heights = (c_double * height_count).from_buffer(field.heights)
+            enabled = (c_uint8 * cell_count).from_buffer(field.enabled)
+            materials = (c_uint8 * cell_count).from_buffer(field.materials)
+        except (TypeError, ValueError, BufferError):
+            return None
+        columns, rows = (width + chunk_size - 1) // chunk_size, (depth + chunk_size - 1) // chunk_size
+        bounds = array('d')
+        for cy in range(rows):
+            for cx in range(columns):
+                _, high = field._chunk_bounds(cx, cy)
+                bounds.extend((high, *field._chunk_envelopes[cx, cy]))
+        chunks = (_HeightChunk * (columns * rows)).from_buffer(bounds)
+        return _HeightFieldData(heights, enabled, materials, chunks, width, depth,
+                                columns, rows, chunk_size, field._maximum)
+
+    def ray_hit(self, origin, direction, limit, minimum=0.0):
+        field = self.field
+        if self._trace is not None:
+            revision = field.revision
+            if self._revision != revision:
+                self._data = self._prepare()
+                self._revision = revision
+            if self._data is not None:
+                hit = _Hit()
+                result = self._trace(byref(self._data), *origin, *direction, limit, minimum, byref(hit))
+                if result >= 0:
+                    return SurfaceHit(hit.distance, hit.material, tuple(hit.normal)) if result else None
+        return field.ray_hit(origin, direction, limit, minimum=minimum)

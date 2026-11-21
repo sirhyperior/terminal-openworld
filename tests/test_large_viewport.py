@@ -2,13 +2,9 @@
 
 import math
 import unittest
-from unittest.mock import patch
 
-from ascii3d.combat import CombatState, Enemy, WeaponPickup
 from ascii3d.player import Player
-from ascii3d.palette import WATER_CREST
-from ascii3d.renderer import Renderer, _expand_scene, _sample_size
-from ascii3d.shading import ink
+from ascii3d.renderer import Renderer
 from ascii3d.world import AIR, FLOOR, GRASS, STONE, Tree, World
 
 
@@ -76,82 +72,6 @@ class LargeViewportTests(unittest.TestCase):
                     self.assert_frame_size(paused, width, height)
                     for label in ("PAUSED", "P    resume", "H    controls", "ESC  quit"):
                         self.assertIn(label, "\n".join(paused))
-
-    def test_reduced_scene_fills_native_viewport_with_readable_aim_and_interaction_ui(self):
-        world = World.empty(24, 24, 12)
-        world.box(0, 0, 0, 24, 24, 1, FLOOR)
-        pickup = WeaponPickup(8.5, 6.5)
-        world.combat = CombatState(pickups=[pickup], enemies=[Enemy("Training dummy", 8.5, 10.5)])
-        renderer = Renderer(world)
-        self.addCleanup(renderer.close)
-        player = Player(x=8.5, y=4.5, z=1)
-        width, height, budget = 240, 80, 640
-        view_height = height - 5
-        with patch.object(renderer, "scene", wraps=renderer.scene) as scene:
-            frame = renderer.styled_frame(
-                player, width, height, scene_cells=budget, keyboard_look=True)
-        scene.assert_called_once()
-        sample_width, sample_height = scene.call_args.args[1:3]
-        self.assertLessEqual(sample_width * sample_height, budget)
-        self.assertEqual((sample_width % 2, sample_height % 2), (1, 1))
-        self.assertEqual(scene.call_args.kwargs["output_size"], (width, view_height))
-        self.assertEqual(renderer._columns[sample_width // 2], 0.0)
-        self.assertEqual(renderer._rows[sample_height // 2], 0.0)
-        self.assert_frame_size(frame.rows, width, height)
-        self.assertEqual(frame.rows[2 + view_height // 2][width // 2], "+")
-        self.assertIn(f"[E] Collect {pickup.name}", frame.rows[view_height])
-        self.assertIn("Training dummy [3/3]", "\n".join(frame.rows))
-        self.assertIn("ARROWS look  ENTER attack", frame.rows[-1])
-
-        world.box(0, 5, 1, 24, 6, 8, STONE)
-        hidden = renderer.styled_frame(player, width, height, scene_cells=budget)
-        rendered = "\n".join(hidden.rows)
-        self.assertNotIn("[E] Collect", rendered)
-        self.assertNotIn("Training dummy", rendered)
-
-    def test_full_scene_budget_matches_native_frame_and_foreground_buffers(self):
-        world = self.make_world()
-        renderer = Renderer(world)
-        self.addCleanup(renderer.close)
-        player = Player(x=9.5, y=7.5, yaw=math.pi / 2, pitch=0.15)
-        width, height = 143, 43
-        full_cells = width * (height - 5)
-        settings = {"show_map": True, "time_seconds": 2.75, "color_mode": "color"}
-        expected = renderer.styled_frame(player, width, height, **settings)
-        renderer.styled_frame(player, width, height, scene_cells=640, **settings)
-        for budget in (full_cells, full_cells * 2):
-            with self.subTest(budget=budget):
-                actual = renderer.styled_frame(
-                    player, width, height, scene_cells=budget, **settings)
-                self.assertEqual(actual, expected)
-                self.assertEqual(actual.ansi_rows(), expected.ansi_rows())
-
-    def test_expansion_keeps_glints_small_and_respects_the_budget_on_extreme_aspects(self):
-        for width, height in ((6000, 15), (60, 6000)):
-            sample_width, sample_height = _sample_size(width, height, 128)
-            self.assertLessEqual(sample_width * sample_height, 128)
-        base, flash = ink("~", 9, WATER_CREST), ink("+", 15, WATER_CREST)
-        pixels, depths = _expand_scene([[flash, "."], ["X", "."]], [[2, 4], [1, 4]], 8, 6,
-                                       [(0, 0, base, flash), (0, 1, base, flash)])
-        self.assertEqual(sum(row.count(flash) for row in pixels), 1)
-        self.assertEqual(sum(row.count(base) for row in pixels), 11)
-        self.assertIs(pixels[1][2], flash)
-        self.assertEqual(depths[1][2], 2)
-        self.assertEqual(pixels[4][2], "X")
-
-    def test_expanded_foreground_reuse_matches_packing_each_row(self):
-        def plain_expansion(*args):
-            pixels, depths = _expand_scene(*args)
-            return [list(row) for row in pixels], depths
-
-        renderer = Renderer(self.make_world())
-        player = Player(x=9.5, y=7.5, pitch=-0.15)
-        options = dict(scene_cells=640, show_map=True, notice='[E] Test prompt', time_seconds=3)
-        expected = renderer.styled_frame(player, 336, 124, **options)
-        with patch('ascii3d.renderer._expand_scene', side_effect=plain_expansion):
-            actual = renderer.styled_frame(player, 336, 124, **options)
-        self.assertEqual(actual, expected)
-        self.assertEqual(actual.ansi_rows(), expected.ansi_rows())
 
     def test_large_foliage_keeps_existing_visibility_and_work_budgets(self):
         world = self.make_world()

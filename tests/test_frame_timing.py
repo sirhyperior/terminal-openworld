@@ -52,7 +52,7 @@ class FrameTimingTests(unittest.TestCase):
             terminal.output_timing = (0.0005, 0.0015, 512)
 
         terminal.draw.side_effect = draw
-        renderer = Mock(backend_name="native", _projection=(45, 13, 0.5), ray_backend=None)
+        renderer = Mock(backend_name="native", ray_backend=None)
         renderer.styled_frame.side_effect = lambda *args, **kwargs: advance(0.007)
         audio = MagicMock(enabled=True, available=True)
         audio.__enter__.return_value = audio
@@ -94,8 +94,7 @@ class FrameTimingTests(unittest.TestCase):
         self.assertEqual(report["frames_completed"], 2)
         self.assertEqual(first["viewport"], [160, 50])
         self.assertEqual(first["terminal"], [240, 80])
-        self.assertEqual(first["scene_budget_cells"], 640)
-        self.assertEqual(first["scene_samples"], [45, 13])
+        self.assertEqual(first["scene_samples"], [160, 45])
         self.assertEqual(first["backend"], "native")
         self.assertFalse(first["sound_on"])
         expected = {"input_ms": 4, "audio_ms": 11, "simulation_ms": 0, "render_ms": 7, "draw_ms": 2,
