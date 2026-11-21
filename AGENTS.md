@@ -67,9 +67,9 @@ Tie shifting surface colors to the wind, water or light acting on them.
   gameplay or terminal restoration; silent headless modes start no animation.
 - Edit voxels through `World.box()` to invalidate caches. Keep occlusion exact,
   vegetation work bounded by visibility/detail budgets, and exact-ray tests.
-- Adaptive live detail changes the scene sample grid. Keep sampled rays exact,
-  preserve the display's field of view, and draw text and reticles at native
-  terminal size. Snapshots and fixed-size comparisons trace every scene cell.
+- Trace every scene cell of the chosen viewport. Preserve the full field of
+  view and native-size text and reticles. `--max-cells` is an explicit viewport
+  size limit.
 - Benchmark rendering changes; use live-audio benchmarks for gameplay changes
   when a Windows device is available. Compare mean **and p95** on the same
   hardware, Python, dimensions, frame count and audio mode. Preserve failed runs;
