@@ -127,8 +127,7 @@ class Scenery:
         patches = []
         for y in range(max(y0, cy * self.CHUNK), min(y1, (cy + 1) * self.CHUNK)):
             for x in range(max(x0, cx * self.CHUNK), min(x1, (cx + 1) * self.CHUNK)):
-                z = world.surface_height(x + 0.5, y + 0.5)
-                material = world.surface_material(x + 0.5, y + 0.5)
+                z, material = world.surface_at(x + 0.5, y + 0.5)
                 if z < 1 or (material != GRASS and not (roads is not None and material == PATH)):
                     continue
                 # Per-cell seeding makes eviction/revisit and generation order
@@ -147,9 +146,9 @@ class Scenery:
                     # root, so its exposed neighbors retain their positions.
                     blade_height = rng.uniform(0.09, 0.24)
                     phase = rng.uniform(0, math.tau)
-                    if world.surface_material(bx, by) != GRASS:
-                        continue
-                    blades.append(Blade(bx, by, blade_height, phase, world.surface_height(bx, by)))
+                    ground_z, ground_material = world.surface_at(bx, by)
+                    if ground_material == GRASS:
+                        blades.append(Blade(bx, by, blade_height, phase, ground_z))
                 patches.append((x, y, blades))
         self._chunks[key] = patches
         if len(self._chunks) > self.MAX_GRASS_CHUNKS:
@@ -184,19 +183,27 @@ class Scenery:
             return
         chunks = []
         cx, cy = int(player.x) // self.CHUNK, int(player.y) // self.CHUNK
+        # Bound the patch centers swept by the same forward/side tests used
+        # below. A chunk entirely outside them cannot contribute a blade.
+        half_span = (self.CHUNK - 1) / 2
+        along_span = half_span * (abs(cam.cy) + abs(cam.sy)) + 1e-9
+        side_span = half_span * (abs(cam.cy + cam.sy) + abs(cam.cy - cam.sy)) + 1e-9
         for y in range(cy - 4, cy + 5):
             for x in range(cx - 4, cx + 5):
                 dx, dy = (x + 0.5) * self.CHUNK - player.x, (y + 0.5) * self.CHUNK - player.y
                 along = dx * cam.cy + dy * cam.sy
                 right = dx * cam.sy - dy * cam.cy
-                if -3 < along < self.DETAIL_RADIUS + 3 and abs(right) < max(0, along) + 4:
-                    patches = self.grass_chunk(x, y)
-                    if patches:
-                        chunks.append((dx * dx + dy * dy, patches))
+                if (-3 < along < self.DETAIL_RADIUS + 3 and abs(right) < max(0, along) + 4
+                        and 0.05 - along_span <= along <= self.DETAIL_RADIUS + along_span
+                        and abs(right) <= along + 1 + side_span):
+                    chunks.append((dx * dx + dy * dy, x, y))
         chunks.sort(key=lambda item: item[0])
-        self.stats["grass_chunks"] = len(chunks)
         project, stroke = cam.project, cam.stroke
-        for _, patches in chunks:
+        for _, chunk_x, chunk_y in chunks:
+            if self.stats["grass_candidates"] >= budget:
+                break
+            patches = self.grass_chunk(chunk_x, chunk_y)
+            self.stats["grass_chunks"] += bool(patches)
             for x, y, blades in patches:
                 dx, dy = x + 0.5 - player.x, y + 0.5 - player.y
                 along, right = dx * cam.cy + dy * cam.sy, dx * cam.sy - dy * cam.cy

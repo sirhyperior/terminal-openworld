@@ -9,6 +9,16 @@ longer historical narrative removed from the main handoff during cleanup.
 
 ## Open Comparisons
 
+- **Fullscreen terminal follow-up (2026-11-21):**
+  [Graphical output and Thornwatch replay](optimization-fullscreen-output-2026-11-21.md)
+  records changed-span output, GPU and terminal timing diagnostics, the
+  reproducible grass-generation spike, and matching fullscreen comparisons.
+
+- **Fullscreen optimization (2026-11-21):**
+  [Measured renderer and terminal changes](optimization-cpu-2026-11-21.md)
+  track exact CPU improvements, compiled solid traversal, and adaptive live
+  pacing at 160×50 and 240×80.
+
 - **Dim ash and sparse glints (2026-11-21):**
   [Appearance and performance evidence](moon-glints-2026-11-21.md) records the
   sparse highlights and subdued palette, and preserves the earlier

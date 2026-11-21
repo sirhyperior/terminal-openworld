@@ -1,0 +1,5369 @@
+{
+  "method": "Full 336x124 captured Xfce route replay, identical poses and scene budgets, interleaved ABBA. Same foreground planes and ANSI output checked for each frame. Timers include instrumentation and exclude terminal output.",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "before_sha256": {
+    "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d/app.py": "77532eb4a33232743a1014d3e969b426fb564ffd4ddd7716aac4768c96f682d1",
+    "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+    "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d/audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d/combat.py": "f9c217c2758dc3c5114f9390c56a4fe7fb90ea7804f52e4173c06318fe2bdbda",
+    "ascii3d/combat_render.py": "8a77f51884f0826b32ceeb3663f01b15a9a90defa275ac52b7656cc5b4ab0783",
+    "ascii3d/door_render.py": "bf6830f8f26c66770150f00cc49361c54aeba964147cc163a43ce37ed799905c",
+    "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d/geometry.py": "0f20bf734f81b32dc6a9c6eb4f71f9021f4fd97c622ab2dda8f019fd6ecb0358",
+    "ascii3d/gpu_renderer.py": "94ff858a6c9033c8a3627422b73acbe274b34d7e031b3e7270d84dd2c7769fd7",
+    "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+    "ascii3d/loading.py": "e57114ff6d5fd8133d194fc0427e2ea346bc555834437e412f553ab0074f57f6",
+    "ascii3d/map_expansion.py": "7c91bff5ddeb5ebf0b334bcf07c090132732d2900fc0b9f7bad079139b481103",
+    "ascii3d/monolith_solid_bvh.so": "4e21303621363219729baffb1117cc6b6ef79aa7e01d6021d1d88bde016d2f41",
+    "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d/native_solids.py": "b5a03149aa192bf136f23bcbf94447e6c6a344c25edadbb5a248ad48e5a9865f",
+    "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+    "ascii3d/palette.py": "fbe0354811f8049ee294684918a7d25e6cf44d25c895ee0dbc859160a41990e5",
+    "ascii3d/particles.py": "56c2ec151bbacec63c1be0d6db78e63c9d18bb26a8b1fa19f437dcce7d134c2a",
+    "ascii3d/player.py": "83d650349c0e64be85a67729e14736da88dedd3175055179ff26ac38ca045903",
+    "ascii3d/presentation.py": "7a2c9b340b29db4dfafce22bfad3f68a70736e9d6b7288f5b3c8072c42eb3690",
+    "ascii3d/renderer.py": "af6516f5163f5c33e7af35a8823ca1a731864783213623e2f9f5eb32dfe93e7e",
+    "ascii3d/roads.py": "3ce5877c4839267145b0af4b443a0a0d7baa40d2935c26f575ef7548bd7f9a6d",
+    "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+    "ascii3d/scenery.py": "9dd698e32622a086ee6e02e20e339ab82a1fde9aa69e5ad1ab34c72bfcf63c1f",
+    "ascii3d/shading.py": "ec6056fcbaa381bb72bb0a1fecd05744da167551872c75a4cab855d5f0fda9f0",
+    "ascii3d/solid_bvh.c": "59c9cec04bc7343b7359eae1a155b557615630f46aef394eabead18ff92c26d2",
+    "ascii3d/sound.py": "1c9b4bd5a1804ca83304553976626af18cc31570abe66632e9ef43bfd95aa1ab",
+    "ascii3d/sound_surfaces.py": "192871cbff7aa51adcc970b83e2aa43cda3d2ccc4b46e470965c616b0c71bf94",
+    "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d/surfaces.py": "70361d021b9e1758ac53810b6b94bb4d99a0d0b8119b2919ae897fec2a0dd7f1",
+    "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d/terminal.py": "9456e2ee31d23480866292959bc27b88a36da77dcb3a2c5e23aeb36596c83389",
+    "ascii3d/terrain.py": "a86977b75131ccb3e32d6a354116df4f3d8edeb3ce8070a4d5b96cb58a0ed607",
+    "ascii3d/trees.py": "955064fa509035b6fc289682d05192a4fb491d6a85fc1205a7585328426ed00d",
+    "ascii3d/world.py": "17a57799f5343fa1635d13b03d3baf802f825a01aa47946ddf7b7252be9a9ef1"
+  },
+  "after_sha256": {
+    "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d/app.py": "fe7bae7df432e2628253dfbf4174b1a0eccc5a13dced6238561ca5ef9a4b0565",
+    "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+    "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d/audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d/combat.py": "f9c217c2758dc3c5114f9390c56a4fe7fb90ea7804f52e4173c06318fe2bdbda",
+    "ascii3d/combat_render.py": "8a77f51884f0826b32ceeb3663f01b15a9a90defa275ac52b7656cc5b4ab0783",
+    "ascii3d/door_render.py": "bf6830f8f26c66770150f00cc49361c54aeba964147cc163a43ce37ed799905c",
+    "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d/frame_timing.py": "246d4ef519cf473f3e301855350d9f7e90f3e939690a38fffb9991cb5d67b941",
+    "ascii3d/geometry.py": "0f20bf734f81b32dc6a9c6eb4f71f9021f4fd97c622ab2dda8f019fd6ecb0358",
+    "ascii3d/gpu_renderer.py": "94ff858a6c9033c8a3627422b73acbe274b34d7e031b3e7270d84dd2c7769fd7",
+    "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+    "ascii3d/loading.py": "e57114ff6d5fd8133d194fc0427e2ea346bc555834437e412f553ab0074f57f6",
+    "ascii3d/map_expansion.py": "7c91bff5ddeb5ebf0b334bcf07c090132732d2900fc0b9f7bad079139b481103",
+    "ascii3d/monolith_solid_bvh.so": "4e21303621363219729baffb1117cc6b6ef79aa7e01d6021d1d88bde016d2f41",
+    "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d/native_solids.py": "b5a03149aa192bf136f23bcbf94447e6c6a344c25edadbb5a248ad48e5a9865f",
+    "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+    "ascii3d/palette.py": "fbe0354811f8049ee294684918a7d25e6cf44d25c895ee0dbc859160a41990e5",
+    "ascii3d/particles.py": "56c2ec151bbacec63c1be0d6db78e63c9d18bb26a8b1fa19f437dcce7d134c2a",
+    "ascii3d/player.py": "83d650349c0e64be85a67729e14736da88dedd3175055179ff26ac38ca045903",
+    "ascii3d/presentation.py": "2593f42dd10229ffa73661f768374c8416a0ee7976cd95d417fcf70a5fea3842",
+    "ascii3d/renderer.py": "31ec4c81b45ae4d72b78131c0779e27eca9a84bb3572979d391612174d8cedd7",
+    "ascii3d/roads.py": "3ce5877c4839267145b0af4b443a0a0d7baa40d2935c26f575ef7548bd7f9a6d",
+    "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+    "ascii3d/scenery.py": "be69e9509ea2065152fdb74b4ae846c668f8e5c4f96e64917ce3506a799b60b9",
+    "ascii3d/shading.py": "ec6056fcbaa381bb72bb0a1fecd05744da167551872c75a4cab855d5f0fda9f0",
+    "ascii3d/solid_bvh.c": "59c9cec04bc7343b7359eae1a155b557615630f46aef394eabead18ff92c26d2",
+    "ascii3d/sound.py": "1c9b4bd5a1804ca83304553976626af18cc31570abe66632e9ef43bfd95aa1ab",
+    "ascii3d/sound_surfaces.py": "192871cbff7aa51adcc970b83e2aa43cda3d2ccc4b46e470965c616b0c71bf94",
+    "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d/surfaces.py": "70361d021b9e1758ac53810b6b94bb4d99a0d0b8119b2919ae897fec2a0dd7f1",
+    "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d/terminal.py": "e9d17013edf313192784996fad3136791cd888fb608f4286afbc9e54963971b9",
+    "ascii3d/terrain.py": "a86977b75131ccb3e32d6a354116df4f3d8edeb3ce8070a4d5b96cb58a0ed607",
+    "ascii3d/trees.py": "955064fa509035b6fc289682d05192a4fb491d6a85fc1205a7585328426ed00d",
+    "ascii3d/world.py": "ee67e4cee1be9eda3a8cea6cf0b619880ca8a6d072a9f5501e65d2ba58324ca7"
+  },
+  "trajectory": "gui-lodge-large-B1",
+  "summary": {
+    "before": {
+      "scene_ms": {
+        "mean": 8.906495744455848,
+        "p95": 20.756638000420935,
+        "max": 43.53397300019424
+      },
+      "grass_ms": {
+        "mean": 2.1935127779771495,
+        "p95": 13.994276000630634,
+        "max": 35.46963299959316
+      },
+      "render_ms": {
+        "mean": 13.351409561078576,
+        "p95": 25.176210999234172,
+        "max": 47.92674500004068
+      },
+      "grass_chunks": {
+        "mean": 25.066666666666666,
+        "p95": 27,
+        "max": 29
+      },
+      "cold_chunks": {
+        "mean": 0.3277777777777778,
+        "p95": 2,
+        "max": 4
+      }
+    },
+    "after": {
+      "scene_ms": {
+        "mean": 7.597830622242125,
+        "p95": 14.540583999405499,
+        "max": 31.54633499980264
+      },
+      "grass_ms": {
+        "mean": 0.8627526167098646,
+        "p95": 7.204286999694887,
+        "max": 17.607433999728528
+      },
+      "render_ms": {
+        "mean": 9.288971683332015,
+        "p95": 16.34900299995934,
+        "max": 35.37204500025837
+      },
+      "grass_chunks": {
+        "mean": 20.072222222222223,
+        "p95": 24,
+        "max": 26
+      },
+      "cold_chunks": {
+        "mean": 0.19444444444444445,
+        "p95": 1,
+        "max": 2
+      }
+    }
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "pose": [
+        289.9873951861746,
+        128.23876265950184,
+        7,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        41,
+        15
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 32.053036000434076,
+        "grass_ms": 0.036173999433231074,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 38.366556000255514
+      },
+      "after": {
+        "scene_ms": 31.54633499980264,
+        "grass_ms": 0.017516999832878355,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 35.37204500025837
+      }
+    },
+    {
+      "frame": 1,
+      "pose": [
+        290.1228716932694,
+        128.28018198433762,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        31,
+        11
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 18.335699000090244,
+        "grass_ms": 0.017589002709428314,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 22.889394000230823
+      },
+      "after": {
+        "scene_ms": 17.774384999938775,
+        "grass_ms": 0.012661998880503234,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 19.575252000322507
+      }
+    },
+    {
+      "frame": 2,
+      "pose": [
+        290.2041575975263,
+        128.30503357923908,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        29,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 12.32623599935323,
+        "grass_ms": 0.013039000805292744,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 16.986831000394886
+      },
+      "after": {
+        "scene_ms": 12.86151099975541,
+        "grass_ms": 0.016545001017220784,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 14.747885999895516
+      }
+    },
+    {
+      "frame": 3,
+      "pose": [
+        290.2854435017832,
+        128.32988517414054,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        29,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 13.537668000026315,
+        "grass_ms": 0.015984999663487542,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 18.087956000272243
+      },
+      "after": {
+        "scene_ms": 12.488029999985883,
+        "grass_ms": 0.013054000191914383,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 14.379651999661291
+      }
+    },
+    {
+      "frame": 4,
+      "pose": [
+        290.3667294060401,
+        128.354736769042,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        29,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 14.732081999682123,
+        "grass_ms": 0.014453999028773978,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 19.26626699969347
+      },
+      "after": {
+        "scene_ms": 14.540583999405499,
+        "grass_ms": 0.014610999642172828,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 16.30189200022869
+      }
+    },
+    {
+      "frame": 5,
+      "pose": [
+        290.448015310297,
+        128.37958836394347,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        29,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 12.444695000340289,
+        "grass_ms": 0.015334004274336621,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 17.17959100005828
+      },
+      "after": {
+        "scene_ms": 13.173368999559898,
+        "grass_ms": 0.02644800133566605,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 15.02175800033001
+      }
+    },
+    {
+      "frame": 6,
+      "pose": [
+        290.5293012145539,
+        128.40443995884493,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        29,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 14.351920999615686,
+        "grass_ms": 0.012078997315256856,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 19.511485999828437
+      },
+      "after": {
+        "scene_ms": 14.46957799998927,
+        "grass_ms": 0.014512000234390143,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 16.34900299995934
+      }
+    },
+    {
+      "frame": 7,
+      "pose": [
+        290.6105871188108,
+        128.4292915537464,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        29,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 14.761307000298984,
+        "grass_ms": 0.017679997654340696,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 19.43685300011566
+      },
+      "after": {
+        "scene_ms": 14.070047000132035,
+        "grass_ms": 0.012981001418665983,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 15.856853000514093
+      }
+    },
+    {
+      "frame": 8,
+      "pose": [
+        290.6918730230677,
+        128.45414314864786,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        29,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 12.309931000345387,
+        "grass_ms": 0.015303001418942586,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 16.814491999866732
+      },
+      "after": {
+        "scene_ms": 12.804555000002438,
+        "grass_ms": 0.015934000657580327,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 14.72580200061202
+      }
+    },
+    {
+      "frame": 9,
+      "pose": [
+        290.77315892732463,
+        128.47899474354932,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        25,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 13.697987999876204,
+        "grass_ms": 0.01667400010774145,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 18.196189000263985
+      },
+      "after": {
+        "scene_ms": 22.09938600026362,
+        "grass_ms": 8.273546000054921,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 23.947493999912695
+      }
+    },
+    {
+      "frame": 10,
+      "pose": [
+        290.85444483158153,
+        128.50384633845078,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        25,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 11.806355000771873,
+        "grass_ms": 0.013691001186089125,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 16.312656999616593
+      },
+      "after": {
+        "scene_ms": 12.26150900038192,
+        "grass_ms": 0.01542400241305586,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 14.056908000384283
+      }
+    },
+    {
+      "frame": 11,
+      "pose": [
+        290.9628260372574,
+        128.5369817983194,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        25,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 11.210630000277888,
+        "grass_ms": 0.016514002709300257,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 15.764724999826285
+      },
+      "after": {
+        "scene_ms": 10.80125400039833,
+        "grass_ms": 0.013490000128513202,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 12.582291000398982
+      }
+    },
+    {
+      "frame": 12,
+      "pose": [
+        291.0441119415143,
+        128.56183339322087,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        25,
+        9
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 14.513484999952198,
+        "grass_ms": 0.01241999871126609,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 19.06812000015634
+      },
+      "after": {
+        "scene_ms": 14.197428999978001,
+        "grass_ms": 0.014813001143920701,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 15.990605000297364
+      }
+    },
+    {
+      "frame": 13,
+      "pose": [
+        291.1253978457712,
+        128.58668498812233,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 11.001375000887492,
+        "grass_ms": 1.3946569988547708,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 15.438454000104684
+      },
+      "after": {
+        "scene_ms": 10.288944999956584,
+        "grass_ms": 0.6742930017935578,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 11.999305999779608
+      }
+    },
+    {
+      "frame": 14,
+      "pose": [
+        291.2066837500281,
+        128.6115365830238,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 9.44029899983434,
+        "grass_ms": 0.012148998393968213,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 14.047452999875532
+      },
+      "after": {
+        "scene_ms": 9.88300400058506,
+        "grass_ms": 0.013027998647885397,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 11.793144999501237
+      }
+    },
+    {
+      "frame": 15,
+      "pose": [
+        291.287969654285,
+        128.63638817792526,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.797049000146217,
+        "grass_ms": 0.013613000191980973,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 12.547039000310178
+      },
+      "after": {
+        "scene_ms": 7.49518500015256,
+        "grass_ms": 0.011736998203559779,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.238896999704593
+      }
+    },
+    {
+      "frame": 16,
+      "pose": [
+        291.3692555585419,
+        128.66123977282672,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.523256999775185,
+        "grass_ms": 0.011678997907438315,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 11.947056000281009
+      },
+      "after": {
+        "scene_ms": 7.725491999735823,
+        "grass_ms": 0.012426003195287194,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 9.497295000073791
+      }
+    },
+    {
+      "frame": 17,
+      "pose": [
+        291.4505414627988,
+        128.68609136772818,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 9.642592999625776,
+        "grass_ms": 0.013068999578536022,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 14.045079999959853
+      },
+      "after": {
+        "scene_ms": 9.22783999976673,
+        "grass_ms": 0.010352995559514966,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 10.919942999862542
+      }
+    },
+    {
+      "frame": 18,
+      "pose": [
+        291.5318273670557,
+        128.71094296262964,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.766416000071331,
+        "grass_ms": 0.024615002075734083,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 13.220088999332802
+      },
+      "after": {
+        "scene_ms": 9.436424000341503,
+        "grass_ms": 0.013171999853511807,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 11.193314000593091
+      }
+    },
+    {
+      "frame": 19,
+      "pose": [
+        291.6131132713126,
+        128.7357945575311,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.510540999850491,
+        "grass_ms": 0.013159998161427211,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 13.10790099978476
+      },
+      "after": {
+        "scene_ms": 8.645425000395335,
+        "grass_ms": 0.011965003068326041,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 10.371469000347133
+      }
+    },
+    {
+      "frame": 20,
+      "pose": [
+        291.6943991755695,
+        128.76064615243257,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.88631999946665,
+        "grass_ms": 0.010586001735646278,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 11.568848000024445
+      },
+      "after": {
+        "scene_ms": 7.125070000256528,
+        "grass_ms": 0.012108997907489538,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 8.821269000691245
+      }
+    },
+    {
+      "frame": 21,
+      "pose": [
+        291.7756850798264,
+        128.78549774733403,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.176499000001058,
+        "grass_ms": 0.014192998605722096,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 12.5710540005457
+      },
+      "after": {
+        "scene_ms": 8.184426000298117,
+        "grass_ms": 0.009895001312543172,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 9.890670999993745
+      }
+    },
+    {
+      "frame": 22,
+      "pose": [
+        291.8569709840833,
+        128.8103493422355,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.080546000201139,
+        "grass_ms": 0.011277998964942526,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 12.50301300024148
+      },
+      "after": {
+        "scene_ms": 8.276560000012978,
+        "grass_ms": 0.012070000593666919,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 10.011868000219692
+      }
+    },
+    {
+      "frame": 23,
+      "pose": [
+        291.9382568883402,
+        128.83520093713696,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.878498999867588,
+        "grass_ms": 0.013097996998112649,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 11.314336000395997
+      },
+      "after": {
+        "scene_ms": 6.393599000148242,
+        "grass_ms": 0.009495998710917775,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 8.201525999538717
+      }
+    },
+    {
+      "frame": 24,
+      "pose": [
+        292.0195427925971,
+        128.86005253203842,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        23,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 28.727728000376374,
+        "grass_ms": 17.72387199980585,
+        "grass_chunks": 27,
+        "cold_chunks": 3,
+        "render_ms": 33.13629399963247
+      },
+      "after": {
+        "scene_ms": 22.43279699996492,
+        "grass_ms": 11.558713001249998,
+        "grass_chunks": 23,
+        "cold_chunks": 2,
+        "render_ms": 24.184969999623718
+      }
+    },
+    {
+      "frame": 25,
+      "pose": [
+        292.15501929969196,
+        128.9014718568742,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.392539000444231,
+        "grass_ms": 0.01487099962105276,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 10.798180000165303
+      },
+      "after": {
+        "scene_ms": 6.178296000143746,
+        "grass_ms": 0.011883998013217933,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 7.805381000252964
+      }
+    },
+    {
+      "frame": 26,
+      "pose": [
+        292.23630520394886,
+        128.92632345177566,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.931615999543283,
+        "grass_ms": 1.3865849978174083,
+        "grass_chunks": 27,
+        "cold_chunks": 1,
+        "render_ms": 10.308414999599336
+      },
+      "after": {
+        "scene_ms": 5.556000000069616,
+        "grass_ms": 0.67173900151829,
+        "grass_chunks": 23,
+        "cold_chunks": 1,
+        "render_ms": 7.213752000097884
+      }
+    },
+    {
+      "frame": 27,
+      "pose": [
+        292.31759110820576,
+        128.95117504667712,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.706694000560674,
+        "grass_ms": 0.012543000593723264,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.097092999581946
+      },
+      "after": {
+        "scene_ms": 4.5107400001143105,
+        "grass_ms": 0.00955500036070589,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 6.138415999885183
+      }
+    },
+    {
+      "frame": 28,
+      "pose": [
+        292.39887701246266,
+        128.97602664157858,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.591941999933624,
+        "grass_ms": 0.010619999557093251,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.020858999974735
+      },
+      "after": {
+        "scene_ms": 5.033555999943928,
+        "grass_ms": 0.012960001186002046,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 6.693420999908994
+      }
+    },
+    {
+      "frame": 29,
+      "pose": [
+        292.48016291671956,
+        129.00087823648005,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.863072000167449,
+        "grass_ms": 0.013262998436402995,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 13.433189999886963
+      },
+      "after": {
+        "scene_ms": 8.901268000045093,
+        "grass_ms": 0.010808000297402032,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 10.518909999518655
+      }
+    },
+    {
+      "frame": 30,
+      "pose": [
+        292.56144882097647,
+        129.0257298313815,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.110094000177924,
+        "grass_ms": 1.5256749984473572,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 10.544349000156217
+      },
+      "after": {
+        "scene_ms": 5.767067999840947,
+        "grass_ms": 0.923328001590562,
+        "grass_chunks": 23,
+        "cold_chunks": 1,
+        "render_ms": 7.379310000033001
+      }
+    },
+    {
+      "frame": 31,
+      "pose": [
+        292.64273472523337,
+        129.05058142628297,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.737379999824043,
+        "grass_ms": 0.013422003576124553,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.25157500023488
+      },
+      "after": {
+        "scene_ms": 4.534426000645908,
+        "grass_ms": 0.010262999239785131,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.178085999636096
+      }
+    },
+    {
+      "frame": 32,
+      "pose": [
+        292.72402062949027,
+        129.07543302118444,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.272257000091486,
+        "grass_ms": 0.010715001735661644,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 10.910058999797911
+      },
+      "after": {
+        "scene_ms": 6.423785000151838,
+        "grass_ms": 0.012319997949816752,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 8.048648000112735
+      }
+    },
+    {
+      "frame": 33,
+      "pose": [
+        292.80530653374717,
+        129.1002846160859,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.486740000582358,
+        "grass_ms": 0.012571002116601449,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 10.832832000232884
+      },
+      "after": {
+        "scene_ms": 6.364546000440896,
+        "grass_ms": 0.010363001820223872,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 8.059193000008236
+      }
+    },
+    {
+      "frame": 34,
+      "pose": [
+        292.8865924380041,
+        129.12513621098736,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.767064999214199,
+        "grass_ms": 0.010942999324470293,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.18801900024846
+      },
+      "after": {
+        "scene_ms": 4.957992000527156,
+        "grass_ms": 0.013439997019304428,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.605067999771563
+      }
+    },
+    {
+      "frame": 35,
+      "pose": [
+        292.967878342261,
+        129.14998780588883,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.009829999835347,
+        "grass_ms": 0.014118998478807043,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.372207000524213
+      },
+      "after": {
+        "scene_ms": 4.857330000049842,
+        "grass_ms": 0.009661000149208121,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.466548999924271
+      }
+    },
+    {
+      "frame": 36,
+      "pose": [
+        293.0491642465179,
+        129.1748394007903,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.312831999115588,
+        "grass_ms": 0.010828000085894018,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 11.614056999860622
+      },
+      "after": {
+        "scene_ms": 7.4914799997714,
+        "grass_ms": 0.01157300084742019,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 9.147198999926331
+      }
+    },
+    {
+      "frame": 37,
+      "pose": [
+        293.1304501507748,
+        129.19969099569175,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.881747000283212,
+        "grass_ms": 0.013721000868827105,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 12.269412000023294
+      },
+      "after": {
+        "scene_ms": 7.709817999966617,
+        "grass_ms": 0.010146998647542205,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 9.395080999638594
+      }
+    },
+    {
+      "frame": 38,
+      "pose": [
+        293.2117360550317,
+        129.22454259059322,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.099883999420854,
+        "grass_ms": 0.01469999915570952,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 12.732607000543794
+      },
+      "after": {
+        "scene_ms": 8.29331499971886,
+        "grass_ms": 0.013451997801894322,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 9.991987999455887
+      }
+    },
+    {
+      "frame": 39,
+      "pose": [
+        293.2930219592886,
+        129.24939418549468,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.525832000283117,
+        "grass_ms": 0.011868999536090996,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 11.963871999796538
+      },
+      "after": {
+        "scene_ms": 7.4458709996179095,
+        "grass_ms": 0.009726999451231677,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 9.186006999698293
+      }
+    },
+    {
+      "frame": 40,
+      "pose": [
+        293.3743078635455,
+        129.27424578039614,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 20.756638000420935,
+        "grass_ms": 12.91323700297653,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 25.176210999234172
+      },
+      "after": {
+        "scene_ms": 8.573596000132966,
+        "grass_ms": 0.7575309991807444,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 10.259970999868528
+      }
+    },
+    {
+      "frame": 41,
+      "pose": [
+        293.48268906922135,
+        129.30738124026476,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.516455000564747,
+        "grass_ms": 0.014362998626893386,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 10.960954999973183
+      },
+      "after": {
+        "scene_ms": 6.40280400057236,
+        "grass_ms": 0.01254900053027086,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.067734999713139
+      }
+    },
+    {
+      "frame": 42,
+      "pose": [
+        293.56397497347825,
+        129.33223283516622,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.710889999842038,
+        "grass_ms": 0.010497999937797431,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.022419999382691
+      },
+      "after": {
+        "scene_ms": 4.868848000114667,
+        "grass_ms": 0.012535997484519612,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.476595000094676
+      }
+    },
+    {
+      "frame": 43,
+      "pose": [
+        293.64526087773515,
+        129.3570844300677,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.82424000044557,
+        "grass_ms": 1.5505179990213946,
+        "grass_chunks": 27,
+        "cold_chunks": 1,
+        "render_ms": 12.223552000250493
+      },
+      "after": {
+        "scene_ms": 7.029174999843235,
+        "grass_ms": 0.8385419969272334,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 8.703260999936901
+      }
+    },
+    {
+      "frame": 44,
+      "pose": [
+        293.72654678199206,
+        129.38193602496915,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.153409000035026,
+        "grass_ms": 0.011889002053067088,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 10.543737999796576
+      },
+      "after": {
+        "scene_ms": 6.342673000290233,
+        "grass_ms": 0.014329002624435816,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.011330999579513
+      }
+    },
+    {
+      "frame": 45,
+      "pose": [
+        293.80783268624896,
+        129.4067876198706,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.955328000505688,
+        "grass_ms": 0.01554100072098663,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 9.391937000145845
+      },
+      "after": {
+        "scene_ms": 4.8961889997372054,
+        "grass_ms": 0.012266996236576233,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 6.590345999939018
+      }
+    },
+    {
+      "frame": 46,
+      "pose": [
+        293.88911859050586,
+        129.43163921477208,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.679613000007521,
+        "grass_ms": 0.01237100332218688,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 9.05405800040171
+      },
+      "after": {
+        "scene_ms": 4.756239000016649,
+        "grass_ms": 0.011726999218808487,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.388311999216967
+      }
+    },
+    {
+      "frame": 47,
+      "pose": [
+        293.97040449476276,
+        129.45649080967354,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.79504699978861,
+        "grass_ms": 0.012961002539668698,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 9.17438999931619
+      },
+      "after": {
+        "scene_ms": 4.703159000200685,
+        "grass_ms": 0.009454000064579304,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.334880999929737
+      }
+    },
+    {
+      "frame": 48,
+      "pose": [
+        294.05169039901966,
+        129.481342404575,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.2864919993662625,
+        "grass_ms": 0.010914997801592108,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 11.716890000570857
+      },
+      "after": {
+        "scene_ms": 7.571860000098241,
+        "grass_ms": 0.011885000276379287,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 9.241839999958756
+      }
+    },
+    {
+      "frame": 49,
+      "pose": [
+        294.13297630327656,
+        129.50619399947647,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.9714919996404205,
+        "grass_ms": 0.01572500423208112,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.619527999348065
+      },
+      "after": {
+        "scene_ms": 4.754346000481746,
+        "grass_ms": 0.010338001629861537,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.374571999913314
+      }
+    },
+    {
+      "frame": 50,
+      "pose": [
+        294.21426220753347,
+        129.53104559437793,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.017054000039934,
+        "grass_ms": 0.01176499790744856,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 10.552681000262965
+      },
+      "after": {
+        "scene_ms": 6.62361500053521,
+        "grass_ms": 0.01140000040322775,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 8.24574299986125
+      }
+    },
+    {
+      "frame": 51,
+      "pose": [
+        294.29554811179037,
+        129.5558971892794,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.466874000172538,
+        "grass_ms": 0.010937002116406802,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 9.055090000401833
+      },
+      "after": {
+        "scene_ms": 4.326503000811499,
+        "grass_ms": 0.009281999155064113,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 5.917354000303021
+      }
+    },
+    {
+      "frame": 52,
+      "pose": [
+        294.37683401604727,
+        129.58074878418086,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.396136999275768,
+        "grass_ms": 0.010324997674615588,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 8.818124000754324
+      },
+      "after": {
+        "scene_ms": 4.545101000076102,
+        "grass_ms": 0.011116004316136241,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 6.181710999953793
+      }
+    },
+    {
+      "frame": 53,
+      "pose": [
+        294.45811992030417,
+        129.60560037908232,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.66263599962258,
+        "grass_ms": 0.014212000678526238,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 12.069820999386138
+      },
+      "after": {
+        "scene_ms": 14.464190000580857,
+        "grass_ms": 7.204286999694887,
+        "grass_chunks": 23,
+        "cold_chunks": 1,
+        "render_ms": 16.156183000020974
+      }
+    },
+    {
+      "frame": 54,
+      "pose": [
+        294.5394058245611,
+        129.63045197398378,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.165779999922961,
+        "grass_ms": 0.010377002581662964,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 11.557509999875037
+      },
+      "after": {
+        "scene_ms": 7.642987999133766,
+        "grass_ms": 0.011988000551355071,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 9.486478000326315
+      }
+    },
+    {
+      "frame": 55,
+      "pose": [
+        294.620691728818,
+        129.65530356888524,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.719317000512092,
+        "grass_ms": 0.012499002878030296,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 10.076645000481221
+      },
+      "after": {
+        "scene_ms": 5.66808899930038,
+        "grass_ms": 0.00997900224319892,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.350838000093063
+      }
+    },
+    {
+      "frame": 56,
+      "pose": [
+        294.7019776330749,
+        129.6801551637867,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.595229999926232,
+        "grass_ms": 0.010045002454717178,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.9534400005723
+      },
+      "after": {
+        "scene_ms": 5.7774839997364325,
+        "grass_ms": 0.01090600108000217,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.462827000381367
+      }
+    },
+    {
+      "frame": 57,
+      "pose": [
+        294.7832635373318,
+        129.70500675868817,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.6577190002353746,
+        "grass_ms": 1.6037489976952202,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 12.116191000131948
+      },
+      "after": {
+        "scene_ms": 6.700161000480875,
+        "grass_ms": 0.8260920003522187,
+        "grass_chunks": 23,
+        "cold_chunks": 1,
+        "render_ms": 8.402630000091449
+      }
+    },
+    {
+      "frame": 58,
+      "pose": [
+        294.8645494415887,
+        129.72985835358963,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.680003000132274,
+        "grass_ms": 0.011038001503038686,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 12.22065699948871
+      },
+      "after": {
+        "scene_ms": 7.67523699960293,
+        "grass_ms": 0.012521999451564625,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 9.333298999990802
+      }
+    },
+    {
+      "frame": 59,
+      "pose": [
+        294.9458353458456,
+        129.7547099484911,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.638767999902484,
+        "grass_ms": 0.013892998140363488,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 11.179774000083853
+      },
+      "after": {
+        "scene_ms": 5.999197000164713,
+        "grass_ms": 0.009305997991759796,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.672431999708351
+      }
+    },
+    {
+      "frame": 60,
+      "pose": [
+        295.0271212501025,
+        129.77956154339256,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 9.754130999681365,
+        "grass_ms": 0.010436000593472272,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 14.310710000245308
+      },
+      "after": {
+        "scene_ms": 10.295664999830478,
+        "grass_ms": 0.011934999747609254,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 11.997581999821705
+      }
+    },
+    {
+      "frame": 61,
+      "pose": [
+        295.1084071543594,
+        129.80441313829402,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.293412999388238,
+        "grass_ms": 0.012659000276471488,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 11.699024999870744
+      },
+      "after": {
+        "scene_ms": 7.150176999857649,
+        "grass_ms": 0.01027100097417133,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 8.838003000164463
+      }
+    },
+    {
+      "frame": 62,
+      "pose": [
+        295.1896930586163,
+        129.8292647331955,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.763602999650175,
+        "grass_ms": 0.010436000593472272,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 10.159690000364208
+      },
+      "after": {
+        "scene_ms": 5.976172000373481,
+        "grass_ms": 0.010254998414893635,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.6475239993669675
+      }
+    },
+    {
+      "frame": 63,
+      "pose": [
+        295.2709789628732,
+        129.85411632809695,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.857353000465082,
+        "grass_ms": 0.011554002412594855,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 10.299769999619457
+      },
+      "after": {
+        "scene_ms": 5.785016000118048,
+        "grass_ms": 0.0097679994723876,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.503949000238208
+      }
+    },
+    {
+      "frame": 64,
+      "pose": [
+        295.3522648671301,
+        129.8789679229984,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.7802080000328715,
+        "grass_ms": 0.009958002010534983,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 10.165378999772656
+      },
+      "after": {
+        "scene_ms": 5.577113000072131,
+        "grass_ms": 0.011046998224628624,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.2638589999769465
+      }
+    },
+    {
+      "frame": 65,
+      "pose": [
+        295.433550771387,
+        129.90381951789988,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        21,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.065058999614848,
+        "grass_ms": 0.011608996828726958,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 11.442678999628697
+      },
+      "after": {
+        "scene_ms": 7.015455000328075,
+        "grass_ms": 0.009539999155094847,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 8.705534000000625
+      }
+    },
+    {
+      "frame": 66,
+      "pose": [
+        295.5148366756439,
+        129.92867111280134,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        21,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.58129899945925,
+        "grass_ms": 0.009395001143275294,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.947671000190894
+      },
+      "after": {
+        "scene_ms": 6.545268000081705,
+        "grass_ms": 0.013146996934665367,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 8.262278999609407
+      }
+    },
+    {
+      "frame": 67,
+      "pose": [
+        295.5961225799008,
+        129.9535227077028,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.830043000059959,
+        "grass_ms": 0.013687998944078572,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 10.381452999354224
+      },
+      "after": {
+        "scene_ms": 5.4881989999557845,
+        "grass_ms": 0.009560998478264082,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.253222000144888
+      }
+    },
+    {
+      "frame": 68,
+      "pose": [
+        295.6774084841577,
+        129.97837430260427,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.141344000345271,
+        "grass_ms": 0.01020800118567422,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.550871999432275
+      },
+      "after": {
+        "scene_ms": 4.211309000311303,
+        "grass_ms": 0.009645996215112973,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 5.835029000081704
+      }
+    },
+    {
+      "frame": 69,
+      "pose": [
+        295.7586943884146,
+        130.00322589750573,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.093074000498746,
+        "grass_ms": 0.01171800249721855,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 12.4504639998122
+      },
+      "after": {
+        "scene_ms": 7.868636999774026,
+        "grass_ms": 0.009007998414745089,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 9.456053000576503
+      }
+    },
+    {
+      "frame": 70,
+      "pose": [
+        295.8399802926715,
+        130.0280774924072,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.463741999847116,
+        "grass_ms": 0.010295998436049558,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.81709499956196
+      },
+      "after": {
+        "scene_ms": 6.424866999623191,
+        "grass_ms": 0.813501999800792,
+        "grass_chunks": 23,
+        "cold_chunks": 1,
+        "render_ms": 8.051261000218801
+      }
+    },
+    {
+      "frame": 71,
+      "pose": [
+        295.9212661969284,
+        130.05292908730866,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.99064499965607,
+        "grass_ms": 1.7144869998446666,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 10.325649999685993
+      },
+      "after": {
+        "scene_ms": 4.194344000097772,
+        "grass_ms": 0.009375999979965854,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 5.7884910002030665
+      }
+    },
+    {
+      "frame": 72,
+      "pose": [
+        296.0025521011853,
+        130.07778068221012,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 43.53397300019424,
+        "grass_ms": 35.46963299959316,
+        "grass_chunks": 27,
+        "cold_chunks": 3,
+        "render_ms": 47.92674500004068
+      },
+      "after": {
+        "scene_ms": 25.89170600003854,
+        "grass_ms": 17.607433999728528,
+        "grass_chunks": 24,
+        "cold_chunks": 2,
+        "render_ms": 27.549467999961053
+      }
+    },
+    {
+      "frame": 73,
+      "pose": [
+        296.1922192111181,
+        130.1357677369802,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.883068999944953,
+        "grass_ms": 2.1442429979288136,
+        "grass_chunks": 28,
+        "cold_chunks": 1,
+        "render_ms": 12.393306999911147
+      },
+      "after": {
+        "scene_ms": 6.750935999662033,
+        "grass_ms": 1.1996739995083772,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 8.385653000004822
+      }
+    },
+    {
+      "frame": 74,
+      "pose": [
+        296.273505115375,
+        130.16061933188166,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.2272540003978065,
+        "grass_ms": 0.01179900391434785,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 8.66330100052437
+      },
+      "after": {
+        "scene_ms": 4.368546000478091,
+        "grass_ms": 0.013287000911077484,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 6.01611199999752
+      }
+    },
+    {
+      "frame": 75,
+      "pose": [
+        296.3547910196319,
+        130.18547092678313,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.45952199970634,
+        "grass_ms": 0.013429000318865292,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 8.916070999475778
+      },
+      "after": {
+        "scene_ms": 4.250017999765987,
+        "grass_ms": 0.010484000995347742,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 5.899538000448956
+      }
+    },
+    {
+      "frame": 76,
+      "pose": [
+        296.4360769238888,
+        130.2103225216846,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.309727999498136,
+        "grass_ms": 0.010795000889629591,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 8.738024000194855
+      },
+      "after": {
+        "scene_ms": 4.4697780003843945,
+        "grass_ms": 0.011237998478463851,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.106738999733352
+      }
+    },
+    {
+      "frame": 77,
+      "pose": [
+        296.5173628281457,
+        130.23517411658605,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.337878999649547,
+        "grass_ms": 0.011566998182388488,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 8.691603000443138
+      },
+      "after": {
+        "scene_ms": 4.2888469997706125,
+        "grass_ms": 0.010713998563005589,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 5.914620000112336
+      }
+    },
+    {
+      "frame": 78,
+      "pose": [
+        296.5986487324026,
+        130.26002571148751,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.158624000614509,
+        "grass_ms": 0.011363999874447472,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.520349000013084
+      },
+      "after": {
+        "scene_ms": 5.2950890003558015,
+        "grass_ms": 0.011836999874503817,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.9291050003812416
+      }
+    },
+    {
+      "frame": 79,
+      "pose": [
+        296.6799346366595,
+        130.28487730638898,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.037417999825266,
+        "grass_ms": 0.012567998965096194,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 8.391571999709413
+      },
+      "after": {
+        "scene_ms": 3.940202000194404,
+        "grass_ms": 0.009620998753234744,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 5.517583000255399
+      }
+    },
+    {
+      "frame": 80,
+      "pose": [
+        296.7612205409164,
+        130.30972890129044,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 3.9172269998744014,
+        "grass_ms": 0.01094900017051259,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 8.34641500023281
+      },
+      "after": {
+        "scene_ms": 4.417889999785984,
+        "grass_ms": 0.010819002454809379,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 6.0421119997045025
+      }
+    },
+    {
+      "frame": 81,
+      "pose": [
+        296.8425064451733,
+        130.3345804961919,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.0621159996589995,
+        "grass_ms": 0.010806001228047535,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 8.434327999566449
+      },
+      "after": {
+        "scene_ms": 3.9634979993934394,
+        "grass_ms": 0.009606001185602508,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 5.668779999723483
+      }
+    },
+    {
+      "frame": 82,
+      "pose": [
+        296.9237923494302,
+        130.35943209109337,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 3.9844180000727647,
+        "grass_ms": 0.010955998732242733,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.347985999535013
+      },
+      "after": {
+        "scene_ms": 4.091830000106711,
+        "grass_ms": 0.010056000974145718,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 5.701760000192735
+      }
+    },
+    {
+      "frame": 83,
+      "pose": [
+        297.0050782536871,
+        130.38428368599483,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 13.249653999992006,
+        "grass_ms": 6.762964000699867,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 17.689496999992116
+      },
+      "after": {
+        "scene_ms": 7.159470000260626,
+        "grass_ms": 0.8838189978632727,
+        "grass_chunks": 22,
+        "cold_chunks": 1,
+        "render_ms": 8.846125000673055
+      }
+    },
+    {
+      "frame": 84,
+      "pose": [
+        297.086364157944,
+        130.4091352808963,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.006922999906237,
+        "grass_ms": 0.010113998541783076,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.409119999669201
+      },
+      "after": {
+        "scene_ms": 4.24657199982903,
+        "grass_ms": 0.011606998668867163,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 5.873828000403591
+      }
+    },
+    {
+      "frame": 85,
+      "pose": [
+        297.1676500622009,
+        130.43398687579776,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.390622000049916,
+        "grass_ms": 0.01199899816128891,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.803774999454618
+      },
+      "after": {
+        "scene_ms": 5.318004000400833,
+        "grass_ms": 0.009132998457062058,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 6.928273999619705
+      }
+    },
+    {
+      "frame": 86,
+      "pose": [
+        297.2489359664578,
+        130.45883847069922,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.108337999445212,
+        "grass_ms": 0.010024999937741086,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 9.470674000112922
+      },
+      "after": {
+        "scene_ms": 5.339315000128408,
+        "grass_ms": 0.010216997907264158,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 7.004367999797978
+      }
+    },
+    {
+      "frame": 87,
+      "pose": [
+        297.3302218707147,
+        130.48369006560068,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.350930000029621,
+        "grass_ms": 2.2255230014707195,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 11.74340099987603
+      },
+      "after": {
+        "scene_ms": 6.540920000588812,
+        "grass_ms": 1.1143429992443998,
+        "grass_chunks": 22,
+        "cold_chunks": 1,
+        "render_ms": 8.182558000044082
+      }
+    },
+    {
+      "frame": 88,
+      "pose": [
+        297.4115077749716,
+        130.50854166050215,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.0185800007748185,
+        "grass_ms": 0.0110059982034727,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.38040600046952
+      },
+      "after": {
+        "scene_ms": 4.185881999546837,
+        "grass_ms": 0.010764999387902208,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 5.83599099991261
+      }
+    },
+    {
+      "frame": 89,
+      "pose": [
+        297.4927936792285,
+        130.5333932554036,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.168054999354354,
+        "grass_ms": 0.01029399845720036,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.585734000007506
+      },
+      "after": {
+        "scene_ms": 4.091239000445057,
+        "grass_ms": 0.010015001862484496,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 5.722922000131803
+      }
+    },
+    {
+      "frame": 90,
+      "pose": [
+        297.5740795834854,
+        130.55824485030507,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.233846999544767,
+        "grass_ms": 0.009893998139887117,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.604777000276954
+      },
+      "after": {
+        "scene_ms": 5.429609999737295,
+        "grass_ms": 0.011487001756904647,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.087302000400086
+      }
+    },
+    {
+      "frame": 91,
+      "pose": [
+        297.6553654877423,
+        130.58309644520654,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.206622000310745,
+        "grass_ms": 0.010846000805031508,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.566514999984065
+      },
+      "after": {
+        "scene_ms": 4.118029999517603,
+        "grass_ms": 0.00982499750534771,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 5.723942999793508
+      }
+    },
+    {
+      "frame": 92,
+      "pose": [
+        297.7366513919992,
+        130.607948040108,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.058812999777729,
+        "grass_ms": 0.010804002158693038,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.45047400000476
+      },
+      "after": {
+        "scene_ms": 5.202239000027475,
+        "grass_ms": 0.010754002687463071,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 6.848011999863957
+      }
+    },
+    {
+      "frame": 93,
+      "pose": [
+        297.8179372962561,
+        130.63279963500946,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.089707000275666,
+        "grass_ms": 0.013882002349419054,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.45559899971704
+      },
+      "after": {
+        "scene_ms": 3.9698770005998085,
+        "grass_ms": 0.00923400239116745,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 5.615591000605491
+      }
+    },
+    {
+      "frame": 94,
+      "pose": [
+        297.899223200513,
+        130.65765122991093,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 3.9804529997127247,
+        "grass_ms": 0.009633002264308743,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.335097999406571
+      },
+      "after": {
+        "scene_ms": 4.1333720000693575,
+        "grass_ms": 0.01186899680760689,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 5.755181000495213
+      }
+    },
+    {
+      "frame": 95,
+      "pose": [
+        297.9805091047699,
+        130.6825028248124,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.020422999928996,
+        "grass_ms": 0.012037996384606231,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.566356000301312
+      },
+      "after": {
+        "scene_ms": 3.9329110004473478,
+        "grass_ms": 0.009691001650935505,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 5.532696000045689
+      }
+    },
+    {
+      "frame": 96,
+      "pose": [
+        298.0617950090268,
+        130.70735441971385,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.3561199999167,
+        "grass_ms": 0.01148699811892584,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 12.785455999619444
+      },
+      "after": {
+        "scene_ms": 8.47744199927547,
+        "grass_ms": 0.011109000297437888,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 10.226030000012543
+      }
+    },
+    {
+      "frame": 97,
+      "pose": [
+        298.1701762147027,
+        130.74048987958247,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.051412999819149,
+        "grass_ms": 0.011115999768662732,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.519927999463107
+      },
+      "after": {
+        "scene_ms": 8.818543999950634,
+        "grass_ms": 3.6138410005150945,
+        "grass_chunks": 23,
+        "cold_chunks": 1,
+        "render_ms": 10.544458999902417
+      }
+    },
+    {
+      "frame": 98,
+      "pose": [
+        298.2514621189596,
+        130.76534147448393,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.941958000017621,
+        "grass_ms": 0.010113996722793672,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.33818599969527
+      },
+      "after": {
+        "scene_ms": 5.0761500006046845,
+        "grass_ms": 0.013150997801858466,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.817636999585375
+      }
+    },
+    {
+      "frame": 99,
+      "pose": [
+        298.3327480232165,
+        130.7901930693854,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.00063500021497,
+        "grass_ms": 0.012901001355203334,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.403532999385789
+      },
+      "after": {
+        "scene_ms": 4.853664999245666,
+        "grass_ms": 0.010159002158616204,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.524736999381275
+      }
+    },
+    {
+      "frame": 100,
+      "pose": [
+        298.4140339274734,
+        130.81504466428686,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.878112000369583,
+        "grass_ms": 0.009425002645002678,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.318856000390952
+      },
+      "after": {
+        "scene_ms": 6.208081000295351,
+        "grass_ms": 1.1853000005430658,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 7.914034999885189
+      }
+    },
+    {
+      "frame": 101,
+      "pose": [
+        298.4953198317303,
+        130.83989625918832,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.850597000266134,
+        "grass_ms": 1.8878969985962613,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 11.217741000109527
+      },
+      "after": {
+        "scene_ms": 4.8288879997926415,
+        "grass_ms": 0.011080000149377156,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 6.550154999786173
+      }
+    },
+    {
+      "frame": 102,
+      "pose": [
+        298.5766057359872,
+        130.86474785408979,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.9044309998862445,
+        "grass_ms": 0.010385000678070355,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 9.286737999900652
+      },
+      "after": {
+        "scene_ms": 4.958203000569483,
+        "grass_ms": 0.011130000530101825,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 6.703575999381428
+      }
+    },
+    {
+      "frame": 103,
+      "pose": [
+        298.6578916402441,
+        130.88959944899125,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.078616000195325,
+        "grass_ms": 0.011525999070727266,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 10.499349999918195
+      },
+      "after": {
+        "scene_ms": 5.992417000015848,
+        "grass_ms": 0.010224000106973108,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 7.635066000148072
+      }
+    },
+    {
+      "frame": 104,
+      "pose": [
+        298.739177544501,
+        130.9144510438927,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.875788999925135,
+        "grass_ms": 0.009184000191453379,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 9.276163000322413
+      },
+      "after": {
+        "scene_ms": 5.0443009995433385,
+        "grass_ms": 0.012026998774672393,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.774191000658902
+      }
+    },
+    {
+      "frame": 105,
+      "pose": [
+        298.8204634487579,
+        130.93930263879417,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.164405000163242,
+        "grass_ms": 0.012018997040286195,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 10.543727000367653
+      },
+      "after": {
+        "scene_ms": 6.033638999724644,
+        "grass_ms": 0.009825002052821219,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 7.725892999587813
+      }
+    },
+    {
+      "frame": 106,
+      "pose": [
+        298.9017493530148,
+        130.96415423369564,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.87737100047525,
+        "grass_ms": 0.010388000191596802,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.248690999811515
+      },
+      "after": {
+        "scene_ms": 5.115979000038351,
+        "grass_ms": 0.011911004548892379,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.818718999966222
+      }
+    },
+    {
+      "frame": 107,
+      "pose": [
+        298.9830352572717,
+        130.9890058285971,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.208662000062759,
+        "grass_ms": 0.01188699752674438,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 10.669226000572962
+      },
+      "after": {
+        "scene_ms": 6.0631520000242745,
+        "grass_ms": 0.009999999747378752,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.764890000544256
+      }
+    },
+    {
+      "frame": 108,
+      "pose": [
+        299.0643211615286,
+        131.01385742349856,
+        7.0,
+        0.29670597283903605,
+        -0.06
+      ],
+      "grid": [
+        21,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.8460430004270165,
+        "grass_ms": 0.010685002052923664,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 12.26782799949433
+      },
+      "after": {
+        "scene_ms": 7.953733999784163,
+        "grass_ms": 0.011395000910852104,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 9.691465999821958
+      }
+    },
+    {
+      "frame": 109,
+      "pose": [
+        299.14630977639973,
+        131.03625794452984,
+        7.0,
+        0.251705972839036,
+        -0.06
+      ],
+      "grid": [
+        21,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.545426999764459,
+        "grass_ms": 0.011515001460793428,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 10.964359000354307
+      },
+      "after": {
+        "scene_ms": 6.713030000355502,
+        "grass_ms": 0.009886998668662272,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 8.392504000767076
+      }
+    },
+    {
+      "frame": 110,
+      "pose": [
+        299.22922307507883,
+        131.05494754626744,
+        7.0,
+        0.20670597283903597,
+        -0.06
+      ],
+      "grid": [
+        21,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 23.152879000008397,
+        "grass_ms": 16.475322000587767,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 27.645531999951345
+      },
+      "after": {
+        "scene_ms": 6.986631000472698,
+        "grass_ms": 0.014541001291945577,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 8.72644599985506
+      }
+    },
+    {
+      "frame": 111,
+      "pose": [
+        299.34092216216857,
+        131.07403016350423,
+        7.0,
+        0.14670597283903591,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 19.21270699949673,
+        "grass_ms": 13.472753000314697,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 23.649995999221574
+      },
+      "after": {
+        "scene_ms": 6.1085310007911175,
+        "grass_ms": 1.0196759994869353,
+        "grass_chunks": 23,
+        "cold_chunks": 1,
+        "render_ms": 7.774976000291645
+      }
+    },
+    {
+      "frame": 112,
+      "pose": [
+        299.4253376253025,
+        131.0839269253402,
+        7.0,
+        0.1017059728390359,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.239886000708793,
+        "grass_ms": 0.011829997674794868,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.587419000126829
+      },
+      "after": {
+        "scene_ms": 13.754734000031021,
+        "grass_ms": 8.405864999076584,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 15.426867000314815
+      }
+    },
+    {
+      "frame": 113,
+      "pose": [
+        299.51011283619306,
+        131.09001625448465,
+        7.0,
+        0.056705972839035904,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.177271999855293,
+        "grass_ms": 0.015194003026408609,
+        "grass_chunks": 28,
+        "cold_chunks": 0,
+        "render_ms": 9.698327000478457
+      },
+      "after": {
+        "scene_ms": 12.543834000098286,
+        "grass_ms": 7.190316997366608,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 14.238450999982888
+      }
+    },
+    {
+      "frame": 114,
+      "pose": [
+        299.5950761540053,
+        131.0922858221268,
+        7.0,
+        0.011705972839035905,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 10.35197000055632,
+        "grass_ms": 5.465774998810957,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 14.823960999819974
+      },
+      "after": {
+        "scene_ms": 8.373184999982186,
+        "grass_ms": 3.2648679980411544,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 10.006861000874778
+      }
+    },
+    {
+      "frame": 115,
+      "pose": [
+        299.68005555705247,
+        131.09073103316763,
+        7.0,
+        6.249891280018622,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.397853000431496,
+        "grass_ms": 0.01267200059373863,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.831095999288664
+      },
+      "after": {
+        "scene_ms": 5.317361000379606,
+        "grass_ms": 0.010475000635778997,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 6.959500000448315
+      }
+    },
+    {
+      "frame": 116,
+      "pose": [
+        299.76487899108037,
+        131.08535503552355,
+        7.0,
+        6.204891280018623,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.428370000117866,
+        "grass_ms": 0.010407002264400944,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.829523999542289
+      },
+      "after": {
+        "scene_ms": 5.69554999947286,
+        "grass_ms": 0.011829000868601725,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 7.37870099965221
+      }
+    },
+    {
+      "frame": 117,
+      "pose": [
+        299.8493747176189,
+        131.07616871375285,
+        7.0,
+        6.159891280018624,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 10.705741000492708,
+        "grass_ms": 5.009715999221953,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 15.12764699964464
+      },
+      "after": {
+        "scene_ms": 9.733479999340489,
+        "grass_ms": 4.310277002332441,
+        "grass_chunks": 23,
+        "cold_chunks": 1,
+        "render_ms": 11.384540999642923
+      }
+    },
+    {
+      "frame": 118,
+      "pose": [
+        299.93337166169374,
+        131.06319066701818,
+        7.0,
+        6.114891280018625,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.330462000529224,
+        "grass_ms": 0.010766998457256705,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.739629000250716
+      },
+      "after": {
+        "scene_ms": 5.804174000331841,
+        "grass_ms": 0.011866002751048654,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.429344999763998
+      }
+    },
+    {
+      "frame": 119,
+      "pose": [
+        300.0166997581945,
+        131.04644717142958,
+        7.0,
+        6.069891280018626,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 28.19323399944551,
+        "grass_ms": 19.495803002428147,
+        "grass_chunks": 28,
+        "cold_chunks": 3,
+        "render_ms": 32.650094000018726
+      },
+      "after": {
+        "scene_ms": 15.470962999643234,
+        "grass_ms": 7.692702000895224,
+        "grass_chunks": 23,
+        "cold_chunks": 1,
+        "render_ms": 17.112118999648374
+      }
+    },
+    {
+      "frame": 120,
+      "pose": [
+        300.1536361212911,
+        131.01026917745605,
+        7.0,
+        5.994891280018628,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.286134000016318,
+        "grass_ms": 0.013020999176660553,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 9.73969799997576
+      },
+      "after": {
+        "scene_ms": 6.905498999913107,
+        "grass_ms": 1.3388430024861009,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 8.567556999878434
+      }
+    },
+    {
+      "frame": 121,
+      "pose": [
+        300.2343605742916,
+        130.98367070008,
+        7.0,
+        5.949891280018629,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 16.28097000048001,
+        "grass_ms": 8.260363000772486,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 20.692811000117217
+      },
+      "after": {
+        "scene_ms": 14.154523999422963,
+        "grass_ms": 6.5696799974830355,
+        "grass_chunks": 25,
+        "cold_chunks": 2,
+        "render_ms": 15.818945999853895
+      }
+    },
+    {
+      "frame": 122,
+      "pose": [
+        300.31380678001665,
+        130.95346777461154,
+        7.0,
+        5.90489128001863,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 22.566988000107813,
+        "grass_ms": 17.22328599953471,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 26.97850899949117
+      },
+      "after": {
+        "scene_ms": 5.498563999935868,
+        "grass_ms": 0.014287998965301085,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 7.194032000370498
+      }
+    },
+    {
+      "frame": 123,
+      "pose": [
+        300.41746906835726,
+        130.90769701633442,
+        7.0,
+        5.844891280018631,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.422510000244074,
+        "grass_ms": 0.012639000487979501,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 9.794651999982307
+      },
+      "after": {
+        "scene_ms": 5.237912999291439,
+        "grass_ms": 0.009898003554553725,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 6.92524899932323
+      }
+    },
+    {
+      "frame": 124,
+      "pose": [
+        300.4933122459807,
+        130.86933389968655,
+        7.0,
+        5.799891280018632,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 19.543152999176527,
+        "grass_ms": 14.74012500148092,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 23.98910500050988
+      },
+      "after": {
+        "scene_ms": 21.921829000348225,
+        "grass_ms": 17.013129998304066,
+        "grass_chunks": 22,
+        "cold_chunks": 2,
+        "render_ms": 23.548974999357597
+      }
+    },
+    {
+      "frame": 125,
+      "pose": [
+        300.5916065171828,
+        130.81295067003327,
+        7.0,
+        5.739891280018633,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 18.517432000408007,
+        "grass_ms": 12.715790999209275,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 22.980780000580125
+      },
+      "after": {
+        "scene_ms": 5.417501999545493,
+        "grass_ms": 0.010026999916590285,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 7.074662999912107
+      }
+    },
+    {
+      "frame": 126,
+      "pose": [
+        300.6630112636212,
+        130.7668499271214,
+        7.0,
+        5.694891280018634,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.388419000155409,
+        "grass_ms": 0.0095410014182562,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.816434000640584
+      },
+      "after": {
+        "scene_ms": 13.22854299996834,
+        "grass_ms": 7.387554001070384,
+        "grass_chunks": 22,
+        "cold_chunks": 1,
+        "render_ms": 14.879113999995752
+      }
+    },
+    {
+      "frame": 127,
+      "pose": [
+        300.7322698916063,
+        130.71758372409556,
+        7.0,
+        5.649891280018635,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 14.706062999721325,
+        "grass_ms": 9.032579000631813,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 19.08424399971409
+      },
+      "after": {
+        "scene_ms": 5.3801970007043565,
+        "grass_ms": 0.009605000741430558,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 7.028715000160446
+      }
+    },
+    {
+      "frame": 128,
+      "pose": [
+        300.7992421760818,
+        130.66525180818286,
+        7.0,
+        5.604891280018636,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.4839120002725394,
+        "grass_ms": 0.010916000974248163,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 9.877846999188478
+      },
+      "after": {
+        "scene_ms": 5.718375000469678,
+        "grass_ms": 0.01182600226456998,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 7.384249000097043
+      }
+    },
+    {
+      "frame": 129,
+      "pose": [
+        300.8637925210557,
+        130.6099601336314,
+        7.0,
+        5.559891280018637,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.624272999739333,
+        "grass_ms": 0.025619001462473534,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 10.02808199973515
+      },
+      "after": {
+        "scene_ms": 10.632380000060948,
+        "grass_ms": 4.853062000620412,
+        "grass_chunks": 19,
+        "cold_chunks": 1,
+        "render_ms": 12.304994000260194
+      }
+    },
+    {
+      "frame": 130,
+      "pose": [
+        300.9257902341361,
+        130.55182064718926,
+        7.0,
+        5.514891280018638,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.610381999758829,
+        "grass_ms": 0.008553000952815637,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 10.110555999744975
+      },
+      "after": {
+        "scene_ms": 5.853589000253123,
+        "grass_ms": 0.010535000001254957,
+        "grass_chunks": 18,
+        "cold_chunks": 0,
+        "render_ms": 7.522987999436737
+      }
+    },
+    {
+      "frame": 131,
+      "pose": [
+        300.9851097911384,
+        130.49095106145043,
+        7.0,
+        5.469891280018639,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 24.724591000449436,
+        "grass_ms": 18.94621800238383,
+        "grass_chunks": 24,
+        "cold_chunks": 2,
+        "render_ms": 29.067958999803523
+      },
+      "after": {
+        "scene_ms": 5.663482000272779,
+        "grass_ms": 0.010003001079894602,
+        "grass_chunks": 19,
+        "cold_chunks": 0,
+        "render_ms": 7.369385999481892
+      }
+    },
+    {
+      "frame": 132,
+      "pose": [
+        301.0777006165785,
+        130.38377198779153,
+        7.0,
+        5.394891280018641,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.638220999979239,
+        "grass_ms": 0.0111660001493874,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 12.052174999553245
+      },
+      "after": {
+        "scene_ms": 18.75543900041521,
+        "grass_ms": 10.945691000415536,
+        "grass_chunks": 22,
+        "cold_chunks": 2,
+        "render_ms": 20.423616999323713
+      }
+    },
+    {
+      "frame": 133,
+      "pose": [
+        301.12930675257985,
+        130.31623886230503,
+        7.0,
+        5.349891280018642,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 19.83171699976083,
+        "grass_ms": 13.994276000630634,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 24.19896100036567
+      },
+      "after": {
+        "scene_ms": 5.755669999416568,
+        "grass_ms": 0.01134000103775179,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 7.383316999948875
+      }
+    },
+    {
+      "frame": 134,
+      "pose": [
+        301.1932907826606,
+        130.22271412636897,
+        7.0,
+        5.289891280018643,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.840297999384347,
+        "grass_ms": 0.011414002074161544,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 10.216246000709361
+      },
+      "after": {
+        "scene_ms": 6.142692000139505,
+        "grass_ms": 0.012450002941477578,
+        "grass_chunks": 21,
+        "cold_chunks": 0,
+        "render_ms": 7.8015750004851725
+      }
+    },
+    {
+      "frame": 135,
+      "pose": [
+        301.2375347454217,
+        130.150144242325,
+        7.0,
+        5.244891280018644,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.656541999996989,
+        "grass_ms": 0.013476001186063513,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 10.024716999396333
+      },
+      "after": {
+        "scene_ms": 5.486215999553679,
+        "grass_ms": 0.00976899900706485,
+        "grass_chunks": 19,
+        "cold_chunks": 0,
+        "render_ms": 7.153010999900289
+      }
+    },
+    {
+      "frame": 136,
+      "pose": [
+        301.27846937599105,
+        130.0756575164531,
+        7.0,
+        5.199891280018645,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 14.76162699964334,
+        "grass_ms": 9.601835001376458,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 19.199147000108496
+      },
+      "after": {
+        "scene_ms": 5.421107999609376,
+        "grass_ms": 0.011377001101209316,
+        "grass_chunks": 19,
+        "cold_chunks": 0,
+        "render_ms": 7.089495000400348
+      }
+    },
+    {
+      "frame": 137,
+      "pose": [
+        301.32775877250634,
+        129.97362130852454,
+        7.0,
+        5.139891280018646,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 19.91412100051093,
+        "grass_ms": 11.98756899793807,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 24.370308000470686
+      },
+      "after": {
+        "scene_ms": 7.723609000095166,
+        "grass_ms": 0.009185997441818472,
+        "grass_chunks": 18,
+        "cold_chunks": 0,
+        "render_ms": 9.394560000146157
+      }
+    },
+    {
+      "frame": 138,
+      "pose": [
+        301.3708409748875,
+        129.8688131209853,
+        7.0,
+        5.079891280018647,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.155879000085406,
+        "grass_ms": 0.010886003110499587,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.505725999588321
+      },
+      "after": {
+        "scene_ms": 12.028137999550381,
+        "grass_ms": 6.432442000004812,
+        "grass_chunks": 19,
+        "cold_chunks": 1,
+        "render_ms": 13.70383799985575
+      }
+    },
+    {
+      "frame": 139,
+      "pose": [
+        301.39898502749816,
+        129.7886144388664,
+        7.0,
+        5.034891280018648,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 15.17519800017908,
+        "grass_ms": 9.40100000025268,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 19.539908999831823
+      },
+      "after": {
+        "scene_ms": 5.743712999901618,
+        "grass_ms": 0.00928400277189212,
+        "grass_chunks": 19,
+        "cold_chunks": 0,
+        "render_ms": 7.348945999183343
+      }
+    },
+    {
+      "frame": 140,
+      "pose": [
+        301.4234928662627,
+        129.70723088923842,
+        7.0,
+        4.989891280018649,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 31.467276000512356,
+        "grass_ms": 25.853488997199747,
+        "grass_chunks": 26,
+        "cold_chunks": 2,
+        "render_ms": 35.85939699951268
+      },
+      "after": {
+        "scene_ms": 15.260066000337247,
+        "grass_ms": 9.163994000118691,
+        "grass_chunks": 19,
+        "cold_chunks": 1,
+        "render_ms": 16.95274000030622
+      }
+    },
+    {
+      "frame": 141,
+      "pose": [
+        301.46140888481034,
+        129.54157034831456,
+        7.0,
+        4.899891280018651,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.058945999939169,
+        "grass_ms": 0.015143001292017289,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 10.432488999867928
+      },
+      "after": {
+        "scene_ms": 6.484044999524485,
+        "grass_ms": 0.011775000530178659,
+        "grass_chunks": 16,
+        "cold_chunks": 0,
+        "render_ms": 8.147905999976501
+      }
+    },
+    {
+      "frame": 142,
+      "pose": [
+        301.4747402976117,
+        129.45762876300861,
+        7.0,
+        4.854891280018652,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 16.94093299920496,
+        "grass_ms": 11.92588899994007,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 21.291852000103972
+      },
+      "after": {
+        "scene_ms": 5.538773999433033,
+        "grass_ms": 0.009765995855559595,
+        "grass_chunks": 16,
+        "cold_chunks": 0,
+        "render_ms": 7.167312000092352
+      }
+    },
+    {
+      "frame": 143,
+      "pose": [
+        301.4866170322656,
+        129.34493548232496,
+        7.0,
+        4.794891280018653,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 14.509728000120958,
+        "grass_ms": 8.318322001287015,
+        "grass_chunks": 28,
+        "cold_chunks": 2,
+        "render_ms": 18.858704000194848
+      },
+      "after": {
+        "scene_ms": 5.296731000271393,
+        "grass_ms": 0.007831001312297303,
+        "grass_chunks": 14,
+        "cold_chunks": 0,
+        "render_ms": 6.897657000081381
+      }
+    },
+    {
+      "frame": 144,
+      "pose": [
+        301.49107734324457,
+        129.26005897240066,
+        7.0,
+        4.749891280018654,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.696949999924982,
+        "grass_ms": 0.014562002434104215,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 9.087809000448033
+      },
+      "after": {
+        "scene_ms": 4.78897799985134,
+        "grass_ms": 0.008622999303042889,
+        "grass_chunks": 14,
+        "cold_chunks": 0,
+        "render_ms": 6.45302900011302
+      }
+    },
+    {
+      "frame": 145,
+      "pose": [
+        301.4917149849056,
+        129.17506773918174,
+        7.0,
+        4.704891280018655,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.4446900001275935,
+        "grass_ms": 0.012618999789992813,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 8.789079999587557
+      },
+      "after": {
+        "scene_ms": 4.357929999969201,
+        "grass_ms": 0.007362000360444654,
+        "grass_chunks": 14,
+        "cold_chunks": 0,
+        "render_ms": 6.045735999578028
+      }
+    },
+    {
+      "frame": 146,
+      "pose": [
+        301.48852866624225,
+        129.09013386087435,
+        7.0,
+        4.659891280018656,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 27.293242000268947,
+        "grass_ms": 21.625472999403428,
+        "grass_chunks": 29,
+        "cold_chunks": 2,
+        "render_ms": 31.673004999902332
+      },
+      "after": {
+        "scene_ms": 5.664714999511489,
+        "grass_ms": 0.009122998562816065,
+        "grass_chunks": 14,
+        "cold_chunks": 0,
+        "render_ms": 7.316236999940884
+      }
+    },
+    {
+      "frame": 147,
+      "pose": [
+        301.4747414668768,
+        128.94917171021072,
+        7.0,
+        4.584891280018658,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.1550459999562,
+        "grass_ms": 0.014228000509319827,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 12.482371000260173
+      },
+      "after": {
+        "scene_ms": 7.8882460002205335,
+        "grass_ms": 0.007400998583761975,
+        "grass_chunks": 14,
+        "cold_chunks": 0,
+        "render_ms": 9.549703000629961
+      }
+    },
+    {
+      "frame": 148,
+      "pose": [
+        301.46141044014547,
+        128.8652300635909,
+        7.0,
+        4.539891280018659,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.758752000270761,
+        "grass_ms": 0.01102499936678214,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 9.057041999767534
+      },
+      "after": {
+        "scene_ms": 4.899925000245275,
+        "grass_ms": 0.008110999260679819,
+        "grass_chunks": 13,
+        "cold_chunks": 0,
+        "render_ms": 6.5220220003539
+      }
+    },
+    {
+      "frame": 149,
+      "pose": [
+        301.44431680943785,
+        128.7819730873055,
+        7.0,
+        4.49489128001866,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.584842000345816,
+        "grass_ms": 3.36872299976676,
+        "grass_chunks": 26,
+        "cold_chunks": 1,
+        "render_ms": 13.053049000518513
+      },
+      "after": {
+        "scene_ms": 4.83473700023751,
+        "grass_ms": 0.006199000381457154,
+        "grass_chunks": 12,
+        "cold_chunks": 0,
+        "render_ms": 6.466889999501291
+      }
+    },
+    {
+      "frame": 150,
+      "pose": [
+        301.4234951835154,
+        128.69956934828292,
+        7.0,
+        4.449891280018661,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.881811000108428,
+        "grass_ms": 0.011686001016641967,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 10.383795999587164
+      },
+      "after": {
+        "scene_ms": 5.710292000003392,
+        "grass_ms": 0.008811999578028917,
+        "grass_chunks": 13,
+        "cold_chunks": 0,
+        "render_ms": 7.364177999988897
+      }
+    },
+    {
+      "frame": 151,
+      "pose": [
+        301.3900078520492,
+        128.59131302759653,
+        7.223472222222224,
+        4.389891280018662,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 8.229397999457433,
+        "grass_ms": 0.0119480018838658,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 12.57627099948877
+      },
+      "after": {
+        "scene_ms": 7.970409999870753,
+        "grass_ms": 0.00612800067756325,
+        "grass_chunks": 11,
+        "cold_chunks": 0,
+        "render_ms": 9.57782700061216
+      }
+    },
+    {
+      "frame": 152,
+      "pose": [
+        301.36066439733713,
+        128.51154537765925,
+        7.377222222222223,
+        4.344891280018663,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.403056999464752,
+        "grass_ms": 0.009894000868371222,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 11.758672999349074
+      },
+      "after": {
+        "scene_ms": 7.601124999382591,
+        "grass_ms": 0.008743000762478914,
+        "grass_chunks": 12,
+        "cold_chunks": 0,
+        "render_ms": 9.280778999709582
+      }
+    },
+    {
+      "frame": 153,
+      "pose": [
+        301.3160154567687,
+        128.4073949842687,
+        7.563749999999999,
+        4.284891280018664,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.672560999708367,
+        "grass_ms": 0.011822999113064725,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 11.99763200020243
+      },
+      "after": {
+        "scene_ms": 7.423398000355519,
+        "grass_ms": 0.006407999535440467,
+        "grass_chunks": 12,
+        "cold_chunks": 0,
+        "render_ms": 9.091395000723423
+      }
+    },
+    {
+      "frame": 154,
+      "pose": [
+        301.27847338773813,
+        128.3311420540702,
+        7.689791666666665,
+        4.239891280018665,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 9.237242999915907,
+        "grass_ms": 3.4252159975949326,
+        "grass_chunks": 23,
+        "cold_chunks": 1,
+        "render_ms": 13.601954000478145
+      },
+      "after": {
+        "scene_ms": 5.984845000057248,
+        "grass_ms": 0.007881002602516674,
+        "grass_chunks": 12,
+        "cold_chunks": 0,
+        "render_ms": 7.619692000844225
+      }
+    },
+    {
+      "frame": 155,
+      "pose": [
+        301.23753909975363,
+        128.2566551399298,
+        7.80395833333333,
+        4.194891280018666,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.455286000549677,
+        "grass_ms": 0.01101700217986945,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 11.809028999778093
+      },
+      "after": {
+        "scene_ms": 6.96571899970877,
+        "grass_ms": 0.007331002052524127,
+        "grass_chunks": 12,
+        "cold_chunks": 0,
+        "render_ms": 8.611674000349012
+      }
+    },
+    {
+      "frame": 156,
+      "pose": [
+        301.19329547076137,
+        128.18408505239677,
+        7.9062499999999964,
+        4.149891280018667,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.790434000118694,
+        "grass_ms": 0.00920699858397711,
+        "grass_chunks": 22,
+        "cold_chunks": 0,
+        "render_ms": 10.176265999689349
+      },
+      "after": {
+        "scene_ms": 6.292267999924661,
+        "grass_ms": 0.008082001841103192,
+        "grass_chunks": 12,
+        "cold_chunks": 0,
+        "render_ms": 7.88899799954379
+      }
+    },
+    {
+      "frame": 157,
+      "pose": [
+        301.12931187082665,
+        128.090560022182,
+        8.024166666666662,
+        4.089891280018668,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.6958870004091295,
+        "grass_ms": 0.011169999197591096,
+        "grass_chunks": 20,
+        "cold_chunks": 0,
+        "render_ms": 12.272415000552428
+      },
+      "after": {
+        "scene_ms": 7.58307700016303,
+        "grass_ms": 0.006009000571793877,
+        "grass_chunks": 10,
+        "cold_chunks": 0,
+        "render_ms": 9.239506999620062
+      }
+    },
+    {
+      "frame": 158,
+      "pose": [
+        301.0777060454288,
+        128.02302665934576,
+        8.098749999999995,
+        4.044891280018669,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.005574000279012,
+        "grass_ms": 0.008682997759024147,
+        "grass_chunks": 20,
+        "cold_chunks": 0,
+        "render_ms": 9.342362000097637
+      },
+      "after": {
+        "scene_ms": 5.173687000024074,
+        "grass_ms": 0.008011999852897134,
+        "grass_chunks": 10,
+        "cold_chunks": 0,
+        "render_ms": 6.738627999766322
+      }
+    },
+    {
+      "frame": 159,
+      "pose": [
+        301.0231144863439,
+        127.95788314096026,
+        8.161458333333329,
+        3.99989128001867,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 10.44676099991193,
+        "grass_ms": 2.713433001190424,
+        "grass_chunks": 22,
+        "cold_chunks": 2,
+        "render_ms": 14.986323999437445
+      },
+      "after": {
+        "scene_ms": 7.701444999838714,
+        "grass_ms": 0.005628000508295372,
+        "grass_chunks": 10,
+        "cold_chunks": 0,
+        "render_ms": 9.321719999206834
+      }
+    },
+    {
+      "frame": 160,
+      "pose": [
+        300.9656477228254,
+        127.89526136039096,
+        8.212291666666662,
+        3.9548912800186695,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 11.902469000233395,
+        "grass_ms": 4.644640000151412,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 16.29554300052405
+      },
+      "after": {
+        "scene_ms": 7.53295199956483,
+        "grass_ms": 0.007511000148952007,
+        "grass_chunks": 10,
+        "cold_chunks": 0,
+        "render_ms": 9.144685000137542
+      }
+    },
+    {
+      "frame": 161,
+      "pose": [
+        300.9054221054333,
+        127.83528810534591,
+        8.251249999999995,
+        3.909891280018669,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.876720000538626,
+        "grass_ms": 0.014675998500024434,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.27616199987824
+      },
+      "after": {
+        "scene_ms": 5.021676999604097,
+        "grass_ms": 0.00776300294091925,
+        "grass_chunks": 12,
+        "cold_chunks": 0,
+        "render_ms": 6.644707000305061
+      }
+    },
+    {
+      "frame": 162,
+      "pose": [
+        300.8425595704639,
+        127.77808480117399,
+        8.278333333333329,
+        3.8648912800186688,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.704589999775635,
+        "grass_ms": 1.371307999761484,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 12.128729999858479
+      },
+      "after": {
+        "scene_ms": 6.554782000421255,
+        "grass_ms": 0.006740000571880955,
+        "grass_chunks": 11,
+        "cold_chunks": 0,
+        "render_ms": 8.171481999852404
+      }
+    },
+    {
+      "frame": 163,
+      "pose": [
+        300.7771873930708,
+        127.72376726502002,
+        8.293541666666663,
+        3.8198912800186684,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 4.557059999569901,
+        "grass_ms": 0.011459001143521164,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 8.919896999941557
+      },
+      "after": {
+        "scene_ms": 4.374213999653875,
+        "grass_ms": 0.006059000952518545,
+        "grass_chunks": 12,
+        "cold_chunks": 0,
+        "render_ms": 6.041700000423589
+      }
+    },
+    {
+      "frame": 164,
+      "pose": [
+        300.7094379295757,
+        127.67244547133463,
+        8.296874999999996,
+        3.774891280018668,
+        -0.06
+      ],
+      "grid": [
+        19,
+        5
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.14198899963958,
+        "grass_ms": 0.009843002771958709,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 9.488300999692001
+      },
+      "after": {
+        "scene_ms": 5.3158790005909395,
+        "grass_ms": 0.007392999577859882,
+        "grass_chunks": 11,
+        "cold_chunks": 0,
+        "render_ms": 6.899889999658626
+      }
+    },
+    {
+      "frame": 165,
+      "pose": [
+        300.63944834949257,
+        127.6242233292136,
+        8.28833333333333,
+        3.7298912800186677,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.51500900019164,
+        "grass_ms": 0.01087400050892029,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 9.924326999680488
+      },
+      "after": {
+        "scene_ms": 5.665235000378743,
+        "grass_ms": 0.00715100031811744,
+        "grass_chunks": 12,
+        "cold_chunks": 0,
+        "render_ms": 7.364589000644628
+      }
+    },
+    {
+      "frame": 166,
+      "pose": [
+        300.56736035780585,
+        127.57919847201745,
+        8.267916666666665,
+        3.6848912800186673,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 13.483186000485148,
+        "grass_ms": 5.229320000580628,
+        "grass_chunks": 24,
+        "cold_chunks": 1,
+        "render_ms": 17.874234999908367
+      },
+      "after": {
+        "scene_ms": 8.302328999889141,
+        "grass_ms": 0.007658999493287411,
+        "grass_chunks": 11,
+        "cold_chunks": 0,
+        "render_ms": 10.021392999988166
+      }
+    },
+    {
+      "frame": 167,
+      "pose": [
+        300.49331990806655,
+        127.53746205969718,
+        8.235624999999999,
+        3.639891280018667,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.379798000125447,
+        "grass_ms": 0.026128999706998002,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 10.842165000212844
+      },
+      "after": {
+        "scene_ms": 6.298846999925445,
+        "grass_ms": 0.006479999683506321,
+        "grass_chunks": 11,
+        "cold_chunks": 0,
+        "render_ms": 7.993464000719541
+      }
+    },
+    {
+      "frame": 168,
+      "pose": [
+        300.4174769068862,
+        127.49909859422658,
+        8.191458333333333,
+        3.5948912800186665,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.283663999965938,
+        "grass_ms": 0.011836999874503817,
+        "grass_chunks": 23,
+        "cold_chunks": 0,
+        "render_ms": 10.641955000210146
+      },
+      "after": {
+        "scene_ms": 6.16679899940209,
+        "grass_ms": 0.006228999154700432,
+        "grass_chunks": 10,
+        "cold_chunks": 0,
+        "render_ms": 7.817800000339048
+      }
+    },
+    {
+      "frame": 169,
+      "pose": [
+        300.3399849104269,
+        127.46418574851462,
+        8.135416666666668,
+        3.549891280018666,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.3684950002643745,
+        "grass_ms": 1.3051019977865508,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 11.772705000112182
+      },
+      "after": {
+        "scene_ms": 5.813067999952182,
+        "grass_ms": 0.005739000698667951,
+        "grass_chunks": 10,
+        "cold_chunks": 0,
+        "render_ms": 7.446252000590903
+      }
+    },
+    {
+      "frame": 170,
+      "pose": [
+        300.26100081350273,
+        127.43279420914429,
+        8.067500000000003,
+        3.504891280018666,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.825965999974869,
+        "grass_ms": 0.010296001164533664,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 10.186630000134755
+      },
+      "after": {
+        "scene_ms": 6.555562999892572,
+        "grass_ms": 0.007381000614259392,
+        "grass_chunks": 10,
+        "cold_chunks": 0,
+        "render_ms": 8.240053999543306
+      }
+    },
+    {
+      "frame": 171,
+      "pose": [
+        300.18068453192154,
+        127.40498753325646,
+        7.9877083333333365,
+        3.4598912800186654,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.915445999969961,
+        "grass_ms": 0.011978000657109078,
+        "grass_chunks": 24,
+        "cold_chunks": 0,
+        "render_ms": 12.309080000704853
+      },
+      "after": {
+        "scene_ms": 7.886684999903082,
+        "grass_ms": 0.0059289986893418245,
+        "grass_chunks": 10,
+        "cold_chunks": 0,
+        "render_ms": 9.557666000546305
+      }
+    },
+    {
+      "frame": 172,
+      "pose": [
+        300.0991986787098,
+        127.38082201986839,
+        7.896041666666669,
+        3.414891280018665,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 11.020453000128327,
+        "grass_ms": 5.073432998869976,
+        "grass_chunks": 25,
+        "cold_chunks": 1,
+        "render_ms": 15.420988000187208
+      },
+      "after": {
+        "scene_ms": 6.045346000064455,
+        "grass_ms": 0.00619899856246775,
+        "grass_chunks": 9,
+        "cold_chunks": 0,
+        "render_ms": 7.7539240000987775
+      }
+    },
+    {
+      "frame": 173,
+      "pose": [
+        300.01670823487683,
+        127.36034659588744,
+        7.792500000000001,
+        3.3698912800186647,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 5.9745290000137175,
+        "grass_ms": 0.013345001207198948,
+        "grass_chunks": 25,
+        "cold_chunks": 0,
+        "render_ms": 10.344927999540232
+      },
+      "after": {
+        "scene_ms": 5.838815999595681,
+        "grass_ms": 0.007192001248768065,
+        "grass_chunks": 10,
+        "cold_chunks": 0,
+        "render_ms": 7.515826999224373
+      }
+    },
+    {
+      "frame": 174,
+      "pose": [
+        299.93338021538483,
+        127.34360271705077,
+        7.677083333333334,
+        3.3248912800186643,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 15.79219599989301,
+        "grass_ms": 7.7189440016809385,
+        "grass_chunks": 29,
+        "cold_chunks": 4,
+        "render_ms": 20.279581000067992
+      },
+      "after": {
+        "scene_ms": 8.214305999899807,
+        "grass_ms": 0.00726999860489741,
+        "grass_chunks": 9,
+        "cold_chunks": 0,
+        "render_ms": 9.947710999767878
+      }
+    },
+    {
+      "frame": 175,
+      "pose": [
+        299.8493833310004,
+        127.33062428399177,
+        7.549791666666667,
+        3.279891280018664,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 14.093001999754051,
+        "grass_ms": 8.46971000009944,
+        "grass_chunks": 29,
+        "cold_chunks": 1,
+        "render_ms": 18.53115300036734
+      },
+      "after": {
+        "scene_ms": 5.651064000630868,
+        "grass_ms": 0.006349999239319004,
+        "grass_chunks": 9,
+        "cold_chunks": 0,
+        "render_ms": 7.276096999703441
+      }
+    },
+    {
+      "frame": 176,
+      "pose": [
+        299.7648876467131,
+        127.32143757360267,
+        7.410625,
+        3.2348912800186636,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 13.791458999548922,
+        "grass_ms": 4.808517001038126,
+        "grass_chunks": 28,
+        "cold_chunks": 1,
+        "render_ms": 18.225341999823286
+      },
+      "after": {
+        "scene_ms": 9.163913000520552,
+        "grass_ms": 0.006851000762253534,
+        "grass_chunks": 9,
+        "cold_chunks": 0,
+        "render_ms": 10.87086899951828
+      }
+    },
+    {
+      "frame": 177,
+      "pose": [
+        299.68006423741167,
+        127.31606118583295,
+        7.259583333333333,
+        3.189891280018663,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 7.68269699983648,
+        "grass_ms": 0.01390400302625494,
+        "grass_chunks": 27,
+        "cold_chunks": 0,
+        "render_ms": 12.143771999944875
+      },
+      "after": {
+        "scene_ms": 7.302214999981516,
+        "grass_ms": 0.0060690008467645384,
+        "grass_chunks": 9,
+        "cold_chunks": 0,
+        "render_ms": 8.966456999587535
+      }
+    },
+    {
+      "frame": 178,
+      "pose": [
+        299.5950848415163,
+        127.31450600603077,
+        7.096666666666666,
+        3.144891280018663,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 6.195150999701582,
+        "grass_ms": 0.012817999049730133,
+        "grass_chunks": 26,
+        "cold_chunks": 0,
+        "render_ms": 10.631217999616638
+      },
+      "after": {
+        "scene_ms": 6.075000000237196,
+        "grass_ms": 0.006567997843376361,
+        "grass_chunks": 9,
+        "cold_chunks": 0,
+        "render_ms": 7.794223999553651
+      }
+    },
+    {
+      "frame": 179,
+      "pose": [
+        299.51012151326654,
+        127.31677518290381,
+        7.0,
+        3.0998912800186624,
+        -0.06
+      ],
+      "grid": [
+        19,
+        7
+      ],
+      "matched": true,
+      "before": {
+        "scene_ms": 11.779645000387973,
+        "grass_ms": 3.1497930012847064,
+        "grass_chunks": 24,
+        "cold_chunks": 2,
+        "render_ms": 16.206958999646304
+      },
+      "after": {
+        "scene_ms": 8.338071999787644,
+        "grass_ms": 0.005638999027723912,
+        "grass_chunks": 8,
+        "cold_chunks": 0,
+        "render_ms": 10.046580999187427
+      }
+    }
+  ]
+}

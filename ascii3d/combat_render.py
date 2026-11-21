@@ -417,6 +417,12 @@ def _draw_name(enemy, cam, pixels, depths):
             pixels[row][x] = char
 
 
+def draw_aimed_name(combat, world, camera, pixels, depths, player):
+    aimed = combat.aimed_enemy(world, player, NAME_REACH)
+    if aimed is not None:
+        _draw_name(aimed, camera, pixels, depths)
+
+
 def _draw_equipped(combat, cam, pixels, depths, player):
     phase = 1 - combat.swing_remaining / SWING_DURATION if combat.swing_remaining else 0
     arc = math.sin(math.pi * phase) if combat.swing_remaining else 0
@@ -481,9 +487,7 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
         if enemy_budget == 0:
             break
     if labels and not depth_only:
-        aimed = combat.aimed_enemy(world, player, NAME_REACH)
-        if aimed is not None:
-            _draw_name(aimed, cam, pixels, depths)
+        draw_aimed_name(combat, world, cam, pixels, depths, player)
     for ball in combat.fireballs[:MAX_FIREBALLS]:
         if _visible(cam, ball.x, ball.y, ball.z, 0.20):
             _draw_flame(ball, cam, pixels, depths, 0.14, ball.direction, time_seconds)

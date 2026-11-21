@@ -13,6 +13,33 @@ WHITE_ON_BLACK = "\x1b[97;40m"
 _ASCII_ROW = re.compile(r"[ -~]*\Z")
 
 
+def encode_ansi_row(row, styles, materials, effects, mode, start=0, stop=None):
+    """Encode a row span with its own foreground and background state."""
+    text = row[start:stop]
+    if styles is None:
+        return text
+    parts = ["\x1b[40m"]
+    current = None
+    plain_start = start
+    if mode == "gray":
+        for column, char in enumerate(text, start):
+            if char != " " and (style := styles[column]) != current:
+                parts.extend((row[plain_start:column], GRAY_CODES[style]))
+                plain_start, current = column, style
+    else:
+        palette = COLOR_CODES
+        for column, char in enumerate(text, start):
+            if char != " ":
+                material = materials[column] if materials is not None else UI
+                effect = effects[column] if effects is not None else 0
+                code = palette[material][effect * 16 + styles[column]]
+                if code != current:
+                    parts.extend((row[plain_start:column], code))
+                    plain_start, current = column, code
+    parts.extend((row[plain_start:stop], WHITE_ON_BLACK))
+    return "".join(parts)
+
+
 @dataclass(frozen=True, slots=True)
 class StyledFrame:
     """A rectangular ASCII frame with a compact foreground index per cell.
@@ -59,46 +86,8 @@ class StyledFrame:
         Blank cells have no visible foreground. Ignoring their style changes
         avoids spending output bandwidth on empty sky or cleared panels.
         """
-        if self.color_mode == "color":
-            return self._color_rows()
-        result = []
-        for row, styles in zip(self.rows, self.styles):
-            parts = ["\x1b[40m"]
-            current = -1
-            start = 0
-            for column, char in enumerate(row):
-                if char == " ":
-                    continue
-                style = styles[column]
-                if style != current:
-                    parts.append(row[start:column])
-                    parts.append(GRAY_CODES[style])
-                    start, current = column, style
-            parts.append(row[start:])
-            parts.append(WHITE_ON_BLACK)
-            result.append("".join(parts))
-        return result
-
-    def _color_rows(self) -> list[str]:
-        result = []
-        palette = COLOR_CODES
-        for row_index, (row, styles) in enumerate(zip(self.rows, self.styles)):
-            materials = self.materials[row_index] if self.materials is not None else None
-            effects = self.effects[row_index] if self.effects is not None else None
-            parts = ["\x1b[40m"]
-            current = None
-            start = 0
-            for column, char in enumerate(row):
-                if char == " ":
-                    continue
-                material = materials[column] if materials is not None else UI
-                effect = effects[column] if effects is not None else 0
-                code = palette[material][effect * 16 + styles[column]]
-                if code != current:
-                    parts.append(row[start:column])
-                    parts.append(code)
-                    start, current = column, code
-            parts.append(row[start:])
-            parts.append(WHITE_ON_BLACK)
-            result.append("".join(parts))
-        return result
+        materials = self.materials if self.color_mode == "color" else None
+        effects = self.effects if self.color_mode == "color" else None
+        return [encode_ansi_row(row, style, materials[y] if materials is not None else None,
+                                effects[y] if effects is not None else None, self.color_mode)
+                for y, (row, style) in enumerate(zip(self.rows, self.styles))]
