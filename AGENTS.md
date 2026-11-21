@@ -97,7 +97,8 @@ output; wall-clock rate caps are only for immediately returning sinks.
 - `gpu_renderer.py`, `gpu_static.wgsl`: optional GPU geometry candidates,
   float64 refinement and exact CPU fallback; presentation remains shared.
 - `native_solids.py`, `solid_bvh.c`: optional float64 acceleration for prepared
-  solid trees. Keep Python and native hit ordering covered by parity tests.
+  solid trees and continuous ground. Keep Python and native hits covered by
+  parity tests.
 - `world.py`, `map_expansion.py`, `terrain.py`, `player.py`: materials/layout,
   highlands, shared multilevel landmarks, collision, stairs, movement, jumping,
   water current and player health.

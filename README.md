@@ -362,9 +362,10 @@ The playable game supports `--renderer auto|cpu|native|gpu`. Auto prefers a
 hardware GPU, then the optional compiled solid library, then the Python CPU
 renderer. `--renderer cpu` selects the standard-library Python path.
 
-The optional native library accelerates exact float64 solid traversal and
-retains the Python grid query for coincident hits. Build it once from the
-repository root. The normal launcher picks up the result automatically.
+The optional native library accelerates exact float64 solid and continuous
+terrain traversal. Coincident solid hits use the Python grid query. Build
+or rebuild the library from the repository root. The normal launcher picks
+up the result automatically.
 
 ```bash
 cc -std=c11 -O3 -ffp-contract=off -fexcess-precision=standard -fPIC -shared \

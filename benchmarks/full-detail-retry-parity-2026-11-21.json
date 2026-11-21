@@ -1,0 +1,1112 @@
+{
+  "method": "Independent df643ea Python control and current native worlds. Simulated camera workload, exact glyph/style/material/effect/ANSI and pre-scenery depth buffers.",
+  "before_sha256": {
+    "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d/app.py": "3db5c2221bee15ae160926cc7950a17ac1a90458cb12933cf5b8236b87a808db",
+    "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+    "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d/audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d/combat.py": "f9c217c2758dc3c5114f9390c56a4fe7fb90ea7804f52e4173c06318fe2bdbda",
+    "ascii3d/combat_render.py": "6077be84cf0445d381d7a0613d140fa294361bcf67e23f10a8be24e84ccea0b8",
+    "ascii3d/door_render.py": "bf6830f8f26c66770150f00cc49361c54aeba964147cc163a43ce37ed799905c",
+    "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d/geometry.py": "0f20bf734f81b32dc6a9c6eb4f71f9021f4fd97c622ab2dda8f019fd6ecb0358",
+    "ascii3d/gpu_renderer.py": "09a59e7a0150adaf3da1fe1a204e21e79e67f2b1ef3c83057e7500942a01b8a1",
+    "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+    "ascii3d/loading.py": "e57114ff6d5fd8133d194fc0427e2ea346bc555834437e412f553ab0074f57f6",
+    "ascii3d/map_expansion.py": "7c91bff5ddeb5ebf0b334bcf07c090132732d2900fc0b9f7bad079139b481103",
+    "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+    "ascii3d/palette.py": "fbe0354811f8049ee294684918a7d25e6cf44d25c895ee0dbc859160a41990e5",
+    "ascii3d/particles.py": "56c2ec151bbacec63c1be0d6db78e63c9d18bb26a8b1fa19f437dcce7d134c2a",
+    "ascii3d/player.py": "83d650349c0e64be85a67729e14736da88dedd3175055179ff26ac38ca045903",
+    "ascii3d/presentation.py": "7a2c9b340b29db4dfafce22bfad3f68a70736e9d6b7288f5b3c8072c42eb3690",
+    "ascii3d/renderer.py": "98781632c11eda4b91b0d682896ef87e3160aa51d027d1c56e516a715fb79910",
+    "ascii3d/roads.py": "3ce5877c4839267145b0af4b443a0a0d7baa40d2935c26f575ef7548bd7f9a6d",
+    "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+    "ascii3d/scenery.py": "9dd698e32622a086ee6e02e20e339ab82a1fde9aa69e5ad1ab34c72bfcf63c1f",
+    "ascii3d/shading.py": "c8aec1cf4c5d62a7ded112f717d93a882eb8823a2a586210f3b833d7362c9771",
+    "ascii3d/sound.py": "1c9b4bd5a1804ca83304553976626af18cc31570abe66632e9ef43bfd95aa1ab",
+    "ascii3d/sound_surfaces.py": "192871cbff7aa51adcc970b83e2aa43cda3d2ccc4b46e470965c616b0c71bf94",
+    "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d/surfaces.py": "70361d021b9e1758ac53810b6b94bb4d99a0d0b8119b2919ae897fec2a0dd7f1",
+    "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d/terminal.py": "038004b016fb01612cc6ddcdb9526c4af898c53f3f5b2cb73fcd359cd6b622a4",
+    "ascii3d/terrain.py": "a86977b75131ccb3e32d6a354116df4f3d8edeb3ce8070a4d5b96cb58a0ed607",
+    "ascii3d/trees.py": "955064fa509035b6fc289682d05192a4fb491d6a85fc1205a7585328426ed00d",
+    "ascii3d/world.py": "51c4f7fc35c704577f2261da30045faebd6fb491cf632323fa133bc103e993ab"
+  },
+  "after_sha256": {
+    "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d/app.py": "3ede6377fcd1656615c961d40479c83f2013b86172abf3a9cee670a67f3e76d6",
+    "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+    "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d/audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d/combat.py": "f9c217c2758dc3c5114f9390c56a4fe7fb90ea7804f52e4173c06318fe2bdbda",
+    "ascii3d/combat_render.py": "6077be84cf0445d381d7a0613d140fa294361bcf67e23f10a8be24e84ccea0b8",
+    "ascii3d/door_render.py": "bf6830f8f26c66770150f00cc49361c54aeba964147cc163a43ce37ed799905c",
+    "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d/frame_timing.py": "246d4ef519cf473f3e301855350d9f7e90f3e939690a38fffb9991cb5d67b941",
+    "ascii3d/geometry.py": "0f20bf734f81b32dc6a9c6eb4f71f9021f4fd97c622ab2dda8f019fd6ecb0358",
+    "ascii3d/gpu_renderer.py": "84456804bbbcd7080a6757500dba6458c79be39bd313d2434310a5028bf70dc9",
+    "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+    "ascii3d/loading.py": "e57114ff6d5fd8133d194fc0427e2ea346bc555834437e412f553ab0074f57f6",
+    "ascii3d/map_expansion.py": "7c91bff5ddeb5ebf0b334bcf07c090132732d2900fc0b9f7bad079139b481103",
+    "ascii3d/monolith_solid_bvh.so": "5a4cc1aa1bff4dea9f53c36fb504ff7b73c5cabd0940f2da22470aab5ad90424",
+    "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d/native_solids.py": "8faf2933a2113054fdc640f13454bb06c5687b5ccbacd8061ac3cadcee7b2863",
+    "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+    "ascii3d/palette.py": "fbe0354811f8049ee294684918a7d25e6cf44d25c895ee0dbc859160a41990e5",
+    "ascii3d/particles.py": "56c2ec151bbacec63c1be0d6db78e63c9d18bb26a8b1fa19f437dcce7d134c2a",
+    "ascii3d/player.py": "83d650349c0e64be85a67729e14736da88dedd3175055179ff26ac38ca045903",
+    "ascii3d/presentation.py": "2593f42dd10229ffa73661f768374c8416a0ee7976cd95d417fcf70a5fea3842",
+    "ascii3d/renderer.py": "9574c4d94cf07890f2c92b9b6d9b765a030db814e174fcacb1908058dfff4a45",
+    "ascii3d/roads.py": "3ce5877c4839267145b0af4b443a0a0d7baa40d2935c26f575ef7548bd7f9a6d",
+    "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+    "ascii3d/scenery.py": "be69e9509ea2065152fdb74b4ae846c668f8e5c4f96e64917ce3506a799b60b9",
+    "ascii3d/shading.py": "ec6056fcbaa381bb72bb0a1fecd05744da167551872c75a4cab855d5f0fda9f0",
+    "ascii3d/solid_bvh.c": "126ae5cbce73c67852f738a47aa21c7f1c68bbbe143902d1be1e4f60e37aa007",
+    "ascii3d/sound.py": "1c9b4bd5a1804ca83304553976626af18cc31570abe66632e9ef43bfd95aa1ab",
+    "ascii3d/sound_surfaces.py": "192871cbff7aa51adcc970b83e2aa43cda3d2ccc4b46e470965c616b0c71bf94",
+    "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d/surfaces.py": "70361d021b9e1758ac53810b6b94bb4d99a0d0b8119b2919ae897fec2a0dd7f1",
+    "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d/terminal.py": "e9d17013edf313192784996fad3136791cd888fb608f4286afbc9e54963971b9",
+    "ascii3d/terrain.py": "a86977b75131ccb3e32d6a354116df4f3d8edeb3ce8070a4d5b96cb58a0ed607",
+    "ascii3d/trees.py": "955064fa509035b6fc289682d05192a4fb491d6a85fc1205a7585328426ed00d",
+    "ascii3d/world.py": "05d41f30124b5eb376cdb1f4daf052351e27521f41bc2db1213f265605fa2c96"
+  },
+  "geometry_sha256": [
+    "d3f5a65ba95df063cb83fdd932a4e7d0e4f56c50ca97af0b98209d77e0db8d88",
+    "d3f5a65ba95df063cb83fdd932a4e7d0e4f56c50ca97af0b98209d77e0db8d88"
+  ],
+  "cases": [
+    {
+      "role": "indoors",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "d8815c7d3c05670134e3ccb4add6f4a3bc448a57b23eafdc685173fa0013a7db"
+    },
+    {
+      "role": "indoors",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "c750ba1b9b3562a0ceb3b8bb4abc4dc54c750878d164609af7d0229e75ed885c"
+    },
+    {
+      "role": "indoors",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "3b53d9d16aeab3864d364de4dcff668c92e71dd6066467d6daa85ed7f8067d9d"
+    },
+    {
+      "role": "courtyard",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "7e6f2a183548896dcac3062faf545dcd9f5f1784ca53e8bea477f905d7c39c8a"
+    },
+    {
+      "role": "courtyard",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "b2a2fd196f6e6d97da72b92a16233686d97fcc78a2f31daba01c079dbb15dfcf"
+    },
+    {
+      "role": "courtyard",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "52b76c287932fc0989d0f16f61b4e225a5439e6f5d298dfe5ca4930c84fe6454"
+    },
+    {
+      "role": "meadow",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "cf06a4447dd146cf52501b9fbf53ffebd300767d07f5cc92ae13c65c156883c7"
+    },
+    {
+      "role": "meadow",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "06b50f0a7131e2de607b0f08e09f1ab7d48b58acdc56bbc99867753224d9e027"
+    },
+    {
+      "role": "meadow",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "161afbb52f367cd85fdd65823558e49337f2bb934c090195299e58e7cdb04396"
+    },
+    {
+      "role": "grass_close",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "804384c6c4390fd6e300aabf1aecc3eece2b16f33a5ea30e233d29bd1494001c"
+    },
+    {
+      "role": "grass_close",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "4bce0eb954adbedcdd3196e4227a856a509c0c97d75fa2bdda1d16c40b8c3505"
+    },
+    {
+      "role": "grass_close",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "eb567907e7619087d3e1b315b6e5ec17f4cb54563b6a5cd4c2e6492b333fae6c"
+    },
+    {
+      "role": "bridge",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "2e3615e9507b243c1b7c8cacfa60e5368271e008c70bf2770446089852638cb1"
+    },
+    {
+      "role": "bridge",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "b9f1c6602f8994016919301a238281e9b71ce2ba76019c4b0fb4552077236316"
+    },
+    {
+      "role": "bridge",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "f2ac14436bf987af5611d70e1f38af512030107218d2cd0080be1bfafb8d3794"
+    },
+    {
+      "role": "river",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "e6c5a274dd51b14c8347aa6acf94f0f3d1e438e82b18e7e18861bc6162ca00f1"
+    },
+    {
+      "role": "river",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "98e741eab5bd0088c1c5489417af954fd3877f4c895ee88ab2451e62083bbc92"
+    },
+    {
+      "role": "river",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "df3a1b38dbf831facd8a32b6ce5de1cb5b357eb2007c8cdf80e2c851effbeb56"
+    },
+    {
+      "role": "ruins",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "2bf3a60e3fc8818037c9dbf562fb71b5982293f4818aa681ab1ef844466cb713"
+    },
+    {
+      "role": "ruins",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "aead219128574291bcdee243eeab230be0800107ffcde21eb801f271bb4bb7ee"
+    },
+    {
+      "role": "ruins",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "16f77c26ec27f0b9648612478cbc8801e7d2d9155de9a9d0637da8d6f5b0a095"
+    },
+    {
+      "role": "lodge",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "1e103f257636f96e28ae5ddb34e15d2f82f6983f76a08b1391aa274b5689b513"
+    },
+    {
+      "role": "lodge",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "2356bc1b6fabcc638f1dcf962661250f844a1c9720fc7fa9a21437afe4d7f3e1"
+    },
+    {
+      "role": "lodge",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "d9e543eb2981674de1ffc5f113fc6d2c4c9adb9f81208068ea8ae72d7a5ff98b"
+    },
+    {
+      "role": "east_bridge",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "76810135a17d06f7ac8e269168830004d46e67fc1afeec4a10a0836a5ed09e87"
+    },
+    {
+      "role": "east_bridge",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "a638411edc35d4cc54f3d1b881508dfe98726e9a6cc2e046ccd260c46419460d"
+    },
+    {
+      "role": "east_bridge",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "96f052e35a89e54569bcba984457d338fd16ec312d7f947adef25001e94c5358"
+    },
+    {
+      "role": "watchstones",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "7ea99e371506014dad0971feffd615b64c15de1fd520f4f6a259d07ae3bb30eb"
+    },
+    {
+      "role": "watchstones",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "dfebabefb7ee7b4c9bb49aee0a40d9de8d39bf356066f11dc82ed89ac0fe7368"
+    },
+    {
+      "role": "watchstones",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "44a787a2df2a6ba97faffad99d91ba62572340ead4fed9193714e2e5fba1d36c"
+    },
+    {
+      "role": "warden",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "8387b2b7eefba794ca655b8314fdfbb3530a8bf459da2dfa5d72e798b4d98d5b"
+    },
+    {
+      "role": "warden",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "a8635163e52a9003e477598173ec725768c1e0d9b984635af4018b5a0cb977f7"
+    },
+    {
+      "role": "warden",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "7d0eb5f70ce98dd7fdb66bc9d16aeb10ba506a8f57cdfe81f652c7d6809b8aca"
+    },
+    {
+      "role": "staff",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "612a4c3a895f5e1f7205225179b53cf996074e117ce0532c5f6bd1c38d226c4c"
+    },
+    {
+      "role": "staff",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "f40e530ce451423d242fe7081a1635bff2c1d927f9874fe78ad51df3ecf76271"
+    },
+    {
+      "role": "staff",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "12d0075b767a92f5bf5d11ff85e661a5c67ca42c5d4f6859bc5f0d68eb1e66ae"
+    },
+    {
+      "role": "fireballs",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "cc57c50d7d16aedaaaebdb91ed8e6d040136dc1a1e485398a698a1b60a9732a6"
+    },
+    {
+      "role": "fireballs",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "0dd5d50f1c815ad5e3165b6c9a239668c28388eb3e7e2448a8d09ebf3faf4bd5"
+    },
+    {
+      "role": "fireballs",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "971d87eb435a9512d5d2cc76e7b3b2c483178514f79b560b5894a5e564abfec6"
+    },
+    {
+      "role": "map",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "f2f870b72687b0787c1076f1671ee1ca512a8a97fea5ca1c6f30d4539578a386"
+    },
+    {
+      "role": "map",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "6087f578d0ae2ff4821b8dc7645d29a7c22cbd0fbc5975fc8422668f68e91315"
+    },
+    {
+      "role": "map",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "0c2cb72829d43cd5b179f4824eed55261b91e746635cdbdf7e56c606f14da0b5"
+    },
+    {
+      "role": "training",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "77b8902c014a9edbcb2e4e7c66ede40ab5d2fd7a4c1c982a1eeb50f205cef176"
+    },
+    {
+      "role": "training",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "80087e1e2269e33f74f29af0d0249c2561a3ad08b3bb57ac15e9c4254c243d33"
+    },
+    {
+      "role": "training",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "8c746093739a7fa8ecd0f11712a5f1a47b7b0a1ede8151ef96308cd1485a6c40"
+    },
+    {
+      "role": "tree_close",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "29ad929facf20770e522d735f0003c3ef7ea2ea5405a2e2c1a63de6a8d44b370"
+    },
+    {
+      "role": "tree_close",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "e3ce3bf444f051b7ad03d747f21629993c050bc83a2d55ced4af259b5d67eaf0"
+    },
+    {
+      "role": "tree_close",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "9f8bb1799237575782008f560df686e1f0373f95fc74b2fe361e2a589749a3a6"
+    },
+    {
+      "role": "tree_canopy",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "c99d0d118bb6723892ad910e43ee20aadf79c262a67a669dde2508ea1fa77c36"
+    },
+    {
+      "role": "tree_canopy",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "e48ea4e512078b80023b703aab472ddd9c7a15e49434c50a4db99fec362636c5"
+    },
+    {
+      "role": "tree_canopy",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "476796226d0fa2ff4545af79fe90ccd9841fe27eb5ab3573cb0197658a89066e"
+    },
+    {
+      "role": "river_diagonal",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "15f88028f7719e97f1003aab2411c5c2db0f0bff7e11d8adc5e2343fe8c2ce6e"
+    },
+    {
+      "role": "river_diagonal",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "353f9902daea18aff807d362f809b7c9bce6f18b0b5d9415c5b13b48d49f7ab7"
+    },
+    {
+      "role": "river_diagonal",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "00d6a2d27e7465fd750b86b6a6c5bbeb6d00297d5a98cd659c989bcae31b0439"
+    },
+    {
+      "role": "river_upstream",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "6e069f43643e296726ca2017b20caac85db52717bb76acb1a424f0b830d06cfd"
+    },
+    {
+      "role": "river_upstream",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "21e37fe937825aeb690d45aed0f3b0860eef3faf1d27c584d0cd771c1a65643b"
+    },
+    {
+      "role": "river_upstream",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "1deab18b54a831a38d5ae4b8a01354a43f05333235ca59776f37669625577c09"
+    },
+    {
+      "role": "castle_exterior",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "6fcb7d60a0802bbea4bf82c74992697c88726d091f887331156ae5fd3a5e7eb1"
+    },
+    {
+      "role": "castle_exterior",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "f01965471b49734d9f1fb3e35b7a2daa573628c17702d77d59b11a8beaa7399a"
+    },
+    {
+      "role": "castle_exterior",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "937c1fd2f2aeb8a6ddb36e1adb003b18cd37133f127b88df4cec49b6315909bd"
+    },
+    {
+      "role": "great_hall",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "007e2d666227dfb601aa97185400c8a2ef0228fa7c2c214fb671c10c009059fb"
+    },
+    {
+      "role": "great_hall",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "dd7fcd51b78ea3bce113903dd5ae78e379d61f03f20747ceed83f3221b1293b6"
+    },
+    {
+      "role": "great_hall",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "de06a60ec5506ff3f3290f2b5bc6b236f18cf64b761b1fac9acf67e9d3c0ac8e"
+    },
+    {
+      "role": "wall_walk",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "dca16a23aa3875e7fa4b2120a78d2aacc50fd5c1c2e0bc259a7f92c60056a539"
+    },
+    {
+      "role": "wall_walk",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "f8c6318334ec0e8cb5ecb52d7e38f5c8a633ee8614f3d8cedb948e28f5a061e8"
+    },
+    {
+      "role": "wall_walk",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "fa4db34ddb073489af272fababdee0f0df610b29f9867273fec8f5d2a316cf59"
+    },
+    {
+      "role": "west_meadow",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "a5fe0782ccc51779de8a0d9cac177c147240061021713c79c88c9b5eb3c3f656"
+    },
+    {
+      "role": "west_meadow",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "d258bd5d9d014cc8bc86a29057a21ca022783b0954a63ff8b7e1e65eb410ff08"
+    },
+    {
+      "role": "west_meadow",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "a1f476c172a571866bef9772dd4c7c3f858ca98619fc323aa0c3f811efefb170"
+    },
+    {
+      "role": "east_meadow",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "b4e3ecb16cbea3c54c07f8c31de3ad8aecf936b249915d0760d2d5d1b31d2db1"
+    },
+    {
+      "role": "east_meadow",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "1f1a8392e697296e959bee12d73c1ca8606490014632f43b531670dcd09a5ffe"
+    },
+    {
+      "role": "east_meadow",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "27f56068723cb5248f6ef5c783ce68bdbfb94d87d747b5353f5e0e54814c0700"
+    },
+    {
+      "role": "ridge_approach",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "7e1e93a0d56e6e61b98f169ab33d5651bfc001c7800f0d81fe0439a5e0c0cba5"
+    },
+    {
+      "role": "ridge_approach",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "87c3452f3173f666e343c6e02b55441801a7453e6a73f2e72ef42fd7bb0ddf60"
+    },
+    {
+      "role": "ridge_approach",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "5e2645589b76c06a0c7f8f67d98221a47a94c9a8749588df68d1c2793062312e"
+    },
+    {
+      "role": "ridge_upper",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "4b5c272de6e8cfc453e0c1cae4c164a72b0c49587e5f66114c7c2599ece1b0bb"
+    },
+    {
+      "role": "ridge_upper",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "0f5c00e2c9418183b69a6f14479c6a8c3036f1b820d93e10fea7436adf685308"
+    },
+    {
+      "role": "ridge_upper",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "c1f9778ceec79b807d7f729e9f211f3a2f07972ee1ecd378a818ab52afe0d029"
+    },
+    {
+      "role": "ridge_roof",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "c37dbedebcbe1287a5d05c4bd3d4b4069aff90cdd107e857897bce41970b84ef"
+    },
+    {
+      "role": "ridge_roof",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "7f860b9b51ad00fa072a671bec1fe7a90c7c6fc06a0bde38bda0013898d96abe"
+    },
+    {
+      "role": "ridge_roof",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "896f050b8fce2ed571c1d4fb7b25106d158e8c675b83c5f16a969e813fff9ff0"
+    },
+    {
+      "role": "highlands",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "ec5ab8621450cc8a20bb1d7cc79e6577b14c562903f1101862080037135c571e"
+    },
+    {
+      "role": "highlands",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "9bbf24c9a1b2b0cb3b80d62a5b17bf708c5560af950965b37294b5af69b3c685"
+    },
+    {
+      "role": "highlands",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "de9753458972328e3de4c0af75c62bbe01b246ca65afd37630c5a3a2630af4e3"
+    },
+    {
+      "role": "ravine",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "5e336ce0e662f7e55f5c7f0fb1ec77ba3cc78dc4ec50832da5fe513864147d4b"
+    },
+    {
+      "role": "ravine",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "c993c1deeb376f6e29161fcdaca1bd37e1e21c099f38624c1a76bbeb753ca2d4"
+    },
+    {
+      "role": "ravine",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "4675ab17edfa42da6b78740de4d8f77b9c30fd87e20471da1b66f1b6b0ccaedc"
+    },
+    {
+      "role": "citadel_approach",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "d84756f3ebf1941334f9a469ac6f15cdf4ee2f76071ec77884c477b0ae15bf23"
+    },
+    {
+      "role": "citadel_approach",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "33590683904a3647bbc848c8671bb9d6803db93a58afcb6184179bde3f69ca5a"
+    },
+    {
+      "role": "citadel_approach",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "19d0ff7f1d7030f36b001d1a66b016513b58deb2d12c7d891f135895aeca5d80"
+    },
+    {
+      "role": "citadel_roof",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "5c1b863f9b84383c6a7fb1259413e2fdcec2c822009e7ca2c636c2fe670208ed"
+    },
+    {
+      "role": "citadel_roof",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "1c8996de64cf985aa1dbc1b0d6e925e11fa214da5dc470d1fff5f9d6b61c6b37"
+    },
+    {
+      "role": "citadel_roof",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "8b6ac3a2e43c1fbcff6b614b2319a4904b1673a40acdfe14e2fbcd8c7caa3f02"
+    },
+    {
+      "role": "highland_map",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "036750b6518a8d77a43ab76d20e87edbcca25aacd704d54e77c25fa2bd94548b"
+    },
+    {
+      "role": "highland_map",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "cbaefcb2c1a17728330f633444698723810bde2eb229f6f26ba25aae340cc7fd"
+    },
+    {
+      "role": "highland_map",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "c8d9caf7834719f42069d0fdb84815f7f5d5b146a9718420e76a1cd8b156ff03"
+    },
+    {
+      "role": "terrace_walk",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "5675ea2b5501d67d50770a0015d3250914b3a395d940c12e92e1e4ec4cc39439"
+    },
+    {
+      "role": "terrace_walk",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "535d970d5a9c9ba30a0759c49d6ca40da90d8494ff3ce85395e5737eb601abe8"
+    },
+    {
+      "role": "terrace_walk",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "65ce19d6a3a18b612a365927f3935ae014a3b2ea7f7f5f3719f2c51345ebf31c"
+    },
+    {
+      "role": "stair_walk",
+      "tick": 5,
+      "size": [
+        160,
+        50
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "4a411031284c8f4c68378e3107e8608625ba848056e11a2654e4f06a879186c3"
+    },
+    {
+      "role": "stair_walk",
+      "tick": 25,
+      "size": [
+        240,
+        80
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "71cc7a3e2ae431d6edb12ac520e4aaa099c2060d26e10c4b1562f4dc614b113c"
+    },
+    {
+      "role": "stair_walk",
+      "tick": 64,
+      "size": [
+        80,
+        60
+      ],
+      "changed_rows": {},
+      "ansi_sha256": "4eab98384003bc53c45301239184048ee41aa3195a19621936b89f395f9e9a67"
+    }
+  ],
+  "complete": true
+}

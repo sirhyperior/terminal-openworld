@@ -5,21 +5,18 @@ Last reviewed **2026-11-21**. [Repository rules](AGENTS.md) ·
 
 ## Current checkpoint
 
-The user reports around 20 FPS in fullscreen. The follow-up writes only
-changed terminal spans, shares expanded foreground data and limits grass
-generation to chunks that can contribute within the blade budget. Real Xfce
-fullscreen at 336×124 improved mean/p95 frame time from 26.45/35.44 to
-25.50/25.54 ms. Six of 358 final intervals exceeded 33.33 ms. The reproducible
-Thornwatch spike near `(296.03, 130.09, Z7)` now costs 40–45 ms. All 180 matched
-replay frames preserve glyphs and color. The user's setup, physical Windows
-fullscreen, hardware GPU and live audio remain open.
-[Fullscreen follow-up evidence](benchmarks/optimization-fullscreen-output-2026-11-21.md)
+The GitHub backlog at `11460a2` rejects the visibility and quality loss from
+adaptive sampling. Commit `780e5c8` restores one ray per native scene cell.
+All 102 independently rendered frame pairs match pre-cloud `df643ea` exactly
+in glyphs, foreground/effect data, ANSI output and opaque depths.
 
-At full detail, all 34 Python CPU roles pass the existing 15% mean and p95
-gates at 160×50. The optional C backend lowers mean/p95 by up to 56%/55% on
-the same tightened Python control. All 102 full-detail frame and depth samples
-match `df643ea`. Full-detail frame-rate acceptance remains open.
-[Optimization evidence](benchmarks/optimization-cpu-2026-11-21.md)
+The retry adds compiled continuous terrain traversal and direct compact GPU
+host refinement. Full-detail Linux timings pass all 34 relative gates at
+160×50 and all eight at 240×80. At 240×80, highlands p95 falls from 237.52 to
+165.02 ms with compiled terrain. None of those eight roles reach 33.33 ms
+p95. The earlier adaptive results are historical. Physical fullscreen 30+
+FPS, hardware GPU timings and live audio remain open.
+[Full-resolution retry evidence](benchmarks/full-detail-retry-2026-11-21.md)
 
 ## Verified evidence and limits
 
@@ -39,10 +36,10 @@ comparison. The new glint expansion check also passed independently.
 
 ## Resume priorities
 
-1. Capture the user's reported fullscreen slowdown with `--frame-timing`.
-   Compare terminal write/flush, GPU fallback, render, input, simulation and
-   cap waits. Benchmark full detail separately. Use the
-   [fullscreen follow-up](benchmarks/optimization-fullscreen-output-2026-11-21.md).
+1. Measure full-detail live performance on the user's hardware with
+   `--frame-timing`. Compare compact GPU host time, exact fallbacks, remaining
+   CPU geometry and shading, and terminal draw. Use the
+   [full-resolution retry](benchmarks/full-detail-retry-2026-11-21.md).
 2. Repair the shortcut and third river bridge grades. Preserve slope limits and
    rerun both route regressions before the full route group.
 3. Migrate the aggregate block-walking test. It assumes 13 axis-aligned entries
@@ -53,7 +50,7 @@ comparison. The new glint expansion check also passed independently.
    and map layout work.
 
 ```powershell
-.\run.bat --frame-timing fullscreen-timing.json
+.\run.bat --frame-timing fullscreen-full-detail-timing.json
 python -B main.py --keyboard-look --color-mode color
 $env:MONOLITH_GPU_TESTS='1'
 .\.venv-gpu\Scripts\python.exe -B -m unittest tests.test_particles tests.test_shading tests.test_color_integration tests.test_color_gpu_parity -v
