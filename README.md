@@ -1,8 +1,7 @@
 # MONOLITH
 
 A dark fantasy first-person exploration sandbox drawn entirely with
-**colored ASCII text on black**. Future structures, landscapes, NPCs and enemies
-follow that theme.
+**colored ASCII text on black**.
 
 Stone runs from graphite to pewter, timber has a muted wine tint, and pale
 gravel marks a route through heather-colored grass. Moonlight enters from the
@@ -61,15 +60,27 @@ protection: Ashgate's four gates and hall doors, plus Gravewood's chapel doors.
 Other arches are open passageways. Look at a nearby door to see its prompt.
 Doors stop or reopen if a leaf would hit you; step clear before closing.
 
+**Mael Veyr**, a sorcerer in a pointed hood and long robes, stands ahead and to
+the left of the default Ashgate spawn. Find **Iven Ashward** across the gatehouse
+aisle, **Sister Morwen** on the south approach to Gravewood Chapel, and
+**Vesper Thorn** inside Thornwatch's south arch. Their breathing and weight
+shifts help pick them out against the scenery.
+
+Aim at a resident to see a sage-green `<Name>` above their head. Enemy labels
+show a name and health. Face a nearby resident and press **E** when the talk
+prompt appears.
+You turn toward each other before the dialogue box opens. The world and your
+character's controls pause during the conversation. Press **E** to advance
+each line and finish the conversation. **P** and **H** still open pause and help.
+
 Collect the upright **iron sword with E** near either Ashgate starting entrance.
 Find the **fire staff** on the western timber floor inside Gravewood Chapel
 (`68.5, 248.5`). **You can hold only one item**: collecting another drops the
 held item nearby. The prompt names the item that will be dropped.
 
 Press **left click** to swing the sword or fire the staff. Ashgate's three
-passive training dummies stand at `(115.5-123.5, 94.5)`. Their names and health
-appear only when aimed at with clear sight. Sword reach is about 2.5 units;
-fireballs travel up to 28 units and stop at walls, doors, trunks or targets.
+passive training dummies stand at `(115.5-123.5, 94.5)`. Sword reach is about 2.5 units;
+fireballs travel up to 28 units and stop at walls, doors, trunks or actors.
 The staff fires once per click with a 0.65-second cooldown and no ammo limit.
 Either weapon deals one damage. Three hits knock a dummy down; it resets after
 four seconds. Its fixed support stays solid while it is down.
@@ -148,7 +159,7 @@ the terminal and adjusts when it is resized. It needs at least 60 columns by
 | Hold Shift | Sprint |
 | Space | Jump; you can land on low walls and crates |
 | Mouse movement | Turn and look up / down on Windows |
-| E | Open / close a door, or collect an item and drop your held item |
+| E | Open or close a door, collect or swap an item, or talk and advance dialogue |
 | Left click | Swing the sword or shoot a fireball with the held staff |
 | F | Mute / unmute sound |
 | M or Tab | Show / hide the overhead map |
@@ -243,9 +254,11 @@ scrapes and damped body resonances. Weathered doors strain and release around
 wooden latches. Sword contacts have an immediate iron/wood impact, while the
 staff exhales cold spellfire with turbulent tails and crumbling embers.
 The Warden uses low, inharmonic stone weight for movement, warnings, impacts,
-collapse and return. Player damage and respawn use their own cues. Interface
-feedback is subdued parchment/leather movement. Gusting wind and flowing water
-use textured turbulence. All sounds are synthesized locally, without recordings.
+collapse and return. Player damage and respawn use their own cues. Resident
+conversations use soft cloth and breath cues for turning, speaking and parting.
+Interface feedback is subdued parchment/leather movement. Gusting wind and
+flowing water use textured turbulence. All sounds are synthesized locally,
+without recordings.
 
 Footsteps and landings follow the actual supporting material, including stairs,
 raised crates and bridge tops. Recurring contacts and relic effects have

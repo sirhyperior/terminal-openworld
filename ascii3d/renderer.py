@@ -3,14 +3,18 @@
 from array import array
 import heapq
 import math
+import textwrap
 
 from .player import Player
+from .dialogue import DialogueView
 from .doors import Door
+from .npcs import NPC
 from .door_render import draw_doors
 from .combat_render import draw_combat, large_opaque_enemy
 from .geometry import Camera
 from .shading import Ink, MIN_SURFACE_LEVEL, Shading, VoxelMoonlight, grass_ink, ink
 from .palette import UI_ACCENT, UI_DANGER, UI_POSITIVE, WATER_CREST
+from .npc_render import draw_npcs
 from .scenery import Scenery
 from .particles import Particles
 from .world import (AIR, BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, WATER,
@@ -529,7 +533,8 @@ class Renderer:
         self._analytic_sky_horizon, self._analytic_horizon_key = skyline, key
         return skyline
 
-    def scene(self, player: Player, width: int, height: int, time_seconds: float = 0.0) -> list[list[str]]:
+    def scene(self, player: Player, width: int, height: int, time_seconds: float = 0.0,
+              *, labels: bool = True) -> list[list[str]]:
         if width < 1 or height < 1:
             return []
         if self._size != (width, height):
@@ -963,8 +968,12 @@ class Renderer:
         if shade_samples is not None:
             native_shading.finish(self.shading, shade_samples, shade_destinations)
         self.scenery.draw(pixels, depths, player, time_seconds, self._focal, self.cell_aspect)
+        if world.npcs:
+            draw_npcs(world.npcs, pixels, depths, player, self._focal, self.cell_aspect,
+                      self.shading, time_seconds)
         draw_combat(world.combat, world, pixels, depths, player,
-                    self._focal, self.cell_aspect, time_seconds, moonlight=self.shading.moonlight)
+                    self._focal, self.cell_aspect, time_seconds,
+                    labels=labels, moonlight=self.shading.moonlight)
         self.particles.draw(pixels, depths, player, time_seconds, self._focal,
                             self.cell_aspect, wind_at=self.scenery.wind_at)
         self.scenery.stats.update(self.particles.stats)
@@ -973,25 +982,22 @@ class Renderer:
     def frame(self, player: Player, width: int, height: int, fps: float = 0.0,
               show_map: bool = False, help_open: bool = False, paused: bool = False,
               time_seconds: float = 0.0, notice: str = "", sound_on: bool | None = None,
-              keyboard_look: bool = False, mouse_captured: bool | None = None) -> list[str]:
+              keyboard_look: bool = False, mouse_captured: bool | None = None,
+              dialogue: DialogueView | None = None) -> list[str]:
         width, height = max(1, width), max(1, height)
         if width < 60 or height < 20:
             lines = ["MONOLITH / TERMINAL 3D", "", "Enlarge the terminal to at least 60 x 20.",
                      f"Current size: {width} x {height}", "", "ESC to exit"]
             return [line[:width].ljust(width) for line in (lines + [""] * height)[:height]]
         view_height = height - 5
-        pixels = self.scene(player, width, view_height, time_seconds)
-        middle_x, middle_y = width // 2, view_height // 2
-        pixels[middle_y][middle_x] = "+"
-        if show_map:
-            self._map(pixels, player)
-        target = self.world.interaction_target(player)
-        prompt = notice
-        if not prompt and target:
-            action = ("Close" if target.target_open else "Open") if isinstance(target, Door) else "Collect"
-            prompt = f"[E] {action} {target.name}"
-            if not isinstance(target, Door) and self.world.combat.held_item is not None:
-                prompt += f" (drop {self.world.combat.held_item.name})"
+        pixels = self.scene(player, width, view_height, time_seconds, labels=dialogue is None)
+        show_dialogue = dialogue is not None and dialogue.text is not None and not (help_open or paused)
+        prompt = ""
+        if dialogue is None:
+            pixels[view_height // 2][width // 2] = "+"
+            if show_map:
+                self._map(pixels, player)
+            prompt = notice or self._interaction_prompt(player)
         if prompt and not help_open and not paused:
             prompt = "  " + prompt[:width - 6] + "  "
             self._write(pixels, (width - len(prompt)) // 2, view_height - 2, prompt)
@@ -1000,7 +1006,7 @@ class Renderer:
             attack = "ENTER         attack" if keyboard_look else "LEFT CLICK    attack"
             lines = ["CONTROLS", "", "WASD          move / strafe / climb steps",
                      "SHIFT / SPACE sprint / jump", look, attack,
-                     "E             open / use / collect",
+                     "E             open / use / collect / talk",
                      "One held item; collect another to swap.",
                      "M / TAB       map       F sound",
                      "R             return to entrance",
@@ -1011,6 +1017,10 @@ class Renderer:
         elif paused:
             lines = ["PAUSED", "", "P    resume", "H    controls", "ESC  quit"]
             self._panel(pixels, lines)
+        elif show_dialogue:
+            # Use the footer rows so the box leaves more of the figure visible.
+            pixels.extend([" "] * width for _ in range(3))
+            self._dialogue_panel(pixels, dialogue)
 
         heading = (90 - math.degrees(player.yaw)) % 360
         compass = ("N", "NE", "E", "SE", "S", "SW", "W", "NW")[int((heading + 22.5) // 45) % 8]
@@ -1038,6 +1048,8 @@ class Renderer:
             controls = "  H back  P resume  ESC quit"
         elif paused:
             controls = "  P resume  H controls  ESC quit"
+        elif dialogue is not None:
+            controls = "  P pause  H controls  F sound  ESC quit"
         elif not keyboard_look and mouse_captured is False:
             controls = " Click to capture mouse  E interact  H controls  P pause"
         elif width >= 100:
@@ -1059,9 +1071,10 @@ class Renderer:
             styles.append(levels)
             materials.append(identities)
             effects.append(variants)
-        styles += [bytearray([6]) * width, bytearray([12]) * width, bytearray([10]) * width]
-        materials += [bytearray([255]) * width for _ in range(3)]
-        effects += [bytearray(width) for _ in range(3)]
+        if not show_dialogue:
+            styles += [bytearray([6]) * width, bytearray([12]) * width, bytearray([10]) * width]
+            materials += [bytearray([255]) * width for _ in range(3)]
+            effects += [bytearray(width) for _ in range(3)]
         health_end = min(width, len(f"  HP [{bar}] {health}/{maximum}"))
         materials[0][2:health_end] = bytes([UI_DANGER if health * 3 <= maximum else UI_POSITIVE]) * max(0, health_end - 2)
         if prompt and not help_open and not paused and "[E]" in prompt:
@@ -1070,8 +1083,33 @@ class Renderer:
             materials[view_height][start:end] = bytes([UI_ACCENT]) * (end - start)
         self._frame_styles, self._frame_materials, self._frame_effects = styles, materials, effects
         lines = [top, "-" * width] + ["".join(row) for row in pixels]
-        lines += ["-" * width, status, controls]
+        if not show_dialogue:
+            lines += ["-" * width, status, controls]
         return [line[:width].ljust(width) for line in lines]
+
+    def _interaction_prompt(self, player: Player) -> str:
+        target = self.world.interaction_target(player)
+        if isinstance(target, Door):
+            action = "Close" if target.target_open else "Open"
+            return f"[E] {action} {target.name}"
+        if isinstance(target, NPC):
+            return f"[E] Talk to {target.name}"
+        if target is None:
+            return ""
+        held = self.world.combat.held_item
+        suffix = f" (drop {held.name})" if held is not None else ""
+        return f"[E] Collect {target.name}{suffix}"
+
+    def _dialogue_panel(self, pixels: list[list[str]], dialogue: DialogueView) -> None:
+        width = min(70, len(pixels[0]) - 12)
+        body = textwrap.wrap(dialogue.text, width)
+        body.extend([""] * (3 - len(body)))
+        hint = "[E] Finish" if dialogue.last else "[E] Continue"
+        speaker = dialogue.speaker[:width]
+        x, y = self._panel(pixels, [speaker, *body, hint.rjust(width)], bottom=True)
+        self._write(pixels, x + 3, y + 1, [ink(char, 15, UI_ACCENT) for char in speaker])
+        self._write(pixels, x + 3 + width - len(hint), y + len(body) + 2,
+                    [ink(char, 15, UI_ACCENT) for char in hint])
 
     def styled_frame(self, *args, color_mode="color", **kwargs):
         """Render styled foregrounds while preserving the plain snapshot API."""
@@ -1237,10 +1275,12 @@ class Renderer:
                 if 0 <= x + index < len(pixels[y]):
                     pixels[y][x + index] = char
 
-    def _panel(self, pixels: list[list[str]], lines: list[str]) -> None:
+    def _panel(self, pixels: list[list[str]], lines: list[str], *, bottom: bool = False) -> tuple[int, int]:
         size = max(len(line) for line in lines) + 6
-        x, y = (len(pixels[0]) - size) // 2, max(0, (len(pixels) - len(lines) - 2) // 2)
+        x, remaining = (len(pixels[0]) - size) // 2, len(pixels) - len(lines) - 2
+        y = max(0, remaining if bottom else remaining // 2)
         self._write(pixels, x, y, "+" + "-" * (size - 2) + "+")
         for i, line in enumerate(lines):
             self._write(pixels, x, y + i + 1, "|  " + line.ljust(size - 6) + "  |")
         self._write(pixels, x, y + len(lines) + 1, "+" + "-" * (size - 2) + "+")
+        return x, y

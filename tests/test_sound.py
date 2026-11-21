@@ -111,6 +111,15 @@ class SoundTests(unittest.TestCase):
                     self.assertGreater(rms, 500)
                     self.assertLessEqual(max(map(abs, clip)), 27000)
 
+    def test_conversation_cues_are_distinct_and_click_free(self):
+        cues = [self.bank.clips[name][0] for name in ("dialogue_start", "dialogue_line", "dialogue_end")]
+        self.assertEqual(len({clip.tobytes() for clip in cues}), 3)
+        for clip in cues:
+            self.assertEqual((clip[0], clip[-1]), (0, 0))
+            rms = math.sqrt(sum(sample * sample for sample in clip) / len(clip))
+            self.assertGreater(rms, 500)
+            self.assertLessEqual(max(map(abs, clip)), 27000)
+
     def test_player_damage_and_enemy_attack_survive_low_priority_footfalls(self):
         mixer = Mixer(self.bank)
         for _ in range(Mixer.MAX_VOICES):

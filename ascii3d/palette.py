@@ -11,6 +11,7 @@ FIRE, EMBER, ARCANE, STRAW, BONE = range(11, 16)
 UI_ACCENT, UI_DANGER, UI_POSITIVE, UI_MUTED = range(16, 20)
 DUST, ASH = range(20, 22)
 WIND_GRASS, WIND_LEAVES, WATER_CREST = range(22, 25)
+CLOTH, LEATHER, SKIN = range(25, 28)
 UI = 255
 
 # Keep the readable shadow floor while leaving room for the brightest glyphs
@@ -43,6 +44,9 @@ _RAMPS = {
     WIND_GRASS: (_GRAPHITE, (134, 141, 168), (175, 185, 215), (226, 232, 243)),
     WIND_LEAVES: (_GRAPHITE, (149, 132, 166), (191, 168, 205), (229, 215, 235)),
     WATER_CREST: (_GRAPHITE, (109, 143, 157), (128, 201, 204), (210, 244, 239)),
+    CLOTH: (_GRAPHITE, (120, 104, 141), (174, 143, 175), (219, 198, 221)),
+    LEATHER: (_GRAPHITE, (139, 109, 104), (178, 140, 114), (215, 182, 151)),
+    SKIN: (_GRAPHITE, (158, 121, 114), (204, 167, 142), (242, 208, 180)),
     UI_ACCENT: (_GRAPHITE, (128, 145, 166), (171, 190, 215), (215, 231, 246)),
     UI_DANGER: ((136, 84, 103), (180, 105, 130), (222, 143, 157), (254, 191, 199)),
     UI_POSITIVE: (_GRAPHITE, (115, 147, 144), (151, 189, 178), (206, 238, 221)),

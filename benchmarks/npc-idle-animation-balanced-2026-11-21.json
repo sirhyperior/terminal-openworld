@@ -1,0 +1,3348 @@
+{
+  "method": "fixed-camera ABBA with the live Windows mixer in a native console",
+  "timed": [
+    "audio controls and soundscape",
+    "full scene and HUD",
+    "styled ANSI rows"
+  ],
+  "terminal_writes": false,
+  "physical_fullscreen": false,
+  "control": "working-tree NPC prototype immediately before idle animation",
+  "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "frames_per_variant": 60,
+  "warmups_per_variant": 5,
+  "color_mode": "color",
+  "threshold_percent": 15,
+  "timestamps_seconds": [
+    0.0,
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0,
+    1.2,
+    1.4,
+    1.6,
+    1.8,
+    2.0,
+    2.2,
+    2.4,
+    2.6,
+    2.8,
+    3.0,
+    3.2,
+    3.4,
+    3.6,
+    3.8,
+    4.0,
+    4.2,
+    4.4,
+    4.6,
+    4.8,
+    5.0,
+    5.2,
+    5.4,
+    5.6,
+    5.8,
+    6.0,
+    6.2,
+    6.4,
+    6.6,
+    6.8,
+    7.0,
+    7.2,
+    7.4,
+    7.6,
+    7.8,
+    8.0,
+    8.2,
+    8.4,
+    8.6,
+    8.8,
+    9.0,
+    9.2,
+    9.4,
+    9.6,
+    9.8,
+    10.0,
+    10.2,
+    10.4,
+    10.6,
+    10.8,
+    11.0,
+    11.2,
+    11.4,
+    11.6,
+    11.8,
+    12.0,
+    12.2,
+    12.4,
+    12.6,
+    12.8
+  ],
+  "before_hashes": {
+    "ascii3d\\__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d\\__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d\\app.py": "01d8badc13d699c0ecaf77803d050d739113f92ceb31e17c1ba463912c529d40",
+    "ascii3d\\architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+    "ascii3d\\audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d\\audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d\\audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d\\combat.py": "193b336acd5b9ac21fd94987ca52fef7648c245e7938a99fc9c9befaee374a1c",
+    "ascii3d\\combat_render.py": "33b815ce2aaaf0ee6f6a0fd8fc53f4070acf765bd7f33eb433c6e7844e183539",
+    "ascii3d\\dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+    "ascii3d\\door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+    "ascii3d\\doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d\\events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d\\frame_timing.py": "1c79e7f449d6ae6aecd3ab0be4e90374de04d853d188e0248b6cc54d0eb358ca",
+    "ascii3d\\geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+    "ascii3d\\gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+    "ascii3d\\gpu_renderer.py": "7994ff6b1010a15d2486df2523bb79147066743abf0ee512c59619db5a650593",
+    "ascii3d\\gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+    "ascii3d\\loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+    "ascii3d\\map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+    "ascii3d\\monolith_solid_bvh.dll": "ecf84d60c7ff3447814d3fd4b752e8c5f5661e2054d5f79428865cabdac79c65",
+    "ascii3d\\mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d\\native_shading.py": "d6a497d659f9d51485c4bf8e6234947096bcdb63ef29f7b4a53ccafbd444bdc3",
+    "ascii3d\\native_solids.py": "6366d0d7e5497cc451d70531b466b691be0dac6f991b1df9db6345bdbde2d1f7",
+    "ascii3d\\npc_render.py": "a453f59e4752f778f5e7678215544c11e9a7409c9058dbddfdc18a405fb42c41",
+    "ascii3d\\npcs.py": "1adf5620a7d5db94f6fec50dbff4cc962218966106ce58f8f27ae9395ceeb53e",
+    "ascii3d\\orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+    "ascii3d\\palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+    "ascii3d\\particles.py": "56c2ec151bbacec63c1be0d6db78e63c9d18bb26a8b1fa19f437dcce7d134c2a",
+    "ascii3d\\player.py": "83d650349c0e64be85a67729e14736da88dedd3175055179ff26ac38ca045903",
+    "ascii3d\\presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+    "ascii3d\\renderer.py": "159dee1bc657720a7fb885b6b33b47349e3822044c914d54f7ea403d0dcc261f",
+    "ascii3d\\roads.py": "3ce5877c4839267145b0af4b443a0a0d7baa40d2935c26f575ef7548bd7f9a6d",
+    "ascii3d\\rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+    "ascii3d\\scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+    "ascii3d\\shading.py": "82ec21224c4380b533a23a02523f33d09aee3d24fa9edcc12ae83c989edbe176",
+    "ascii3d\\solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+    "ascii3d\\sound.py": "690a3b8b8a107a0fe16923056f703d316991815b6eec73987215055e3c8d3e23",
+    "ascii3d\\sound_surfaces.py": "cf6b4e4b22ad5b8e31269a4f903b278e700cc4b10cf842ea8284751701e80a17",
+    "ascii3d\\soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d\\surface_lighting.h": "a384fb84a8277dc7d5f808ecea77726f218626a65ac2721233205aa2c820f3e2",
+    "ascii3d\\surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+    "ascii3d\\targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d\\terminal.py": "f2e7fd2423a351422d3994996702bca8bd43f28aed0affdfa588b8b7ba1b2d7b",
+    "ascii3d\\terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+    "ascii3d\\trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+    "ascii3d\\voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+    "ascii3d\\world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+  },
+  "after_hashes": {
+    "ascii3d\\__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d\\__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d\\app.py": "01d8badc13d699c0ecaf77803d050d739113f92ceb31e17c1ba463912c529d40",
+    "ascii3d\\architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+    "ascii3d\\audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d\\audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d\\audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d\\combat.py": "193b336acd5b9ac21fd94987ca52fef7648c245e7938a99fc9c9befaee374a1c",
+    "ascii3d\\combat_render.py": "33b815ce2aaaf0ee6f6a0fd8fc53f4070acf765bd7f33eb433c6e7844e183539",
+    "ascii3d\\dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+    "ascii3d\\door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+    "ascii3d\\doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d\\events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d\\frame_timing.py": "1c79e7f449d6ae6aecd3ab0be4e90374de04d853d188e0248b6cc54d0eb358ca",
+    "ascii3d\\geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+    "ascii3d\\gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+    "ascii3d\\gpu_renderer.py": "7994ff6b1010a15d2486df2523bb79147066743abf0ee512c59619db5a650593",
+    "ascii3d\\gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+    "ascii3d\\loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+    "ascii3d\\map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+    "ascii3d\\monolith_solid_bvh.dll": "ecf84d60c7ff3447814d3fd4b752e8c5f5661e2054d5f79428865cabdac79c65",
+    "ascii3d\\mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d\\native_shading.py": "d6a497d659f9d51485c4bf8e6234947096bcdb63ef29f7b4a53ccafbd444bdc3",
+    "ascii3d\\native_solids.py": "6366d0d7e5497cc451d70531b466b691be0dac6f991b1df9db6345bdbde2d1f7",
+    "ascii3d\\npc_render.py": "64b2af23c703e4fed7bb1dca6c1d9f7bde4309156113cb8b6cbc65db8244135d",
+    "ascii3d\\npcs.py": "1adf5620a7d5db94f6fec50dbff4cc962218966106ce58f8f27ae9395ceeb53e",
+    "ascii3d\\orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+    "ascii3d\\palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+    "ascii3d\\particles.py": "56c2ec151bbacec63c1be0d6db78e63c9d18bb26a8b1fa19f437dcce7d134c2a",
+    "ascii3d\\player.py": "83d650349c0e64be85a67729e14736da88dedd3175055179ff26ac38ca045903",
+    "ascii3d\\presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+    "ascii3d\\renderer.py": "cb64252a55b1bf4e5ff1c9cc4dc6bbab3df2bf666e2f5828da2d5f9e9cb9a8d1",
+    "ascii3d\\roads.py": "3ce5877c4839267145b0af4b443a0a0d7baa40d2935c26f575ef7548bd7f9a6d",
+    "ascii3d\\rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+    "ascii3d\\scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+    "ascii3d\\shading.py": "82ec21224c4380b533a23a02523f33d09aee3d24fa9edcc12ae83c989edbe176",
+    "ascii3d\\solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+    "ascii3d\\sound.py": "690a3b8b8a107a0fe16923056f703d316991815b6eec73987215055e3c8d3e23",
+    "ascii3d\\sound_surfaces.py": "cf6b4e4b22ad5b8e31269a4f903b278e700cc4b10cf842ea8284751701e80a17",
+    "ascii3d\\soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d\\surface_lighting.h": "a384fb84a8277dc7d5f808ecea77726f218626a65ac2721233205aa2c820f3e2",
+    "ascii3d\\surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+    "ascii3d\\targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d\\terminal.py": "f2e7fd2423a351422d3994996702bca8bd43f28aed0affdfa588b8b7ba1b2d7b",
+    "ascii3d\\terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+    "ascii3d\\trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+    "ascii3d\\voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+    "ascii3d\\world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+  },
+  "comparison": "balanced",
+  "alternating_orders": true,
+  "cases": {
+    "120x40-close": {
+      "status": "complete",
+      "viewports": [
+        120,
+        40
+      ],
+      "visible_cells": {
+        "before": 272,
+        "after": 269
+      },
+      "poses": {
+        "before": {
+          "x": 128.5,
+          "y": 79.5,
+          "z": 1.0,
+          "yaw": 0.49555167348582985,
+          "pitch": -0.22891896223048896
+        },
+        "after": {
+          "x": 128.5,
+          "y": 79.5,
+          "z": 1.0,
+          "yaw": 0.49555167348582985,
+          "pitch": -0.22891896223048896
+        }
+      },
+      "distance": 2.102974084481304,
+      "before": {
+        "mean_ms": 15.41,
+        "p95_ms": 18.436,
+        "sample_count": 60,
+        "samples_ms": [
+          11.952,
+          13.8725,
+          11.4768,
+          11.2071,
+          12.0699,
+          12.0864,
+          13.1954,
+          13.4151,
+          14.1812,
+          15.6916,
+          11.5423,
+          11.9195,
+          17.3036,
+          14.1403,
+          15.1312,
+          14.0845,
+          14.0479,
+          11.1724,
+          14.3895,
+          13.7035,
+          11.4354,
+          12.5254,
+          17.6199,
+          12.9634,
+          15.0577,
+          14.5538,
+          14.0491,
+          13.4956,
+          13.5693,
+          17.7023,
+          13.9857,
+          13.0807,
+          14.7347,
+          12.2998,
+          12.5917,
+          35.3,
+          12.1946,
+          15.8258,
+          15.9692,
+          13.7892,
+          14.6687,
+          14.774,
+          17.3727,
+          17.0158,
+          17.4105,
+          16.4145,
+          16.1163,
+          15.1498,
+          17.2203,
+          16.9796,
+          16.5942,
+          17.7109,
+          15.9456,
+          40.4233,
+          18.4363,
+          15.5281,
+          17.1593,
+          19.7771,
+          15.5503,
+          15.0377
+        ],
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 54,
+          "grass_drawn": 40,
+          "grass_chunks": 9,
+          "tree_samples": 1,
+          "tree_pixel_budget": 12600,
+          "particle_budget": 233,
+          "particle_candidates": 23,
+          "particle_draw_budget": 70,
+          "particles_drawn": 22,
+          "ambient_candidates": 23,
+          "dynamic_candidates": 0,
+          "ambient_samples": 233,
+          "ambient_sample_budget": 233,
+          "ambient_glint_candidates": 0,
+          "ambient_glints": 0,
+          "particle_sources": 0,
+          "particle_chunks": 11,
+          "particle_occluded": 16,
+          "particle_protected": 0
+        },
+        "serialized_row_bytes": {
+          "mean_bytes": 30993.75,
+          "p95_bytes": 31141,
+          "sample_count": 60,
+          "samples_bytes": [
+            30799,
+            30970,
+            30875,
+            31065,
+            31008,
+            30989,
+            31027,
+            30932,
+            30932,
+            30951,
+            30970,
+            30913,
+            30932,
+            31027,
+            31217,
+            31217,
+            31065,
+            30951,
+            30913,
+            30951,
+            31008,
+            30932,
+            31008,
+            31103,
+            31141,
+            31065,
+            31008,
+            30951,
+            30989,
+            30875,
+            31008,
+            31065,
+            31027,
+            30837,
+            30970,
+            31027,
+            31027,
+            31046,
+            31027,
+            30951,
+            30856,
+            30932,
+            30989,
+            30913,
+            30913,
+            31065,
+            31179,
+            31084,
+            31046,
+            31046,
+            30989,
+            30989,
+            30932,
+            30989,
+            30951,
+            30932,
+            31008,
+            31008,
+            31027,
+            31008
+          ]
+        },
+        "gc_by_sample": [
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0007
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.002
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.117
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0008
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0007
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0008
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0008
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0022
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.178
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1432
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1969
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.7873
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 21.4672
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0008
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0007
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0025
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.002
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1794
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 24.5405
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0023
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ]
+        ]
+      },
+      "after": {
+        "mean_ms": 15.035,
+        "p95_ms": 17.516,
+        "sample_count": 60,
+        "samples_ms": [
+          12.7831,
+          13.2326,
+          11.5728,
+          12.4603,
+          12.0055,
+          11.8319,
+          11.6686,
+          13.7699,
+          13.8972,
+          14.8807,
+          13.574,
+          16.3486,
+          15.6132,
+          14.1659,
+          13.4708,
+          14.2241,
+          12.1488,
+          33.4313,
+          15.2652,
+          13.5012,
+          13.2281,
+          13.3282,
+          13.0126,
+          12.8885,
+          14.5392,
+          13.8474,
+          13.2379,
+          14.9171,
+          15.1175,
+          15.9444,
+          15.5176,
+          14.3289,
+          13.4725,
+          13.6026,
+          11.8456,
+          12.1742,
+          16.129,
+          16.202,
+          17.4113,
+          13.9762,
+          14.6161,
+          14.1652,
+          16.261,
+          16.7434,
+          17.0265,
+          15.6525,
+          16.7354,
+          15.9404,
+          17.0889,
+          15.3654,
+          15.969,
+          16.9667,
+          17.0355,
+          17.4806,
+          15.7861,
+          15.2014,
+          18.4763,
+          17.969,
+          17.5162,
+          15.5509
+        ],
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 54,
+          "grass_drawn": 40,
+          "grass_chunks": 9,
+          "tree_samples": 1,
+          "tree_pixel_budget": 12600,
+          "particle_budget": 233,
+          "particle_candidates": 23,
+          "particle_draw_budget": 70,
+          "particles_drawn": 22,
+          "ambient_candidates": 23,
+          "dynamic_candidates": 0,
+          "ambient_samples": 233,
+          "ambient_sample_budget": 233,
+          "ambient_glint_candidates": 0,
+          "ambient_glints": 0,
+          "particle_sources": 0,
+          "particle_chunks": 11,
+          "particle_occluded": 16,
+          "particle_protected": 0
+        },
+        "serialized_row_bytes": {
+          "mean_bytes": 31188.5,
+          "p95_bytes": 31407,
+          "sample_count": 60,
+          "samples_bytes": [
+            31103,
+            31274,
+            31236,
+            31407,
+            31274,
+            31255,
+            31198,
+            31027,
+            31027,
+            31008,
+            31008,
+            30932,
+            31046,
+            31160,
+            31426,
+            31426,
+            31274,
+            31103,
+            31141,
+            31179,
+            31255,
+            31217,
+            31369,
+            31445,
+            31388,
+            31217,
+            31179,
+            31008,
+            31027,
+            30951,
+            31027,
+            31141,
+            31122,
+            30989,
+            31160,
+            31217,
+            31312,
+            31350,
+            31407,
+            31331,
+            31179,
+            31217,
+            31179,
+            31027,
+            31008,
+            31122,
+            31217,
+            31084,
+            31141,
+            31198,
+            31198,
+            31217,
+            31160,
+            31160,
+            31179,
+            31160,
+            31274,
+            31293,
+            31369,
+            31312
+          ]
+        },
+        "gc_by_sample": [
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0007
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0008
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0006
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0006
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0008
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.2011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1289
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1667
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.7233
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 20.4346
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.003
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0007
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0008
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1296
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0023
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0022
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.2989
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1375
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.2528
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.9121
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1364
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0026
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0027
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0022
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            }
+          ]
+        ]
+      },
+      "mean_change_percent": -2.43,
+      "p95_change_percent": -4.99,
+      "passed": true
+    },
+    "120x40-mid-range": {
+      "status": "complete",
+      "viewports": [
+        120,
+        40
+      ],
+      "visible_cells": {
+        "before": 52,
+        "after": 53
+      },
+      "poses": {
+        "before": {
+          "x": 126.0,
+          "y": 78.15,
+          "z": 1.0,
+          "yaw": 0.4953112310764198,
+          "pitch": -0.09878367696642922
+        },
+        "after": {
+          "x": 126.0,
+          "y": 78.15,
+          "z": 1.0,
+          "yaw": 0.4953112310764198,
+          "pitch": -0.09878367696642922
+        }
+      },
+      "distance": 4.944188507733086,
+      "before": {
+        "mean_ms": 15.085,
+        "p95_ms": 18.007,
+        "sample_count": 60,
+        "samples_ms": [
+          12.9772,
+          14.4378,
+          17.4794,
+          15.6936,
+          15.6589,
+          17.2073,
+          16.8233,
+          17.4791,
+          15.5186,
+          13.8944,
+          13.4218,
+          12.2725,
+          13.3787,
+          14.6929,
+          18.2501,
+          16.3953,
+          16.2805,
+          13.8105,
+          12.2427,
+          14.425,
+          14.9097,
+          15.708,
+          15.8248,
+          14.8711,
+          17.7513,
+          16.0943,
+          16.5764,
+          15.0358,
+          15.9441,
+          13.7554,
+          11.5183,
+          11.5833,
+          12.05,
+          15.7074,
+          13.5819,
+          13.2435,
+          16.6693,
+          18.007,
+          15.2243,
+          18.5406,
+          16.3638,
+          18.2481,
+          16.6574,
+          15.1197,
+          15.2384,
+          17.4043,
+          16.4997,
+          14.637,
+          15.8474,
+          15.7053,
+          14.5224,
+          13.312,
+          16.2549,
+          14.3263,
+          14.0909,
+          11.9293,
+          14.7421,
+          13.3506,
+          12.2843,
+          13.6031
+        ],
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 8,
+          "grass_drawn": 7,
+          "grass_chunks": 8,
+          "tree_samples": 0,
+          "tree_pixel_budget": 12600,
+          "particle_budget": 233,
+          "particle_candidates": 48,
+          "particle_draw_budget": 70,
+          "particles_drawn": 47,
+          "ambient_candidates": 45,
+          "dynamic_candidates": 3,
+          "ambient_samples": 233,
+          "ambient_sample_budget": 233,
+          "ambient_glint_candidates": 0,
+          "ambient_glints": 0,
+          "particle_sources": 1,
+          "particle_chunks": 11,
+          "particle_occluded": 18,
+          "particle_protected": 0
+        },
+        "serialized_row_bytes": {
+          "mean_bytes": 34881.15,
+          "p95_bytes": 35055,
+          "sample_count": 60,
+          "samples_bytes": [
+            34884,
+            34941,
+            34960,
+            35112,
+            34979,
+            34941,
+            35055,
+            34998,
+            35055,
+            34846,
+            34998,
+            34922,
+            35112,
+            34960,
+            34846,
+            34941,
+            34865,
+            34979,
+            35055,
+            34998,
+            34903,
+            34865,
+            34675,
+            34713,
+            34846,
+            34789,
+            34998,
+            34903,
+            34789,
+            34884,
+            34979,
+            35036,
+            34903,
+            34808,
+            34979,
+            35036,
+            35055,
+            35017,
+            34903,
+            34922,
+            34922,
+            34846,
+            34713,
+            34637,
+            34732,
+            34542,
+            34827,
+            34789,
+            34865,
+            34903,
+            34732,
+            34751,
+            34599,
+            34618,
+            34656,
+            34713,
+            34713,
+            35036,
+            34941,
+            34884
+          ]
+        },
+        "gc_by_sample": [
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.6241
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.2107
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.2836
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.9042
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0023
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0022
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0022
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.002
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.3025
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.2682
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.002
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.002
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0007
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.002
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0008
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0022
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0025
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0024
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.2862
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.2978
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0008
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ]
+        ]
+      },
+      "after": {
+        "mean_ms": 16.941,
+        "p95_ms": 35.445,
+        "sample_count": 60,
+        "samples_ms": [
+          14.9161,
+          13.5052,
+          16.7361,
+          15.5631,
+          40.229,
+          16.21,
+          18.0532,
+          15.6516,
+          16.4018,
+          16.737,
+          14.0161,
+          16.5684,
+          15.3265,
+          15.6202,
+          16.9223,
+          15.2212,
+          17.7318,
+          16.4424,
+          12.0866,
+          15.5042,
+          15.9965,
+          15.9096,
+          37.663,
+          15.6848,
+          15.8482,
+          16.9546,
+          16.7963,
+          14.0338,
+          14.4745,
+          13.456,
+          13.4491,
+          12.0492,
+          13.7356,
+          15.9474,
+          14.0008,
+          15.1444,
+          17.3811,
+          15.7488,
+          15.7563,
+          44.0206,
+          15.4342,
+          16.4937,
+          17.131,
+          14.3829,
+          14.7041,
+          15.9908,
+          17.4338,
+          16.1723,
+          15.1512,
+          14.8646,
+          16.7479,
+          13.889,
+          16.3006,
+          13.8138,
+          14.3532,
+          14.1539,
+          13.6723,
+          35.4454,
+          13.6208,
+          13.2281
+        ],
+        "scenery": {
+          "grass_budget": 1400,
+          "grass_candidates": 8,
+          "grass_drawn": 7,
+          "grass_chunks": 8,
+          "tree_samples": 0,
+          "tree_pixel_budget": 12600,
+          "particle_budget": 233,
+          "particle_candidates": 48,
+          "particle_draw_budget": 70,
+          "particles_drawn": 47,
+          "ambient_candidates": 45,
+          "dynamic_candidates": 3,
+          "ambient_samples": 233,
+          "ambient_sample_budget": 233,
+          "ambient_glint_candidates": 0,
+          "ambient_glints": 0,
+          "particle_sources": 1,
+          "particle_chunks": 11,
+          "particle_occluded": 18,
+          "particle_protected": 0
+        },
+        "serialized_row_bytes": {
+          "mean_bytes": 34774.117,
+          "p95_bytes": 34998,
+          "sample_count": 60,
+          "samples_bytes": [
+            34770,
+            34789,
+            34808,
+            34941,
+            34827,
+            34808,
+            34922,
+            34865,
+            34998,
+            34789,
+            34998,
+            34941,
+            35074,
+            34903,
+            34789,
+            34846,
+            34770,
+            34865,
+            34884,
+            34827,
+            34732,
+            34675,
+            34485,
+            34561,
+            34713,
+            34656,
+            34865,
+            34884,
+            34770,
+            34884,
+            34941,
+            34998,
+            34808,
+            34675,
+            34865,
+            34960,
+            34960,
+            34865,
+            34751,
+            34751,
+            34770,
+            34713,
+            34580,
+            34504,
+            34675,
+            34485,
+            34827,
+            34808,
+            34827,
+            34846,
+            34675,
+            34656,
+            34504,
+            34504,
+            34504,
+            34542,
+            34542,
+            34827,
+            34732,
+            34713
+          ]
+        },
+        "gc_by_sample": [
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.002
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.002
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1321
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1271
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.2459
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 25.9849
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0025
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0022
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.763
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 23.3935
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0021
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0008
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0013
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0022
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0019
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 1.2718
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 24.2294
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0023
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.002
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0015
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0018
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0017
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.001
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0009
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0011
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.1848
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.2524
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.7624
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 21.6406
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0016
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            }
+          ],
+          [
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0012
+            },
+            {
+              "generation": 1,
+              "elapsed_ms": 0.0014
+            }
+          ]
+        ]
+      },
+      "mean_change_percent": 12.3,
+      "p95_change_percent": 96.84,
+      "passed": false
+    }
+  },
+  "errors": [],
+  "complete": true,
+  "passed": false,
+  "phase": "finished",
+  "native_console": true,
+  "adapters": {
+    "before": {
+      "vendor": "NVIDIA",
+      "architecture": "",
+      "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+      "description": "621.24",
+      "stackgroup_min_size": 4,
+      "stackgroup_max_size": 128,
+      "vendor_id": 4318,
+      "device_id": 9372,
+      "adapter_type": "DiscreteGPU",
+      "backend_type": "Vulkan"
+    },
+    "after": {
+      "vendor": "NVIDIA",
+      "architecture": "",
+      "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+      "description": "621.24",
+      "stackgroup_min_size": 4,
+      "stackgroup_max_size": 128,
+      "vendor_id": 4318,
+      "device_id": 9372,
+      "adapter_type": "DiscreteGPU",
+      "backend_type": "Vulkan"
+    }
+  },
+  "geometry_hashes": {
+    "before": "d5808b89f40424fc7c0b3a02f740848ea4b20589e1f7e8042a30550b4079c55b",
+    "after": "d5808b89f40424fc7c0b3a02f740848ea4b20589e1f7e8042a30550b4079c55b"
+  },
+  "console_sizes": {
+    "120x40": {
+      "input_mode": 503,
+      "output_mode": 3,
+      "width": 120,
+      "height": 40,
+      "buffer_width": 120,
+      "buffer_height": 40,
+      "attributes": 7,
+      "cursor_visible": true,
+      "cursor": [
+        0,
+        0
+      ],
+      "screen_hash": "e6ac9cf026dcd2fa5e4aeba7c33542a10af717412a63948f964316ee8ee8ab25",
+      "font": {
+        "face": "\uad74\ub9bc\uccb4",
+        "width": 5,
+        "height": 10
+      }
+    }
+  },
+  "audio_health": {
+    "available": true,
+    "buffers": 96,
+    "underruns": 0,
+    "max_write_gap_ms": 56.13,
+    "recoveries": 0,
+    "error": ""
+  }
+}

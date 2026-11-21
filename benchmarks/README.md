@@ -7,7 +7,19 @@ matched hardware, Python, dimensions, frames and audio mode. Camera roles across
 different maps are not identical geometry. Git checkpoint `f27e9ff` retains the
 longer historical narrative removed from the main handoff during cleanup.
 
+The NPC idle-motion comparison records the matched live-audio timings and the
+control/control diagnosis of the original small-viewport p95 spikes.
+[NPC idle animation (2026-11-22)](npc-idle-animation-2026-11-22.md)
+
 ## Open Comparisons
+
+- Mael's spawn and talk views passed the 240×80 live-audio gates and exceeded
+  the 120×40 regression limits.
+  [Mael and actor label timings (2026-11-22)](npc-labels-mael-2026-11-22.md)
+
+- The selective fallback and camera reuse experiments exceeded the p95 gate
+  in matched live-audio comparisons.
+  [Exact GPU follow-up (2026-11-21)](exact-gpu-follow-up-2026-11-21.md)
 
 - **Full-resolution Windows optimization (2026-11-21):**
   [Matched live-audio and native console runs](full-detail-windows-2026-11-21.md)

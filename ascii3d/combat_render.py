@@ -5,7 +5,7 @@ import math
 from .combat import (BURST_DURATION, FIRE_STAFF, MAX_FIREBALLS, CombatState,
                      Enemy, NAME_REACH, SWING_DURATION)
 from .geometry import Camera
-from .palette import ARCANE, BONE, EMBER, FIRE, STRAW
+from .palette import ARCANE, BONE, EMBER, FIRE, STRAW, UI_POSITIVE
 from .shading import DEFAULT_SHADING, MIN_SURFACE_LEVEL, RAMP, Shading, ink
 from .world import METAL, STONE, WOOD
 
@@ -19,7 +19,7 @@ def large_opaque_enemy(combat, cam):
     """Only large nearby bodies justify a second bounded geometry pass."""
     budget = min(MAX_ENEMY_DRAWS, max(1, cam.width * cam.height // 180))
     for enemy in combat.enemies:
-        if not _visible(cam, enemy.x, enemy.y, enemy.z + 1.0, 1.25):
+        if not actor_visible(cam, enemy.x, enemy.y, enemy.z + 1.0, 1.25):
             continue
         if enemy.alive:
             center = cam.project(enemy.x, enemy.y, enemy.z + enemy.height / 2)
@@ -35,7 +35,8 @@ def large_opaque_enemy(combat, cam):
     return False
 
 
-def _visible(cam, x, y, z, radius):
+def actor_visible(cam, x, y, z, radius):
+    """Conservatively cull a bounded actor or item before rasterizing it."""
     dx, dy, dz = x - cam.x, y - cam.y, z - cam.z
     if dx * dx + dy * dy + dz * dz > (DRAW_DISTANCE + radius) ** 2:
         return False
@@ -153,7 +154,9 @@ def _surface_brush(cam, vertices, normal, material, emission):
     return sample
 
 
-def _surface(cam, pixels, depths, vertices, char, material=METAL, emission=0.0, *, cull=False):
+def draw_actor_surface(cam, pixels, depths, vertices, char, material=METAL,
+                       emission=0.0, *, cull=False, textured=True, fixed_ink=None):
+    """Shade and fill an opaque actor face with the shared camera depth."""
     a, b, c = vertices[:3]
     center = tuple(sum(point[i] for point in vertices) / len(vertices) for i in range(3))
     u, v = tuple(b[i] - a[i] for i in range(3)), tuple(c[i] - a[i] for i in range(3))
@@ -172,11 +175,16 @@ def _surface(cam, pixels, depths, vertices, char, material=METAL, emission=0.0, 
     points = [cam.project(*point) for point in clipped]
     depth = max(0, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
     depth_only = getattr(cam, 'depth_only', False)
-    tone = char if depth_only else getattr(cam, "shading", DEFAULT_SHADING).surface(
-        material, *center, normal, depth, emission=emission)
-    area = (max(point[0] for point in points) - min(point[0] for point in points)) * (max(point[1] for point in points) - min(point[1] for point in points))
-    shader = (_surface_brush(cam, vertices, normal, material, emission)
-              if not depth_only and depth < 14 and area >= 4 else None)
+    tone = char
+    if not depth_only:
+        tone = fixed_ink if fixed_ink is not None else getattr(cam, "shading", DEFAULT_SHADING).surface(
+            material, *center, normal, depth, emission=emission)
+    shader = None
+    if textured and fixed_ink is None and not depth_only and depth < 14:
+        width = max(point[0] for point in points) - min(point[0] for point in points)
+        height = max(point[1] for point in points) - min(point[1] for point in points)
+        if width * height >= 4:
+            shader = _surface_brush(cam, vertices, normal, material, emission)
     if len(points) == 4:
         cam.quad(pixels, depths, *points, tone, shader=shader)
     else:
@@ -185,11 +193,11 @@ def _surface(cam, pixels, depths, vertices, char, material=METAL, emission=0.0, 
 
 
 def _face(cam, pixels, depths, a, b, c, char, material=METAL, emission=0.0):
-    _surface(cam, pixels, depths, (a, b, c), char, material, emission)
+    draw_actor_surface(cam, pixels, depths, (a, b, c), char, material, emission)
 
 
 def _quad(cam, pixels, depths, a, b, c, d, char, material=METAL, emission=0.0):
-    _surface(cam, pixels, depths, (a, b, c, d), char, material, emission)
+    draw_actor_surface(cam, pixels, depths, (a, b, c, d), char, material, emission)
 
 
 def _pickup_marker(pickup, cam, pixels, depths):
@@ -381,10 +389,10 @@ def _draw_warden(enemy, cam, pixels, depths):
         for lower, upper in zip(rings, rings[1:]):
             for i in range(len(lower)):
                 j = (i + 1) % len(lower)
-                _surface(cam, pixels, depths, (lower[i], lower[j], upper[j], upper[i]),
-                         char, STONE, cull=not inside)
-        _surface(cam, pixels, depths, tuple(reversed(rings[0])), char, STONE, cull=not inside)
-        _surface(cam, pixels, depths, rings[-1], char, STONE, cull=not inside)
+                draw_actor_surface(cam, pixels, depths, (lower[i], lower[j], upper[j], upper[i]),
+                                   char, STONE, cull=not inside)
+        draw_actor_surface(cam, pixels, depths, tuple(reversed(rings[0])), char, STONE, cull=not inside)
+        draw_actor_surface(cam, pixels, depths, rings[-1], char, STONE, cull=not inside)
 
     for side in (-1, 1):
         block(side * 0.22, side * stride, 0.04, 0.14, 0.18, 0.88, "#")
@@ -401,14 +409,22 @@ def _draw_warden(enemy, cam, pixels, depths):
         block(side * 0.50, forward, up - 0.12, 0.12, 0.13, up + 0.12, "%")
 
 
-def _draw_name(enemy, cam, pixels, depths):
-    projected = cam.project(enemy.x, enemy.y, enemy.z + enemy.height + 0.24)
+def _draw_actor_name(actor, cam, pixels, depths):
+    top = actor.z + actor.height
+    projected = cam.project(actor.x, actor.y, top + 0.24)
     if projected is None:
         return
     px, py, depth = projected
-    label = f"{enemy.name} [{enemy.hp}/{enemy.max_hp}]"
-    label = "".join(char for char in label if 32 <= ord(char) <= 126)[:48]
-    row, column = round(py), round(px - (len(label) - 1) / 2)
+    row = round(py)
+    name = "".join(char for char in actor.name if 32 <= ord(char) <= 126)
+    if isinstance(actor, Enemy):
+        label = f"{name} [{actor.hp}/{actor.max_hp}]"[:48]
+    else:
+        label = [ink(char, 15, UI_POSITIVE) for char in f"<{name[:46]}>"]
+        head = cam.project(actor.x, actor.y, top)
+        if head is not None:
+            row = min(row, math.ceil(head[1]) - 1)
+    column = round(px - (len(label) - 1) / 2)
     if not 0 <= row < cam.height:
         return
     for index, char in enumerate(label):
@@ -454,8 +470,8 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
                 focal, aspect, time_seconds, *, labels=True, depth_only=False, moonlight=None):
     if not pixels or not pixels[0]:
         return
-    if not (combat.pickups or combat.enemies or combat.held_item
-            or combat.fireballs or combat.bursts):
+    if not (combat.pickups or combat.enemies or combat.held_item or combat.fireballs or combat.bursts
+            or (labels and not depth_only and world.npcs)):
         return
     height, width = len(pixels), len(pixels[0])
     cam = Camera(player, width, height, focal, aspect)
@@ -466,7 +482,7 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
         cam.shading.prepare(player, time_seconds)
     pickup_budget = min(MAX_PICKUP_DRAWS, max(1, width * height // 240))
     for pickup in combat.pickups:
-        if pickup.collected or not _visible(cam, pickup.x, pickup.y, pickup.z + 0.8, 0.9):
+        if pickup.collected or not actor_visible(cam, pickup.x, pickup.y, pickup.z + 0.8, 0.9):
             continue
         _draw_pickup(pickup, cam, pixels, depths, time_seconds)
         pickup_budget -= 1
@@ -474,21 +490,21 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
             break
     enemy_budget = min(MAX_ENEMY_DRAWS, max(1, width * height // 180))
     for enemy in combat.enemies:
-        if not _visible(cam, enemy.x, enemy.y, enemy.z + 1.0, 1.25):
+        if not actor_visible(cam, enemy.x, enemy.y, enemy.z + 1.0, 1.25):
             continue
         _draw_enemy(enemy, cam, pixels, depths)
         enemy_budget -= 1
         if enemy_budget == 0:
             break
     if labels and not depth_only:
-        aimed = combat.aimed_enemy(world, player, NAME_REACH)
+        aimed = combat.aimed_actor(world, player, NAME_REACH)
         if aimed is not None:
-            _draw_name(aimed, cam, pixels, depths)
+            _draw_actor_name(aimed, cam, pixels, depths)
     for ball in combat.fireballs[:MAX_FIREBALLS]:
-        if _visible(cam, ball.x, ball.y, ball.z, 0.20):
+        if actor_visible(cam, ball.x, ball.y, ball.z, 0.20):
             _draw_flame(ball, cam, pixels, depths, 0.14, ball.direction, time_seconds)
     for burst in combat.bursts[:MAX_FIREBALLS]:
-        if _visible(cam, burst.x, burst.y, burst.z, 0.35):
+        if actor_visible(cam, burst.x, burst.y, burst.z, 0.35):
             progress = 1 - burst.remaining / BURST_DURATION
             _draw_flame(burst, cam, pixels, depths, 0.14 + progress * 0.20, seconds=time_seconds)
     if combat.held_item is not None:

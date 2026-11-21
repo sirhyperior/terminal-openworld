@@ -6,6 +6,7 @@ import math
 from .doors import Door
 from .events import GameEvent
 from .combat import CombatState, WeaponPickup, make_training_combat
+from .npcs import NPC, make_residents
 from .targeting import cylinder_hit, view_ray
 from .map_expansion import INDOOR_SPAWN, OUTDOOR_SPAWN
 from .surfaces import ConvexSolid, HeightField, SolidBox, circle_rect, grid_intervals
@@ -80,6 +81,7 @@ class World:
     _solid_query_cache: tuple | None = field(default=None, repr=False)
     _native_solid_cache: tuple | None = field(default=None, repr=False)
     _native_heightfield_cache: tuple | None = field(default=None, repr=False)
+    npcs: list[NPC] = field(default_factory=list)
 
     def __post_init__(self):
         if not isinstance(self.trees, _TreeMap):
@@ -509,11 +511,12 @@ class World:
                         return True
         return (any(panel.collides(x, y, feet, radius, height)
                     for door in self.doors for panel in door.panels)
+                or any(npc.collides(x, y, feet, radius, height) for npc in self.npcs)
                 or self.combat.collides(x, y, feet, radius, height,
                                         ignore_enemy=ignore_enemy))
 
     def line_clear(self, origin, direction, distance, ignore_door=None):
-        """Exact voxel, swinging-panel and trunk occlusion before a target.
+        """Exact voxel, swinging-panel, trunk and resident occlusion before a target.
 
         A door may ignore its own leaves when being operated. Every other
         target, including attacks, sees those same leaves as opaque.
@@ -556,6 +559,10 @@ class World:
                 hit = panel.ray_hit(origin, direction, limit)
                 if hit is not None:
                     nearest = limit = hit[0]
+        for npc in self.npcs:
+            hit = npc.interaction_distance(origin, direction, limit)
+            if hit is not None:
+                nearest = limit = hit
         # Tree keys already form a spatial index. Only cells intersecting the
         # segment's expanded bounds can contribute a trunk hit, regardless of
         # how many distant trees the enormous map contains.
@@ -582,7 +589,7 @@ class World:
     def interaction_target(self, player, reach=2.6):
         origin, direction = view_ray(player)
         candidates = []
-        for target in (*self.doors, *self.combat.pickups):
+        for target in (*self.doors, *self.combat.pickups, *self.npcs):
             distance = target.interaction_distance(origin, direction, reach)
             if distance is not None:
                 candidates.append((distance, target))
@@ -592,12 +599,16 @@ class World:
                 return target
         return None
 
-    def interact(self, player):
+    def interact(self, player, *, on_talk=None):
         target = self.interaction_target(player)
         if isinstance(target, Door):
             return [target.toggle()]
         if isinstance(target, WeaponPickup):
             return self.combat.collect(target, player, self)
+        if isinstance(target, NPC):
+            if on_talk is not None:
+                on_talk(target)
+            return [GameEvent("dialogue_start", target.x, target.y)]
         return [GameEvent("interaction_miss")]
 
     def update_doors(self, player, dt):
@@ -649,4 +660,5 @@ def build_world() -> World:
     if world.heightfield is not None:
         world.heightfield.prepare()
     world.combat = make_training_combat()
+    world.npcs = make_residents()
     return world

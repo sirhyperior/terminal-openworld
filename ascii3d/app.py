@@ -10,9 +10,11 @@ import sys
 import time
 
 from .player import Player
+from .dialogue import Conversation
 from .doors import Door
 from .events import GameEvent
 from .loading import LoadingProgress
+from .npcs import NPC
 from .renderer import Renderer
 from .sound import Audio, SoundBank
 from .soundscape import Soundscape
@@ -200,6 +202,12 @@ def main(argv: list[str] | None = None) -> int:
             jump_pending = attack_pending = False
             last_mouse_error = ""
             step = 1 / 120
+            conversation: Conversation | None = None
+
+            def begin_talk(npc: NPC) -> None:
+                nonlocal conversation
+                conversation = Conversation(npc, player)
+
             while True:
                 start = time.perf_counter()
                 if frame_timing is not None:
@@ -216,7 +224,8 @@ def main(argv: list[str] | None = None) -> int:
                         time.sleep(0.25)
                     break
                 ui_events = []
-                if "m" in keys.pressed or "tab" in keys.pressed:
+                in_conversation = conversation is not None
+                if not in_conversation and keys.pressed & {"m", "tab"}:
                     show_map = not show_map
                     ui_events.append(GameEvent("ui_map"))
                 if "h" in keys.pressed:
@@ -238,7 +247,7 @@ def main(argv: list[str] | None = None) -> int:
                         audio_toggle_seconds = time.perf_counter() - toggle_start
                     notice = "Sound on" if audio.enabled else ("Sound muted" if audio.available else "Audio output unavailable")
                     notice_until = simulation_time + 2
-                if "r" in keys.pressed:
+                if not in_conversation and "r" in keys.pressed:
                     player = entrance()
                     demo_time = 0.0
                     jump_pending = attack_pending = False
@@ -256,7 +265,7 @@ def main(argv: list[str] | None = None) -> int:
                 # Motion belongs to this rendered input frame, never to each
                 # catch-up physics step. UI/reset transitions discard old input.
                 input_transition = bool(keys.pressed & {"p", "h", "r"})
-                if active and not keyboard_look and not input_transition:
+                if active and not in_conversation and not keyboard_look and not input_transition:
                     player.look(keys.mouse_dx, keys.mouse_dy)
                 if frame_timing is not None:
                     input_end = time.perf_counter()
@@ -267,14 +276,20 @@ def main(argv: list[str] | None = None) -> int:
                     audio.emit(event)
                 if frame_timing is not None:
                     audio_end = time.perf_counter()
-                if active:
-                    if "e" in keys.pressed:
-                        for event in world.interact(player):
-                            audio.emit(event)
-                            if event.name in ("sword_pickup", "staff_pickup"):
-                                name = world.combat.held_item.name.capitalize()
-                                attack_label = "Enter" if keyboard_look else "left click"
-                                notice, notice_until = f"{name} equipped - {attack_label} to attack", simulation_time + 2
+                if active and conversation is not None:
+                    event = conversation.update(player, elapsed, advance="e" in keys.pressed and not input_transition)
+                    if event is not None:
+                        audio.emit(event)
+                    if conversation.finished:
+                        conversation = None
+                elif active and "e" in keys.pressed:
+                    for event in world.interact(player, on_talk=begin_talk):
+                        audio.emit(event)
+                        if event.name in ("sword_pickup", "staff_pickup"):
+                            name = world.combat.held_item.name.capitalize()
+                            attack_label = "Enter" if keyboard_look else "left click"
+                            notice, notice_until = f"{name} equipped - {attack_label} to attack", simulation_time + 2
+                if active and not in_conversation and conversation is None:
                     jump_pending |= "space" in keys.pressed
                     attack_pending |= "attack" in keys.pressed and not input_transition
                     accumulator += elapsed
@@ -291,7 +306,8 @@ def main(argv: list[str] | None = None) -> int:
                         if 4 < demo_time % 8 < 4.1:
                             jump_pending = True
                         target = world.interaction_target(player)
-                        if target and (not isinstance(target, Door) or not target.target_open):
+                        if (target and not isinstance(target, NPC)
+                                and (not isinstance(target, Door) or not target.target_open)):
                             for event in world.interact(player):
                                 audio.emit(event)
                     while accumulator >= step:
@@ -333,7 +349,8 @@ def main(argv: list[str] | None = None) -> int:
                                               time_seconds=simulation_time,
                                               notice=notice if simulation_time < notice_until else "", sound_on=audio.enabled,
                                               keyboard_look=keyboard_look,
-                                              mouse_captured=mouse_captured, color_mode=args.color_mode)
+                                              mouse_captured=mouse_captured, color_mode=args.color_mode,
+                                              dialogue=conversation.view if conversation is not None else None)
                 if frame_timing is not None:
                     render_end = time.perf_counter()
                 terminal.draw(frame)

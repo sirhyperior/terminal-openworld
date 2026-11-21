@@ -1,7 +1,11 @@
 """Separate pause/help presentation and current input hints at every viewport."""
 
 import unittest
+from unittest.mock import patch
 
+from ascii3d.dialogue import DialogueView
+from ascii3d.npcs import NPC
+from ascii3d.palette import UI_ACCENT
 from ascii3d.player import Player
 from ascii3d.renderer import Renderer
 from ascii3d.world import FLOOR, World
@@ -69,6 +73,39 @@ class MenuTests(unittest.TestCase):
             self.assertIn(attack, footer)
             self.assertNotIn("ARROWS", footer)
             self.assertNotIn("Q attack", footer)
+
+    def test_talk_prompt_and_separate_dialogue_panel_fit_minimum_and_wide_view(self):
+        self.renderer.world.npcs.append(NPC(name="Bell Keeper", x=8.5, y=6.5, z=1, yaw=0,
+                                            dialogue=("Hear the bell?",)))
+        sentence = ("The bell in the tower only sounds after sunset. Count the strokes before "
+                    "you cross the gate and keep your lantern low.")
+        with patch.object(self.renderer, "scene",
+                          side_effect=lambda player, w, h, t, *, labels: [["."] * w for _ in range(h)]):
+            for width, height in ((60, 20), (160, 50)):
+                with self.subTest(width=width):
+                    def render(**kwargs):
+                        return self.renderer.styled_frame(self.player, width, height, **kwargs)
+
+                    normal = render()
+                    self.assertIn("[E] Talk to Bell Keeper", "\n".join(normal.rows))
+                    turn = render(dialogue=DialogueView("Bell Keeper", None, False))
+                    self.assertNotIn("[E]", "\n".join(turn.rows))
+                    self.assertEqual(turn.rows[2 + (height - 5) // 2][width // 2], ".")
+                    talk = render(dialogue=DialogueView("Bell Keeper", sentence, False), show_map=True)
+                    self.assertTrue(all(len(row) == width for row in talk.rows))
+                    bottom = height - 1
+                    self.assertIn("+-----", talk.rows[bottom])
+                    self.assertIn("[E] Continue", talk.rows[bottom - 1])
+                    self.assertIn("Bell Keeper", talk.rows[bottom - 5])
+                    body = " ".join(row.split("|")[1].strip() for row in talk.rows[bottom - 4:bottom - 1])
+                    self.assertEqual(body.strip(), sentence)
+                    start = talk.rows[bottom - 1].index("[E]")
+                    self.assertEqual(talk.materials[bottom - 1][start], UI_ACCENT)
+                    finish = render(dialogue=DialogueView("Bell Keeper", "Farewell.", True))
+                    self.assertIn("[E] Finish", finish.rows[bottom - 1])
+                    pause = render(dialogue=DialogueView("Bell Keeper", sentence, False), paused=True)
+                    self.assertIn("PAUSED", "\n".join(pause.rows))
+                    self.assertNotIn("[E]", "\n".join(pause.rows))
 
 
 if __name__ == "__main__":

@@ -37,6 +37,7 @@ EFFECTS = {
     "enemy_miss": 0.22, "enemy_hurt": 0.28,
     "enemy_down": 0.85, "enemy_respawn": 0.90,
     "player_hurt": 0.30, "player_down": 0.80, "player_respawn": 0.60,
+    "dialogue_start": 0.22, "dialogue_line": 0.32, "dialogue_end": 0.18,
     "interaction_miss": 0.10, "ui_map": 0.13, "ui_help": 0.14,
     "ui_pause": 0.16, "ui_reset": 0.25, "ui_exit": 0.18, "ui_toggle": 0.10,
 }
@@ -308,6 +309,15 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
             wake = _gesture(t, 0.015, duration * 0.96)
             excitation = low * wake * 0.9
             value = (slow * 2.9 + breath * 0.28) * wake
+        elif name == "dialogue_line":
+            # Two quiet, uneven syllable-like breaths mark a new line.
+            voice = _gesture(t, 0.014, 0.13) + 0.65 * _gesture(t, 0.14, 0.16)
+            pulse = 0.76 + 0.24 * math.sin(math.tau * (93 * t - 23 * t * t))
+            value = (slow * 2.7 * pulse + low * 0.42 + breath * 0.16) * voice
+        elif name in ("dialogue_start", "dialogue_end"):
+            cloth = _gesture(t, 0.008, duration * 0.88)
+            settle = math.exp(-t * (31 if name == "dialogue_start" else 46))
+            value = (low * 0.8 + breath * 0.26) * cloth + slow * settle * 1.15
         else:
             # Parchment, leather and a wooden catch distinguish map/help/pause
             # without confirmation beeps or fantasy reward jingles.
@@ -363,6 +373,8 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
         target_db = -19
     elif name in ("enemy_step", "enemy_hurt"):
         target_db = -24
+    elif name.startswith("dialogue_"):
+        target_db = -26
     gain = min(3.0, 32768 * 10 ** (target_db / 20) / max(1, rms),
                27000 / max(1, max(map(abs, result))))
     return array("h", (round(sample * gain) for sample in result))

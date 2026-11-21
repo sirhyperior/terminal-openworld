@@ -1,0 +1,259 @@
+{
+  "method": "Hidden native Win32 console app, WriteConsoleInputW keyboard records, GPU renderer and live audio",
+  "baseline": false,
+  "width": 120,
+  "height": 40,
+  "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+  "scenario": "Begin aimed at Iven from 2.1 units away with a slight yaw offset, then talk, turn, advance and resume",
+  "phase": "finished",
+  "passed": true,
+  "source_hashes": {
+    "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d/app.py": "01d8badc13d699c0ecaf77803d050d739113f92ceb31e17c1ba463912c529d40",
+    "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+    "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d/audio_process.py": "51e03f3098a694ebceabdfb6db88b3eca30e8d2878a613be0c17b7e2c5324398",
+    "ascii3d/combat.py": "193b336acd5b9ac21fd94987ca52fef7648c245e7938a99fc9c9befaee374a1c",
+    "ascii3d/combat_render.py": "33b815ce2aaaf0ee6f6a0fd8fc53f4070acf765bd7f33eb433c6e7844e183539",
+    "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+    "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+    "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d/frame_timing.py": "1c79e7f449d6ae6aecd3ab0be4e90374de04d853d188e0248b6cc54d0eb358ca",
+    "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+    "ascii3d/gpu_renderer.py": "7994ff6b1010a15d2486df2523bb79147066743abf0ee512c59619db5a650593",
+    "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+    "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+    "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+    "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d/native_shading.py": "d6a497d659f9d51485c4bf8e6234947096bcdb63ef29f7b4a53ccafbd444bdc3",
+    "ascii3d/native_solids.py": "1373e3cb0a7754e6b8dbbe0a0831d49cf7f09e97946972e433bccb182fe665b3",
+    "ascii3d/npc_render.py": "a453f59e4752f778f5e7678215544c11e9a7409c9058dbddfdc18a405fb42c41",
+    "ascii3d/npcs.py": "1adf5620a7d5db94f6fec50dbff4cc962218966106ce58f8f27ae9395ceeb53e",
+    "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+    "ascii3d/palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+    "ascii3d/particles.py": "56c2ec151bbacec63c1be0d6db78e63c9d18bb26a8b1fa19f437dcce7d134c2a",
+    "ascii3d/player.py": "83d650349c0e64be85a67729e14736da88dedd3175055179ff26ac38ca045903",
+    "ascii3d/presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+    "ascii3d/renderer.py": "fcfa62bb2e88645f06a6a17a6067672ec8db285e13c2eb8148e464c1cff697cb",
+    "ascii3d/roads.py": "3ce5877c4839267145b0af4b443a0a0d7baa40d2935c26f575ef7548bd7f9a6d",
+    "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+    "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+    "ascii3d/shading.py": "82ec21224c4380b533a23a02523f33d09aee3d24fa9edcc12ae83c989edbe176",
+    "ascii3d/sound.py": "690a3b8b8a107a0fe16923056f703d316991815b6eec73987215055e3c8d3e23",
+    "ascii3d/sound_surfaces.py": "cf6b4e4b22ad5b8e31269a4f903b278e700cc4b10cf842ea8284751701e80a17",
+    "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+    "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d/terminal.py": "f2e7fd2423a351422d3994996702bca8bd43f28aed0affdfa588b8b7ba1b2d7b",
+    "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+    "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+    "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+  },
+  "font_request": {
+    "face": "Consolas",
+    "height": 16,
+    "api_accepted": true,
+    "error": 0
+  },
+  "native_console": true,
+  "console_before": {
+    "input_mode": 503,
+    "output_mode": 3,
+    "width": 120,
+    "height": 40,
+    "buffer_width": 120,
+    "buffer_height": 40,
+    "attributes": 7,
+    "cursor_visible": true,
+    "cursor": [
+      0,
+      15
+    ],
+    "screen_hash": "3a4d27434ad3546fb15a23ddbe5206220f4b98de2649876ec12195500a7e9a59",
+    "font": {
+      "face": "\uad74\ub9bc\uccb4",
+      "width": 8,
+      "height": 16
+    }
+  },
+  "audio_startup": {
+    "available": true,
+    "blocks_rendered": 4
+  },
+  "audio": {
+    "available": true,
+    "enabled": true,
+    "error": "",
+    "blocks_rendered": 33,
+    "recoveries": 0,
+    "underruns": 0,
+    "max_write_gap_ms": 56.07909999889671
+  },
+  "audio_process_stopped": true,
+  "console_after": {
+    "input_mode": 503,
+    "output_mode": 3,
+    "width": 120,
+    "height": 40,
+    "buffer_width": 120,
+    "buffer_height": 40,
+    "attributes": 7,
+    "cursor_visible": true,
+    "cursor": [
+      0,
+      15
+    ],
+    "screen_hash": "3a4d27434ad3546fb15a23ddbe5206220f4b98de2649876ec12195500a7e9a59",
+    "font": {
+      "face": "\uad74\ub9bc\uccb4",
+      "width": 8,
+      "height": 16
+    }
+  },
+  "restoration_sequence": true,
+  "renderer": {
+    "backend": "gpu",
+    "error": ""
+  },
+  "exit_code": 0,
+  "frames": 45,
+  "conversation_frames": 32,
+  "turning_frames": 14,
+  "first_pose": {
+    "position": [
+      128.5,
+      79.5,
+      1.0
+    ],
+    "yaw": 0.5955516734858298,
+    "pitch": -0.02,
+    "npc_yaw": 3.6651914291880923,
+    "time_seconds": 0.0,
+    "dialogue": false,
+    "text": null
+  },
+  "dialogue_facing_pose": {
+    "position": [
+      128.5,
+      79.5,
+      1.0
+    ],
+    "yaw": 0.49555167348582985,
+    "pitch": 0.04751591124199997,
+    "npc_yaw": 3.6371443270756227,
+    "time_seconds": 0.0,
+    "dialogue": true,
+    "text": "Take the north road for Gravewood. Keep to the gravel after you cross the river."
+  },
+  "resumed_pose": {
+    "position": [
+      129.3225255901941,
+      79.9446084271316,
+      1.0
+    ],
+    "yaw": 0.49555167348582985,
+    "pitch": 0.04751591124199997,
+    "npc_yaw": 3.6371443270756227,
+    "time_seconds": 0.275,
+    "dialogue": false,
+    "text": null
+  },
+  "pages": [
+    {
+      "text": "Easy there, traveler. I'm Iven. I've kept this gate since the ash first fell.",
+      "hint": "[E] Continue",
+      "frame": 16
+    },
+    {
+      "text": "There's an iron sword by the entrance. The dummies in the west yard won't mind a few swings.",
+      "hint": "[E] Continue",
+      "frame": 22
+    },
+    {
+      "text": "Take the north road for Gravewood. Keep to the gravel after you cross the river.",
+      "hint": "[E] Finish",
+      "frame": 28
+    }
+  ],
+  "active_screen_checks": {
+    "[E] Talk to Iven Ashward": true,
+    "Easy there, traveler. I'm Iven. I've": true,
+    "There's an iron sword by the": true,
+    "Take the north road for Gravewood.": true
+  },
+  "injected_actions": [
+    {
+      "input": "E tap while holding W, Left, Space and Enter",
+      "after_frame": 1
+    },
+    {
+      "input": "E advances",
+      "after_frame": 21
+    },
+    {
+      "input": "E advances",
+      "after_frame": 27
+    },
+    {
+      "input": "E finishes, release Left, Space and Enter",
+      "after_frame": 33
+    },
+    {
+      "input": "Release W and Escape",
+      "after_frame": 45
+    }
+  ],
+  "dialogue_events": [
+    {
+      "name": "dialogue_start",
+      "audio_enabled": true,
+      "x": 130.35,
+      "y": 80.5,
+      "frame": 1
+    },
+    {
+      "name": "dialogue_line",
+      "audio_enabled": true,
+      "x": 130.35,
+      "y": 80.5,
+      "frame": 15
+    },
+    {
+      "name": "dialogue_line",
+      "audio_enabled": true,
+      "x": 130.35,
+      "y": 80.5,
+      "frame": 21
+    },
+    {
+      "name": "dialogue_line",
+      "audio_enabled": true,
+      "x": 130.35,
+      "y": 80.5,
+      "frame": 27
+    },
+    {
+      "name": "dialogue_end",
+      "audio_enabled": true,
+      "x": 130.35,
+      "y": 80.5,
+      "frame": 33
+    }
+  ],
+  "play_input_ignored": true,
+  "player_frozen": true,
+  "scenery_frozen": true,
+  "player_faced_npc": true,
+  "npc_faced_player": true,
+  "movement_resumed": true,
+  "screen_restored": true,
+  "cursor_restored": true,
+  "modes_restored": true,
+  "dialogue_audio_emitted": true,
+  "audio_clean": true,
+  "source_unchanged": true,
+  "seconds": 11.827631599997403
+}

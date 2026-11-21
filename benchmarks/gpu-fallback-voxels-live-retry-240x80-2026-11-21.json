@@ -1,0 +1,1132 @@
+{
+  "method": "per-frame ABBA, five warmups, equal samples per variant; shared native mixer; styled foreground generation and ANSI row serialization; no terminal writes",
+  "python": "3.14.4",
+  "platform": "Windows",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "width": 240,
+  "height": 80,
+  "frames": 20,
+  "audio": true,
+  "threshold_percent": 15.0,
+  "ambient_sampling": {
+    "before": "elevated",
+    "after": "elevated"
+  },
+  "before_hashes": {
+    "ascii3d\\__init__.py": "fd2e1b4914f078ad0320b65c87bdd7b09b0a698ca6a8edc434d9597e9b6c3fdb",
+    "ascii3d\\__main__.py": "5cb26d1fa030bdeff482d5f4280a7913ac02908a5cd6808264a7f194c9989004",
+    "ascii3d\\app.py": "fdb9c8844e0d742c2ea26835bd9965ca24ca93c51993d811347e1bd7e6509433",
+    "ascii3d\\architecture.py": "97e220f698134a32f97c51aebcb85a9641bee1486dfd149517797fa528f3748b",
+    "ascii3d\\audio_check.py": "3861dfca5f1ddadaa63333ac6464cf221449269447a31af14ab94a1a435cc677",
+    "ascii3d\\audio_output.py": "d6ab5e2d20074da8d4ba27a88b5a0cbb91618523448b0b118af75e906e0f4ce6",
+    "ascii3d\\audio_process.py": "8c0a0b2b624286c7e168ddce9a41bd86fc3cce34c39d6bab6bfaef4fe0888d2d",
+    "ascii3d\\combat.py": "193b336acd5b9ac21fd94987ca52fef7648c245e7938a99fc9c9befaee374a1c",
+    "ascii3d\\combat_render.py": "1be411585dd4c1eeccebc8ca0deb3b2bac663293c4284dcda3b8ba1fa25085af",
+    "ascii3d\\door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+    "ascii3d\\doors.py": "77fb7a01624417236ca64050aca0b655f950b6e65281fd5352aca1990f814d93",
+    "ascii3d\\events.py": "e8f552944ee57fd609e28e7d9965944432b1c7f7e69c6544da2300483ec15daf",
+    "ascii3d\\frame_timing.py": "1c79e7f449d6ae6aecd3ab0be4e90374de04d853d188e0248b6cc54d0eb358ca",
+    "ascii3d\\geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+    "ascii3d\\gpu_refine.h": "32b55433088927037bcbfd00a9dc92b95162bc4fa91e8d6bfab0e4caaed0121f",
+    "ascii3d\\gpu_renderer.py": "7994ff6b1010a15d2486df2523bb79147066743abf0ee512c59619db5a650593",
+    "ascii3d\\gpu_static.wgsl": "a7fd7c156e70877d2b5e15ee6e7c2a108a2f2b22ccc78159f5ca787b3420da16",
+    "ascii3d\\loading.py": "bbec1152fee8f846912f4e44ed44bd8fb3f2c308c2f65474a3f8e48f6b8ff95f",
+    "ascii3d\\map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+    "ascii3d\\monolith_solid_bvh.dll": "807dd3598a845f243f93426b6cbd2109a5b20dafe259550980eb121d959407a4",
+    "ascii3d\\mouse_capture.py": "cf63d702c7efbcaa5cbbf13b7d11ea7a7aa906c4653d37dbeecfaafbee9eee46",
+    "ascii3d\\native_shading.py": "a5f07cbfa536f0d2d1a297e4eb0e1760e84a0d7f3a74da242e1f09ace4044253",
+    "ascii3d\\native_solids.py": "6366d0d7e5497cc451d70531b466b691be0dac6f991b1df9db6345bdbde2d1f7",
+    "ascii3d\\orientation.py": "f3777e9925d63c1588c70c7fd1f3badb7a2cd6b82dfce15a073aa1e4aa3dc85c",
+    "ascii3d\\palette.py": "7f4ad11bbf531893d71b7ebaec023d8b8b6280c56d73991130112090b81e24e6",
+    "ascii3d\\particles.py": "37d6f40ca784d6d01ccd14144fe9e295716f349ba26fcb5c16288870b067ec54",
+    "ascii3d\\player.py": "dbc657702af80f099b6f02d9e61e6ef36db01154b6c3036285fdb2a9742bff4c",
+    "ascii3d\\presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+    "ascii3d\\renderer.py": "2fad133bcfe097a2e95e6c93aca1a5e0a0401d4053b79fffa8d6e5a86af9a490",
+    "ascii3d\\roads.py": "8e280be8998e49ee2719e526bbfed57a26c3929cc403775f9dccf322f67d98fc",
+    "ascii3d\\rocks.py": "ef65fe8151571bbc5206b5e50ebadd5732fcc9ea90cb257c761d9ed28abbda87",
+    "ascii3d\\scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+    "ascii3d\\shading.py": "82ec21224c4380b533a23a02523f33d09aee3d24fa9edcc12ae83c989edbe176",
+    "ascii3d\\solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+    "ascii3d\\sound.py": "e4e0ef76093cad20b0507d727f02398955fd1ab366c3948c92d839ea331fab4f",
+    "ascii3d\\sound_surfaces.py": "cf6b4e4b22ad5b8e31269a4f903b278e700cc4b10cf842ea8284751701e80a17",
+    "ascii3d\\soundscape.py": "23c5e659ead46483435617a30967655fc7935f3394c2e45f2bfa23946e97fb50",
+    "ascii3d\\surface_lighting.h": "26c49feb4b5b5eee3cb57362afa3836389ed225fd365c5c40a6a61ec2c37b320",
+    "ascii3d\\surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+    "ascii3d\\targeting.py": "d5a0029ef1284a46932dd66483eba6afbeb59eac356b78fa3bed2956bac6db4c",
+    "ascii3d\\terminal.py": "f2e7fd2423a351422d3994996702bca8bd43f28aed0affdfa588b8b7ba1b2d7b",
+    "ascii3d\\terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+    "ascii3d\\trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+    "ascii3d\\voxel_trace.h": "0bfad384c4e15b47976b31cf8153b554a003dc37cf0459e8cfb782f47365ed35",
+    "ascii3d\\world.py": "280c3142c67a7d83a5968c5ed1e6b74e1c48c2e150e8424515e42c815356e8dd"
+  },
+  "after_hashes": {
+    "ascii3d\\__init__.py": "fd2e1b4914f078ad0320b65c87bdd7b09b0a698ca6a8edc434d9597e9b6c3fdb",
+    "ascii3d\\__main__.py": "5cb26d1fa030bdeff482d5f4280a7913ac02908a5cd6808264a7f194c9989004",
+    "ascii3d\\app.py": "fdb9c8844e0d742c2ea26835bd9965ca24ca93c51993d811347e1bd7e6509433",
+    "ascii3d\\architecture.py": "97e220f698134a32f97c51aebcb85a9641bee1486dfd149517797fa528f3748b",
+    "ascii3d\\audio_check.py": "3861dfca5f1ddadaa63333ac6464cf221449269447a31af14ab94a1a435cc677",
+    "ascii3d\\audio_output.py": "d6ab5e2d20074da8d4ba27a88b5a0cbb91618523448b0b118af75e906e0f4ce6",
+    "ascii3d\\audio_process.py": "8c0a0b2b624286c7e168ddce9a41bd86fc3cce34c39d6bab6bfaef4fe0888d2d",
+    "ascii3d\\combat.py": "193b336acd5b9ac21fd94987ca52fef7648c245e7938a99fc9c9befaee374a1c",
+    "ascii3d\\combat_render.py": "1be411585dd4c1eeccebc8ca0deb3b2bac663293c4284dcda3b8ba1fa25085af",
+    "ascii3d\\door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+    "ascii3d\\doors.py": "77fb7a01624417236ca64050aca0b655f950b6e65281fd5352aca1990f814d93",
+    "ascii3d\\events.py": "e8f552944ee57fd609e28e7d9965944432b1c7f7e69c6544da2300483ec15daf",
+    "ascii3d\\frame_timing.py": "1c79e7f449d6ae6aecd3ab0be4e90374de04d853d188e0248b6cc54d0eb358ca",
+    "ascii3d\\geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+    "ascii3d\\gpu_refine.h": "32b55433088927037bcbfd00a9dc92b95162bc4fa91e8d6bfab0e4caaed0121f",
+    "ascii3d\\gpu_renderer.py": "7994ff6b1010a15d2486df2523bb79147066743abf0ee512c59619db5a650593",
+    "ascii3d\\gpu_static.wgsl": "a7fd7c156e70877d2b5e15ee6e7c2a108a2f2b22ccc78159f5ca787b3420da16",
+    "ascii3d\\loading.py": "bbec1152fee8f846912f4e44ed44bd8fb3f2c308c2f65474a3f8e48f6b8ff95f",
+    "ascii3d\\map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+    "ascii3d\\monolith_solid_bvh.dll": "776008f734a686427d5184162f93f0bf6a8b433b6c655b3ac967850b17f16b07",
+    "ascii3d\\mouse_capture.py": "cf63d702c7efbcaa5cbbf13b7d11ea7a7aa906c4653d37dbeecfaafbee9eee46",
+    "ascii3d\\native_shading.py": "a5f07cbfa536f0d2d1a297e4eb0e1760e84a0d7f3a74da242e1f09ace4044253",
+    "ascii3d\\native_solids.py": "1373e3cb0a7754e6b8dbbe0a0831d49cf7f09e97946972e433bccb182fe665b3",
+    "ascii3d\\orientation.py": "f3777e9925d63c1588c70c7fd1f3badb7a2cd6b82dfce15a073aa1e4aa3dc85c",
+    "ascii3d\\palette.py": "7f4ad11bbf531893d71b7ebaec023d8b8b6280c56d73991130112090b81e24e6",
+    "ascii3d\\particles.py": "37d6f40ca784d6d01ccd14144fe9e295716f349ba26fcb5c16288870b067ec54",
+    "ascii3d\\player.py": "dbc657702af80f099b6f02d9e61e6ef36db01154b6c3036285fdb2a9742bff4c",
+    "ascii3d\\presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+    "ascii3d\\renderer.py": "a486b5defbe0cacae20bf205c7b844c08bf610223566618623e664584c23d07a",
+    "ascii3d\\roads.py": "8e280be8998e49ee2719e526bbfed57a26c3929cc403775f9dccf322f67d98fc",
+    "ascii3d\\rocks.py": "ef65fe8151571bbc5206b5e50ebadd5732fcc9ea90cb257c761d9ed28abbda87",
+    "ascii3d\\scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+    "ascii3d\\shading.py": "82ec21224c4380b533a23a02523f33d09aee3d24fa9edcc12ae83c989edbe176",
+    "ascii3d\\solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+    "ascii3d\\sound.py": "e4e0ef76093cad20b0507d727f02398955fd1ab366c3948c92d839ea331fab4f",
+    "ascii3d\\sound_surfaces.py": "cf6b4e4b22ad5b8e31269a4f903b278e700cc4b10cf842ea8284751701e80a17",
+    "ascii3d\\soundscape.py": "23c5e659ead46483435617a30967655fc7935f3394c2e45f2bfa23946e97fb50",
+    "ascii3d\\surface_lighting.h": "26c49feb4b5b5eee3cb57362afa3836389ed225fd365c5c40a6a61ec2c37b320",
+    "ascii3d\\surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+    "ascii3d\\targeting.py": "d5a0029ef1284a46932dd66483eba6afbeb59eac356b78fa3bed2956bac6db4c",
+    "ascii3d\\terminal.py": "f2e7fd2423a351422d3994996702bca8bd43f28aed0affdfa588b8b7ba1b2d7b",
+    "ascii3d\\terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+    "ascii3d\\trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+    "ascii3d\\voxel_trace.h": "a8de6075ade19c8dc1c673a765e8d9ed0bf987ffe1cf13c3f664a15a90abd358",
+    "ascii3d\\world.py": "280c3142c67a7d83a5968c5ed1e6b74e1c48c2e150e8424515e42c815356e8dd"
+  },
+  "cameras": {
+    "indoors": {
+      "x": 128.5,
+      "y": 76.5,
+      "yaw": 1.5707963267948966,
+      "z": 1
+    },
+    "courtyard": {
+      "x": 128.5,
+      "y": 88.5,
+      "yaw": 1.5707963267948966,
+      "z": 1
+    },
+    "meadow": {
+      "x": 128.5,
+      "y": 64.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06,
+      "z": 1
+    },
+    "grass_close": {
+      "x": 85.5,
+      "y": 77.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.35,
+      "z": 1
+    },
+    "bridge": {
+      "x": 88.5,
+      "y": 218.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.1,
+      "z": 1
+    },
+    "river": {
+      "x": 8.5,
+      "y": 212.41284764356448,
+      "z": 0.12,
+      "yaw": 0,
+      "pitch": -0.1
+    },
+    "ruins": {
+      "x": 71.5,
+      "y": 240,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06,
+      "z": 1
+    },
+    "lodge": {
+      "x": 289.9873951861746,
+      "y": 128.23876265950184,
+      "yaw": 0.29670597283903605,
+      "pitch": -0.06,
+      "z": 7
+    },
+    "east_bridge": {
+      "x": 304.5,
+      "y": 207.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.1,
+      "z": 1
+    },
+    "watchstones": {
+      "x": 41.5,
+      "y": 239,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06,
+      "z": 1
+    },
+    "warden": {
+      "x": 41.5,
+      "y": 246.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06,
+      "z": 1
+    },
+    "staff": {
+      "x": 68.5,
+      "y": 246.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.06,
+      "z": 1
+    },
+    "fireballs": {
+      "x": 115.5,
+      "y": 86.5,
+      "yaw": 1.5707963267948966,
+      "z": 1
+    },
+    "map": {
+      "x": 128.5,
+      "y": 88.5,
+      "yaw": 1.5707963267948966,
+      "z": 1
+    },
+    "training": {
+      "x": 115.5,
+      "y": 92.2,
+      "yaw": 1.5707963267948966,
+      "z": 1
+    },
+    "tree_close": {
+      "x": 85.5,
+      "y": 80.0,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.35,
+      "z": 1
+    },
+    "tree_canopy": {
+      "x": 85.5,
+      "y": 79.95,
+      "z": 2.25,
+      "yaw": 1.5707963267948966,
+      "pitch": 0.65
+    },
+    "river_diagonal": {
+      "x": 70.5,
+      "y": 217.02662981949743,
+      "z": 0.12,
+      "yaw": 0.7853981633974483,
+      "pitch": -0.25
+    },
+    "river_upstream": {
+      "x": 70.5,
+      "y": 217.02662981949743,
+      "z": 0.12,
+      "yaw": 3.141592653589793,
+      "pitch": -0.25
+    },
+    "castle_exterior": {
+      "x": 93.5,
+      "y": 62.5,
+      "yaw": 0.6,
+      "pitch": 0.08,
+      "z": 1
+    },
+    "great_hall": {
+      "x": 128.5,
+      "y": 111.5,
+      "yaw": 1.5707963267948966,
+      "pitch": 0.12,
+      "z": 1
+    },
+    "wall_walk": {
+      "x": 108.5,
+      "y": 91.5,
+      "z": 6,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.15
+    },
+    "west_meadow": {
+      "x": 85.5,
+      "y": 104.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.1,
+      "z": 1
+    },
+    "east_meadow": {
+      "x": 164.5,
+      "y": 114.5,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.1,
+      "z": 1
+    },
+    "ridge_approach": {
+      "x": 289.9873951861746,
+      "y": 128.23876265950184,
+      "z": 7,
+      "yaw": 0.29670597283903605,
+      "pitch": 0.05
+    },
+    "ridge_upper": {
+      "x": 304.33196652562015,
+      "y": 132.6243382303429,
+      "z": 12,
+      "yaw": 0.29670597283903605,
+      "pitch": -0.1
+    },
+    "ridge_roof": {
+      "x": 304.33196652562015,
+      "y": 132.6243382303429,
+      "z": 22,
+      "yaw": 1.096705972839036,
+      "pitch": -0.15
+    },
+    "highlands": {
+      "x": 320.5,
+      "y": 170.5,
+      "yaw": 1.4,
+      "pitch": -0.15,
+      "z": 8.68838404797606
+    },
+    "ravine": {
+      "x": 310.5,
+      "y": 306.5,
+      "z": 9,
+      "yaw": 3.141592653589793,
+      "pitch": -0.25
+    },
+    "citadel_approach": {
+      "x": 394.5,
+      "y": 436.5,
+      "z": 12,
+      "yaw": 0,
+      "pitch": 0.06
+    },
+    "citadel_roof": {
+      "x": 420.5,
+      "y": 436.5,
+      "z": 27,
+      "yaw": 3.141592653589793,
+      "pitch": -0.2
+    },
+    "highland_map": {
+      "x": 420.5,
+      "y": 436.5,
+      "z": 27,
+      "yaw": 3.141592653589793
+    },
+    "terrace_walk": {
+      "x": 278.5117381146182,
+      "y": 124.730302202829,
+      "yaw": 0.29670597283903605,
+      "z": 8.403677490990043
+    },
+    "stair_walk": {
+      "x": 299.89761722986594,
+      "y": 119.76601227696759,
+      "z": 7,
+      "yaw": 1.8675022996339325
+    }
+  },
+  "terrain_cameras": {},
+  "scenarios": {
+    "indoors": {
+      "status": "pending",
+      "passed": false
+    },
+    "courtyard": {
+      "status": "pending",
+      "passed": false
+    },
+    "meadow": {
+      "status": "pending",
+      "passed": false
+    },
+    "grass_close": {
+      "status": "pending",
+      "passed": false
+    },
+    "bridge": {
+      "status": "pending",
+      "passed": false
+    },
+    "river": {
+      "status": "pending",
+      "passed": false
+    },
+    "ruins": {
+      "status": "pending",
+      "passed": false
+    },
+    "lodge": {
+      "status": "pending",
+      "passed": false
+    },
+    "east_bridge": {
+      "status": "pending",
+      "passed": false
+    },
+    "watchstones": {
+      "status": "pending",
+      "passed": false
+    },
+    "warden": {
+      "status": "pending",
+      "passed": false
+    },
+    "staff": {
+      "status": "pending",
+      "passed": false
+    },
+    "fireballs": {
+      "status": "pending",
+      "passed": false
+    },
+    "map": {
+      "status": "pending",
+      "passed": false
+    },
+    "training": {
+      "status": "pending",
+      "passed": false
+    },
+    "tree_close": {
+      "status": "pending",
+      "passed": false
+    },
+    "tree_canopy": {
+      "status": "pending",
+      "passed": false
+    },
+    "river_diagonal": {
+      "status": "pending",
+      "passed": false
+    },
+    "river_upstream": {
+      "status": "pending",
+      "passed": false
+    },
+    "castle_exterior": {
+      "status": "pending",
+      "passed": false
+    },
+    "great_hall": {
+      "status": "pending",
+      "passed": false
+    },
+    "wall_walk": {
+      "status": "pending",
+      "passed": false
+    },
+    "west_meadow": {
+      "status": "pending",
+      "passed": false
+    },
+    "east_meadow": {
+      "status": "pending",
+      "passed": false
+    },
+    "ridge_approach": {
+      "status": "pending",
+      "passed": false
+    },
+    "ridge_upper": {
+      "status": "pending",
+      "passed": false
+    },
+    "ridge_roof": {
+      "status": "pending",
+      "passed": false
+    },
+    "highlands": {
+      "status": "pending",
+      "passed": false
+    },
+    "ravine": {
+      "status": "pending",
+      "passed": false
+    },
+    "citadel_approach": {
+      "status": "pending",
+      "passed": false
+    },
+    "citadel_roof": {
+      "status": "pending",
+      "passed": false
+    },
+    "highland_map": {
+      "status": "pending",
+      "passed": false
+    },
+    "terrace_walk": {
+      "status": "pending",
+      "passed": false
+    },
+    "stair_walk": {
+      "status": "pending",
+      "passed": false
+    }
+  },
+  "new_scenarios": {},
+  "preflight": {
+    "indoors": {
+      "before": {
+        "x": 128.5,
+        "y": 76.5,
+        "yaw": 1.5707963267948966,
+        "z": 1
+      },
+      "after": {
+        "x": 128.5,
+        "y": 76.5,
+        "yaw": 1.5707963267948966,
+        "z": 1
+      }
+    },
+    "courtyard": {
+      "before": {
+        "x": 128.5,
+        "y": 88.5,
+        "yaw": 1.5707963267948966,
+        "z": 1
+      },
+      "after": {
+        "x": 128.5,
+        "y": 88.5,
+        "yaw": 1.5707963267948966,
+        "z": 1
+      }
+    },
+    "meadow": {
+      "before": {
+        "x": 128.5,
+        "y": 64.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1
+      },
+      "after": {
+        "x": 128.5,
+        "y": 64.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1
+      }
+    },
+    "grass_close": {
+      "before": {
+        "x": 85.5,
+        "y": 77.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.35,
+        "z": 1
+      },
+      "after": {
+        "x": 85.5,
+        "y": 77.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.35,
+        "z": 1
+      }
+    },
+    "bridge": {
+      "before": {
+        "x": 88.5,
+        "y": 218.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.1,
+        "z": 1
+      },
+      "after": {
+        "x": 88.5,
+        "y": 218.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.1,
+        "z": 1
+      }
+    },
+    "river": {
+      "before": {
+        "x": 8.5,
+        "y": 212.41284764356448,
+        "z": 0.12,
+        "yaw": 0,
+        "pitch": -0.1
+      },
+      "after": {
+        "x": 8.5,
+        "y": 212.41284764356448,
+        "z": 0.12,
+        "yaw": 0,
+        "pitch": -0.1
+      }
+    },
+    "ruins": {
+      "before": {
+        "x": 71.5,
+        "y": 240,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1
+      },
+      "after": {
+        "x": 71.5,
+        "y": 240,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1
+      }
+    },
+    "lodge": {
+      "before": {
+        "x": 289.9873951861746,
+        "y": 128.23876265950184,
+        "yaw": 0.29670597283903605,
+        "pitch": -0.06,
+        "z": 7
+      },
+      "after": {
+        "x": 289.9873951861746,
+        "y": 128.23876265950184,
+        "yaw": 0.29670597283903605,
+        "pitch": -0.06,
+        "z": 7
+      }
+    },
+    "east_bridge": {
+      "before": {
+        "x": 304.5,
+        "y": 207.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.1,
+        "z": 1
+      },
+      "after": {
+        "x": 304.5,
+        "y": 207.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.1,
+        "z": 1
+      }
+    },
+    "watchstones": {
+      "before": {
+        "x": 41.5,
+        "y": 239,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1
+      },
+      "after": {
+        "x": 41.5,
+        "y": 239,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1
+      }
+    },
+    "warden": {
+      "before": {
+        "x": 41.5,
+        "y": 246.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1
+      },
+      "after": {
+        "x": 41.5,
+        "y": 246.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1
+      }
+    },
+    "staff": {
+      "before": {
+        "x": 68.5,
+        "y": 246.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1
+      },
+      "after": {
+        "x": 68.5,
+        "y": 246.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.06,
+        "z": 1
+      }
+    },
+    "fireballs": {
+      "before": {
+        "x": 115.5,
+        "y": 86.5,
+        "yaw": 1.5707963267948966,
+        "z": 1
+      },
+      "after": {
+        "x": 115.5,
+        "y": 86.5,
+        "yaw": 1.5707963267948966,
+        "z": 1
+      }
+    },
+    "map": {
+      "before": {
+        "x": 128.5,
+        "y": 88.5,
+        "yaw": 1.5707963267948966,
+        "z": 1
+      },
+      "after": {
+        "x": 128.5,
+        "y": 88.5,
+        "yaw": 1.5707963267948966,
+        "z": 1
+      }
+    },
+    "training": {
+      "before": {
+        "x": 115.5,
+        "y": 92.2,
+        "yaw": 1.5707963267948966,
+        "z": 1
+      },
+      "after": {
+        "x": 115.5,
+        "y": 92.2,
+        "yaw": 1.5707963267948966,
+        "z": 1
+      }
+    },
+    "tree_close": {
+      "before": {
+        "x": 85.5,
+        "y": 80.0,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.35,
+        "z": 1
+      },
+      "after": {
+        "x": 85.5,
+        "y": 80.0,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.35,
+        "z": 1
+      }
+    },
+    "tree_canopy": {
+      "before": {
+        "x": 85.5,
+        "y": 79.95,
+        "z": 2.25,
+        "yaw": 1.5707963267948966,
+        "pitch": 0.65
+      },
+      "after": {
+        "x": 85.5,
+        "y": 79.95,
+        "z": 2.25,
+        "yaw": 1.5707963267948966,
+        "pitch": 0.65
+      }
+    },
+    "river_diagonal": {
+      "before": {
+        "x": 70.5,
+        "y": 217.02662981949743,
+        "z": 0.12,
+        "yaw": 0.7853981633974483,
+        "pitch": -0.25
+      },
+      "after": {
+        "x": 70.5,
+        "y": 217.02662981949743,
+        "z": 0.12,
+        "yaw": 0.7853981633974483,
+        "pitch": -0.25
+      }
+    },
+    "river_upstream": {
+      "before": {
+        "x": 70.5,
+        "y": 217.02662981949743,
+        "z": 0.12,
+        "yaw": 3.141592653589793,
+        "pitch": -0.25
+      },
+      "after": {
+        "x": 70.5,
+        "y": 217.02662981949743,
+        "z": 0.12,
+        "yaw": 3.141592653589793,
+        "pitch": -0.25
+      }
+    },
+    "castle_exterior": {
+      "before": {
+        "x": 93.5,
+        "y": 62.5,
+        "yaw": 0.6,
+        "pitch": 0.08,
+        "z": 1
+      },
+      "after": {
+        "x": 93.5,
+        "y": 62.5,
+        "yaw": 0.6,
+        "pitch": 0.08,
+        "z": 1
+      }
+    },
+    "great_hall": {
+      "before": {
+        "x": 128.5,
+        "y": 111.5,
+        "yaw": 1.5707963267948966,
+        "pitch": 0.12,
+        "z": 1
+      },
+      "after": {
+        "x": 128.5,
+        "y": 111.5,
+        "yaw": 1.5707963267948966,
+        "pitch": 0.12,
+        "z": 1
+      }
+    },
+    "wall_walk": {
+      "before": {
+        "x": 108.5,
+        "y": 91.5,
+        "z": 6,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.15
+      },
+      "after": {
+        "x": 108.5,
+        "y": 91.5,
+        "z": 6,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.15
+      }
+    },
+    "west_meadow": {
+      "before": {
+        "x": 85.5,
+        "y": 104.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.1,
+        "z": 1
+      },
+      "after": {
+        "x": 85.5,
+        "y": 104.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.1,
+        "z": 1
+      }
+    },
+    "east_meadow": {
+      "before": {
+        "x": 164.5,
+        "y": 114.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.1,
+        "z": 1
+      },
+      "after": {
+        "x": 164.5,
+        "y": 114.5,
+        "yaw": 1.5707963267948966,
+        "pitch": -0.1,
+        "z": 1
+      }
+    },
+    "ridge_approach": {
+      "before": {
+        "x": 289.9873951861746,
+        "y": 128.23876265950184,
+        "z": 7,
+        "yaw": 0.29670597283903605,
+        "pitch": 0.05
+      },
+      "after": {
+        "x": 289.9873951861746,
+        "y": 128.23876265950184,
+        "z": 7,
+        "yaw": 0.29670597283903605,
+        "pitch": 0.05
+      }
+    },
+    "ridge_upper": {
+      "before": {
+        "x": 304.33196652562015,
+        "y": 132.6243382303429,
+        "z": 12,
+        "yaw": 0.29670597283903605,
+        "pitch": -0.1
+      },
+      "after": {
+        "x": 304.33196652562015,
+        "y": 132.6243382303429,
+        "z": 12,
+        "yaw": 0.29670597283903605,
+        "pitch": -0.1
+      }
+    },
+    "ridge_roof": {
+      "before": {
+        "x": 304.33196652562015,
+        "y": 132.6243382303429,
+        "z": 22,
+        "yaw": 1.096705972839036,
+        "pitch": -0.15
+      },
+      "after": {
+        "x": 304.33196652562015,
+        "y": 132.6243382303429,
+        "z": 22,
+        "yaw": 1.096705972839036,
+        "pitch": -0.15
+      }
+    },
+    "highlands": {
+      "before": {
+        "x": 320.5,
+        "y": 170.5,
+        "yaw": 1.4,
+        "pitch": -0.15,
+        "z": 8.68838404797606
+      },
+      "after": {
+        "x": 320.5,
+        "y": 170.5,
+        "yaw": 1.4,
+        "pitch": -0.15,
+        "z": 8.68838404797606
+      }
+    },
+    "ravine": {
+      "before": {
+        "x": 310.5,
+        "y": 306.5,
+        "z": 9,
+        "yaw": 3.141592653589793,
+        "pitch": -0.25
+      },
+      "after": {
+        "x": 310.5,
+        "y": 306.5,
+        "z": 9,
+        "yaw": 3.141592653589793,
+        "pitch": -0.25
+      }
+    },
+    "citadel_approach": {
+      "before": {
+        "x": 394.5,
+        "y": 436.5,
+        "z": 12,
+        "yaw": 0,
+        "pitch": 0.06
+      },
+      "after": {
+        "x": 394.5,
+        "y": 436.5,
+        "z": 12,
+        "yaw": 0,
+        "pitch": 0.06
+      }
+    },
+    "citadel_roof": {
+      "before": {
+        "x": 420.5,
+        "y": 436.5,
+        "z": 27,
+        "yaw": 3.141592653589793,
+        "pitch": -0.2
+      },
+      "after": {
+        "x": 420.5,
+        "y": 436.5,
+        "z": 27,
+        "yaw": 3.141592653589793,
+        "pitch": -0.2
+      }
+    },
+    "highland_map": {
+      "before": {
+        "x": 420.5,
+        "y": 436.5,
+        "z": 27,
+        "yaw": 3.141592653589793
+      },
+      "after": {
+        "x": 420.5,
+        "y": 436.5,
+        "z": 27,
+        "yaw": 3.141592653589793
+      }
+    },
+    "terrace_walk": {
+      "before": {
+        "x": 278.5117381146182,
+        "y": 124.730302202829,
+        "yaw": 0.29670597283903605,
+        "z": 8.403677490990043
+      },
+      "after": {
+        "x": 278.5117381146182,
+        "y": 124.730302202829,
+        "yaw": 0.29670597283903605,
+        "z": 8.403677490990043
+      }
+    },
+    "stair_walk": {
+      "before": {
+        "x": 299.89761722986594,
+        "y": 119.76601227696759,
+        "z": 7,
+        "yaw": 1.8675022996339325
+      },
+      "after": {
+        "x": 299.89761722986594,
+        "y": 119.76601227696759,
+        "z": 7,
+        "yaw": 1.8675022996339325
+      }
+    }
+  },
+  "errors": [
+    {
+      "type": "OSError",
+      "message": "Audio worker did not initialize in time.",
+      "phase": "audio_start",
+      "scene": null,
+      "variant": null
+    }
+  ],
+  "failed": [
+    "exception",
+    "audio_health"
+  ],
+  "status": "incomplete",
+  "complete": false,
+  "passed": false,
+  "phase": "audio_start",
+  "current_scene": null,
+  "current_variant": null,
+  "presentation": {
+    "mode": "styled",
+    "color_modes": {
+      "before": "color",
+      "after": "color"
+    },
+    "serialized_row_bytes": "ASCII row lengths including escapes/resets; excludes CRLF/cursor control",
+    "terminal_writes": false
+  },
+  "requested_renderers": {
+    "before": "auto",
+    "after": "auto"
+  },
+  "renderer_backends": {
+    "before": "gpu",
+    "after": "gpu"
+  },
+  "gpu_adapters": {
+    "before": {
+      "vendor": "NVIDIA",
+      "architecture": "",
+      "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+      "description": "621.24",
+      "stackgroup_min_size": 4,
+      "stackgroup_max_size": 128,
+      "vendor_id": 4318,
+      "device_id": 9372,
+      "adapter_type": "DiscreteGPU",
+      "backend_type": "Vulkan"
+    },
+    "after": {
+      "vendor": "NVIDIA",
+      "architecture": "",
+      "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+      "description": "621.24",
+      "stackgroup_min_size": 4,
+      "stackgroup_max_size": 128,
+      "vendor_id": 4318,
+      "device_id": 9372,
+      "adapter_type": "DiscreteGPU",
+      "backend_type": "Vulkan"
+    }
+  },
+  "world_sizes": {
+    "before": [
+      512,
+      512,
+      32
+    ],
+    "after": [
+      512,
+      512,
+      32
+    ]
+  },
+  "startup": {
+    "before": {
+      "build_ms": 2598.78,
+      "renderer_init_ms": 2062.56,
+      "first_frame_ms": 3153.92
+    },
+    "after": {
+      "build_ms": 2564.47,
+      "renderer_init_ms": 975.2,
+      "first_frame_ms": 3639.63
+    }
+  },
+  "audio_health": {
+    "available": false,
+    "buffers": 8,
+    "underruns": 0,
+    "max_write_gap_ms": 56.67,
+    "recoveries": 0,
+    "error": ""
+  },
+  "audio_health_after_cleanup": {
+    "available": false,
+    "buffers": 8,
+    "underruns": 0,
+    "max_write_gap_ms": 56.67,
+    "recoveries": 0,
+    "error": ""
+  },
+  "before_renderer_health": {
+    "backend": "gpu",
+    "error": ""
+  },
+  "after_renderer_health": {
+    "backend": "gpu",
+    "error": ""
+  },
+  "control": "19ddeeb; same-geometry diagnostic, not historical acceptance",
+  "geometry_sha256": {
+    "before": "d5808b89f40424fc7c0b3a02f740848ea4b20589e1f7e8042a30550b4079c55b",
+    "after": "d5808b89f40424fc7c0b3a02f740848ea4b20589e1f7e8042a30550b4079c55b"
+  },
+  "geometry_hash_fields": [
+    "voxel cells",
+    "field vertices/enabled/materials",
+    "solid bounds/materials/stair markers/vertices/faces"
+  ]
+}

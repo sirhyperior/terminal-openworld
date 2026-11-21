@@ -116,6 +116,8 @@ output; wall-clock rate caps are only for immediately returning sinks.
 - `targeting.py`, `doors.py`, `door_render.py`: view queries and shared panels.
 - `combat.py`, `combat_render.py`: items, weapons/projectiles, enemy simulation
   and depth-tested presentation.
+- `npcs.py`, `npc_render.py`, `dialogue.py`: authored residents, depth-tested
+  figures, and conversation camera and page state.
 - `events.py`, `sound.py`, `audio_output.py`, `audio_process.py`, `soundscape.py`,
   `sound_surfaces.py`, `audio_check.py`: feedback, synthesis, playback,
   environmental sampling, contact Foley and diagnostics.

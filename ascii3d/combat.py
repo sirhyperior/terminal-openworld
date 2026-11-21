@@ -12,6 +12,7 @@ from .events import GameEvent
 from .targeting import cylinder_hit, view_ray
 
 if TYPE_CHECKING:
+    from .npcs import NPC
     from .player import Player
     from .world import World
 
@@ -349,8 +350,9 @@ class CombatState:
         events.append(GameEvent(pickup.weapon.pickup_cue, pickup.x, pickup.y))
         return events
 
-    def aimed_enemy(self, world: "World", player: "Player",
-                    reach: float = NAME_REACH) -> Enemy | None:
+    def aimed_actor(self, world: "World", player: "Player",
+                    reach: float = NAME_REACH) -> "Enemy | NPC | None":
+        """Find the first living enemy or resident along the clear sight ray."""
         origin, direction = view_ray(player)
         nearest, distance = None, max(0.0, reach)
         for enemy in self.enemies:
@@ -359,9 +361,18 @@ class CombatState:
             hit = enemy.ray_hit(origin, direction, distance)
             if hit is not None and (nearest is None or hit < distance):
                 nearest, distance = enemy, hit
+        for npc in world.npcs:
+            hit = npc.interaction_distance(origin, direction, distance)
+            if hit is not None and (nearest is None or hit < distance):
+                nearest, distance = npc, hit
         if nearest is not None and world.line_clear(origin, direction, distance):
             return nearest
         return None
+
+    def aimed_enemy(self, world: "World", player: "Player",
+                    reach: float = NAME_REACH) -> Enemy | None:
+        actor = self.aimed_actor(world, player, reach)
+        return actor if isinstance(actor, Enemy) else None
 
     def attack(self, world: "World", player: "Player") -> list[GameEvent]:
         if self.cooldown > 1e-8 or player.hp <= 0:

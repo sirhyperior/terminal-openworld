@@ -2,12 +2,14 @@
 
 from contextlib import ExitStack
 import io
+import math
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
 from ascii3d.app import FrameRateCounter, main
 from ascii3d.combat import FIRE_STAFF, CombatState, Enemy, WeaponPickup
+from ascii3d.npcs import NPC
 from ascii3d.player import Player
 from ascii3d.sound import EFFECTS
 from ascii3d.terminal import Keys, WindowsMouse
@@ -270,6 +272,56 @@ class GameLoopTests(unittest.TestCase):
         world = self.make_world()
         events, _, _, _ = self.run_frames([((), ())], world, Player(x=8.5, y=4.5), demo=True)
         self.assertIn("sword_pickup", [event.name for event in events])
+
+    def test_conversation_turns_both_actors_then_freezes_controls_until_dismissed(self):
+        for keyboard in (False, True):
+            with self.subTest(keyboard=keyboard):
+                world = self.make_world()
+                world.combat.cooldown = 1.0
+                npc = NPC(name="Bell Keeper", x=8.5, y=5.6, z=1, yaw=math.pi / 2,
+                          dialogue=("Hear the bell?", "Count the strokes."))
+                world.npcs.append(npc)
+                held = {"w", "right", "shift", "e"}
+                script = [({"e", "attack", "space"}, held), ({"e"}, held),
+                          ({"p", "e"}, held), ({"e"}, held), ({"p", "e"}, held),
+                          ({"e"}, held), ({"r", "e", "m", "attack", "space"}, held),
+                          ({"e"}, held), ((), held), ({"e"}, ()),
+                          ({"e", "attack", "space"}, held), ((), {"w"})]
+                sizes = [(60, 20)] * len(script)
+                sizes[5] = (40, 10)
+                events, states, pauses, frames = self.run_frames(
+                    script, world, Player(x=8.5, y=4.5, yaw=math.pi / 2 + 0.13),
+                    keyboard_look=keyboard, clock_tick=0.1, sizes=sizes,
+                    mouse=[(0, 0)] + [(35, 20)] * (len(script) - 1))
+                views = [frame[1]["dialogue"] for frame in frames]
+                self.assertTrue(all(view.text is None for view in views[:7]))
+                self.assertEqual([view.text for view in views[7:10]],
+                                 ["Hear the bell?", "Hear the bell?", "Count the strokes."])
+                self.assertTrue(views[9].last)
+                self.assertEqual(views[10:], [None, None])
+                self.assertEqual([event.name for event in events],
+                                 ["dialogue_start", "ui_pause", "ui_pause", "dialogue_line",
+                                  "dialogue_line", "dialogue_end"])
+                self.assertTrue(all(not frame[0][4] for frame in frames))
+                self.assertEqual(pauses, [False, False, True, True, False, True] + [False] * 6)
+                self.assertEqual(self.player_positions[:11], [(8.5, 4.5, 1.0)] * 11)
+                self.assertNotEqual(self.player_positions[-1], self.player_positions[-2])
+                self.assertTrue(all(state[1] == 1.0 for state in states[:11]))
+                self.assertNotEqual(states[0][6], states[1][6])
+                self.assertEqual(states[1][6:8], states[2][6:8])
+                self.assertEqual(states[1][6:8], states[3][6:8])
+                self.assertEqual(states[4][6:8], states[5][6:8])
+                self.assertAlmostEqual(states[7][6], math.pi / 2)
+                self.assertAlmostEqual(states[7][7], math.atan2(npc.eye_z - (1 + Player.EYE), 1.1))
+                self.assertAlmostEqual(npc.yaw, 3 * math.pi / 2)
+
+    def test_demo_does_not_start_a_conversation_by_itself(self):
+        world = self.make_world()
+        world.npcs.append(NPC(name="Bell Keeper", x=8.5, y=5.6, z=1, yaw=0,
+                              dialogue=("Hear the bell?",)))
+        events, _, _, frames = self.run_frames([((), ())], world, Player(x=8.5, y=4.5), demo=True)
+        self.assertEqual(events, [])
+        self.assertIsNone(frames[0][1]["dialogue"])
 
     def test_empty_e_keeps_quiet_feedback_without_an_instruction_notice(self):
         events, _, _, frames = self.run_frames([({"e"}, ())], self.make_world(),
