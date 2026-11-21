@@ -69,6 +69,42 @@ class FrameRateCounter:
         return (len(self._starts) - 1) / elapsed if elapsed > 0 else 0.0
 
 
+class SceneBudget:
+    """Use full loop work time to budget world samples independently of the HUD."""
+
+    START_CELLS = 640
+    MIN_CELLS = 128
+
+    def __init__(self, fps: int):
+        self.target = 0.94 / min(fps, 36)
+        self.cells = self.START_CELLS
+        self.viewport = (0, 0)
+        self.full_cells = 0
+        self.fast_frames = 0
+
+    def for_viewport(self, width: int, height: int) -> int:
+        size = width, height
+        if self.viewport != size:
+            self.viewport = size
+            self.full_cells = width * (height - 5)
+            self.cells = min(self.cells, self.full_cells)
+            self.fast_frames = 0
+        return self.cells
+
+    def observe(self, work_seconds: float) -> None:
+        if work_seconds > self.target:
+            self.fast_frames = 0
+            ratio = max(0.35, min(0.90, 0.90 * self.target / work_seconds))
+            self.cells = max(self.MIN_CELLS, int(self.cells * ratio))
+        elif work_seconds < self.target * 0.83:
+            self.fast_frames += 1
+            if self.fast_frames == 12:
+                self.cells = min(self.full_cells, max(self.cells + 16, int(self.cells * 1.12)))
+                self.fast_frames = 0
+        else:
+            self.fast_frames = 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="MONOLITH: a real 3D world rendered as ASCII on black.")
     parser.add_argument("--snapshot", action="store_true", help="print one plain ASCII frame and exit")
@@ -77,8 +113,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--fps", type=positive_int, default=40, help="frame rate limit (default: 40)")
     parser.add_argument("--cell-aspect", type=float, default=0.5, help="font cell width / height (default: 0.5)")
     parser.add_argument("--benchmark", type=positive_int, metavar="FRAMES", help="render a turn without terminal output")
-    parser.add_argument("--renderer", choices=('auto', 'cpu', 'gpu'), default='auto',
-                        help='geometry renderer (default: hardware GPU when available, with CPU fallback)')
+    parser.add_argument("--renderer", choices=('auto', 'cpu', 'native', 'gpu'), default='auto',
+                        help='geometry renderer (auto prefers hardware GPU, then compiled native solids)')
     parser.add_argument("--color-mode", choices=('mono', 'gray', 'color'), default='color',
                         help='foreground presentation: color, grayscale or uniform white (default: color)')
     parser.add_argument("--demo", action="store_true", help="automatically walk and turn; controls still work")
@@ -89,7 +125,11 @@ def main(argv: list[str] | None = None) -> int:
                         help="use arrows to look and Enter to attack instead of mouse capture")
     parser.add_argument("--max-cells", type=positive_int,
                         help="optional live viewport character budget, at least 1200 (default: fill terminal)")
+    parser.add_argument("--full-detail", action="store_true",
+                        help="trace every live scene cell instead of adapting detail to frame time")
     parser.add_argument("--frames", type=positive_int, help="exit after this many frames")
+    parser.add_argument("--frame-timing", type=Path, metavar="PATH",
+                        help="save a gameplay timing report on exit")
     parser.add_argument("--mute", action="store_true", help="start with sound muted (F toggles sound)")
     parser.add_argument("--volume", type=float, default=0.55, help="master sound volume, 0 to 1 (default: 0.55)")
     parser.add_argument("--sound-preview", type=Path, metavar="WAV", help="export the original effects as a stereo WAV and exit")
@@ -106,6 +146,19 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--max-cells must be at least 1200")
     if not math.isfinite(args.volume) or not 0 <= args.volume <= 1:
         parser.error("--volume must be between 0 and 1")
+    frame_timing = None
+    if args.frame_timing is not None:
+        if args.snapshot or args.benchmark or args.sound_preview or args.audio_test:
+            parser.error("--frame-timing is available during gameplay")
+        if args.frame_timing.exists() or args.frame_timing.is_symlink():
+            parser.error("--frame-timing requires an unused path")
+        from .frame_timing import FrameTiming, milliseconds
+
+        frame_timing = FrameTiming(args.frame_timing, {
+            "fps_cap": args.fps, "renderer_requested": args.renderer, "color_mode": args.color_mode,
+            "adaptive_detail": not args.full_detail, "max_cells": args.max_cells,
+            "keyboard_look": keyboard_look, "start_muted": args.mute,
+        })
     if args.sound_preview:
         SoundBank().write_preview(args.sound_preview)
         print(f"Wrote original sound effects to {args.sound_preview}")
@@ -123,8 +176,9 @@ def main(argv: list[str] | None = None) -> int:
         loading.advance()
         renderer = Renderer(world, args.cell_aspect, backend=args.renderer)
         loading.advance()
-        if args.renderer == 'gpu' and renderer.backend_name != 'gpu':
-            print(f'MONOLITH: GPU unavailable; using CPU renderer ({renderer.backend_error})', file=sys.stderr)
+        if args.renderer in ('gpu', 'native') and renderer.backend_name != args.renderer:
+            label = 'GPU' if args.renderer == 'gpu' else 'Native solid library'
+            print(f'MONOLITH: {label} unavailable. Using Python CPU renderer ({renderer.backend_error})', file=sys.stderr)
         soundscape = Soundscape(world)
     except BaseException:
         loading.close()
@@ -152,10 +206,11 @@ def main(argv: list[str] | None = None) -> int:
             renderer.close()
             loading.close()
 
+    status = 0
     try:
         # Static terrain preparation belongs to loading, before capture/audio
         # and the first active physics frame. Headless callers remain lazy-safe.
-        renderer.prepare_world()
+        renderer.prepare_world(player)
         loading.advance()
         soundscape.at(player.x, player.y, player.yaw, player.z)
         loading.advance()
@@ -163,6 +218,8 @@ def main(argv: list[str] | None = None) -> int:
             with loading.suspend():
                 loading.clear_line()
                 terminal = session.enter_context(Terminal(args.max_cells))
+            if frame_timing is not None:
+                terminal.measure_output = True
             # Audio entry can fail before the final loading phase. Stop the
             # animation before Terminal restores its screen on that path too.
             session.callback(loading.close)
@@ -175,6 +232,7 @@ def main(argv: list[str] | None = None) -> int:
             previous = time.perf_counter()
             accumulator, frame_count, demo_time = 0.0, 0, 0.0
             frame_rate = FrameRateCounter()
+            scene_budget = None if args.full_detail else SceneBudget(args.fps)
             simulation_time = 0.0
             notice, notice_until = ("Audio output unavailable" if not audio.available else ""), 4.0
             jump_pending = attack_pending = False
@@ -182,6 +240,9 @@ def main(argv: list[str] | None = None) -> int:
             step = 1 / 120
             while True:
                 start = time.perf_counter()
+                if frame_timing is not None:
+                    frame_timing.begin(start)
+                    audio_toggle_seconds = 0.0
                 fps = frame_rate.update(start)
                 elapsed, previous = min(start - previous, 0.1), start
                 keys = terminal.keyboard.poll()
@@ -208,7 +269,11 @@ def main(argv: list[str] | None = None) -> int:
                     help_open = False
                     ui_events.append(GameEvent("ui_pause"))
                 if "f" in keys.pressed:
+                    if frame_timing is not None:
+                        toggle_start = time.perf_counter()
                     audio.toggle()
+                    if frame_timing is not None:
+                        audio_toggle_seconds = time.perf_counter() - toggle_start
                     notice = "Sound on" if audio.enabled else ("Sound muted" if audio.available else "Audio output unavailable")
                     notice_until = simulation_time + 2
                 if "r" in keys.pressed:
@@ -218,7 +283,8 @@ def main(argv: list[str] | None = None) -> int:
                     ui_events.append(GameEvent("ui_reset"))
 
                 width, height = terminal.size()
-                active = not paused and not help_open and width >= 60 and height >= 20
+                playable = width >= 60 and height >= 20
+                active = not paused and not help_open and playable
                 terminal.set_mouse_capture(active and not keyboard_look and not args.demo)
                 mouse_error = getattr(terminal, "mouse_error", "")
                 if mouse_error and mouse_error != last_mouse_error:
@@ -230,11 +296,15 @@ def main(argv: list[str] | None = None) -> int:
                 input_transition = bool(keys.pressed & {"p", "h", "r"})
                 if active and not keyboard_look and not input_transition:
                     player.look(keys.mouse_dx, keys.mouse_dy)
+                if frame_timing is not None:
+                    input_end = time.perf_counter()
                 audio.pause(not active)
                 audio.listener = (player.x, player.y, player.yaw)
                 audio.ambient = soundscape.at(player.x, player.y, player.yaw, player.z)
                 for event in ui_events:
                     audio.emit(event)
+                if frame_timing is not None:
+                    audio_end = time.perf_counter()
                 if active:
                     if "e" in keys.pressed:
                         for event in world.interact(player):
@@ -294,25 +364,72 @@ def main(argv: list[str] | None = None) -> int:
                     accumulator = 0.0
                     jump_pending = attack_pending = False
 
+                if frame_timing is not None:
+                    simulation_end = time.perf_counter()
                 mouse_captured = terminal.mouse_captured if not keyboard_look and not args.demo else None
-                terminal.draw(renderer.styled_frame(player, width, height, fps, show_map, help_open, paused,
+                scene_cells = scene_budget.for_viewport(width, height) if scene_budget is not None and playable else None
+                frame = renderer.styled_frame(player, width, height, fps, show_map, help_open, paused,
                                               time_seconds=simulation_time,
                                               notice=notice if simulation_time < notice_until else "", sound_on=audio.enabled,
                                               keyboard_look=keyboard_look,
-                                              mouse_captured=mouse_captured, color_mode=args.color_mode))
+                                              mouse_captured=mouse_captured, color_mode=args.color_mode,
+                                              scene_cells=scene_cells)
+                if frame_timing is not None:
+                    render_end = time.perf_counter()
+                terminal.draw(frame)
                 frame_count += 1
-                if args.frames and frame_count >= args.frames:
+                last_frame = args.frames is not None and frame_count >= args.frames
+                if last_frame and frame_timing is None:
                     break
-                remaining = 1 / args.fps - (time.perf_counter() - start)
+                work_end = time.perf_counter()
+                work_seconds = work_end - start
+                if not last_frame and active and scene_budget is not None:
+                    scene_budget.observe(work_seconds)
+                remaining = 0.0 if last_frame else 1 / args.fps - work_seconds
+                timing_sample = None
+                if frame_timing is not None:
+                    projection = getattr(renderer, "_projection", None) if playable else None
+                    encode, write, output_bytes = getattr(terminal, "output_timing", (None, None, None))
+                    gpu = getattr(renderer, "ray_backend", None)
+                    timing_sample = frame_timing.record(
+                        frame=frame_count, viewport=(width, height), terminal=terminal._terminal_size,
+                        scene_budget_cells=scene_cells, scene_samples=projection[:2] if projection is not None else None,
+                        backend=renderer.backend_name, active=active, sound_on=audio.enabled,
+                        mouse_captured=mouse_captured,
+                        gpu_stats=dict(gpu.last_stats) if gpu is not None else None,
+                        input_ms=milliseconds(input_end - start - audio_toggle_seconds),
+                        audio_ms=milliseconds(audio_end - input_end + audio_toggle_seconds),
+                        simulation_ms=milliseconds(simulation_end - audio_end),
+                        render_ms=milliseconds(render_end - simulation_end),
+                        draw_ms=milliseconds(work_end - render_end), work_ms=milliseconds(work_seconds),
+                        encode_ms=milliseconds(encode) if encode is not None else None,
+                        write_flush_ms=milliseconds(write) if write is not None else None,
+                        output_bytes=output_bytes,
+                        cap_requested_ms=milliseconds(max(0.0, remaining)), cap_actual_ms=0.0,
+                    )
                 if remaining > 0:
-                    time.sleep(remaining)
+                    sleep_start = time.perf_counter() if timing_sample is not None else None
+                    try:
+                        time.sleep(remaining)
+                    finally:
+                        if sleep_start is not None:
+                            timing_sample["cap_actual_ms"] = milliseconds(time.perf_counter() - sleep_start)
+                if last_frame:
+                    break
     except KeyboardInterrupt:
         pass
     except OSError as error:
         loading.close()
         print(f"MONOLITH: {error}", file=sys.stderr)
-        return 1
+        status = 1
     finally:
         renderer.close()
         loading.close()
-    return 0
+    if frame_timing is not None:
+        try:
+            frame_timing.write(status)
+        except OSError as error:
+            print(f"MONOLITH: Could not save frame timing. {error}", file=sys.stderr)
+            return 1
+        print(f"Frame timing saved to {args.frame_timing}")
+    return status

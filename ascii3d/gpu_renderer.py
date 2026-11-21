@@ -125,10 +125,11 @@ class StaticGPU:
             for i, buffer in enumerate([*self.buffers, self.output])])
         self.size = width, height
 
-    def query(self, player, width, height):
+    def query(self, player, width, height, *, aspect=None):
         if self._signature() != self.signature:
             raise RuntimeError('Static geometry changed; rebuild the GPU prototype before querying')
         self.resize(width, height)
+        aspect = self.cell_aspect if aspect is None else aspect
         focal = width / (2 * math.tan(math.radians(82) / 2))
         cy, sy = math.cos(player.yaw), math.sin(player.yaw)
         cp, sp = math.cos(player.pitch), math.sin(player.pitch)
@@ -136,7 +137,7 @@ class StaticGPU:
                               cy * cp, sy * cp, sp, 0, sy, -cy, 0, 0, -cy * sp, -sy * sp, cp, 0,
                               width, height, self.world.width, self.world.depth,
                               self.world.height, self.solid_node_count, int(self.world.heightfield is not None), int(self.compact),
-                              1 / focal, 1 / (focal * self.cell_aspect), 48, WATER_LEVEL)
+                              1 / focal, 1 / (focal * aspect), 48, WATER_LEVEL)
         self.device.queue.write_buffer(self.buffers[0], 0, payload)
         encoder = self.device.create_command_encoder()
         compute = encoder.begin_compute_pass()
@@ -239,7 +240,7 @@ class GPUBackend:
         self._size = None
         self._columns = self._rows = ()
 
-    def render(self, player, width, height):
+    def render(self, player, width, height, *, aspect=None):
         if self.gpu._signature() != self.gpu.signature:
             self.gpu.close()
             self.gpu = StaticGPU(self.world, self.adapter_info['backend_type'], self.cell_aspect, compact=True)
@@ -252,16 +253,20 @@ class GPUBackend:
             self.last_stats = {'fallback_rays': width * height, 'origin_fallback': True}
             return None
         start = time.perf_counter()
-        raw = self.gpu.query(player, width, height)
+        if aspect is None:
+            raw = self.gpu.query(player, width, height)
+            aspect = self.cell_aspect
+        else:
+            raw = self.gpu.query(player, width, height, aspect=aspect)
         queried = time.perf_counter()
         records = list(struct.iter_unpack('<4I', raw))
         decoded = time.perf_counter()
         results, fallbacks = [], 0
-        if self._size != (width, height):
+        if self._size != (width, height, aspect):
             focal = width / (2 * math.tan(math.radians(82) / 2))
             self._columns = [(x + 0.5 - width / 2) / focal for x in range(width)]
-            self._rows = [(height / 2 - y - 0.5) / (focal * self.cell_aspect) for y in range(height)]
-            self._size = width, height
+            self._rows = [(height / 2 - y - 0.5) / (focal * aspect) for y in range(height)]
+            self._size = width, height, aspect
         cy, sy = math.cos(player.yaw), math.sin(player.yaw)
         cp, sp = math.cos(player.pitch), math.sin(player.pitch)
         for pixel, record in enumerate(records):

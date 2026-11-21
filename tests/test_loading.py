@@ -203,7 +203,7 @@ class AppLoadingTests(unittest.TestCase):
             def __init__(self, *rest, **kwargs):
                 observe('renderer')
 
-            def prepare_world(self):
+            def prepare_world(self, player=None):
                 observe('surfaces')
                 if fail_prepare:
                     raise OSError('preparation failed')

@@ -78,6 +78,7 @@ class World:
     _solid_chunks: dict = field(default_factory=dict, repr=False)
     _stair_keys: set = field(default_factory=set, repr=False)
     _solid_query_cache: tuple | None = field(default=None, repr=False)
+    _native_solid_cache: tuple | None = field(default=None, repr=False)
 
     def __post_init__(self):
         if not isinstance(self.trees, _TreeMap):
@@ -191,13 +192,13 @@ class World:
         return hit
 
     @staticmethod
-    def _solid_tree_hit(origin, direction, limit, tree):
+    def _solid_tree_hit(origin, direction, limit, tree, entry):
         """Trace bounded solid groups; report ties for the existing grid path."""
         hit, tied = None, False
-        stack = [tree]
+        stack = [(entry, tree)]
         while stack:
-            bounds, left, right, boxes = stack.pop()
-            if bounds.ray_entry(origin, direction, limit) is None:
+            entry, (_, left, right, boxes) = stack.pop()
+            if entry > limit + 1e-10:
                 continue
             if boxes:
                 for box in boxes:
@@ -207,18 +208,20 @@ class World:
                             tied = True
                         hit, limit = candidate, candidate.distance
             else:
-                # The spatial split's nearer side is likely to produce the
-                # first hit. Its exact depth then bounds every later group.
-                left_bounds, right_bounds = left[0], right[0]
-                if ((left_bounds.x0 + left_bounds.x1 - right_bounds.x0 - right_bounds.x1) * direction[0]
-                        + (left_bounds.y0 + left_bounds.y1 - right_bounds.y0 - right_bounds.y1) * direction[1]
-                        + (left_bounds.z0 + left_bounds.z1 - right_bounds.z0 - right_bounds.z1) * direction[2]) <= 0:
-                    stack.extend((right, left))
-                else:
-                    stack.extend((left, right))
+                left_entry = left[0].ray_entry(origin, direction, limit)
+                right_entry = right[0].ray_entry(origin, direction, limit)
+                # Visit the earlier slab crossing first. Its hit may exclude
+                # farther groups already queued, without another slab test.
+                if left_entry is not None and (right_entry is None or left_entry <= right_entry):
+                    left_entry, right_entry = right_entry, left_entry
+                    left, right = right, left
+                if left_entry is not None:
+                    stack.append((left_entry, left))
+                if right_entry is not None:
+                    stack.append((right_entry, right))
         return hit, tied
 
-    def geometry_query(self, bounds, planes):
+    def geometry_query(self, bounds, planes, *, solid_library=None):
         """Conservative once-per-view selection; exact rays retain final say."""
         x0, y0, x1, y1 = bounds
         planes = tuple(planes)
@@ -237,16 +240,27 @@ class World:
             return SolidBox(min(b.x0 for b in boxes), min(b.y0 for b in boxes), min(b.z0 for b in boxes),
                             max(b.x1 for b in boxes), max(b.y1 for b in boxes), max(b.z1 for b in boxes))
 
-        def tree_for(boxes):
-            bounds = enclosing(boxes)
-            if len(boxes) <= 4:
+        def surface_area(bounds):
+            dx, dy, dz = bounds.x1 - bounds.x0, bounds.y1 - bounds.y0, bounds.z1 - bounds.z0
+            return dx * dy + dy * dz + dz * dx
+
+        def tree_for(boxes, bounds):
+            if len(boxes) <= 2:
                 return bounds, None, None, tuple(boxes)
-            spans = bounds.x1 - bounds.x0, bounds.y1 - bounds.y0, bounds.z1 - bounds.z0
-            axis = max(range(3), key=spans.__getitem__)
-            ordered = sorted(boxes, key=(lambda b: b.x0 + b.x1, lambda b: b.y0 + b.y1,
-                                         lambda b: b.z0 + b.z1)[axis])
-            middle = len(ordered) // 2
-            return bounds, tree_for(ordered[:middle]), tree_for(ordered[middle:]), ()
+            middle = len(boxes) // 2
+            # Large floors can span a whole node and make its longest axis
+            # a poor split. Prefer the median giving the tightest children.
+            best_cost = math.inf
+            for center in (lambda b: b.x0 + b.x1, lambda b: b.y0 + b.y1, lambda b: b.z0 + b.z1):
+                ordered = sorted(boxes, key=center)
+                low, high = ordered[:middle], ordered[middle:]
+                low_bounds, high_bounds = enclosing(low), enclosing(high)
+                cost = len(low) * surface_area(low_bounds) + len(high) * surface_area(high_bounds)
+                if cost < best_cost:
+                    best_cost = cost
+                    left, right = low, high
+                    left_bounds, right_bounds = low_bounds, high_bounds
+            return bounds, tree_for(left, left_bounds), tree_for(right, right_bounds), ()
 
         selected = [box for box in self.solids if visible(box)]
         selection_key = self.revision, tuple(id(box) for box in selected)
@@ -273,9 +287,23 @@ class World:
                     candidates = [box for box in boxes if id(box) in selected_ids]
                     if candidates:
                         chunks[key] = candidates
-            solid_tree = tree_for(selected) if len(selected) > 8 else None
+            solid_tree = tree_for(selected, enclosing(selected)) if len(selected) > 8 else None
             self._solid_query_cache = selection_key, chunks, solid_cell_size, solid_tree
-        solid_bounds = enclosing(selected)
+        solid_bounds = solid_tree[0] if solid_tree is not None else enclosing(selected)
+        trace_solids = None
+        if solid_tree is not None and solid_library is not None:
+            cached = self._native_solid_cache
+            if cached is None or cached[0] is not solid_library or cached[1] is not solid_tree:
+                from .native_solids import NativeSolidTree
+
+                try:
+                    trace_solids = NativeSolidTree(solid_library, solid_tree).ray_hit
+                except TypeError:
+                    # Custom Python solid subclasses own their ray semantics.
+                    pass
+                self._native_solid_cache = solid_library, solid_tree, trace_solids
+            else:
+                trace_solids = cached[2]
         ground_boxes = []
         ground = self.heightfield
         if ground is not None:
@@ -308,8 +336,10 @@ class World:
                         and max(origin[2], end_z) >= solid_bounds.z0 - 1e-7):
                     entry = solid_bounds.ray_entry(origin, direction, limit)
                     if entry is not None:
-                        if solid_tree is not None:
-                            solid, tied = self._solid_tree_hit(origin, direction, limit, solid_tree)
+                        if trace_solids is not None:
+                            solid, tied = trace_solids(origin, direction, limit, entry)
+                        elif solid_tree is not None:
+                            solid, tied = self._solid_tree_hit(origin, direction, limit, solid_tree, entry)
                         else:
                             solid, tied = None, True
                         if tied:
@@ -358,8 +388,13 @@ class World:
     def ground_material(self, x: float, y: float, material: int) -> int:
         return self.roads.material_at(x, y, material) if self.roads is not None else material
 
+    def surface_at(self, x: float, y: float) -> tuple[float, int]:
+        """Return the visible surface height and its material in one query."""
+        height, material = self._point_surface(x, y)
+        return height, self.ground_material(x, y, material)
+
     def surface_material(self, x: float, y: float) -> int:
-        return self.ground_material(x, y, self._point_surface(x, y)[1])
+        return self.surface_at(x, y)[1]
 
     def _contact_surfaces(self, x, y, feet, radius, max_rise, max_drop, *, walking=False):
         low, high = feet - max_drop, feet + max_rise

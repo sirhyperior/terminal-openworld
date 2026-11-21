@@ -198,7 +198,8 @@ def add_presentation_arguments(parser):
 
 def hashes(root):
     return {str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
-            for path in sorted(path for path in (root / "ascii3d").iterdir() if path.suffix in ('.py', '.wgsl'))}
+            for path in sorted(path for path in (root / "ascii3d").iterdir()
+                               if path.suffix in ('.py', '.wgsl', '.c') or path.stem == 'monolith_solid_bvh')}
 
 
 def save_report(path, report, *, initial=False):
@@ -464,9 +465,9 @@ def main(argv=None):
     parser.add_argument("--width", type=int, default=120)
     parser.add_argument("--height", type=int, default=40)
     parser.add_argument("--audio", action="store_true")
-    parser.add_argument('--before-renderer', choices=('cpu', 'gpu'), default='cpu',
+    parser.add_argument('--before-renderer', choices=('cpu', 'native', 'gpu'), default='cpu',
                         help='frozen renderer; explicit GPU measurements cannot pass after CPU fallback')
-    parser.add_argument('--after-renderer', choices=('cpu', 'gpu', 'auto'), default='cpu',
+    parser.add_argument('--after-renderer', choices=('cpu', 'native', 'gpu', 'auto'), default='cpu',
                         help='current renderer; explicit GPU measurements cannot pass after CPU fallback')
     parser.add_argument("--before-elevated-audio", action="store_true",
                         help="sample listener height in a frozen control that supports elevated ambience")

@@ -2,11 +2,12 @@
 
 import heapq
 import math
+from operator import itemgetter
 
 from .player import Player
 from .doors import Door
 from .door_render import draw_doors
-from .combat_render import draw_combat, large_opaque_enemy
+from .combat_render import draw_aimed_name, draw_combat, large_opaque_enemy
 from .geometry import Camera
 from .shading import Ink, MIN_SURFACE_LEVEL, Shading, VoxelMoonlight, ink
 from .palette import UI_ACCENT, UI_DANGER, UI_POSITIVE, WATER_CREST
@@ -17,6 +18,65 @@ from .world import (AIR, BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, WATER
 
 
 RAMP = " .,:;!+=*#%@"
+VIEW_FOV_SCALE = 2 * math.tan(math.radians(82) / 2)
+
+
+def _sample_size(width, height, cells):
+    if cells is None or width * height <= cells:
+        return width, height
+    scale = math.sqrt(cells / (width * height))
+    # An odd grid samples the exact view direction at the reticle.
+    sample_width = min(cells, int(width * scale))
+    sample_height = min(cells, int(height * scale))
+    return max(1, (sample_width - 1) // 2 * 2 + 1), max(1, (sample_height - 1) // 2 * 2 + 1)
+
+
+class _ExpandedRow(list):
+    """An independent output row with the edits made after sample expansion."""
+
+    __slots__ = ("source", "edited")
+
+    def __init__(self, source):
+        super().__init__(source)
+        self.source = source
+        self.edited = []
+
+    def __setitem__(self, column, glyph):
+        super().__setitem__(column, glyph)
+        if isinstance(column, slice):
+            self.source = None
+        else:
+            self.edited.append(column)
+
+
+def _pack_foreground(row):
+    width = len(row)
+    levels = bytearray([15]) * width
+    materials = bytearray([255]) * width
+    effects = bytearray(width)
+    for x, char in enumerate(row):
+        if isinstance(char, Ink):
+            levels[x], materials[x], effects[x] = char.level, char.material, char.effects
+    return levels, materials, effects
+
+
+def _expand_scene(pixels, depths, width, height, glints):
+    """Fill the viewport from the sampled cells, preserving one-cell glints."""
+    sample_height, sample_width = len(pixels), len(pixels[0])
+    get_columns = itemgetter(*((2 * x + 1) * sample_width // (2 * width) for x in range(width)))
+    rows = [(2 * y + 1) * sample_height // (2 * height) for y in range(height)]
+    visible_glints = []
+    for x, y, base, flash in glints:
+        if pixels[y][x] is flash:
+            pixels[y][x] = base
+            visible_glints.append(((2 * x + 1) * width // (2 * sample_width),
+                                   (2 * y + 1) * height // (2 * sample_height), flash))
+    pixel_rows = [get_columns(row) for row in pixels]
+    depth_rows = [get_columns(row) for row in depths]
+    expanded = [_ExpandedRow(pixel_rows[y]) for y in rows]
+    for x, y, flash in visible_glints:
+        expanded[y][x] = flash
+    return expanded, [depth_rows[y] for y in rows]
 
 
 def _analytic_depth_rows(boxes, camera):
@@ -195,7 +255,7 @@ class Renderer:
                  combat_depth_prepass: bool = True, backend: str = 'cpu', particles: bool = True):
         self.world = world
         self.cell_aspect = cell_aspect
-        self._size = (0, 0)
+        self._projection = None
         self._columns: list[float] = []
         self._rows: list[float] = []
         self._focal = 1.0
@@ -225,11 +285,21 @@ class Renderer:
         self._analytic_sky_horizon = None
         self.cache_stats = {}
         self.ray_backend = None
+        self.solid_library = None
         self.backend_name = 'cpu'
         self.backend_error = ''
-        if backend not in ('cpu', 'gpu', 'auto'):
-            raise ValueError('renderer backend must be cpu, gpu or auto')
-        if backend != 'cpu':
+        if backend not in ('cpu', 'native', 'gpu', 'auto'):
+            raise ValueError('renderer backend must be cpu, native, gpu or auto')
+        if backend in ('native', 'auto'):
+            try:
+                from .native_solids import SolidLibrary
+
+                self.solid_library = SolidLibrary()
+                self.backend_name = 'native'
+            except (AttributeError, OSError) as error:
+                if backend == 'native':
+                    self.backend_error = str(error)
+        if backend in ('gpu', 'auto'):
             try:
                 from .gpu_renderer import GPUBackend
                 self.ray_backend = GPUBackend(world, cell_aspect)
@@ -245,11 +315,15 @@ class Renderer:
             except Exception as error:
                 self.backend_error = str(error)
 
-    def prepare_world(self) -> None:
+    def prepare_world(self, player: Player | None = None) -> None:
         """Build static traversal caches before interactive input/audio starts."""
         self._update_chunks()
         if self.world.heightfield is not None:
             self.world.heightfield.prepare()
+        if player is not None:
+            # Populate the initial camera's nearby scenery and analytic
+            # caches while the loading display owns the terminal.
+            self.scene(player, 47, 13)
 
     def _update_chunks(self):
         if self._world_revision == self.world.revision:
@@ -507,16 +581,22 @@ class Renderer:
         self._analytic_sky_horizon, self._analytic_horizon_key = skyline, key
         return skyline
 
-    def scene(self, player: Player, width: int, height: int, time_seconds: float = 0.0) -> list[list[str]]:
+    def scene(self, player: Player, width: int, height: int, time_seconds: float = 0.0, *,
+              output_size: tuple[int, int] | None = None) -> list[list[str]]:
         if width < 1 or height < 1:
             return []
-        if self._size != (width, height):
-            focal = width / (2 * math.tan(math.radians(82) / 2))
+        aspect = self.cell_aspect
+        if output_size is not None:
+            output_width, output_height = output_size
+            aspect *= (height * output_width) / (width * output_height)
+        projection = width, height, aspect
+        if self._projection != projection:
+            focal = width / VIEW_FOV_SCALE
             self._focal = focal
             self._columns = [(x + 0.5 - width / 2) / focal for x in range(width)]
-            self._rows = [(height / 2 - y - 0.5) / (focal * self.cell_aspect)
+            self._rows = [(height / 2 - y - 0.5) / (focal * aspect)
                           for y in range(height)]
-            self._size = (width, height)
+            self._projection = projection
 
         world = self.world
         self.scenery.prepare(time_seconds)
@@ -526,6 +606,7 @@ class Renderer:
         self._update_chunks()
         moonlight = self.shading.moonlight
         river_glints = {}
+        sampled_glints = []
         chunk_tops, chunks_x = self._chunk_tops, (world.width + 1) // 2
         empty_bounds, chunk_count = self._empty_bounds, len(chunk_tops)
         empty_columns = self._empty_columns
@@ -541,7 +622,7 @@ class Renderer:
         local_ceiling = self._local_ceiling(player, cp, sp)
         sky_horizon = self._prepare_horizon(player, cp, sp) if skip_empty else None
         horizon_scale = 128 / math.tau
-        current, aspect = world.current, self.cell_aspect
+        current = world.current
         ground_material = world.ground_material
         origin = (px, py, pz)
         geometry_hit = None
@@ -567,11 +648,14 @@ class Renderer:
                 for u in (umin, umax) for v in (vmin, vmax)]
             bounds = (min(point[0] for point in endpoints), min(point[1] for point in endpoints),
                       max(point[0] for point in endpoints), max(point[1] for point in endpoints))
-            geometry_hit = world.geometry_query(bounds, planes)
+            if self.solid_library is None:
+                geometry_hit = world.geometry_query(bounds, planes)
+            else:
+                geometry_hit = world.geometry_query(bounds, planes, solid_library=self.solid_library)
         analytic_minimum = getattr(geometry_hit, "minimum_depth", 0.0)
         analytic_boxes = getattr(geometry_hit, "bounds", None)
         analytic_depths = (_analytic_depth_rows(analytic_boxes,
-                           Camera(player, width, height, self._focal, self.cell_aspect))
+                           Camera(player, width, height, self._focal, aspect))
                            if analytic_boxes is not None else None)
         analytic_horizon = (self._prepare_analytic_horizon(player, cp, sp)
                             if geometry_hit is not None and skip_empty else None)
@@ -609,12 +693,12 @@ class Renderer:
         door_pixels = [[" "] * width for _ in range(height)] if world.doors else None
         door_depths = [[math.inf] * width for _ in range(height)] if world.doors else None
         if world.doors:
-            draw_doors(world, door_pixels, door_depths, player, self._focal, self.cell_aspect, self.shading)
+            draw_doors(world, door_pixels, door_depths, player, self._focal, aspect, self.shading)
 
         combat_depths = None
         self.combat_prepass_used = False
         if self.combat_depth_prepass and world.combat.enemies:
-            camera = Camera(player, width, height, self._focal, self.cell_aspect)
+            camera = Camera(player, width, height, self._focal, aspect)
             if (large_opaque_enemy(world.combat, camera)
                     and self.scenery.trees.projected_work_bound(camera) < width * height * 3):
                 # Hidden terrain can be omitted only when extra invisible crown
@@ -625,17 +709,20 @@ class Renderer:
                 combat_depths = [[math.inf] * width for _ in range(height)]
                 combat_pixels = [[" "] * width for _ in range(height)]
                 draw_combat(world.combat, world, combat_pixels, combat_depths, player,
-                            self._focal, self.cell_aspect, time_seconds, labels=False, depth_only=True)
+                            self._focal, aspect, time_seconds, labels=False, depth_only=True)
                 self.combat_prepass_used = True
 
         gpu_hits = None
         if self.ray_backend is not None:
             try:
-                gpu_hits = self.ray_backend.render(player, width, height)
+                if output_size is None:
+                    gpu_hits = self.ray_backend.render(player, width, height)
+                else:
+                    gpu_hits = self.ray_backend.render(player, width, height, aspect=aspect)
             except Exception as error:
                 self.backend_error = str(error)
                 self.close()
-                self.backend_name = 'cpu'
+                self.backend_name = 'native' if self.solid_library is not None else 'cpu'
 
         for row_index, v in enumerate(self._rows):
             row = []
@@ -865,7 +952,8 @@ class Renderer:
                                              aspect * dz * along_flow)
                         glyph = "~" if wave > 0.72 and stroke == "-" and distance <= 24 else stroke
                     crest = wave > 0.55
-                    level = tone.level + round(wave * 2)
+                    level = max(MIN_SURFACE_LEVEL, min(15, tone.level + round(wave * 2)))
+                    pigment = WATER_CREST if crest else WATER
                     # Let one cell flash per passing stripe. Close perspective
                     # can magnify a stripe into a broad band across the screen.
                     if (len(river_glints) < 4 and wave > 0.92
@@ -877,9 +965,11 @@ class Renderer:
                                             for x, y in river_glints.values())
                                 and (moonlight is None or not moonlight.blocked(hx, hy, hz + 1e-5))):
                             river_glints[stripe] = (column_index, row_index)
+                            if output_size is not None:
+                                sampled_glints.append((column_index, row_index, ink(glyph, level, pigment, tone.effects),
+                                                       ink("+", 15, pigment, tone.effects)))
                             level, glyph = 15, "+"
-                    row.append(ink(glyph, max(MIN_SURFACE_LEVEL, min(15, level)),
-                                   WATER_CREST if crest else WATER, tone.effects))
+                    row.append(ink(glyph, level, pigment, tone.effects))
                 elif material == GRASS and normal[2] > 0:
                     noise = (int(hx * 6.0) * 73856093 ^ int(hy * 6.0) * 19349663) & 15
                     wx, wy = self.scenery.wind_at(hx, hy)
@@ -892,25 +982,36 @@ class Renderer:
                     row.append(shade_surface(material, hx, hy, hz, normal, distance))
             pixels.append(row)
             depths.append(depth_row)
-        self.scenery.draw(pixels, depths, player, time_seconds, self._focal, self.cell_aspect)
+        focal = self._focal
+        self.scenery.draw(pixels, depths, player, time_seconds, focal, aspect)
         draw_combat(world.combat, world, pixels, depths, player,
-                    self._focal, self.cell_aspect, time_seconds, moonlight=self.shading.moonlight)
-        self.particles.draw(pixels, depths, player, time_seconds, self._focal,
-                            self.cell_aspect, wind_at=self.scenery.wind_at)
+                    focal, aspect, time_seconds, labels=output_size is None, moonlight=self.shading.moonlight)
+        if output_size is not None:
+            pixels, depths = _expand_scene(pixels, depths, output_width, output_height, sampled_glints)
+            focal, aspect = output_width / VIEW_FOV_SCALE, self.cell_aspect
+            if world.combat.enemies:
+                draw_aimed_name(world.combat, world, Camera(player, output_width, output_height, focal, aspect),
+                                pixels, depths, player)
+        self.particles.draw(pixels, depths, player, time_seconds, focal, aspect, wind_at=self.scenery.wind_at)
         self.scenery.stats.update(self.particles.stats)
         return pixels
 
     def frame(self, player: Player, width: int, height: int, fps: float = 0.0,
               show_map: bool = False, help_open: bool = False, paused: bool = False,
               time_seconds: float = 0.0, notice: str = "", sound_on: bool | None = None,
-              keyboard_look: bool = False, mouse_captured: bool | None = None) -> list[str]:
+              keyboard_look: bool = False, mouse_captured: bool | None = None, *,
+              scene_cells: int | None = None) -> list[str]:
         width, height = max(1, width), max(1, height)
         if width < 60 or height < 20:
             lines = ["MONOLITH / TERMINAL 3D", "", "Enlarge the terminal to at least 60 x 20.",
                      f"Current size: {width} x {height}", "", "ESC to exit"]
             return [line[:width].ljust(width) for line in (lines + [""] * height)[:height]]
         view_height = height - 5
-        pixels = self.scene(player, width, view_height, time_seconds)
+        samples = _sample_size(width, view_height, scene_cells)
+        if samples == (width, view_height):
+            pixels = self.scene(player, width, view_height, time_seconds)
+        else:
+            pixels = self.scene(player, *samples, time_seconds, output_size=(width, view_height))
         middle_x, middle_y = width // 2, view_height // 2
         pixels[middle_y][middle_x] = "+"
         if show_map:
@@ -979,13 +1080,24 @@ class Renderer:
         styles = [bytearray([15]) * width, bytearray([6]) * width]
         materials = [bytearray([255]) * width for _ in range(2)]
         effects = [bytearray(width) for _ in range(2)]
+        sampled_styles = {}
         for row in pixels:
-            levels, identities, variants = bytearray(width), bytearray([255]) * width, bytearray(width)
-            for x, char in enumerate(row):
-                if isinstance(char, Ink):
-                    levels[x], identities[x], variants[x] = char.level, char.material, char.effects
-                else:
-                    levels[x] = 15
+            if isinstance(row, _ExpandedRow) and row.source is not None:
+                # Several display rows may share one sampled row. Pack its
+                # foreground once and apply only native-resolution overlays.
+                key = id(row.source)
+                packed = sampled_styles.get(key)
+                if packed is None:
+                    packed = sampled_styles[key] = _pack_foreground(row.source)
+                levels, identities, variants = (plane[:] for plane in packed)
+                for x in row.edited:
+                    char = row[x]
+                    if isinstance(char, Ink):
+                        levels[x], identities[x], variants[x] = char.level, char.material, char.effects
+                    else:
+                        levels[x], identities[x], variants[x] = 15, 255, 0
+            else:
+                levels, identities, variants = _pack_foreground(row)
             styles.append(levels)
             materials.append(identities)
             effects.append(variants)

@@ -7,7 +7,34 @@ import shutil
 import sys
 import time
 
-from .presentation import StyledFrame
+from .presentation import StyledFrame, encode_ansi_row
+
+
+def _changed_spans(previous, current, width):
+    """Compare short cell blocks, combining nearby changes into one write."""
+    if previous == current:
+        return
+    if previous is None or width <= 16:
+        yield 0, width
+        return
+    buffers = [(before, after) for before, after in zip(previous, current) if before != after]
+    # Optional color planes can appear or disappear between styled frames.
+    if any(before is None or after is None for before, after in buffers):
+        yield 0, width
+        return
+    start = stop = None
+    for left in range(0, width, 16):
+        right = min(width, left + 16)
+        if not any(before[left:right] != after[left:right] for before, after in buffers):
+            continue
+        if stop is not None and left > stop + 16:
+            yield start, stop
+            start = None
+        if start is None:
+            start = left
+        stop = right
+    if start is not None:
+        yield start, stop
 
 
 def fit_viewport(columns: int, rows: int, max_cells: int | None = None) -> tuple[int, int]:
@@ -556,11 +583,15 @@ class PosixKeyboard:
         import tty
 
         self.termios = termios
-        self.fd = sys.stdin.fileno()
-        self.original = termios.tcgetattr(self.fd)
-        self.blocking = os.get_blocking(self.fd)
-        tty.setraw(self.fd)
-        os.set_blocking(self.fd, False)
+        # A terminal can give stdin and stdout duplicates of one descriptor.
+        # Open our own reader so nonblocking input never affects frame writes.
+        self.fd = os.open(os.ttyname(sys.stdin.fileno()), os.O_RDONLY | os.O_NONBLOCK | os.O_NOCTTY)
+        try:
+            self.original = termios.tcgetattr(self.fd)
+            tty.setraw(self.fd)
+        except BaseException:
+            os.close(self.fd)
+            raise
         self.expiry: dict[str, float] = {}
         self.pending = b""
         self.escape_time = 0.0
@@ -614,14 +645,19 @@ class PosixKeyboard:
         return Keys(set(self.expiry), pressed)
 
     def close(self) -> None:
-        self.termios.tcsetattr(self.fd, self.termios.TCSADRAIN, self.original)
-        os.set_blocking(self.fd, self.blocking)
+        try:
+            self.termios.tcsetattr(self.fd, self.termios.TCSADRAIN, self.original)
+        finally:
+            os.close(self.fd)
 
 
 class Terminal:
     def __init__(self, max_cells: int | None = None):
         self.keyboard = None
         self.last_size = (0, 0)
+        self._presented = None
+        self.measure_output = False
+        self.output_timing = (None, None, None)
         self.max_cells = max_cells
         self.origin = (1, 1)
         self._terminal_size = (0, 0)
@@ -630,6 +666,8 @@ class Terminal:
         if not sys.stdin.isatty() or not sys.stdout.isatty():
             raise OSError("Run 'python main.py' in a terminal. For a still frame, use --snapshot.")
         self.keyboard = WindowsKeyboard() if os.name == "nt" else PosixKeyboard()
+        self.last_size = (0, 0)
+        self._presented = None
         try:
             sys.stdout.write("\x1b[?1049h\x1b[?25l\x1b[?7l\x1b[0m\x1b[97;40m\x1b[2J\x1b[H")
             sys.stdout.flush()
@@ -670,23 +708,60 @@ class Terminal:
             self.keyboard.set_mouse_capture(active)
 
     def draw(self, lines: list[str] | StyledFrame) -> None:
+        encode_start = time.perf_counter() if self.measure_output else None
         if isinstance(lines, StyledFrame):
             width, height = lines.width, lines.height
-            output_rows = lines.ansi_rows()
+            mode = lines.color_mode
+            materials = lines.materials if mode == "color" else None
+            effects = lines.effects if mode == "color" else None
+            rows = [(row, bytes(style), bytes(materials[y]) if materials is not None else None,
+                     bytes(effects[y]) if effects is not None else None)
+                    for y, (row, style) in enumerate(zip(lines.rows, lines.styles))]
         else:
             if not lines:
                 return
             width, height = len(lines[0]), len(lines)
-            output_rows = lines
+            mode = "mono"
+            rows = [(row, None, None, None) for row in lines]
         size = (width, height, self.origin, self._terminal_size)
-        clear = "\x1b[2J" if size != self.last_size else ""
-        self.last_size = size
+        resized = size != self.last_size
+        previous = self._presented
+        baseline = previous[1] if not resized and previous is not None and previous[0] == mode else None
         top, left = self.origin
         separator = "\r\n" + (f"\x1b[{left}G" if left > 1 else "")
-        # Autowrap is disabled for the session. Writing the bottom-right cell
-        # is safe because the last line has no trailing newline.
-        sys.stdout.write(clear + f"\x1b[{top};{left}H" + separator.join(output_rows))
-        sys.stdout.flush()
+        parts = ["\x1b[2J"] if resized else []
+        encoded = {}
+        last_row = -2
+        for y, row in enumerate(rows):
+            # Ragged plain rows come from callers outside the rectangular
+            # frame path and keep the existing full-row write behavior.
+            row_width = len(row[0])
+            old = baseline[y] if baseline is not None and len(baseline[y][0]) == row_width == width else None
+            for start, stop in _changed_spans(old, row, row_width):
+                key = row, start, stop
+                fragment = encoded.get(key)
+                if fragment is None:
+                    fragment = encode_ansi_row(*row, mode, start, stop)
+                    encoded[key] = fragment
+                # Consecutive rows can use CRLF. Other spans locate the
+                # cursor explicitly, including when centered in a viewport.
+                parts.append(separator if start == 0 and y == last_row + 1
+                             else f"\x1b[{top + y};{left + start}H")
+                parts.append(fragment)
+                last_row = y
+        payload = "".join(parts)
+        write_start = time.perf_counter() if encode_start is not None else None
+        if payload:
+            # Invalidate before output so a partial write can be retried.
+            self._presented = None
+            sys.stdout.write(payload)
+            sys.stdout.flush()
+        if write_start is not None:
+            self.output_timing = (write_start - encode_start,
+                                  time.perf_counter() - write_start if payload else 0.0,
+                                  len(payload))
+        self.last_size = size
+        self._presented = mode, rows
 
     def __exit__(self, exc_type, exc, traceback) -> None:
         try:

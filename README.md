@@ -190,6 +190,7 @@ python main.py --volume 0.35         # Master sound level, 0 to 1
 python main.py --sound-preview effects.wav # Export the original effects
 python main.py --audio-test          # Play river/effects and check playback health
 python main.py --max-cells 4800      # Optional viewport budget to reduce CPU use
+python main.py --full-detail        # Trace every scene cell in live play
 python main.py --color-mode color   # Dark-fantasy palette on black (default)
 python main.py --color-mode gray    # Neutral grayscale foregrounds
 python main.py --color-mode mono    # Uniform-white terminal fallback
@@ -197,6 +198,7 @@ python main.py --cell-aspect 0.5     # Font cell width divided by its height
 python main.py --snapshot            # One plain-text frame; no terminal needed
 python main.py --benchmark 120       # Time 120 frames without terminal output
 python main.py --demo --frames 100   # A finite interactive smoke test
+python main.py --frame-timing fullscreen-timing.json  # Save a live timing report on exit
 python -m ascii3d                    # Alternate entry point
 ```
 
@@ -209,18 +211,19 @@ initialized. Animation stops before gameplay and on interrupted/failed startup.
 Snapshot, benchmark and redirected output omit the loading display and start no
 animation worker.
 
-The live viewport uses **every terminal column and row** by default, including
-the HUD. There is no fixed character budget or 180-column / 64-row ceiling.
-More terminal cells provide more image detail and require more rendering work.
-The terminal's font and cell size determine how many cells fit on the screen;
-the game does not resize or stretch them. `--cell-aspect` adjusts perspective
-for the font cell's width-to-height ratio.
+The live viewport uses **every terminal column and row** by default. During
+play, the game adjusts how many world rays it traces based on measured frame
+time, including terminal output. In demanding views, multiple display cells
+share one scene sample. The HUD, prompts, map, labels and reticle are drawn at
+the terminal's native character size. Use `--full-detail` to trace every
+scene cell. `--cell-aspect` adjusts perspective for the font cell's
+width-to-height ratio.
 
 Use `--max-cells 4800` to limit rendering work on a large terminal. An explicit
 budget of at least 1,200 cells scales and centers the viewport while keeping
 the 60x20 minimum playable size when the terminal allows it. Snapshot and
-benchmark modes accept `--width` and `--height` and do not use the live viewport
-budget.
+benchmark modes accept `--width` and `--height` and trace every scene cell at
+the requested dimensions.
 
 The live FPS counter refreshes every frame and reports completed game-loop
 frames per elapsed second over a rolling window of roughly one second. It
@@ -228,6 +231,12 @@ includes input, simulation, rendering, terminal writes/flushes and frame-cap
 waits. It is rounded to a whole number, starts at 0 before the first completed
 frame, and averages brief fluctuations. The default cap is 40 FPS (`--fps`
 changes it). Headless benchmark FPS excludes terminal output and cap waits.
+
+For a fullscreen slowdown, run `run.bat --frame-timing fullscreen-timing.json`,
+play in fullscreen, then exit with Esc. Use an unused filename. The report
+records viewport and sample sizes, renderer selection, input, audio controls,
+simulation, rendering, terminal encoding, writes and frame-cap waits. It
+saves up to the last 3,600 completed frames after restoring the terminal.
 
 ## Sound
 
@@ -351,14 +360,32 @@ The profile and its `.sources.json` companion require unused paths. These
 instrumented call counts include five warmup frames before profiling and help
 locate expensive work; use the paired benchmark for performance acceptance.
 
-## GPU rendering
+## Renderer backends
 
-The playable game supports `--renderer auto|cpu|gpu`. Auto uses a hardware GPU
-when the optional dependency is available, with CPU fallback. GPU geometry includes exact convex-plane candidates and indexed solid bounds,
+The playable game supports `--renderer auto|cpu|native|gpu`. Auto prefers a
+hardware GPU, then the optional compiled solid library, then the Python CPU
+renderer. `--renderer cpu` selects the standard-library Python path.
+
+The optional native library accelerates exact float64 solid traversal and
+retains the Python grid query for coincident hits. Build it once from the
+repository root. The normal launcher picks up the result automatically.
+
+```bash
+cc -std=c11 -O3 -ffp-contract=off -fexcess-precision=standard -fPIC -shared \
+  ascii3d/solid_bvh.c -lm -o ascii3d/monolith_solid_bvh.so
+```
+
+From a Windows x64 Developer Command Prompt with MSVC installed:
+
+```bat
+cl /nologo /std:c11 /O2 /fp:strict /LD ascii3d\solid_bvh.c /link /OUT:ascii3d\monolith_solid_bvh.dll
+run.bat --renderer native
+```
+
+GPU geometry includes exact convex-plane candidates and indexed solid bounds,
 with float64 refinement and uncertain-ray CPU fallback. It uses
 the same production shading, doors, actors, vegetation and HUD. Ambiguous rays
 retain the exact CPU path; missing/lost devices fall back without changing play.
-`--renderer cpu` forces the standard-library renderer.
 
 GPU support requires **Python 3.11+** and optional `wgpu`, which supplies GPU
 access unavailable in the standard library. The CPU game retains Python 3.10+

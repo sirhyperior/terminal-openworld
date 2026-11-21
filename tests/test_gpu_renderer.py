@@ -30,7 +30,8 @@ def scene_world():
 class RendererFallbackTests(unittest.TestCase):
     def test_missing_device_uses_identical_cpu_frames(self):
         world = scene_world()
-        with patch('ascii3d.gpu_renderer.GPUBackend', side_effect=RuntimeError('no device')):
+        with patch('ascii3d.gpu_renderer.GPUBackend', side_effect=RuntimeError('no device')), \
+                patch('ascii3d.native_solids.SolidLibrary', side_effect=OSError('no native library')):
             fallback = Renderer(world, backend='auto')
         self.assertEqual(fallback.backend_name, 'cpu')
         self.assertIn('no device', fallback.backend_error)

@@ -3,3 +3,6 @@ __pycache__/
 .pytest_cache/
 .vs/
 .venv-gpu/
+ascii3d/monolith_solid_bvh.dll
+ascii3d/monolith_solid_bvh.dylib
+ascii3d/monolith_solid_bvh.so

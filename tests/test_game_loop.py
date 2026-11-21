@@ -2,6 +2,7 @@
 
 from contextlib import ExitStack
 import io
+from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
@@ -17,7 +18,7 @@ class GameLoopTests(unittest.TestCase):
     def run_frames(self, script, world, player, *, demo=False, frame_work=None,
                    clock_tick=1 / 60, advance_sleep=False, sizes=None, mouse=None, keyboard_look=False,
                    fail_render=False, capture_error="", native_mouse=None, region=None, max_cells=None,
-                   color_mode=None):
+                   color_mode=None, full_detail=False):
         events, states, pauses, frames = [], [], [], []
         self.capture_states = []
         self.color_modes = []
@@ -111,7 +112,7 @@ class GameLoopTests(unittest.TestCase):
             def close(self):
                 pass
 
-            def prepare_world(self):
+            def prepare_world(self, player=None):
                 pass
 
             def frame(self, *args, **kwargs):
@@ -126,6 +127,7 @@ class GameLoopTests(unittest.TestCase):
         with ExitStack() as stack:
             if fail_render:
                 stack.enter_context(patch("ascii3d.app.sys.stderr", io.StringIO()))
+            stack.enter_context(patch("ascii3d.app.os", SimpleNamespace(name="nt")))
             for name, value in (("Terminal", FakeTerminal), ("Audio", FakeAudio),
                                 ("Renderer", FakeRenderer), ("build_world", lambda: world),
                                 ("spawn_player", lambda outside: Player(x=player.x, y=player.y, yaw=player.yaw)),
@@ -142,6 +144,8 @@ class GameLoopTests(unittest.TestCase):
                 args.extend(("--max-cells", str(max_cells)))
             if color_mode is not None:
                 args.extend(("--color-mode", color_mode))
+            if full_detail:
+                args.append("--full-detail")
             self.assertEqual(main(args), 1 if fail_render else 0)
         self.assertTrue(all(event.name in EFFECTS for event in events))
         return events, states, pauses, frames
@@ -182,6 +186,30 @@ class GameLoopTests(unittest.TestCase):
                     max_cells=budget, sizes=[(240, 80)])
                 self.assertEqual(self.terminal_budgets, [budget])
                 self.assertEqual(frames[0][0][1:3], (240, 80))
+
+    def test_live_scene_budget_shrinks_after_expensive_output_and_recovers_with_headroom(self):
+        size = 240, 80
+        work = [{"output": 0.080}, {"output": 0.024}] + [{"output": 0.005}] * 25
+        _, _, _, frames = self.run_frames(
+            [((), ())] * len(work), self.make_world(), Player(x=8.5, y=4.5),
+            sizes=[size] * len(work), frame_work=work, clock_tick=0,
+            advance_sleep=True, keyboard_look=True)
+        budgets = [frame[1]["scene_cells"] for frame in frames]
+        self.assertEqual([frame[0][1:3] for frame in frames], [size] * len(work))
+        self.assertLess(budgets[1], budgets[0])
+        self.assertEqual(budgets[1], budgets[2])
+        self.assertEqual(budgets[2], budgets[3])
+        self.assertGreater(budgets[-1], budgets[2])
+        self.assertTrue(all(0 < budget < size[0] * (size[1] - 5) for budget in budgets))
+
+    def test_full_detail_disables_live_scene_budget(self):
+        size = 240, 80
+        _, _, _, frames = self.run_frames(
+            [((), ())] * 2, self.make_world(), Player(x=8.5, y=4.5),
+            sizes=[size] * 2, frame_work=[{"output": 0.080}, {}], clock_tick=0,
+            keyboard_look=True, full_detail=True)
+        self.assertEqual([frame[0][1:3] for frame in frames], [size] * 2)
+        self.assertEqual([frame[1]["scene_cells"] for frame in frames], [None, None])
 
     def test_viewport_budget_below_playable_minimum_is_rejected_before_loading(self):
         for budget in ("0", "1199"):
