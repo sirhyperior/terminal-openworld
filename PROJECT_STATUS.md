@@ -5,6 +5,12 @@ Last reviewed **2026-11-21**. [Repository rules](AGENTS.md) ·
 
 ## Current checkpoint
 
+Startup now shows a moonlit ASCII gatehouse, then centers the splash in the
+game's alternate screen during audio startup. All 42 focused loading and
+game-loop tests passed. A 120×40 Windows GPU demo drew 60 frames with live
+audio, zero underruns or recoveries, and restored the console screen, cursor
+and modes. [Native startup smoke](benchmarks/loading-gatehouse-native-2026-11-21.json)
+
 The renderer traces every native scene cell, following the restoration in
 `780e5c8`. The Windows optimization batches exact GPU candidate refinement,
 CPU voxel traversal and static surface lighting through the optional native

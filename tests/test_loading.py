@@ -3,15 +3,15 @@
 from contextlib import ExitStack
 from contextlib import contextmanager
 import io
+import os
 import re
 import threading
-from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
 from ascii3d.app import main
 from ascii3d.loading import (LoadingProgress, STARTUP_STAGES, TIP_INTERVAL,
-                             ANIMATION_INTERVAL, TIPS, COMPACT_TIPS)
+                             ANIMATION_INTERVAL, COMPACT_TIPS, GATEHOUSE, TIPS, TITLE)
 from ascii3d.player import Player
 from ascii3d.terminal import Keys
 from ascii3d.world import FLOOR, World
@@ -29,7 +29,7 @@ class LoadingProgressTests(unittest.TestCase):
                 stream = TTYText()
                 stream.fileno = lambda: 1
                 clock = [0.0]
-                with patch('ascii3d.loading.os.get_terminal_size', return_value=SimpleNamespace(columns=columns)), \
+                with patch('ascii3d.loading.os.get_terminal_size', return_value=os.terminal_size((columns, 24))), \
                         patch('ascii3d.loading.threading.Thread'):
                     loading = LoadingProgress(stream, True, clock=lambda: clock[0])
                     loading.start()
@@ -40,7 +40,7 @@ class LoadingProgressTests(unittest.TestCase):
                         with loading.suspend():
                             loading._draw()
                         frame = stream.getvalue().split('\r')[-1].rstrip()
-                        self.assertIn('[####--------]', frame)
+                        self.assertIn('[########----------------]' if columns > 100 else '[####--------]', frame)
                         self.assertLessEqual(len(frame), columns - 1)
                         self.assertNotIn('\x1b', frame)
                         if columns >= 80:
@@ -69,7 +69,7 @@ class LoadingProgressTests(unittest.TestCase):
 
         stream = ObservedText()
         clock = [0.0]
-        with patch('ascii3d.loading.os.get_terminal_size', return_value=SimpleNamespace(columns=160)):
+        with patch('ascii3d.loading.os.get_terminal_size', return_value=os.terminal_size((160, 40))):
             loading = LoadingProgress(stream, True, clock=lambda: clock[0])
             try:
                 loading.start()
@@ -78,7 +78,7 @@ class LoadingProgressTests(unittest.TestCase):
                 self.assertEqual(loading.completed, 0)
                 self.assertIn(TIPS[0], stream.frames[0])
                 self.assertIn(TIPS[1], stream.frames[-1])
-                self.assertTrue(all('0%' in frame and '[------------]' in frame for frame in stream.frames))
+                self.assertTrue(all('0%' in frame and '[------------------------]' in frame for frame in stream.frames))
                 first, last = stream.frames[0], stream.frames[-1]
                 self.assertNotEqual(first[first.index('[') - 2], last[last.index('[') - 2])
             finally:
@@ -109,7 +109,7 @@ class LoadingProgressTests(unittest.TestCase):
     def test_empty_terminal_width_never_wraps_or_emits_ansi(self):
         stream = TTYText()
         stream.fileno = lambda: 1
-        with patch('ascii3d.loading.os.get_terminal_size', return_value=SimpleNamespace(columns=0)):
+        with patch('ascii3d.loading.os.get_terminal_size', return_value=os.terminal_size((0, 24))):
             loading = LoadingProgress(stream, True)
             loading.start()
             loading.advance()
@@ -151,7 +151,7 @@ class LoadingProgressTests(unittest.TestCase):
 
     def test_narrow_terminal_keeps_percent_and_avoids_autowrap_column(self):
         stream = TTYText()
-        with patch('ascii3d.loading.os.get_terminal_size', return_value=SimpleNamespace(columns=16)):
+        with patch('ascii3d.loading.os.get_terminal_size', return_value=os.terminal_size((16, 24))):
             stream.fileno = lambda: 1
             loading = LoadingProgress(stream, True)
             loading.start()
@@ -160,6 +160,41 @@ class LoadingProgressTests(unittest.TestCase):
         for line in stream.getvalue().strip('\n').split('\r')[1:]:
             self.assertLessEqual(len(line), 15)
             self.assertIn('%', line)
+
+    def test_splash_redraws_after_terminal_entry_and_compacts_on_resize(self):
+        stream = TTYText()
+        stream.fileno = lambda: 1
+        with patch('ascii3d.loading.os.get_terminal_size', return_value=os.terminal_size((120, 40))) as size, \
+                patch('ascii3d.loading.threading.Thread'):
+            loading = LoadingProgress(stream, True)
+            loading.start()
+            opening = stream.getvalue()
+            self.assertIn(GATEHOUSE[-1], opening)
+            self.assertIn(TITLE, opening)
+            self.assertNotIn('\x1b', opening)
+            self.assertLessEqual(max(map(len, opening.splitlines())), 119)
+
+            with loading.suspend():
+                loading.clear_line()
+                loading.use_alternate_screen()
+            start = stream.tell()
+            loading.advance()
+            alternate = stream.getvalue()[start:]
+            self.assertIn('\x1b[2J', alternate)
+            self.assertIn(GATEHOUSE[-1], alternate)
+            self.assertIn(TIPS[0], alternate)
+            self.assertIn('16%', alternate)
+
+            size.return_value = os.terminal_size((60, 8))
+            start = stream.tell()
+            loading.advance()
+            compact = stream.getvalue()[start:]
+            self.assertIn('\x1b[2J', compact)
+            self.assertIn(TITLE, compact)
+            self.assertNotIn(GATEHOUSE[-1], compact)
+            self.assertIn('33%', compact)
+            self.assertTrue(all(int(row) <= 8 for row in re.findall(r'\x1b\[(\d+);1H', compact)))
+            loading.close()
 
 
 class AppLoadingTests(unittest.TestCase):

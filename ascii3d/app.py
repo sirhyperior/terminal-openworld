@@ -180,11 +180,12 @@ def main(argv: list[str] | None = None) -> int:
             with loading.suspend():
                 loading.clear_line()
                 terminal = session.enter_context(Terminal(args.max_cells))
+                # Audio startup can fail before the final phase. Join the
+                # loading writer before Terminal restores the main screen.
+                session.callback(loading.close)
+                loading.use_alternate_screen()
             if frame_timing is not None:
                 terminal.measure_output = True
-            # Audio entry can fail before the final loading phase. Stop the
-            # animation before Terminal restores its screen on that path too.
-            session.callback(loading.close)
             loading.advance()
             audio = session.enter_context(Audio(not args.mute, args.volume))
             loading.advance()

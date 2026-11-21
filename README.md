@@ -201,12 +201,13 @@ python main.py --frame-timing fullscreen-timing.json  # Save a live timing repor
 python -m ascii3d                    # Alternate entry point
 ```
 
-Interactive startup shows a MONOLITH title card, animated activity spinner,
-progress bar and rotating gameplay tips. Wide terminals also show elapsed time.
-The spinner and tips keep moving while a longer stage runs. The loading
-percentage counts completed startup phases, rather than predicting remaining
-time; it reaches 100% after the world, renderer, terminal and audio have been
-initialized. Animation stops before gameplay and on interrupted/failed startup.
+Interactive startup shows an ASCII gatehouse beneath a moonlit sky, with the
+MONOLITH title, active setup stage, progress bar and rotating gameplay tips.
+Short terminals use a compact title or progress line. Wide terminals show
+elapsed time. The splash centers in the game's alternate screen during
+audio startup. The percentage counts completed phases and reaches 100% after
+the world, renderer, terminal and audio have initialized. Animation stops
+before gameplay and on interrupted or failed startup.
 Snapshot, benchmark and redirected output omit the loading display and start no
 animation worker.
 
