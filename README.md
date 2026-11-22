@@ -3,6 +3,27 @@
 A dark fantasy first-person exploration sandbox drawn entirely with
 **colored ASCII text on black**.
 
+## Requirements
+
+- Python 3.10 or newer.
+- A terminal capable of displaying ANSI colors.
+- Optional GPU rendering requires Python 3.11 or newer and the packages in
+  `requirements-gpu.txt`. See [Renderer backends](#renderer-backends).
+
+## Install
+
+Clone the repository and enter its directory:
+
+```powershell
+git clone https://github.com/sirhyperior/terminal-openworld.git
+cd terminal-openworld
+```
+
+The standard CPU game uses Python's standard library. Start it with
+`python main.py`, or use `run.bat` on Windows.
+
+## The world
+
 Stone runs from graphite to pewter, timber has a muted wine tint, and subdued
 gray cobbles mark routes through heather-colored grass. Moonlight enters from
 the west. Walls, roofs and bridge decks cast shadows across floors and figures.
@@ -108,8 +129,6 @@ distance shading. Movement includes gravity, cylinder collision, sliding along
 walls, and jumping with head collision.
 
 ## Run
-
-Requires **Python 3.10 or newer**, with **no extra packages**.
 
 ```powershell
 python main.py
