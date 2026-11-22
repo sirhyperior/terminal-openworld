@@ -5,36 +5,29 @@ Last reviewed **2026-11-22**. [Repository rules](AGENTS.md) ·
 
 ## Current checkpoint
 
-Mael Veyr stands ahead and left of the default Ashgate spawn. His ankle-length
-robes and pointed hood follow the other residents' idle animation. The hood
-has a recessed opaque lining that hides his face. Both Ashgate starting routes
-to the sword and gate remain clear.
+`python main.py --dev` enables a backtick console with live renderer, display,
+input, sound, spawn and timing settings. `teleport` accepts named entrances or
+coordinates and checks destination collision. The console freezes simulation,
+releases the mouse and isolates typing from play. See the
+[developer console commands](README.md#developer-console).
 
-The nearest actor under the crosshair gets a depth-tested label with clear
-sight. Residents use sage-green `<Name>` text and enemies show name and health.
-Dialogue hides the labels while the reticle is absent. All four residents can
-be reached on foot.
+Native Windows checks covered command editing and history, GPU/CPU switching,
+viewport changes, teleport, sound controls and console restoration. Live audio
+had zero underruns or recoveries. In the matched 120×40 GPU run with the
+console closed, work mean rose from 20.64 to 20.99 ms and p95 from 24.43 to
+24.86 ms. Both stayed within the 15% gate. Renderer changes can take a few
+seconds while the selected backend prepares. Hardware parity and a native
+follow-up verified changing cell aspect at an unchanged viewport size.
+The focused suite passed 137 tests with 12 skips. A separate native console
+input and viewport run passed 55 tests with one POSIX-only skip.
+[Developer console validation](benchmarks/dev-console-2026-11-22.md)
 
-The 81 focused targeting, movement and render tests passed, along with three
-dedicated hood tests. Six hardware GPU and CPU color frames matched at Mael's
-talk position. His hood was visible from the normal spawn at 60×20 and 120×40.
-
-Matched live-audio benchmarks passed the mean and p95 gates at 240×80. Both
-120×40 views exceeded the regression gates. Spawn p95 rose from 15.52 to
-22.33 ms and aimed p95 rose from 14.84 to 17.28 ms. Small-viewport rendering
-cost remains open.
+Mael Veyr is visible from the default Ashgate spawn, both starting routes are
+clear, and all four residents are reachable. The crosshair labels the nearest
+visible actor. Matched live-audio tests for Mael's hood and actor labels passed
+at 240×80. At 120×40, spawn p95 rose from 15.52 to 22.33 ms and the aimed view
+from 14.84 to 17.28 ms. Small-viewport cost remains open.
 [Mael and actor label timings](benchmarks/npc-labels-mael-2026-11-22.md)
-
-The preceding idle animation passed 68 focused tests and eight CPU/GPU frame
-pairs. The matched 240×80 and isolated 120×40 cases met the mean and p95 gates.
-[NPC idle animation timings](benchmarks/npc-idle-animation-2026-11-22.md)
-
-E uses shared aim, reach and visibility checks. Both characters turn toward
-each other before the text box opens and E advances the lines while gameplay
-is frozen. A 120×40 native Windows GPU run verified keyboard input, all three
-lines of Iven's conversation, movement resumption, console restoration and
-live audio with zero underruns or recoveries.
-[Dialogue smoke](benchmarks/npc-dialogue-native-2026-11-21.json)
 
 The renderer traces every native scene cell. The previous full-detail Windows
 optimization batches exact GPU candidate refinement, CPU voxel traversal and
@@ -55,6 +48,11 @@ withdrawn after missing the existing p95 gate. The optimization backlog entry
 remains open. [Follow-up measurements](benchmarks/exact-gpu-follow-up-2026-11-21.md)
 
 ## Verified evidence and limits
+
+The native Windows dialogue smoke verified keyboard targeting, all three lines
+of Iven's conversation, resumed movement, console restoration and live audio.
+[Dialogue smoke](benchmarks/npc-dialogue-native-2026-11-21.json) ·
+[NPC idle animation timings](benchmarks/npc-idle-animation-2026-11-22.md)
 
 The moonlit loading splash passed 42 focused loading and game-loop tests and a
 120×40 live-audio Windows GPU smoke with console restoration.
@@ -92,10 +90,12 @@ stair and road assumptions and the animated scenery comparison.
 4. Continue building massing and map layout work.
 
 ```powershell
+.\run.bat --dev
 .\run.bat --frame-timing fullscreen-full-detail-timing.json
 python -B main.py --keyboard-look --color-mode color
 $env:MONOLITH_GPU_TESTS='1'
 .\.venv-gpu\Scripts\python.exe -B -m unittest tests.test_particles tests.test_shading tests.test_color_integration tests.test_color_gpu_parity -v
+python -B -m unittest tests.test_dev_build tests.test_dev_console tests.test_mouse_input -v
 python -B -m unittest tests.test_map_expansion.MapExpansionTests.test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height tests.test_outdoors.OutdoorMovementTests.test_all_river_bridges_connect_both_banks_without_jumping -v
 .\.venv-gpu\Scripts\python.exe -B validate_native_tmp.py
 ```

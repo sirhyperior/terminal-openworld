@@ -340,6 +340,39 @@ class MouseInputTests(unittest.TestCase):
         self.assertEqual(keys.pressed, {"attack", "right"})
         self.assertNotIn("q", keys.down)
 
+    def test_posix_console_input_preserves_case_spaces_and_split_edit_keys(self):
+        keyboard = PosixKeyboard.__new__(PosixKeyboard)
+        keyboard.fd, keyboard.expiry, keyboard.pending, keyboard.escape_time = 0, {}, b"", 0
+        with patch("ascii3d.terminal.os.read", side_effect=[b"W`", BlockingIOError]), \
+                patch("ascii3d.terminal.time.perf_counter", return_value=1):
+            keys = keyboard.poll()
+        self.assertEqual(keys.pressed, {"w", "console"})
+        keyboard.set_text_input(True)
+        chunks = [b"W 0`\x7f\x1b[", BlockingIOError,
+                  b"D\x1bOH\x1b[3~\x1b[5~\x1b[6~\r", BlockingIOError]
+        with patch("ascii3d.terminal.os.read", side_effect=chunks), \
+                patch("ascii3d.terminal.time.perf_counter", return_value=1.01):
+            keys = keyboard.poll()
+            self.assertEqual(keys, Keys(text_events=("W", " ", "0", "`", "backspace")))
+            keys = keyboard.poll()
+        self.assertEqual(keys, Keys(text_events=("left", "home", "delete", "page_up", "page_down", "enter")))
+
+    def test_posix_console_separates_escape_and_interrupt_and_flushes_on_close(self):
+        keyboard = PosixKeyboard.__new__(PosixKeyboard)
+        keyboard.fd, keyboard.expiry, keyboard.pending, keyboard.escape_time = 0, {}, b"", 0
+        keyboard.termios = Mock(TCIFLUSH=0)
+        keyboard.set_text_input(True)
+        chunks = [b"\x1b", BlockingIOError, BlockingIOError, b"\x03", BlockingIOError]
+        with patch("ascii3d.terminal.os.read", side_effect=chunks), \
+                patch("ascii3d.terminal.time.perf_counter", side_effect=[1, 1.04, 1.05]):
+            self.assertEqual(keyboard.poll(), Keys())
+            self.assertEqual(keyboard.poll().pressed, {"escape"})
+            self.assertEqual(keyboard.poll().pressed, {"escape", "interrupt"})
+        keyboard.pending = b"w\r"
+        keyboard.set_text_input(False)
+        keyboard.termios.tcflush.assert_called_once_with(0, 0)
+        self.assertEqual(keyboard.pending, b"")
+
 
 class MousePollingTests(unittest.TestCase):
     """Exercise the complete reader with bounded, host-shaped input batches."""
@@ -373,6 +406,53 @@ class MousePollingTests(unittest.TestCase):
         event = SimpleNamespace(dwButtonState=int(down), dwEventFlags=flags)
         self.queue.append(SimpleNamespace(EventType=2,
                           Event=SimpleNamespace(MouseEvent=event)))
+
+    def key_record(self, code, char="\0", down=True, repeats=1, modifiers=0):
+        event = SimpleNamespace(wVirtualKeyCode=code, bKeyDown=down, wRepeatCount=repeats,
+                                dwControlKeyState=modifiers, uChar=SimpleNamespace(UnicodeChar=char))
+        self.queue.append(SimpleNamespace(EventType=1, Event=SimpleNamespace(KeyEvent=event)))
+
+    def test_windows_console_text_is_ordered_and_suppresses_gameplay_and_mouse(self):
+        self.keyboard.mapping = {0xC0: "console", ord("W"): "w", 0x0D: "attack", 0x1B: "escape"}
+        self.key_record(0xC0, "`")
+        self.assertEqual(self.keyboard.poll().pressed, {"console"})
+        self.keyboard.set_text_input(True)
+        self.key_record(ord("W"), "W", repeats=2, modifiers=0x10)
+        self.key_record(0x20, " ")
+        self.key_record(0xC0, "`")
+        self.key_record(0x25)
+        self.key_record(0x08, "\b")
+        self.key_record(0x2E)
+        self.key_record(0x0D, "\r")
+        self.pointer.position, self.pointer.left = (545, 490), True
+        self.record(True)
+        self.assertEqual(self.keyboard.poll(), Keys(text_events=(
+            "W", "W", " ", "`", "left", "backspace", "delete", "enter")))
+        self.key_record(ord("C"), "\x03", modifiers=0x8)
+        self.assertEqual(self.keyboard.poll().pressed, {"escape", "interrupt"})
+
+    def test_windows_console_clears_queued_text_and_ignores_held_keys_on_exit(self):
+        self.keyboard.mapping = {ord("W"): "w", 0x0D: "attack", 0x1B: "escape"}
+        self.keyboard.set_text_input(True)
+        self.key_record(ord("W"), "w")
+        self.key_record(0x0D, "\r")
+        self.key_record(0x1B)
+        self.assertEqual(self.keyboard.poll().pressed, {"escape"})
+        self.pointer.key_states = {ord("W"), 0x0D, 0x1B}
+        self.keyboard.api.FlushConsoleInputBuffer = Mock(side_effect=lambda _: self.queue.clear() or True)
+        self.key_record(ord("W"), "w")
+        self.keyboard.set_text_input(False)
+        self.keyboard.api.FlushConsoleInputBuffer.assert_called_once_with(123)
+        self.assertEqual(self.queue, [])
+        self.key_record(ord("W"), "w")
+        self.key_record(0x0D, "\r")
+        self.key_record(0x1B)
+        self.assertEqual(self.keyboard.poll(), Keys())
+        for code in (ord("W"), 0x0D, 0x1B):
+            self.key_record(code, down=False)
+        self.key_record(ord("W"), "w")
+        self.key_record(0x0D, "\r")
+        self.assertEqual(self.keyboard.poll(), Keys({"w", "attack"}, {"w", "attack"}))
 
     def test_press_is_recovered_with_motion_when_console_click_is_missing(self):
         self.pointer.position, self.pointer.left = (545, 490), True

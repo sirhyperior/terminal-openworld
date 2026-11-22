@@ -3,6 +3,7 @@
 import argparse
 from collections import deque
 from contextlib import ExitStack
+from functools import partial
 import math
 import os
 from pathlib import Path
@@ -18,8 +19,8 @@ from .npcs import NPC
 from .renderer import Renderer
 from .sound import Audio, SoundBank
 from .soundscape import Soundscape
-from .terminal import Terminal
-from .world import build_world
+from .terminal import Keys, Terminal
+from .world import RIVERBED_LEVEL, World, build_world
 from .map_expansion import INDOOR_SPAWN, OUTDOOR_SPAWN
 
 
@@ -37,6 +38,24 @@ def spawn_player(outside: bool = False) -> Player:
 
 REGION_NAMES = ("ashgate", "gravewood", "thornwatch", "abbey", "reliquary", "citadel",
                 "ridge", "keep", "observatory")
+RENDERER_NAMES = ("auto", "cpu", "native", "gpu")
+COLOR_MODES = ("mono", "gray", "color")
+
+
+def validate_live_options(args: argparse.Namespace) -> None:
+    if not 0.2 <= args.cell_aspect <= 1.5:
+        raise ValueError("cell-aspect must be between 0.2 and 1.5")
+    if args.fps > 240:
+        raise ValueError("fps must not exceed 240")
+    if args.max_cells is not None and args.max_cells < 1200:
+        raise ValueError("max-cells must be at least 1200")
+    if not 0 <= args.volume <= 1:
+        raise ValueError("volume must be between 0 and 1")
+
+
+def timing_settings(args: argparse.Namespace, keyboard_look: bool) -> dict:
+    return {"fps_cap": args.fps, "renderer_requested": args.renderer, "color_mode": args.color_mode,
+            "max_cells": args.max_cells, "keyboard_look": keyboard_look, "start_muted": args.mute}
 
 
 def spawn_region(region: str) -> Player:
@@ -53,6 +72,44 @@ def spawn_region(region: str) -> Player:
     x, y = landmark.to_world((x0 + x1) / 2 + .5, y0 - 2.5)
     return Player(x=x, y=y, z=float(landmark.base),
                   yaw=math.pi / 2 + landmark.angle, pitch=-0.06)
+
+
+def teleport_destination(world: World, player: Player, tokens: list[str]) -> Player:
+    if len(tokens) == 1:
+        name = tokens[0].lower()
+        if name == "outside":
+            return spawn_player(True)
+        if name in REGION_NAMES:
+            return spawn_region(name)
+        raise ValueError(f"Unknown region '{name}'. Try regions.")
+    if len(tokens) not in (2, 3):
+        raise ValueError("Usage: teleport <region|outside> or teleport <x> <y> [z]")
+    try:
+        coords = [float(token) for token in tokens]
+    except ValueError:
+        raise ValueError("Coordinates must be numbers") from None
+    if not all(math.isfinite(value) for value in coords):
+        raise ValueError("Coordinates must be finite")
+    x, y = coords[:2]
+    if not (0 <= x < world.width and 0 <= y < world.depth):
+        raise ValueError("X and Y must be within the map")
+    if len(coords) == 3:
+        z = coords[2]
+    else:
+        support = world.walk_support(x, y, world.height, player.RADIUS, 0, world.height)
+        z = support[0] if support is not None else RIVERBED_LEVEL
+    return Player(x=x, y=y, z=z, yaw=player.yaw, pitch=player.pitch)
+
+
+def dev_choice(value: str, choices: tuple[str, ...]) -> str:
+    value = value.lower()
+    if value not in choices:
+        raise ValueError("Expected " + " | ".join(choices))
+    return value
+
+
+def dev_bool(value: str) -> bool:
+    return dev_choice(value, ("on", "off")) == "on"
 
 
 class FrameRateCounter:
@@ -79,11 +136,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--fps", type=positive_int, default=40, help="frame rate limit (default: 40)")
     parser.add_argument("--cell-aspect", type=float, default=0.5, help="font cell width / height (default: 0.5)")
     parser.add_argument("--benchmark", type=positive_int, metavar="FRAMES", help="render a turn without terminal output")
-    parser.add_argument("--renderer", choices=('auto', 'cpu', 'native', 'gpu'), default='auto',
+    parser.add_argument("--renderer", choices=RENDERER_NAMES, default='auto',
                         help='geometry renderer (auto prefers hardware GPU, then compiled native solids)')
-    parser.add_argument("--color-mode", choices=('mono', 'gray', 'color'), default='color',
+    parser.add_argument("--color-mode", choices=COLOR_MODES, default='color',
                         help='foreground presentation: color, grayscale or uniform white (default: color)')
     parser.add_argument("--demo", action="store_true", help="automatically walk and turn; controls still work")
+    parser.add_argument("--dev", action="store_true", help="enable the in-game developer console (backtick)")
     parser.add_argument("--outside", action="store_true", help="start in the meadow facing the castle")
     parser.add_argument("--region", choices=REGION_NAMES,
                         help="start at a highland landmark; R returns to this entrance")
@@ -100,29 +158,26 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--audio-test", action="store_true", help="play river/effect audio and report playback health")
     args = parser.parse_args(argv)
     keyboard_look = args.keyboard_look or os.name != "nt"
-    if not 0.2 <= args.cell_aspect <= 1.5:
-        parser.error("--cell-aspect must be between 0.2 and 1.5")
+    try:
+        validate_live_options(args)
+    except ValueError as error:
+        parser.error(f"--{error}")
     if args.width > 300 or args.height > 120:
         parser.error("--width / --height must not exceed 300 / 120")
-    if args.fps > 240:
-        parser.error("--fps must not exceed 240")
-    if args.max_cells is not None and args.max_cells < 1200:
-        parser.error("--max-cells must be at least 1200")
-    if not math.isfinite(args.volume) or not 0 <= args.volume <= 1:
-        parser.error("--volume must be between 0 and 1")
+    headless = bool(args.snapshot or args.benchmark or args.sound_preview or args.audio_test)
+    if args.dev and headless:
+        parser.error("--dev is available during gameplay")
+    timing_enabled = args.frame_timing is not None
     frame_timing = None
-    if args.frame_timing is not None:
-        if args.snapshot or args.benchmark or args.sound_preview or args.audio_test:
+    if timing_enabled or args.dev:
+        from .frame_timing import FrameTiming, milliseconds
+
+    if timing_enabled:
+        if headless:
             parser.error("--frame-timing is available during gameplay")
         if args.frame_timing.exists() or args.frame_timing.is_symlink():
             parser.error("--frame-timing requires an unused path")
-        from .frame_timing import FrameTiming, milliseconds
-
-        frame_timing = FrameTiming(args.frame_timing, {
-            "fps_cap": args.fps, "renderer_requested": args.renderer, "color_mode": args.color_mode,
-            "max_cells": args.max_cells,
-            "keyboard_look": keyboard_look, "start_muted": args.mute,
-        })
+        frame_timing = FrameTiming(args.frame_timing, timing_settings(args, keyboard_look))
     if args.sound_preview:
         SoundBank().write_preview(args.sound_preview)
         print(f"Wrote original sound effects to {args.sound_preview}")
@@ -132,7 +187,9 @@ def main(argv: list[str] | None = None) -> int:
         return check_audio(args.volume)
 
     loading = LoadingProgress(sys.stdout, not args.snapshot and not args.benchmark and sys.stdout.isatty())
-    entrance = (lambda: spawn_region(args.region)) if args.region else (lambda: spawn_player(args.outside))
+    def entrance() -> Player:
+        return spawn_region(args.region) if args.region else spawn_player(args.outside)
+
     renderer = None
     try:
         loading.start()
@@ -203,19 +260,200 @@ def main(argv: list[str] | None = None) -> int:
             last_mouse_error = ""
             step = 1 / 120
             conversation: Conversation | None = None
+            dev_console = None
+            console_open = False
+            console_request = ""
+            ui_events: list[GameEvent] = []
 
             def begin_talk(npc: NPC) -> None:
                 nonlocal conversation
                 conversation = Conversation(npc, player)
 
+            def reset_player() -> None:
+                nonlocal player, conversation, demo_time, jump_pending, attack_pending
+                player = entrance()
+                conversation = None
+                demo_time = 0.0
+                jump_pending = attack_pending = False
+                ui_events.append(GameEvent("ui_reset"))
+
+            if args.dev:
+                from .dev_console import DevConsole
+
+                def where() -> str:
+                    return f"X {player.x:.4f}  Y {player.y:.4f}  Z {player.z:.4f}  |  {world.area(player.x, player.y)}"
+
+                def relocate(destination: Player) -> str:
+                    nonlocal player, conversation, demo_time
+                    x, y, z = destination.x, destination.y, destination.z
+                    if z < RIVERBED_LEVEL or z > world.height:
+                        raise ValueError(f"Z must be between {RIVERBED_LEVEL} and {world.height}")
+                    if world.collides(x, y, z, player.RADIUS, player.HEIGHT):
+                        raise ValueError("Destination is obstructed")
+                    destination.hp, destination.max_hp = player.hp, player.max_hp
+                    destination.grounded = world.collides(x, y, z - 1e-5, player.RADIUS, player.HEIGHT)
+                    destination.in_water = world.in_water(x, y, z)
+                    player = destination
+                    conversation = None
+                    demo_time = 0.0
+                    ui_events.append(GameEvent("ui_dev_teleport"))
+                    return "Teleported to " + where()
+
+                def switch_renderer(requested: str) -> None:
+                    nonlocal renderer
+                    candidate = Renderer(world, args.cell_aspect, backend=requested)
+                    try:
+                        candidate.prepare_world(player)
+                        if requested != "auto" and candidate.backend_name != requested:
+                            raise ValueError(f"{requested} renderer unavailable ({candidate.backend_error})")
+                    except BaseException:
+                        candidate.close()
+                        raise
+                    renderer.close()
+                    renderer = candidate
+
+                def set_timing(path: Path | None) -> None:
+                    nonlocal frame_timing, timing_enabled
+                    if path is not None:
+                        if frame_timing is None or path != frame_timing.path:
+                            if path.exists() or path.is_symlink():
+                                raise ValueError("frame-timing requires an unused path")
+                        if frame_timing is None:
+                            frame_timing = FrameTiming(path, timing_settings(args, keyboard_look))
+                        else:
+                            frame_timing.path = path
+                    timing_enabled = path is not None
+
+                setting_types = {
+                    "renderer": lambda value: dev_choice(value, RENDERER_NAMES),
+                    "color-mode": lambda value: dev_choice(value, COLOR_MODES),
+                    "fps": positive_int,
+                    "cell-aspect": float,
+                    "max-cells": lambda value: None if value.lower() == "off" else positive_int(value),
+                    "keyboard-look": dev_bool,
+                    "demo": dev_bool,
+                    "mute": dev_bool,
+                    "volume": float,
+                    "region": lambda value: None if value.lower() == "off" else dev_choice(value, REGION_NAMES),
+                    "outside": dev_bool,
+                    "frames": lambda value: None if value.lower() == "off" else positive_int(value),
+                    "frame-timing": lambda value: None if value.lower() == "off" else Path(value),
+                }
+
+                def setting_line(name: str) -> str:
+                    value = getattr(args, name.replace("-", "_"))
+                    if isinstance(value, bool) or value is None:
+                        value = "on" if value else "off"
+                    detail = ""
+                    if name == "renderer" and value != renderer.backend_name:
+                        detail = f" (active: {renderer.backend_name})"
+                    if name == "keyboard-look" and os.name != "nt":
+                        detail = " (active: on, required on this platform)"
+                    if name == "mute" and not audio.available:
+                        detail = " (audio output unavailable)"
+                    if name == "frame-timing" and value == "off" and frame_timing is not None:
+                        detail = f" (will save to {frame_timing.path} on exit)"
+                    return f"{name} = {value}{detail}"
+
+                def set_option(name: str, value: str) -> str:
+                    nonlocal keyboard_look, demo_time
+                    attr = name.replace("-", "_")
+                    try:
+                        selected = setting_types[name](value)
+                        validate_live_options(argparse.Namespace(**(vars(args) | {attr: selected})))
+                        if name == "renderer":
+                            switch_renderer(selected)
+                        elif name == "cell-aspect":
+                            renderer.set_cell_aspect(selected)
+                        elif name == "max-cells":
+                            terminal.max_cells = selected
+                        elif name == "keyboard-look":
+                            keyboard_look = selected or os.name != "nt"
+                        elif name == "demo":
+                            demo_time = 0.0
+                        elif name == "mute":
+                            audio.set_muted(selected)
+                        elif name == "volume":
+                            audio.set_volume(selected)
+                        elif name == "region":
+                            relocate(spawn_region(selected) if selected else spawn_player(args.outside))
+                        elif name == "outside":
+                            relocate(spawn_player(selected))
+                            args.region = None
+                        elif name == "frame-timing":
+                            set_timing(selected)
+                    except (argparse.ArgumentTypeError, OSError) as error:
+                        raise ValueError(str(error)) from None
+                    setattr(args, attr, selected)
+                    return setting_line(name)
+
+                def no_args(tokens: list[str], name: str) -> str:
+                    nonlocal console_request
+                    if tokens:
+                        raise ValueError(f"Usage: {name}")
+                    if name == "where":
+                        return where()
+                    if name == "regions":
+                        return " | ".join((*REGION_NAMES, "outside"))
+                    if name == "reset":
+                        reset_player()
+                        return "Returned to the entrance. " + where()
+                    console_request = name
+                    return ""
+
+                command_help = {
+                    "where": "where  Show your position and area.",
+                    "regions": "regions  List named teleport destinations.",
+                    "teleport": "teleport <region|outside> or teleport <x> <y> [z]  Move in the current world.",
+                    "reset": "reset  Return to the entrance with full health.",
+                    "resume": "resume  Close the console and resume play.",
+                    "quit": "quit  Exit MONOLITH.",
+                }
+                commands = {name: partial(no_args, name=name) for name in command_help if name != "teleport"}
+                commands["teleport"] = lambda tokens: relocate(teleport_destination(world, player, tokens))
+                dev_console = DevConsole(
+                    {name: partial(set_option, name) for name in setting_types}, commands,
+                    lambda: "\n".join(setting_line(name) for name in setting_types), command_help=command_help,
+                )
+
             while True:
                 start = time.perf_counter()
-                if frame_timing is not None:
-                    frame_timing.begin(start)
+                timing = frame_timing if timing_enabled else None
+                if timing is not None:
+                    timing.begin(start)
                     audio_toggle_seconds = 0.0
+                elif frame_timing is not None:
+                    frame_timing.start = None
                 fps = frame_rate.update(start)
                 elapsed, previous = min(start - previous, 0.1), start
                 keys = terminal.keyboard.poll()
+                ui_events = []
+                dev_transition = False
+                if dev_console is not None:
+                    terminal.measure_output = timing is not None
+                    if console_open:
+                        dev_transition = True
+                        if not keys.pressed & {"escape", "blur", "interrupt"}:
+                            for key in keys.text_events:
+                                dev_console.handle((key,))
+                                if console_request:
+                                    break
+                        if console_request == "resume":
+                            paused = help_open = False
+                        pressed = keys.pressed & {"blur"}
+                        if console_request == "quit" or "interrupt" in keys.pressed:
+                            pressed.add("escape")
+                        if console_request or "escape" in keys.pressed:
+                            console_open = False
+                            terminal.keyboard.set_text_input(False)
+                            ui_events.append(GameEvent("ui_dev_close"))
+                        console_request = ""
+                        keys = Keys(pressed=pressed)
+                    elif "console" in keys.pressed and not keys.pressed & {"escape", "blur"}:
+                        console_open = dev_transition = True
+                        terminal.keyboard.set_text_input(True)
+                        ui_events.append(GameEvent("ui_dev_open"))
+                        keys = Keys()
                 if "escape" in keys.pressed:
                     terminal.set_mouse_capture(False)
                     audio.pause(True)
@@ -223,7 +461,6 @@ def main(argv: list[str] | None = None) -> int:
                     if audio.enabled:
                         time.sleep(0.25)
                     break
-                ui_events = []
                 in_conversation = conversation is not None
                 if not in_conversation and keys.pressed & {"m", "tab"}:
                     show_map = not show_map
@@ -240,22 +477,20 @@ def main(argv: list[str] | None = None) -> int:
                     help_open = False
                     ui_events.append(GameEvent("ui_pause"))
                 if "f" in keys.pressed:
-                    if frame_timing is not None:
+                    if timing is not None:
                         toggle_start = time.perf_counter()
                     audio.toggle()
-                    if frame_timing is not None:
+                    args.mute = not args.mute if audio.available else False
+                    if timing is not None:
                         audio_toggle_seconds = time.perf_counter() - toggle_start
                     notice = "Sound on" if audio.enabled else ("Sound muted" if audio.available else "Audio output unavailable")
                     notice_until = simulation_time + 2
                 if not in_conversation and "r" in keys.pressed:
-                    player = entrance()
-                    demo_time = 0.0
-                    jump_pending = attack_pending = False
-                    ui_events.append(GameEvent("ui_reset"))
+                    reset_player()
 
                 width, height = terminal.size()
                 playable = width >= 60 and height >= 20
-                active = not paused and not help_open and playable
+                active = not paused and not help_open and playable and not dev_transition
                 terminal.set_mouse_capture(active and not keyboard_look and not args.demo)
                 mouse_error = getattr(terminal, "mouse_error", "")
                 if mouse_error and mouse_error != last_mouse_error:
@@ -267,14 +502,14 @@ def main(argv: list[str] | None = None) -> int:
                 input_transition = bool(keys.pressed & {"p", "h", "r"})
                 if active and not in_conversation and not keyboard_look and not input_transition:
                     player.look(keys.mouse_dx, keys.mouse_dy)
-                if frame_timing is not None:
+                if timing is not None:
                     input_end = time.perf_counter()
                 audio.pause(not active)
                 audio.listener = (player.x, player.y, player.yaw)
                 audio.ambient = soundscape.at(player.x, player.y, player.yaw, player.z)
                 for event in ui_events:
                     audio.emit(event)
-                if frame_timing is not None:
+                if timing is not None:
                     audio_end = time.perf_counter()
                 if active and conversation is not None:
                     event = conversation.update(player, elapsed, advance="e" in keys.pressed and not input_transition)
@@ -342,35 +577,38 @@ def main(argv: list[str] | None = None) -> int:
                     accumulator = 0.0
                     jump_pending = attack_pending = False
 
-                if frame_timing is not None:
+                if timing is not None:
                     simulation_end = time.perf_counter()
                 mouse_captured = terminal.mouse_captured if not keyboard_look and not args.demo else None
-                frame = renderer.styled_frame(player, width, height, fps, show_map, help_open, paused,
-                                              time_seconds=simulation_time,
-                                              notice=notice if simulation_time < notice_until else "", sound_on=audio.enabled,
-                                              keyboard_look=keyboard_look,
-                                              mouse_captured=mouse_captured, color_mode=args.color_mode,
-                                              dialogue=conversation.view if conversation is not None else None)
-                if frame_timing is not None:
+                if console_open:
+                    frame = dev_console.frame(width, height)
+                else:
+                    frame = renderer.styled_frame(player, width, height, fps, show_map, help_open, paused,
+                                                  time_seconds=simulation_time,
+                                                  notice=notice if simulation_time < notice_until else "", sound_on=audio.enabled,
+                                                  keyboard_look=keyboard_look,
+                                                  mouse_captured=mouse_captured, color_mode=args.color_mode,
+                                                  dialogue=conversation.view if conversation is not None else None)
+                if timing is not None:
                     render_end = time.perf_counter()
                 terminal.draw(frame)
                 frame_count += 1
                 last_frame = args.frames is not None and frame_count >= args.frames
-                if last_frame and frame_timing is None:
+                if last_frame and timing is None:
                     break
                 work_end = time.perf_counter()
                 work_seconds = work_end - start
                 remaining = 0.0 if last_frame else 1 / args.fps - work_seconds
                 timing_sample = None
-                if frame_timing is not None:
+                if timing is not None:
                     encode, write, output_bytes = getattr(terminal, "output_timing", (None, None, None))
                     gpu = getattr(renderer, "ray_backend", None)
-                    timing_sample = frame_timing.record(
+                    timing_sample = timing.record(
                         frame=frame_count, viewport=(width, height), terminal=terminal._terminal_size,
-                        scene_samples=(width, height - 5) if playable else None,
+                        scene_samples=(width, height - 5) if playable and not console_open else None,
                         backend=renderer.backend_name, active=active, sound_on=audio.enabled,
                         mouse_captured=mouse_captured,
-                        gpu_stats=dict(gpu.last_stats) if gpu is not None else None,
+                        gpu_stats=dict(gpu.last_stats) if gpu is not None and not console_open else None,
                         input_ms=milliseconds(input_end - start - audio_toggle_seconds),
                         audio_ms=milliseconds(audio_end - input_end + audio_toggle_seconds),
                         simulation_ms=milliseconds(simulation_end - audio_end),
@@ -381,6 +619,8 @@ def main(argv: list[str] | None = None) -> int:
                         output_bytes=output_bytes,
                         cap_requested_ms=milliseconds(max(0.0, remaining)), cap_actual_ms=0.0,
                     )
+                    if dev_console is not None:
+                        timing_sample.update(console_open=console_open, fps_cap=args.fps, color_mode=args.color_mode)
                 if remaining > 0:
                     sleep_start = time.perf_counter() if timing_sample is not None else None
                     try:
@@ -405,5 +645,5 @@ def main(argv: list[str] | None = None) -> int:
         except OSError as error:
             print(f"MONOLITH: Could not save frame timing. {error}", file=sys.stderr)
             return 1
-        print(f"Frame timing saved to {args.frame_timing}")
+        print(f"Frame timing saved to {frame_timing.path}")
     return status

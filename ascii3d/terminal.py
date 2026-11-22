@@ -54,10 +54,13 @@ def fit_viewport(columns: int, rows: int, max_cells: int | None = None) -> tuple
 
 @dataclass
 class Keys:
+    """Gameplay state and ordered editor input when the console has focus."""
+
     down: set[str] = field(default_factory=set)
     pressed: set[str] = field(default_factory=set)
     mouse_dx: float = 0.0
     mouse_dy: float = 0.0
+    text_events: tuple[str, ...] = ()
 
 
 class _WindowsPointer:
@@ -410,6 +413,12 @@ class WindowsMouse:
 class WindowsKeyboard:
     """Read native console key-down AND key-up records, including real Shift."""
 
+    _text_input = False
+    _blocked_by_text: set[str] | None = None
+    _TEXT_KEYS = {0x08: "backspace", 0x0D: "enter", 0x21: "page_up", 0x22: "page_down",
+                  0x23: "end", 0x24: "home", 0x25: "left", 0x26: "up", 0x27: "right",
+                  0x28: "down", 0x2E: "delete"}
+
     def __init__(self):
         import ctypes
         from ctypes import wintypes as wt
@@ -479,11 +488,13 @@ class WindowsKeyboard:
             raise
         self.mapping = {0x1B: "escape", 0x20: "space", 0x10: "shift", 0xA0: "shift", 0xA1: "shift",
                         0x25: "left", 0x26: "up", 0x27: "right", 0x28: "down", 0x09: "tab",
-                        0x0D: "attack"}
+                        0x0D: "attack", 0xC0: "console"}
         self.mapping.update({ord(key.upper()): key for key in "wasdemhprf"})
 
     def poll(self) -> Keys:
         pressed: set[str] = set()
+        text_events: list[str] = []
+        text_input, blocked = self._text_input, self._blocked_by_text
         api, byref = self.api, self.ctypes.byref
         if not api.GetNumberOfConsoleInputEvents(self.handle, byref(self.available)):
             raise self.ctypes.WinError(self.ctypes.get_last_error())
@@ -501,12 +512,16 @@ class WindowsKeyboard:
                         self.mouse.confirm_focus()
                     else:
                         self.down.clear()
+                        if blocked:
+                            blocked.clear()
                         self.mouse.focus_lost()
                         pressed.add("blur")
                     continue
                 if record.EventType == 0x2:
-                    if self.mouse.raw_relative:
-                        continue  # Raw Input is the sole captured button source.
+                    # Ignore clicks while editing. During raw capture the
+                    # helper exclusively owns captured button events.
+                    if text_input or self.mouse.raw_relative:
+                        continue
                     event = record.Event.MouseEvent
                     # Motion/wheel snapshots are not button transitions. Some
                     # hosts coalesce them; neither recentering nor a stale
@@ -518,30 +533,53 @@ class WindowsKeyboard:
                 if record.EventType != 0x1:
                     continue
                 event = record.Event.KeyEvent
-                key = self.mapping.get(event.wVirtualKeyCode)
-                if event.bKeyDown and event.wVirtualKeyCode == ord("C") and event.dwControlKeyState & 0xC:
+                code = event.wVirtualKeyCode
+                key = self.mapping.get(code)
+                if event.bKeyDown and code == ord("C") and event.dwControlKeyState & 0xC:
                     pressed.add("escape")
+                    if text_input:
+                        pressed.add("interrupt")
                 if key:
                     if event.bKeyDown:
-                        if key not in self.down:
+                        if key not in self.down and (not text_input or key == "escape"):
                             pressed.add(key)
                         self.down.add(key)
                     else:
                         self.down.discard(key)
+                        if blocked:
+                            blocked.discard(key)
+                if text_input and event.bKeyDown:
+                    token = self._TEXT_KEYS.get(code)
+                    if token is None:
+                        character = event.uChar.UnicodeChar
+                        if " " <= character <= "~":
+                            token = character
+                    if token is not None:
+                        repeats = min(event.wRepeatCount, 1024 - len(text_events))
+                        text_events.extend([token] * repeats)
                 # Modifier state also catches Shift held before the app started.
                 if event.dwControlKeyState & 0x10:
                     self.down.add("shift")
                 else:
                     self.down.discard("shift")
+                    if blocked:
+                        blocked.discard("shift")
         dx, dy, blurred = self.mouse.poll()
-        if self.mouse.sample_button():
+        if not text_input and self.mouse.sample_button():
             pressed.add("attack")
         if blurred:
             self.down.clear()
+            if blocked:
+                blocked.clear()
             pressed.add("blur")
         if "blur" in pressed:
             pressed.discard("attack")
             dx = dy = 0.0
+            text_events.clear()
+        if text_input:
+            return Keys(pressed=pressed, text_events=tuple(text_events))
+        if blocked:
+            return Keys(self.down - blocked, pressed, dx, dy)
         return Keys(set(self.down), pressed, dx, dy)
 
     def close(self) -> None:
@@ -566,9 +604,23 @@ class WindowsKeyboard:
             # stall held WASD/Shift until keyboard repeat resumes. Reconcile
             # physical state once per capture epoch, including held action keys
             # so their next repeat does not become a second UI/attack press.
-            self.down = {key for code, key in self.mapping.items()
-                         if self.mouse.pointer.key_down(code)}
+            self._sync_held_keys()
         self.mouse.set_capture(active)
+
+    def _sync_held_keys(self) -> None:
+        self.down = {key for code, key in self.mapping.items()
+                     if self.mouse.pointer.key_down(code)}
+        if self._blocked_by_text:
+            self._blocked_by_text.intersection_update(self.down)
+
+    def set_text_input(self, enabled: bool) -> None:
+        if self._text_input and not enabled:
+            # Discard a queued paste tail and consume held text keys until they
+            # are released, including Esc and Enter, before play resumes.
+            if self.api.FlushConsoleInputBuffer(self.handle):
+                self._sync_held_keys()
+            self._blocked_by_text = set(self.down)
+        self._text_input = enabled
 
 
 class PosixKeyboard:
@@ -577,6 +629,16 @@ class PosixKeyboard:
     Traditional Unix terminals don't send key-up events. A short timeout models
     held keys there; Windows uses precise native events instead.
     """
+
+    _text_input = False
+    _ARROWS = {b"A": "up", b"B": "down", b"C": "right", b"D": "left"}
+    _TEXT_SEQUENCES = {b"H": "home", b"1~": "home", b"7~": "home",
+                       b"F": "end", b"4~": "end", b"8~": "end",
+                       b"3~": "delete", b"5~": "page_up", b"6~": "page_down"}
+    _TEXT_CONTROLS = {"\r": "enter", "\n": "enter", "\x08": "backspace", "\x7f": "backspace"}
+    _PLAY_CONTROLS = {" ": "space", "\t": "tab", "\r": "attack", "\n": "attack", "`": "console"}
+    _PLAY_KEYS = frozenset("wasdemhprf") | {"attack", "escape", "space", "tab", "left", "right",
+                                                   "up", "down", "console"}
 
     def __init__(self):
         import termios
@@ -601,6 +663,8 @@ class PosixKeyboard:
         self.expiry = {key: expiry for key, expiry in self.expiry.items() if expiry > now}
         previous = set(self.expiry)
         pressed: set[str] = set()
+        text_events: list[str] = []
+        text_input = self._text_input
         for _ in range(4):
             try:
                 data = os.read(self.fd, 4096)
@@ -609,7 +673,6 @@ class PosixKeyboard:
             if not data:
                 break
             self.pending = (self.pending + data)[:16384]
-        arrows = {b"A": "up", b"B": "down", b"C": "right", b"D": "left"}
         count = 0
         while self.pending and count < 1024:
             count += 1
@@ -625,7 +688,9 @@ class PosixKeyboard:
                                 if 0x40 <= self.pending[i] <= 0x7E), None)
                     if end is None:
                         break
-                    key = arrows.get(self.pending[end:end + 1], "")
+                    key = self._ARROWS.get(self.pending[end:end + 1], "")
+                    if text_input:
+                        key = self._TEXT_SEQUENCES.get(self.pending[2:end + 1], key)
                     self.pending = self.pending[end + 1:]
                 else:
                     key, self.pending = "escape", self.pending[1:]
@@ -633,16 +698,36 @@ class PosixKeyboard:
             else:
                 char = chr(self.pending[0])
                 self.pending = self.pending[1:]
-                key = {" ": "space", "\t": "tab", "\x03": "escape",
-                       "\r": "attack", "\n": "attack"}.get(char, char.lower())
-                if char in "WASD":
-                    self.expiry["shift"] = now + 0.20
-            if key in {"w", "a", "s", "d", "attack", "e", "m", "h", "p", "r", "f", "escape", "space",
-                       "tab", "left", "right", "up", "down"}:
+                if char == "\x03":
+                    key = "escape"
+                    if text_input:
+                        pressed.update(("escape", "interrupt"))
+                elif text_input:
+                    key = char if " " <= char <= "~" else self._TEXT_CONTROLS.get(char, "")
+                else:
+                    key = self._PLAY_CONTROLS.get(char, char.lower())
+                    if char in "WASD":
+                        self.expiry["shift"] = now + 0.20
+            if text_input and key != "escape":
+                if key:
+                    text_events.append(key)
+            elif key in self._PLAY_KEYS:
                 if key not in previous:
                     pressed.add(key)
                 self.expiry[key] = now + 0.20
+        if text_input:
+            return Keys(pressed=pressed, text_events=tuple(text_events))
         return Keys(set(self.expiry), pressed)
+
+    def set_text_input(self, enabled: bool) -> None:
+        if enabled == self._text_input:
+            return
+        self._text_input = enabled
+        self.expiry = {key: expiry for key, expiry in self.expiry.items() if key == "escape"}
+        if not enabled:
+            self.pending = b""
+            self.escape_time = 0.0
+            self.termios.tcflush(self.fd, self.termios.TCIFLUSH)
 
     def close(self) -> None:
         try:

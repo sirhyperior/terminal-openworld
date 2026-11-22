@@ -6,7 +6,7 @@ import queue
 import time
 
 
-def _worker(controls, status, error, events, stop, ready, volume, bank, output_factory):
+def _worker(controls, status, error, events, stop, ready, bank, output_factory):
     # Import in the spawned child, after module initialization has completed.
     from .sound import ThreadAudio, WaveOutput
 
@@ -31,7 +31,7 @@ def _worker(controls, status, error, events, stop, ready, volume, bank, output_f
 
     try:
         state = controls[:]
-        engine = ThreadAudio(bool(state[6]), volume, output_factory or WaveOutput, bank)
+        engine = ThreadAudio(bool(state[6]), state[9], output_factory or WaveOutput, bank)
         generation = int(state[8])
         # Signal readiness after prefill and the first device completion, not
         # merely after opening a handle. The renderer starts after priming.
@@ -50,6 +50,7 @@ def _worker(controls, status, error, events, stop, ready, volume, bank, output_f
                     engine._retry.set()
             engine._enabled, engine._paused = bool(state[6]), bool(state[7])
             engine.listener, engine.ambient = tuple(state[:3]), tuple(state[3:6])
+            engine.set_volume(state[9])
             for _ in range(32):
                 try:
                     epoch, event = events.get_nowait()
@@ -74,8 +75,8 @@ def _worker(controls, status, error, events, stop, ready, volume, bank, output_f
 class ProcessAudio:
     def __init__(self, enabled=True, volume=0.55, bank=None, output_factory=None):
         context = multiprocessing.get_context("spawn")
-        # Listener, three ambience values, enable/pause flags, control generation.
-        self._controls = context.Array("d", [0, 0, 1.57079632679, 0, 0, 0, float(enabled), 0, 0])
+        # Listener, ambience, enable/pause flags, control generation, master volume.
+        self._controls = context.Array("d", [0, 0, 1.57079632679, 0, 0, 0, float(enabled), 0, 0, volume])
         self._status = context.Array("d", [0, 0, 0, 0, 0])
         self._error = context.Array(ctypes.c_wchar, 512)
         self._events = context.Queue(maxsize=32)
@@ -85,7 +86,7 @@ class ProcessAudio:
         self._closed = False
         self._process = context.Process(target=_worker,
                                         args=(self._controls, self._status, self._error, self._events,
-                                              self._stop, ready, volume, bank, output_factory),
+                                              self._stop, ready, bank, output_factory),
                                         name="monolith-audio", daemon=True)
         self._process.start()
         if not ready.wait(5):
@@ -168,12 +169,20 @@ class ProcessAudio:
             self._changed()
 
     def toggle(self):
+        return self.set_muted(self._wanted and self.available)
+
+    def set_muted(self, muted):
         from .events import GameEvent
-        self._wanted = True if not self.available else not self._wanted
+        if self.available and self._wanted == (not muted):
+            return self.enabled
+        self._wanted = not muted
         self._changed()
         if self.enabled:
             self.emit(GameEvent("ui_toggle"))
         return self.enabled
+
+    def set_volume(self, volume):
+        self._controls[9] = volume
 
     def close(self):
         if self._closed:

@@ -266,6 +266,12 @@ class Renderer:
             except Exception as error:
                 self.backend_error = str(error)
 
+    def set_cell_aspect(self, value: float) -> None:
+        self.cell_aspect = value
+        self._size = (0, 0)
+        if self.ray_backend is not None:
+            self.ray_backend.set_cell_aspect(value)
+
     def prepare_world(self, player: Player | None = None) -> None:
         """Build static traversal caches before interactive input/audio starts."""
         self._update_chunks()

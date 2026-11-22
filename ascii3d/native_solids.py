@@ -230,6 +230,9 @@ class NativeGPURefiner:
                                 len(cells), len(shapes), water_level)
         self._size = None
 
+    def invalidate_projection(self) -> None:
+        self._size = None
+
     def refine(self, raw, columns, rows, origin, cy, sy, cp, sp, miss):
         width, height = len(columns), len(rows)
         if self._size != (width, height):

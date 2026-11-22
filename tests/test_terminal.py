@@ -28,14 +28,17 @@ class WindowsInputTests(unittest.TestCase):
     def tearDown(self):
         self.keyboard.close()
 
-    def inject(self, key: int, down: bool, modifiers: int = 0):
+    def inject(self, key: int, down: bool, modifiers: int = 0, character: str | None = None,
+               repeats: int = 1):
         record = self.record_type()
         record.EventType = 1
         event = record.Event.KeyEvent
-        event.bKeyDown, event.wRepeatCount = down, 1
+        event.bKeyDown, event.wRepeatCount = down, repeats
         event.wVirtualKeyCode, event.dwControlKeyState = key, modifiers
         event.wVirtualScanCode = self.user.MapVirtualKeyW(key, 0)
-        event.uChar.UnicodeChar = chr(key) if 0x41 <= key <= 0x5A else (" " if key == 0x20 else "\0")
+        if character is None:
+            character = chr(key) if 0x41 <= key <= 0x5A else (" " if key == 0x20 else "\0")
+        event.uChar.UnicodeChar = character
         written = self.wt.DWORD()
         result = self.keyboard.api.WriteConsoleInputW(self.keyboard.handle, self.ctypes.byref(record),
                                                      1, self.ctypes.byref(written))
@@ -135,6 +138,24 @@ class WindowsInputTests(unittest.TestCase):
     def test_control_c_exits(self):
         self.inject(ord("C"), True, 0x8)
         self.assertIn("escape", self.keyboard.poll().pressed)
+
+    def test_native_console_takes_ordered_characters_without_gameplay_actions(self):
+        self.inject(0xC0, True, character="`")
+        self.inject(0xC0, False, character="`")
+        self.assertEqual(self.keyboard.poll().pressed, {"console"})
+        self.keyboard.set_text_input(True)
+        self.inject(ord("W"), True, 0x10, character="W", repeats=2)
+        self.inject(ord("W"), False, character="w")
+        self.inject(0x20, True, character=" ")
+        self.inject(0x27, True)
+        self.inject(0x0D, True, character="\r")
+        state = self.keyboard.poll()
+        self.assertEqual(state.text_events, ("W", "W", " ", "right", "enter"))
+        self.assertFalse(state.down or state.pressed)
+        self.inject(0x1B, True)
+        self.assertEqual(self.keyboard.poll().pressed, {"escape"})
+        self.keyboard.set_text_input(False)
+        self.assertEqual(self.keyboard.poll().text_events, ())
 
     def test_pause_record_releases_the_native_helper_and_restores_clip(self):
         from ascii3d.terminal import WindowsMouse

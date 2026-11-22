@@ -192,6 +192,7 @@ and colors when it exits. Focus loss pauses play on Windows; press P to resume.
 
 ```powershell
 python main.py --demo                # Automatic walk; Esc still exits
+python main.py --dev                 # Enable the in-game developer console
 python main.py --outside             # Southern meadow facing the castle
 python main.py --region thornwatch   # Start at the ridge watchfort
 python main.py --keyboard-look       # Arrows to look; Enter to attack
@@ -245,6 +246,51 @@ play in fullscreen, then exit with Esc. Use an unused filename. The report
 records viewport and sample sizes, renderer selection, input, audio controls,
 simulation, rendering, terminal encoding, writes and frame-cap waits. It
 saves up to the last 3,600 completed frames after restoring the terminal.
+
+## Developer console
+
+Run `python main.py --dev` or `run.bat --dev` and press backtick (`` ` ``) to
+open the console. World simulation, dialogue and ambient audio pause while you
+type. Enter runs the command. The arrow keys edit the line or recall previous
+commands, and Page Up/Down scroll through output. Esc closes the console and
+restores the previous pause or help state. `resume` closes it and resumes play.
+Use `quit` or Ctrl+C to exit the game from the console.
+
+| Command | Action |
+| --- | --- |
+| `help` or `help teleport` | List commands or show usage for one command |
+| `settings` | Show current settings and the active renderer |
+| `regions` | List named destinations, including the meadow (`outside`) |
+| `where` | Show your area and X, Y and feet Z coordinates |
+| `teleport thornwatch` | Move to a named entrance |
+| `teleport 128.5 76.5 1` | Move to explicit coordinates, keeping your facing direction |
+| `teleport 128.5 76.5` | Move to the highest support at X and Y |
+| `reset` | Return to the configured entrance with full health |
+
+Teleport checks world bounds and collision and preserves health, inventory and
+world state. An explicit Z above the ground lets you fall from that height.
+
+Use `set <option> <value>` to change a live option. Settings accept the same
+names with an optional `--` prefix.
+
+| Option | Values and behavior |
+| --- | --- |
+| `renderer` | `auto`, `cpu`, `native`, `gpu`. An unavailable explicit backend leaves the active renderer in use |
+| `color-mode` | `color`, `gray`, `mono` |
+| `fps` | Frame-rate cap from `1` to `240` |
+| `cell-aspect` | Font cell width/height from `0.2` to `1.5` |
+| `max-cells` | Viewport budget of at least `1200`, or `off` to fill the terminal |
+| `keyboard-look` | `on` or `off`. POSIX always uses keyboard look |
+| `demo` | `on` or `off` |
+| `mute` | `on` or `off` |
+| `volume` | Master sound level from `0` to `1` |
+| `region` | Named spawn or `off` for the indoor/outdoor spawn. Moves you and changes where R and respawn return you |
+| `outside` | `on` for the meadow or `off` for indoor Ashgate. Selects that entrance and clears the named spawn |
+| `frames` | Exit after the given total number of frames since launch, or `off` |
+| `frame-timing` | Unused report path, quoted if it contains spaces. `off` stops sampling and keeps the collected report for exit |
+
+Snapshot and benchmark dimensions, preview export and the audio device test
+belong to their dedicated launch modes.
 
 ## Sound
 

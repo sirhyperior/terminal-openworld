@@ -114,6 +114,23 @@ class PresentationComparisonTests(unittest.TestCase):
 @unittest.skipUnless(os.environ.get('MONOLITH_GPU_TESTS') == '1' and importlib.util.find_spec('wgpu'),
                      'optional hardware GPU complete-color parity test')
 class HardwareColorParityTests(unittest.TestCase):
+    def test_live_cell_aspect_matches_fresh_projection_at_the_same_size(self):
+        world = color_world()
+        cpu, gpu = Renderer(world), Renderer(world, backend='gpu')
+        fresh = Renderer(world, cell_aspect=0.8)
+        for renderer in (cpu, gpu, fresh):
+            self.addCleanup(renderer.close)
+        self.assertEqual(gpu.backend_name, 'gpu', gpu.backend_error)
+        player = Player(x=8.5, y=2.5, yaw=1.4, pitch=-0.12)
+        expected = fresh.styled_frame(player, 61, 25, time_seconds=2.5)
+        for renderer in (cpu, gpu):
+            before = renderer.styled_frame(player, 61, 25, time_seconds=2.5)
+            renderer.set_cell_aspect(0.8)
+            after = renderer.styled_frame(player, 61, 25, time_seconds=2.5)
+            self.assertNotEqual(before.rows, after.rows)
+            self.assertTrue(presentation_comparison(after, expected)['presentation_equal'])
+        self.assertEqual(gpu.backend_name, 'gpu', gpu.backend_error)
+
     def test_material_light_fog_tangent_faces_and_edits_preserve_all_color_buffers(self):
         world = color_world()
         cpu, gpu = Renderer(world), Renderer(world, backend='gpu')

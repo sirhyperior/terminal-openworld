@@ -301,6 +301,12 @@ class GPUBackend:
                 pass
         return None
 
+    def set_cell_aspect(self, value):
+        self.cell_aspect = self.gpu.cell_aspect = value
+        self._size = None
+        if self._native_refiner is not None:
+            self._native_refiner.invalidate_projection()
+
     def render(self, player, width, height):
         if self.gpu._signature() != self.gpu.signature:
             self.gpu.close()

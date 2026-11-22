@@ -26,7 +26,7 @@ class FrameTiming:
         self.start = None
 
     def begin(self, now):
-        if self.frames:
+        if self.frames and self.start is not None:
             self.frames[-1]["interval_ms"] = milliseconds(now - self.start)
         self.start = now
 

@@ -40,6 +40,7 @@ EFFECTS = {
     "dialogue_start": 0.22, "dialogue_line": 0.32, "dialogue_end": 0.18,
     "interaction_miss": 0.10, "ui_map": 0.13, "ui_help": 0.14,
     "ui_pause": 0.16, "ui_reset": 0.25, "ui_exit": 0.18, "ui_toggle": 0.10,
+    "ui_dev_open": 0.14, "ui_dev_close": 0.12, "ui_dev_teleport": 0.26,
 }
 LANDING_CUES = {surface: "land_" + surface
                 for surface in ("stone", "grass", "wood", "water", "gravel", "metal")}
@@ -629,13 +630,22 @@ class ThreadAudio:
                 pass
 
     def toggle(self):
-        self._enabled = True if not self.available else not self._enabled
+        return self.set_muted(self._enabled and self.available)
+
+    def set_muted(self, muted):
+        if self.available and self._enabled == (not muted):
+            return self.enabled
+        self._enabled = not muted
         self._clear()
-        if not self.available:
+        if self._enabled and not self.available:
             self._retry.set()
         if self.enabled:
             self.emit(GameEvent("ui_toggle"))
         return self.enabled
+
+    def set_volume(self, volume):
+        # The mixer ramps any changed gain across the next output samples.
+        self.mixer.volume = volume
 
     def _clear(self):
         # A full effect queue must never prevent mute/pause from discarding old
