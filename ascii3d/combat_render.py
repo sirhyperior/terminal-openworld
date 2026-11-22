@@ -3,7 +3,7 @@
 import math
 
 from .combat import (BURST_DURATION, FIRE_STAFF, MAX_FIREBALLS, CombatState,
-                     Enemy, NAME_REACH, SWING_DURATION)
+                     Enemy, NAME_REACH, SWING_DURATION, WARDEN_COLLAPSE_DURATION)
 from .geometry import Camera
 from .palette import ARCANE, BONE, EMBER, FIRE, STRAW, UI_POSITIVE
 from .shading import DEFAULT_SHADING, MIN_SURFACE_LEVEL, RAMP, Shading, ink
@@ -299,7 +299,7 @@ def _draw_flame(flame, cam, pixels, depths, radius, direction=None, seconds=0.0)
 
 def _draw_enemy(enemy: Enemy, cam, pixels, depths):
     if enemy.behavior is not None:
-        if enemy.alive:
+        if enemy.alive or enemy.collapse_remaining > 1e-8:
             _draw_warden(enemy, cam, pixels, depths)
         return
     x, y, z = enemy.x, enemy.y, enemy.z
@@ -341,8 +341,9 @@ def _draw_enemy(enemy: Enemy, cam, pixels, depths):
 
 def _draw_warden(enemy, cam, pixels, depths):
     """An opaque stone knight; joint motion uses simulation state only."""
+    alive = enemy.alive
     cosine, sine = math.cos(enemy.facing), math.sin(enemy.facing)
-    recoil = math.sin(enemy.hit_remaining * 35) * enemy.hit_remaining * 0.20
+    recoil = math.sin(enemy.hit_remaining * 35) * enemy.hit_remaining * 0.20 if alive else 0
     stride = math.sin(enemy.walk_phase) * 0.13
     raised = (1 - enemy.attack_remaining / enemy.behavior.windup
               if enemy.state == "windup" else 0.0)
@@ -356,10 +357,30 @@ def _draw_warden(enemy, cam, pixels, depths):
                 enemy.y + sine * (forward - recoil) - cosine * right,
                 enemy.z + up)
 
+    if not alive:
+        progress = 1 - enemy.collapse_remaining / WARDEN_COLLAPSE_DURATION
+        angle = 1.50 * progress ** 1.55
+        fall_cos, fall_sin = math.cos(angle), math.sin(angle)
+        pivot = 0.20
+        height = camera_up - pivot
+        camera_forward, camera_up = (camera_forward * fall_cos + height * fall_sin,
+                                     height * fall_cos - camera_forward * fall_sin + pivot)
+
+        def fallen_point(right, forward, up):
+            height = up - pivot
+            along = forward * fall_cos - height * fall_sin
+            return (enemy.x + cosine * along + sine * right,
+                    enemy.y + sine * along - cosine * right,
+                    enemy.z + pivot + height * fall_cos + forward * fall_sin)
+
+        point = fallen_point
+
     def block(right, forward, bottom, half_width, half_depth, top, char):
         center = point(right, forward, (bottom + top) / 2)
         depth = max(0.18, (center[0] - cam.x) * cam.cy + (center[1] - cam.y) * cam.sy)
-        detailed = cam.fx * max(half_width, half_depth) / depth >= 1.75
+        # During the brief fall the stone silhouette is enough. Skip the
+        # extra bevel faces on each fragment as it rotates out of view.
+        detailed = alive and cam.fx * max(half_width, half_depth) / depth >= 1.75
 
         def ring(width, length, height, cut):
             if cut:
@@ -437,8 +458,11 @@ def _draw_equipped(combat, cam, pixels, depths, player):
     phase = 1 - combat.swing_remaining / SWING_DURATION if combat.swing_remaining else 0
     arc = math.sin(math.pi * phase) if combat.swing_remaining else 0
     bob = math.sin(player.stride) * 0.018 if player.moving else 0
+    impact = player.damage_impact ** 2
 
     def point(right, up, depth):
+        up -= 0.22 * impact
+        depth -= 0.12 * impact
         return (cam.x + cam.cy * cam.cp * depth + cam.sy * right - cam.cy * cam.sp * up,
                 cam.y + cam.sy * cam.cp * depth - cam.cy * right - cam.sy * cam.sp * up,
                 cam.z + cam.sp * depth + cam.cp * up)
@@ -490,7 +514,8 @@ def draw_combat(combat: CombatState, world, pixels, depths, player,
             break
     enemy_budget = min(MAX_ENEMY_DRAWS, max(1, width * height // 180))
     for enemy in combat.enemies:
-        if not actor_visible(cam, enemy.x, enemy.y, enemy.z + 1.0, 1.25):
+        radius = 2.35 if enemy.collapse_remaining > 1e-8 else 1.25
+        if not actor_visible(cam, enemy.x, enemy.y, enemy.z + 1.0, radius):
             continue
         _draw_enemy(enemy, cam, pixels, depths)
         enemy_budget -= 1

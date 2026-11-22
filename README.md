@@ -93,8 +93,9 @@ Aim at a resident to see a sage-green `<Name>` above their head. Enemy labels
 show a name and health. Face a nearby resident and press **E** when the talk
 prompt appears.
 You turn toward each other before the dialogue box opens. The world and your
-character's controls pause during the conversation. Press **E** to advance
-each line and finish the conversation. **P** and **H** still open pause and help.
+character's controls pause during the conversation. Lines appear one character
+at a time. Press **E** to reveal the rest of the current line, then press **E**
+again to continue or finish. **P** and **H** still open pause and help.
 
 Collect the upright **iron sword with E** near either Ashgate starting entrance.
 Find the **fire staff** on the western timber floor inside Gravewood Chapel
@@ -106,22 +107,23 @@ passive training dummies stand at `(115.5-123.5, 94.5)`. Sword reach is about 2.
 fireballs travel up to 28 units and stop at walls, doors, trunks or actors.
 The staff fires once per click with a 0.65-second cooldown and no ammo limit.
 Either weapon deals one damage. Three hits knock a dummy down in a scatter of
-straw. It resets after four seconds, and its fixed support stays solid while
-it is down.
+straw, followed by a low dust cloud. It resets after four seconds, and its fixed
+support stays solid while it is down.
 
 A **Watchstone Warden** guards the western Gravewood clearing (`34-48, 242-256`).
 This four-HP stone guardian notices players within 7.5 units, follows them,
 and raises its fists before a close ground slam. Step away during the warning.
 It stays in its clearing and returns home when you leave. Defeat it with either
-weapon to send stone chips and dust scattering. It respawns at home after 12
-seconds, waiting if that spot is occupied.
+weapon to topple it in a shower of stone chips. A thud and low ash cloud follow
+the fall. It respawns at home after 12 seconds, waiting if that spot is occupied.
 R returns you to your selected entrance with held item and world state preserved.
 
-The upper HUD shows your **10-point health bar**. A Warden hit costs two health
-and briefly shows `[-2 HP]` beneath the bar in every display mode. In color mode,
-the bar also turns red. Defeat returns you to your starting entrance with full
-health, keeping your held item and world state. R also restores health when
-returning to the entrance.
+The upper HUD shows your **10-point health bar**. A Warden hit costs two health.
+Marks at the edge of the view show where the hit came from, and the readout
+beneath the bar briefly shows `[-2 HP]` and the direction. Your held weapon dips
+on impact. In color mode, the bar also turns red. Defeat returns you to your
+starting entrance with full health, keeping your held item and world state.
+R also restores health when returning to the entrance.
 
 The renderer casts a real 3D ray through buildings and terrain for every character. The
 camera has perspective, pitch, height, textured surfaces, face lighting, and
@@ -184,7 +186,7 @@ the terminal and adjusts when it is resized. It needs at least 60 columns by
 | Hold Shift | Sprint |
 | Space | Jump; you can land on low walls and crates |
 | Mouse movement | Turn and look up / down on Windows |
-| E | Open or close a door, collect or swap an item, or talk and advance dialogue |
+| E | Open or close a door, collect or swap an item, or talk, reveal and advance dialogue |
 | Left click | Swing the sword or shoot a fireball with the held staff |
 | F | Mute / unmute sound |
 | M or Tab | Show / hide the overhead map |
@@ -276,15 +278,15 @@ saves up to the last 3,600 completed frames after restoring the terminal.
 
 On Windows, double-click `run-dev.bat` or run it with any gameplay flags.
 You can also run `python main.py --dev`. Press backtick (`` ` ``) to open
-the console on the right. The left pane shows the game and updates after
-each command or resize. World simulation, dialogue and ambient audio pause
-while you type. A viewport smaller than 57 columns or 12 rows shows the editor
-by itself.
+the console on the right. The left pane shows the live game and frame rate.
+World simulation, dialogue and ambient audio keep running while the editor
+receives keyboard input. Pause and help still freeze play. A viewport smaller
+than 57 columns or 12 rows shows the editor by itself.
 
 Enter runs the command. The arrow keys edit the line or recall previous
 commands, and Page Up/Down scroll through output. Esc restores the full game
-view and the previous pause or help state. `resume` closes the console and
-resumes play. Use `quit` or Ctrl+C to exit the game from the console.
+view. `resume` closes the console and resumes play. Use `quit` or Ctrl+C to
+exit the game from the console.
 
 | Command | Action |
 | --- | --- |
@@ -292,6 +294,7 @@ resumes play. Use `quit` or Ctrl+C to exit the game from the console.
 | `settings` | Show current settings and the active renderer |
 | `regions` | List named destinations, including the meadow (`outside`) |
 | `where` | Show your area and X, Y and feet Z coordinates |
+| `bug bridge rail blocks the road` | Append your feet coordinates, message and local timestamp to the project’s `backlog.md` |
 | `teleport thornwatch` | Move to a named entrance |
 | `teleport 128.5 76.5 1` | Move to explicit coordinates, keeping your facing direction |
 | `teleport 128.5 76.5` | Move to the highest support at X and Y |
@@ -337,10 +340,11 @@ flowing water use textured turbulence. All sounds are synthesized locally,
 without recordings.
 
 Footsteps and landings follow the actual supporting material, including stairs,
-cobblestones, raised crates and bridge tops. Recurring contacts and relic effects
-have repeatable variations. Effects overlap with distance attenuation and stereo
-positioning. Confirmed sword hits lead with the impact and a softer whoosh;
-misses keep the full air swing.
+cobblestones, raised crates and bridge tops. Cobbled paths have dry heel and toe
+clacks with a short sole scuff. Recurring contacts and relic effects have
+repeatable variations. Effects overlap with distance attenuation and stereo
+positioning. Confirmed sword hits lead with the impact and a softer whoosh.
+Misses keep the full air swing.
 Pause/help hush the environment while preserving menu feedback. F toggles sound;
 the header shows its state. Mute, pause, volume changes, and stopped voices fade
 smoothly. Lost output devices retry automatically; F also requests a retry when
@@ -454,10 +458,11 @@ renderer. `--renderer cpu` selects the standard-library Python path.
 
 The optional native library accelerates exact float64 voxel, solid and
 continuous terrain traversal, as well as exact refinement of GPU candidates.
-In scenes without local firelight, it batches lighting for static opaque
-surfaces, including cobblestones and wind-tinted grass. Both `auto` and `gpu`
-can shade resolved GPU hits in the compiled batch. Ambiguous hits still use
-exact traversal, and coincident solid hits use the Python grid query.
+It batches lighting for static opaque surfaces, including cobblestones and
+wind-tinted grass. Both `auto` and `gpu` can shade resolved GPU hits in the
+compiled batch, including surfaces that fireballs cannot light. Local
+firelight uses the shared visibility query in screen order. Ambiguous hits
+still use exact traversal, and coincident solid hits use the Python grid query.
 Build or rebuild the library from the repository root. The normal launcher
 picks up the result automatically.
 

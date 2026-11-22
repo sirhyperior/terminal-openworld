@@ -1,10 +1,11 @@
 """Player damage feedback and readable health at every supported HUD width."""
 
+import math
 import unittest
 
 from ascii3d.combat import FIRE_STAFF, WeaponPickup
 from ascii3d.palette import UI_DANGER
-from ascii3d.player import DAMAGE_CUE_DURATION, Player
+from ascii3d.player import DAMAGE_CUE_DURATION, DAMAGE_IMPACT_DURATION, Player
 from ascii3d.renderer import Renderer
 from ascii3d.sound import EFFECTS
 from ascii3d.world import FLOOR, World
@@ -48,6 +49,35 @@ class PlayerHealthTests(unittest.TestCase):
             player.update(world, set(), 1 / 120)
         self.assertNotIn("[-2 HP]", renderer.frame(player, 60, 20)[1])
         self.assertEqual(player.hp, 8)
+
+    def test_peripheral_marks_point_to_damage_and_fade_before_the_readout(self):
+        world = World.empty(12, 12, 8)
+        world.box(0, 0, 0, 12, 12, 1, FLOOR)
+        renderer = Renderer(world)
+        player = Player(x=6.5, y=4.5, yaw=math.pi / 2)
+        for source, label, row, column, marks in (
+            ((6.5, 6.5), "FRONT", 3, 29, "^^^"),
+            ((4.5, 4.5), "LEFT", 9, 2, "<<<"),
+            ((6.5, 2.5), "BEHIND", 14, 29, "vvv"),
+            ((8.5, 4.5), "RIGHT", 9, 55, ">>>"),
+        ):
+            with self.subTest(label=label):
+                player.take_damage(1, source=source)
+                frame = renderer.styled_frame(player, 60, 20, color_mode="color")
+                self.assertIn(f"[-1 HP]  {label}", frame.rows[1])
+                self.assertEqual(frame.rows[row][column:column + 3], marks)
+                self.assertEqual(list(frame.materials[row][column:column + 3]), [UI_DANGER] * 3)
+                self.assertEqual(frame.rows[9][30], "+")
+        player.yaw = 0
+        self.assertIn("FRONT", renderer.frame(player, 60, 20)[1])
+        for _ in range(math.ceil(DAMAGE_IMPACT_DURATION * 120) + 1):
+            player.update(world, set(), 1 / 120)
+        frame = renderer.frame(player, 60, 20)
+        self.assertIn("[-1 HP]  FRONT", frame[1])
+        self.assertNotEqual(frame[3][29:32], "^^^")
+        player.take_damage(1)
+        self.assertNotIn("FRONT", renderer.frame(player, 60, 20)[1])
+        self.assertEqual(renderer.frame(player, 60, 20)[9][2:5], "!!!")
 
     def test_health_bar_keeps_equipment_sound_and_fps_at_minimum_width(self):
         world = World.empty(12, 12, 8)

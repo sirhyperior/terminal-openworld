@@ -4,6 +4,7 @@ import unittest
 
 from ascii3d.app import spawn_player, spawn_region
 from ascii3d.combat import SWORD, WeaponPickup
+from ascii3d.dialogue import CHARACTERS_PER_SECOND, TURN_SECONDS, Conversation
 from ascii3d.doors import Door
 from ascii3d.events import GameEvent
 from ascii3d.npcs import NPC
@@ -55,6 +56,31 @@ class NPCTargetingTests(unittest.TestCase):
             self.player.update(self.world, {"w"}, 1 / 120)
         self.assertTrue(self.player.grounded)
         self.assertAlmostEqual(self.player.y, self.npc.y - self.npc.radius - Player.RADIUS, delta=0.03)
+
+
+class ConversationTests(unittest.TestCase):
+    def test_reveal_progress_is_time_based_and_natural_completion_can_advance(self):
+        player = Player(8.5, 5.3, 1.0)
+        npc = NPC("Keeper", 8.5, 7.0, 1.0, 0.0, ("Evening.", "Farewell."))
+        conversation = Conversation(npc, player)
+        self.assertIsNone(conversation.view.text)
+        self.assertEqual(conversation.update(player, TURN_SECONDS).name, "dialogue_line")
+        self.assertEqual(conversation.view.visible_characters, 1)
+        for _ in range(4):
+            self.assertIsNone(conversation.update(player, 1 / (2 * CHARACTERS_PER_SECOND)))
+        self.assertEqual(conversation.view.visible_characters, 3)
+        self.assertIsNone(conversation.update(player, 0.5))
+        self.assertIsNone(conversation.view.visible_characters)
+        self.assertEqual(conversation.update(player, 0.0, advance=True).name, "dialogue_line")
+        self.assertEqual(conversation.view.visible_characters, 1)
+        self.assertTrue(conversation.view.last)
+
+        # A press on the frame that would finish revealing still reveals the
+        # current line. The next press dismisses it.
+        self.assertEqual(conversation.update(player, 0.5, advance=True).name, "dialogue_reveal")
+        self.assertFalse(conversation.finished)
+        self.assertEqual(conversation.update(player, 0.0, advance=True).name, "dialogue_end")
+        self.assertTrue(conversation.finished)
 
 
 class NPCPlacementTests(unittest.TestCase):

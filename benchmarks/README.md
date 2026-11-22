@@ -7,6 +7,10 @@ matched hardware, Python, dimensions, frames and audio mode. Camera roles across
 different maps are not identical geometry. Git checkpoint `f27e9ff` retains the
 longer historical narrative removed from the main handoff during cleanup.
 
+The latest backlog work covers the live developer console, route repairs,
+gameplay and firelight timings, and exact frame comparisons.
+[Backlog validation (2026-11-23)](backlog-validation-2026-11-23.md)
+
 The NPC idle-motion comparison records the matched live-audio timings and the
 control/control diagnosis of the original small-viewport p95 spikes.
 [NPC idle animation (2026-11-22)](npc-idle-animation-2026-11-22.md)

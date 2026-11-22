@@ -89,6 +89,7 @@ class Shading:
 
     MAX_LIGHTS = 2
     MAX_SHADOW_SAMPLES = 256
+    FIRELIGHT_RADIUS_SQUARED = 36
 
     def __init__(self, world=None):
         self.world = world
@@ -237,10 +238,11 @@ class Shading:
 
     def _illuminate(self, x, y, z, nx, ny, nz, albedo, texture, brightness, lights):
         firelight = 0.0
+        radius_squared = self.FIRELIGHT_RADIUS_SQUARED
         for index, source in enumerate(lights):
             dx, dy, dz = source[0] - x, source[1] - y, source[2] - z
             square = dx * dx + dy * dy + dz * dz
-            if not 0.0001 < square < 36:
+            if not 0.0001 < square < radius_squared:
                 continue
             facing = max(0.0, (nx * dx + ny * dy + nz * dz) / math.sqrt(square))
             if facing <= 0:
@@ -264,7 +266,7 @@ class Shading:
             if visible:
                 # The same material relief modulates local diffuse light;
                 # firelight must not wash a dark crack into a flat bright face.
-                contribution = facing * (1 - square / 36) * 0.90 * albedo * texture
+                contribution = facing * (1 - square / radius_squared) * 0.90 * albedo * texture
                 brightness += contribution
                 firelight += contribution
         return brightness, firelight

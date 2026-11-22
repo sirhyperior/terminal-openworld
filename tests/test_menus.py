@@ -1,6 +1,7 @@
 """Separate pause/help presentation and current input hints at every viewport."""
 
 import unittest
+from textwrap import wrap
 from unittest.mock import patch
 
 from ascii3d.dialogue import DialogueView
@@ -101,11 +102,28 @@ class MenuTests(unittest.TestCase):
                     self.assertEqual(body.strip(), sentence)
                     start = talk.rows[bottom - 1].index("[E]")
                     self.assertEqual(talk.materials[bottom - 1][start], UI_ACCENT)
+                    first_row, second_row, *_ = wrap(sentence, min(70, width - 12))
+                    reveal = render(dialogue=DialogueView("Bell Keeper", sentence, False,
+                                                           len(first_row) + 3))
+                    self.assertEqual(reveal.rows[bottom - 4], talk.rows[bottom - 4])
+                    self.assertEqual(reveal.rows[bottom - 3].split("|")[1].strip(), second_row[:2])
+                    self.assertIn("[E] Reveal", reveal.rows[bottom - 1])
                     finish = render(dialogue=DialogueView("Bell Keeper", "Farewell.", True))
                     self.assertIn("[E] Finish", finish.rows[bottom - 1])
                     pause = render(dialogue=DialogueView("Bell Keeper", sentence, False), paused=True)
                     self.assertIn("PAUSED", "\n".join(pause.rows))
                     self.assertNotIn("[E]", "\n".join(pause.rows))
+
+    def test_long_dialogue_fits_the_smallest_developer_preview(self):
+        text = ("There is a fire staff on the timber floor inside. "
+                "The Warden keeps to the watchstones west of here.")
+        frame = self.renderer.frame(self.player, 30, 12, preview=True,
+                                    dialogue=DialogueView("Sister Morwen", text, True))
+        self.assertEqual(len(frame), 12)
+        self.assertTrue(all(len(row) == 30 for row in frame))
+        self.assertIn("Sister Morwen", "\n".join(frame))
+        self.assertIn("[E] Finish", frame[-2])
+        self.assertTrue(frame[-1].startswith("+---"))
 
 
 if __name__ == "__main__":

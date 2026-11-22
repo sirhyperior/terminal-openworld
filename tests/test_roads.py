@@ -111,7 +111,7 @@ class ContinuousRoadIntegrationTests(unittest.TestCase):
             self.assertEqual(world.surface_height(x, y), 1)
             self.assertEqual(world.walk_support(x, y, 1)[0], supports[index])
             self.assertFalse(world.collides(x, y, 1))
-            self.assertEqual(surface_kind(world, x, y, 1), "stone" if index == 0 else "grass")
+            self.assertEqual(surface_kind(world, x, y, 1), "cobblestone" if index == 0 else "grass")
         self.assertEqual(bytes(world.cells), cells)
         world.box(3, 3, 0, 6, 6, 1, BRIDGE)
         self.assertEqual(world.surface_material(4, 4), BRIDGE)

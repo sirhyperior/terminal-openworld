@@ -6,7 +6,7 @@ from .world import BRIDGE, CRATE, FLOOR, GRASS, METAL, PATH, STONE, WATER, WATER
 
 
 _MATERIALS = {
-    STONE: "stone", FLOOR: "stone", GRASS: "grass", PATH: "stone",
+    STONE: "stone", FLOOR: "stone", GRASS: "grass", PATH: "cobblestone",
     WOOD: "wood", BRIDGE: "wood", CRATE: "wood", METAL: "metal",
 }
 _CONTACT_RADIUS = 0.22

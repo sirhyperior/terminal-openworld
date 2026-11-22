@@ -1,0 +1,153 @@
+Source: C:\Users\rlawl\Desktop\project1\backlog_gameplay_control_tmp\ascii3d\__init__.py
+test_only_unraised_natural_cameras_follow_circular_support (tests.test_benchmark_pair.CameraPreflightTests.test_only_unraised_natural_cameras_follow_circular_support) ... FAIL
+test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) ... 
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=0) ... FAIL
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=1) ... FAIL
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=2) ... FAIL
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=4) ... FAIL
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=5) ... FAIL
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=6) ... FAIL
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=8) ... FAIL
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=9) ... FAIL
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=10) ... FAIL
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=12) ... FAIL
+  test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=13) ... FAIL
+test_scenery_is_hidden_behind_solid_walls (tests.test_outdoors.AnimatedSceneryTests.test_scenery_is_hidden_behind_solid_walls) ... FAIL
+test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape (tests.test_smooth_content.SmoothTerrainContentTests.test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape) ... FAIL
+
+======================================================================
+FAIL: test_only_unraised_natural_cameras_follow_circular_support (tests.test_benchmark_pair.CameraPreflightTests.test_only_unraised_natural_cameras_follow_circular_support)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_benchmark_pair.py", line 39, in test_only_unraised_natural_cameras_follow_circular_support
+    self.assertEqual(TERRAIN_SCENARIOS["stair_walk"]["y"], 121.5)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 119.76601227696759 != 121.5
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 32, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[0], 99)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 86.7794 not greater than or equal to 99
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 32, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[0], 99)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 91.5026 not greater than or equal to 99
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=2)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 32, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[0], 99)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 95.2258 not greater than or equal to 99
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=4)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 32, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[0], 99)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 89.7834 not greater than or equal to 99
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 32, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[0], 99)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 93.64699999999999 not greater than or equal to 99
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 32, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[0], 99)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 96.58279999999999 not greater than or equal to 99
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=8)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 32, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[0], 99)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 93.1444 not greater than or equal to 99
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=9)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 32, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[0], 99)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 95.8636 not greater than or equal to 99
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=10)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 32, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[0], 99)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 98.655 not greater than or equal to 99
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=12)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 32, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[0], 99)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 97.22059999999999 not greater than or equal to 99
+
+======================================================================
+FAIL: test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth (tests.test_color_presentation.ColorPaletteTests.test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth) (material=9, effects=13)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_color_presentation.py", line 33, in test_shadows_remain_readable_with_fog_and_firelight_without_losing_depth
+    self.assertGreaterEqual(brightness[1], 105)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 104.72719999999998 not greater than or equal to 105
+
+======================================================================
+FAIL: test_scenery_is_hidden_behind_solid_walls (tests.test_outdoors.AnimatedSceneryTests.test_scenery_is_hidden_behind_solid_walls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_outdoors.py", line 265, in test_scenery_is_hidden_behind_solid_walls
+    self.assertEqual(first, renderer.scene(player, 80, 26, time_seconds=2))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [['r'[3162 chars]X', 'r', 'r', 'X', 'X', 'X', 'X', 'X', 'X', 'X[7234 chars]'x']] != [['r'[3162 chars]X', '.', 'r', 'X', 'X', 'X', 'X', 'X', 'X', 'X[7234 chars]'x']]
+
+First differing element 7:
+['s',[332 chars]#', 'A', 'X', 'X', 'r', 'r', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
+['s',[332 chars]#', 'A', 'X', 'X', '.', 'r', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
+
+Diff is 18805 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape (tests.test_smooth_content.SmoothTerrainContentTests.test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\rlawl\Desktop\project1\tests\test_smooth_content.py", line 79, in test_generated_foundations_stay_below_the_exact_ground_and_roads_keep_its_shape
+    self.assertNotIn((200, 99), [(x, y) for x, y, _ in scenery.grass_chunk(50, 24)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (200, 99) unexpectedly found in [(200, 96), (201, 96), (202, 96), (203, 96), (200, 97), (201, 97), (202, 97), (203, 97), (200, 98), (201, 98), (202, 98), (203, 98), (200, 99), (201, 99), (202, 99), (203, 99)]
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.770s
+
+FAILED (failures=14)

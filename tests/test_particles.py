@@ -87,6 +87,25 @@ class ParticleTests(unittest.TestCase):
                 combat.update(DEFEAT_BURST_DURATION, self.world)
                 self.assertFalse(combat.defeat_bursts)
 
+    def test_defeat_lifts_a_low_cloud_after_the_shards_have_settled(self):
+        combat = self.world.combat
+        particles = Particles(self.world)
+        for behavior, material in ((WARDEN_BEHAVIOR, ASH), (None, DUST)):
+            with self.subTest(material=material):
+                enemy = Enemy("Target", 32.5, 32.5, hp=1, behavior=behavior)
+                combat._damage(enemy, "sword_hit")
+                combat.update(0.80, self.world)
+                pixels, depths = self.draw(particles)
+                cloud = [(row, cell.material) for row, line in enumerate(pixels)
+                         for cell in line if isinstance(cell, Ink)]
+                self.assertGreaterEqual(len(cloud), 5)
+                self.assertTrue(all(row > len(pixels) // 2 and color == material for row, color in cloud))
+                self.assertTrue(all(value == math.inf for line in depths for value in line))
+                hidden, _ = self.draw(particles, depth=0.5)
+                self.assertTrue(all(cell == " " for line in hidden for cell in line))
+                combat.update(DEFEAT_BURST_DURATION - 0.79, self.world)
+                self.assertFalse(combat.defeat_bursts)
+
     def test_defeat_scatter_keeps_only_the_latest_bounded_sources(self):
         combat = self.world.combat
         for index in range(MAX_DEFEAT_BURSTS + 2):

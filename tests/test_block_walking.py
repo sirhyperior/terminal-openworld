@@ -6,12 +6,13 @@ import unittest
 from ascii3d.combat import FIRE_STAFF, WeaponPickup
 from ascii3d.player import Player
 from ascii3d.map_expansion import ASHGATE_OFFSET
+from ascii3d.sound import TERRAIN_STEP_CUES
 from ascii3d.surfaces import HeightField, SolidBox
 from ascii3d.world import AIR, FLOOR, GRASS, PATH, STONE, World, build_world
 
 
 BLOCK_MATERIALS = (STONE, FLOOR, GRASS, PATH)
-SURFACES = {STONE: "stone", FLOOR: "stone", GRASS: "grass", PATH: "stone"}
+SURFACES = {STONE: "stone", FLOOR: "stone", GRASS: "grass", PATH: "cobblestone"}
 
 
 def fixture_world(material=STONE, rise=1.0, *, partial_terrain=False):
@@ -193,20 +194,25 @@ class BuiltWorldWalkingTests(unittest.TestCase):
                         self.assertFalse({"jump", "land", "terrain_step"} & {e.name for e in events})
 
     def test_all_thirteen_flights_walk_and_sprint_both_directions_with_contact_foley(self):
-        flights = sorted(self.world._stair_keys)
+        flights = [(None, flight) for flight in sorted(self.world._stair_keys)]
+        flights.extend(self.world._oriented_stairs)
         self.assertEqual(len(flights), 13)
         total_contacts = 0
-        for flight in flights:
+        for landmark, flight in flights:
             x0, y0, width, length, bottom, top, axis, direction, riser, _ = flight
-            along = x0 if axis == "x" else y0
-            across = (y0 if axis == "x" else x0) + width / 2
+            axis_index = 0 if axis == "x" else 1
+            along = (x0, y0)[axis_index]
+            across = (y0, x0)[axis_index] + width / 2
             low_end = along - 0.5 if direction > 0 else along + length + 0.5
             high_end = along + length + 0.5 if direction > 0 else along - 0.5
             yaw = (0 if direction > 0 else math.pi) if axis == "x" else direction * math.pi / 2
+            start = (low_end, across) if axis == "x" else (across, low_end)
+            if landmark is not None:
+                start = landmark.to_world(*start)
+                yaw += landmark.angle
             expected_contacts = math.ceil((top - bottom) / riser - 1e-9)
             for keys in ({"w"}, {"w", "shift"}):
-                player = Player(x=low_end if axis == "x" else across,
-                                y=across if axis == "x" else low_end, z=bottom, yaw=yaw)
+                player = Player(x=start[0], y=start[1], z=bottom, yaw=yaw)
                 speed = player.RUN_SPEED if "shift" in keys else player.WALK_SPEED
                 budget = math.ceil((length + 1.25) * 120 / speed) + 10
                 for destination, heading, height, travel in (
@@ -221,15 +227,17 @@ class BuiltWorldWalkingTests(unittest.TestCase):
                             self.assertTrue(player.grounded)
                             self.assertEqual(player.vertical_speed, 0)
                             self.assertFalse(self.world.collides(player.x, player.y, player.z))
-                            if travel * (getattr(player, axis) - destination) >= 0:
+                            position = player.x, player.y
+                            if landmark is not None:
+                                position = landmark.to_local(*position)
+                            if travel * (position[axis_index] - destination) >= 0:
                                 break
                         else:
                             self.fail("authored flight did not reach its landing")
                         self.assertAlmostEqual(player.z, height, places=5)
                         contacts = [event for event in events if event.name == "terrain_step"]
                         self.assertEqual(len(contacts), expected_contacts)
-                        self.assertTrue(all(event.surface in ("stone", "wood", "grass", "gravel")
-                                            for event in contacts))
+                        self.assertTrue(all(event.surface in TERRAIN_STEP_CUES for event in contacts))
                         self.assertFalse({"jump", "land"} & {e.name for e in events})
                         total_contacts += len(contacts)
         self.assertEqual(total_contacts, 1040)

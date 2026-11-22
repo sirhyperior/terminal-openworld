@@ -4,15 +4,15 @@ import math
 import unittest
 from unittest.mock import patch
 
-from ascii3d.combat import (FIRE_STAFF, WARDEN_BEHAVIOR, CombatState, Enemy,
+from ascii3d.combat import (FIRE_STAFF, SWORD, WARDEN_BEHAVIOR, WARDEN_COLLAPSE_DURATION, CombatState, Enemy,
                             FireBurst, Fireball, WeaponPickup)
 from ascii3d.combat_render import _draw_equipped, _draw_pickup, draw_combat
 from ascii3d.geometry import Camera
 from ascii3d.doors import Door
-from ascii3d.player import Player
+from ascii3d.player import DAMAGE_IMPACT_DURATION, Player
 from ascii3d.renderer import Renderer
 from ascii3d.palette import ARCANE, BONE, FIRE, STRAW
-from ascii3d.world import FLOOR, METAL, WOOD, Tree, World
+from ascii3d.world import AIR, FLOOR, METAL, WOOD, Tree, World
 from ascii3d.shading import Ink
 
 
@@ -56,6 +56,29 @@ class CombatRenderingTests(unittest.TestCase):
         down = self.renderer.scene(self.player, 100, 29)
         self.world.combat.enemies.clear()
         self.assertEqual(down, self.renderer.scene(self.player, 100, 29))
+
+    def test_defeated_warden_topples_then_vanishes_and_never_blocks_motion(self):
+        warden = self.make_warden()
+        warden.hp = 1
+        renderer = Renderer(self.world, particles=False)
+        combat = self.world.combat
+        combat._damage(warden, "sword_hit")
+        intact = renderer.scene(self.player, 80, 23, labels=False)
+        combat.update(WARDEN_COLLAPSE_DURATION * 0.75, self.world)
+        tilted = renderer.scene(self.player, 80, 23, labels=False)
+        self.assertNotEqual(intact, tilted)
+        self.assertEqual(tilted, renderer.scene(self.player, 80, 23, labels=False))
+        self.assertFalse(self.world.collides(warden.x, warden.y, warden.z))
+        self.world.box(0, 6, 1, 30, 7, 8)
+        hidden = renderer.scene(self.player, 80, 23, labels=False)
+        self.world.box(0, 6, 1, 30, 7, 8, AIR)
+        combat.update(WARDEN_COLLAPSE_DURATION * 0.25 + 0.001, self.world)
+        gone = renderer.scene(self.player, 80, 23, labels=False)
+        self.assertNotEqual(tilted, gone)
+        combat.enemies.clear()
+        self.assertEqual(gone, renderer.scene(self.player, 80, 23, labels=False))
+        self.world.box(0, 6, 1, 30, 7, 8)
+        self.assertEqual(hidden, renderer.scene(self.player, 80, 23, labels=False))
 
     def test_warden_body_covers_background_from_all_four_sides(self):
         warden = self.make_warden()
@@ -181,6 +204,29 @@ class CombatRenderingTests(unittest.TestCase):
                 self.assertEqual(pixels[y][x].material, METAL)
                 self.assertLess(sum(char != "~" for row in pixels for char in row), 90 * 30 * 0.08)
                 self.assertLess(depths[y][x], math.inf)
+
+    def test_both_equipped_weapons_flinch_without_changing_aim(self):
+        cam = Camera(self.player, 90, 30, 52, 0.5)
+        aim = self.player.yaw, self.player.pitch
+        for weapon in (SWORD, FIRE_STAFF):
+            with self.subTest(weapon=weapon.name):
+                combat = CombatState(held_item=WeaponPickup(0, 0, weapon=weapon))
+
+                def draw():
+                    pixels = [["~"] * 90 for _ in range(30)]
+                    depths = [[math.inf] * 90 for _ in range(30)]
+                    _draw_equipped(combat, cam, pixels, depths, self.player)
+                    return pixels
+
+                idle = draw()
+                self.player.take_damage(1)
+                hurt = draw()
+                self.assertNotEqual(idle, hurt)
+                self.assertEqual(hurt, draw())
+                for _ in range(math.ceil(DAMAGE_IMPACT_DURATION * 120) + 1):
+                    self.player.update(self.world, set(), 1 / 120)
+                self.assertEqual(draw(), idle)
+                self.assertEqual((self.player.yaw, self.player.pitch), aim)
 
     def test_enemy_has_opaque_torso_and_head_from_all_four_sides(self):
         for x, y, yaw in ((8.5, 5.5, math.pi / 2), (8.5, 11.5, -math.pi / 2),

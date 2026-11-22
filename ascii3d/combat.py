@@ -27,7 +27,8 @@ FIREBALL_RANGE = 28.0
 MAX_FIREBALLS = 8
 BURST_DURATION = 0.22
 MAX_DEFEAT_BURSTS = 4
-DEFEAT_BURST_DURATION = 0.72
+DEFEAT_BURST_DURATION = 1.05
+WARDEN_COLLAPSE_DURATION = 0.38
 
 
 @dataclass(frozen=True)
@@ -102,6 +103,7 @@ class DefeatBurst:
     z: float
     stone: bool
     remaining: float = DEFEAT_BURST_DURATION
+    base_z: float | None = None
 
 
 @dataclass(frozen=True)
@@ -146,6 +148,7 @@ class Enemy:
     _step_distance: float = field(default=0.0, repr=False)
     _steer_heading: float = field(default=0.0, repr=False)
     _steer_remaining: float = field(default=0.0, repr=False)
+    collapse_remaining: float = 0.0
 
     def __post_init__(self):
         if self.home is None:
@@ -269,7 +272,7 @@ class Enemy:
                 self.attack_cooldown = self.behavior.recovery
                 self.state = "recovering"
                 if self._attack_reaches(world, player):
-                    events.extend(player.take_damage(self.behavior.damage))
+                    events.extend(player.take_damage(self.behavior.damage, source=(self.x, self.y)))
                 else:
                     events.append(GameEvent("enemy_miss", self.x, self.y))
             return events
@@ -425,12 +428,14 @@ class CombatState:
             enemy.down_remaining = enemy.respawn_delay
             enemy.state = "down"
             enemy.attack_remaining = enemy.attack_cooldown = 0.0
+            stone = enemy.behavior is not None
+            if stone:
+                enemy.collapse_remaining = WARDEN_COLLAPSE_DURATION
             self.defeat_bursts.append(DefeatBurst(enemy.x, enemy.y, enemy.z + enemy.height * 0.60,
-                                                 stone=enemy.behavior is not None))
+                                                 stone=stone, base_z=enemy.z))
             if len(self.defeat_bursts) > MAX_DEFEAT_BURSTS:
                 del self.defeat_bursts[0]
-            events.append(GameEvent("enemy_down" if enemy.behavior is not None else "dummy_down",
-                                    enemy.x, enemy.y))
+            events.append(GameEvent("enemy_down" if stone else "dummy_down", enemy.x, enemy.y))
         return events
 
     def update(self, dt: float, world: "World", player: "Player | None" = None) -> list[GameEvent]:
@@ -444,6 +449,7 @@ class CombatState:
             enemy.hit_remaining = max(0.0, enemy.hit_remaining - dt)
             if not enemy.alive:
                 enemy.down_remaining = max(0.0, enemy.down_remaining - dt)
+                enemy.collapse_remaining = max(0.0, enemy.collapse_remaining - dt)
                 if (enemy.down_remaining <= 1e-8
                         and (enemy.behavior is None or enemy.can_respawn(world, player))):
                     if enemy.behavior is not None:
@@ -453,6 +459,7 @@ class CombatState:
                         enemy._step_distance = enemy.walk_phase = 0.0
                         enemy._steer_remaining = 0.0
                     enemy.hp = enemy.max_hp
+                    enemy.collapse_remaining = 0.0
                     events.append(GameEvent("enemy_respawn" if enemy.behavior is not None else "dummy_reset",
                                             enemy.x, enemy.y))
             else:

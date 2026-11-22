@@ -263,8 +263,6 @@ def main(argv: list[str] | None = None) -> int:
             dev_console = None
             console_open = False
             console_request = ""
-            preview = None
-            preview_size = (0, 0)
             ui_events: list[GameEvent] = []
 
             def begin_talk(npc: NPC) -> None:
@@ -280,7 +278,7 @@ def main(argv: list[str] | None = None) -> int:
                 ui_events.append(GameEvent("ui_reset"))
 
             if args.dev:
-                from .dev_console import DevConsole
+                from .dev_console import DevConsole, append_bug_report
 
                 def where() -> str:
                     return f"X {player.x:.4f}  Y {player.y:.4f}  Z {player.z:.4f}  |  {world.area(player.x, player.y)}"
@@ -403,16 +401,24 @@ def main(argv: list[str] | None = None) -> int:
                     console_request = name
                     return ""
 
+                def report_bug(tokens: list[str]) -> str:
+                    result = append_bug_report((player.x, player.y, player.z), tokens[0] if tokens else "")
+                    ui_events.append(GameEvent("ui_dev_report"))
+                    return result
+
                 command_help = {
                     "where": "where  Show your position and area.",
                     "regions": "regions  List named teleport destinations.",
                     "teleport": "teleport <region|outside> or teleport <x> <y> [z]  Move in the current world.",
+                    "bug": "bug <message>  Save your coordinates, report and time to backlog.md.",
                     "reset": "reset  Return to the entrance with full health.",
                     "resume": "resume  Close the console and resume play.",
                     "quit": "quit  Exit MONOLITH.",
                 }
-                commands = {name: partial(no_args, name=name) for name in command_help if name != "teleport"}
+                commands = {name: partial(no_args, name=name) for name in command_help
+                            if name not in ("teleport", "bug")}
                 commands["teleport"] = lambda tokens: relocate(teleport_destination(world, player, tokens))
+                commands["bug"] = report_bug
                 dev_console = DevConsole(
                     {name: partial(set_option, name) for name in setting_types}, commands,
                     lambda: "\n".join(setting_line(name) for name in setting_types), command_help=command_help,
@@ -430,16 +436,12 @@ def main(argv: list[str] | None = None) -> int:
                 elapsed, previous = min(start - previous, 0.1), start
                 keys = terminal.keyboard.poll()
                 ui_events = []
-                dev_transition = False
                 if dev_console is not None:
                     terminal.measure_output = timing is not None
                     if console_open:
-                        dev_transition = True
                         if not keys.pressed & {"escape", "blur", "interrupt"}:
                             for key in keys.text_events:
                                 dev_console.handle((key,))
-                                if key == "enter":
-                                    preview = None
                                 if console_request:
                                     break
                         if console_request == "resume":
@@ -449,13 +451,14 @@ def main(argv: list[str] | None = None) -> int:
                             pressed.add("escape")
                         if console_request or "escape" in keys.pressed:
                             console_open = False
-                            preview = None
+                            jump_pending = attack_pending = False
                             terminal.keyboard.set_text_input(False)
                             ui_events.append(GameEvent("ui_dev_close"))
                         console_request = ""
                         keys = Keys(pressed=pressed)
                     elif "console" in keys.pressed and not keys.pressed & {"escape", "blur"}:
-                        console_open = dev_transition = True
+                        console_open = True
+                        jump_pending = attack_pending = False
                         terminal.keyboard.set_text_input(True)
                         ui_events.append(GameEvent("ui_dev_open"))
                         keys = Keys()
@@ -495,8 +498,10 @@ def main(argv: list[str] | None = None) -> int:
 
                 width, height = terminal.size()
                 playable = width >= 60 and height >= 20
-                active = not paused and not help_open and playable and not dev_transition
-                terminal.set_mouse_capture(active and not keyboard_look and not args.demo)
+                game_width = dev_console.preview_width(width, height) if console_open else width
+                has_scene = bool(game_width) if console_open else playable
+                active = not paused and not help_open and has_scene
+                terminal.set_mouse_capture(active and not console_open and not keyboard_look and not args.demo)
                 mouse_error = getattr(terminal, "mouse_error", "")
                 if mouse_error and mouse_error != last_mouse_error:
                     notice = "Mouse capture unavailable - restart with --keyboard-look"
@@ -585,29 +590,19 @@ def main(argv: list[str] | None = None) -> int:
                 if timing is not None:
                     simulation_end = time.perf_counter()
                 mouse_captured = terminal.mouse_captured if not keyboard_look and not args.demo else None
-                if console_open:
-                    scene_samples = None
-                    game_width = dev_console.preview_width(width, height)
-                    if game_width:
-                        # Simulation is frozen. Reuse the scene as the command
-                        # line changes, then redraw for commands or a resize.
-                        if preview is None or preview_size != (game_width, height):
-                            preview = renderer.styled_frame(player, game_width, height, preview=True,
-                                                            time_seconds=simulation_time, sound_on=audio.enabled,
-                                                            color_mode=args.color_mode)
-                            preview_size = game_width, height
-                            scene_samples = game_width, height - 5
-                        frame = dev_console.split_frame(preview, width, height)
-                    else:
-                        frame = dev_console.frame(width, height)
+                if console_open and not has_scene:
+                    frame = dev_console.frame(width, height)
                 else:
-                    frame = renderer.styled_frame(player, width, height, fps, show_map, help_open, paused,
+                    frame = renderer.styled_frame(player, game_width, height, fps, show_map, help_open, paused,
                                                   time_seconds=simulation_time,
                                                   notice=notice if simulation_time < notice_until else "", sound_on=audio.enabled,
                                                   keyboard_look=keyboard_look,
                                                   mouse_captured=mouse_captured, color_mode=args.color_mode,
-                                                  dialogue=conversation.view if conversation is not None else None)
-                    scene_samples = (width, height - 5) if playable else None
+                                                  dialogue=conversation.view if conversation is not None else None,
+                                                  preview=console_open)
+                    if console_open:
+                        frame = dev_console.split_frame(frame, width, height)
+                scene_samples = (game_width, height - 5) if has_scene else None
                 if timing is not None:
                     render_end = time.perf_counter()
                 terminal.draw(frame)

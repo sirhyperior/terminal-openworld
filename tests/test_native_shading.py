@@ -1,6 +1,7 @@
 """Native surface lighting and its shared Python fallback preserve styled frames."""
 
 from array import array
+from ctypes import c_double
 import math
 from types import SimpleNamespace
 import unittest
@@ -8,12 +9,12 @@ from unittest.mock import patch
 
 from ascii3d.combat import Fireball
 from ascii3d.native_shading import NativeShading
-from ascii3d.native_solids import SolidLibrary
+from ascii3d.native_solids import NativeGPUHits, SolidLibrary, _Hit, _Vector
 from ascii3d.player import Player
 from ascii3d.renderer import Renderer
 from ascii3d.roads import RoadNetwork
 from ascii3d.shading import RAMP, Shading
-from ascii3d.world import AIR, GRASS, METAL, PATH, STONE, World
+from ascii3d.world import AIR, GRASS, METAL, PATH, STONE, WATER, World
 
 
 class NativeShadingCompatibilityTests(unittest.TestCase):
@@ -59,7 +60,39 @@ class NativeShadingTests(unittest.TestCase):
             raise unittest.SkipTest("optional native solid library has not been built")
         if library.shade_surfaces is None:
             raise unittest.SkipTest("prebuilt library has no native shading kernel")
-        cls.shade = library.shade_surfaces
+        cls.library = library
+
+    def test_packed_firelight_reuses_only_resolved_unlit_hits(self):
+        library = self.library
+        if library.shade_gpu_frame_firelight is None:
+            self.skipTest("prebuilt library has no packed firelight kernel")
+
+        world = World.empty(48, 8, 6)
+        world.combat.fireballs[:] = [Fireball(x, 2.5, 3, (1, 0, 0)) for x in (12.5, 20.5)]
+        player = Player(x=8.5, y=2.5, z=1, yaw=0)
+        renderer = Renderer(world)
+        self.addCleanup(renderer.close)
+        renderer.shading.prepare(player)
+        renderer.scenery.prepare(0.0)
+        native = NativeShading(library.shade_surfaces, library.shade_gpu_frame,
+                               library.shade_gpu_frame_firelight)
+        legacy = NativeShading(library.shade_surfaces, library.shade_gpu_frame)
+        self.assertTrue(native.available(renderer.shading, packed=True))
+        self.assertFalse(native.available(renderer.shading))
+        self.assertFalse(legacy.available(renderer.shading, packed=True))
+
+        up, down = _Vector(0, 0, 1), _Vector(0, 0, -1)
+        hits = (_Hit * 8)(
+            _Hit(4, up, STONE, 2), _Hit(4, down, STONE, 2),
+            _Hit(30, up, STONE, 2), _Hit(2, up, WATER, 2),
+            _Hit(0, up, AIR, -1), _Hit(0, up, AIR, 0),
+            _Hit(12, up, STONE, 2), _Hit(12, _Vector(), STONE, 6),
+        )
+        packed = NativeGPUHits(hits, (c_double * 4)(), (c_double * 2)(), None)
+        _, depths, pending = native.gpu_frame(packed, renderer.shading, renderer.scenery,
+                                              (1, 0, 1, 0), None, None, None)
+        self.assertEqual(pending, [[0, 3], [0, 2]])
+        self.assertEqual((depths[0][1], depths[0][2], depths[1][3]), (4, 30, 12))
 
     def test_matches_python_with_cobbles_grass_metal_an_edited_shadow_and_firelight(self):
         world = World.empty(24, 24, 10)
@@ -71,7 +104,7 @@ class NativeShadingTests(unittest.TestCase):
         control, candidate = Renderer(world), Renderer(world)
         self.addCleanup(control.close)
         self.addCleanup(candidate.close)
-        candidate._native_shading = shade = NativeShading(self.shade)
+        candidate._native_shading = shade = NativeShading(self.library.shade_surfaces)
         player = Player(x=11.25, y=6.4, z=1, yaw=math.pi / 2, pitch=-0.12)
 
         def compare(seconds):

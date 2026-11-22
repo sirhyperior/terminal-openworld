@@ -7,7 +7,8 @@ particle positions depend on simulation time and never advance gameplay state.
 from collections import OrderedDict
 import math
 
-from .combat import BURST_DURATION, DEFEAT_BURST_DURATION, FIREBALL_RANGE, MAX_FIREBALLS
+from .combat import (BURST_DURATION, DEFEAT_BURST_DURATION, FIREBALL_RANGE, MAX_FIREBALLS,
+                     WARDEN_COLLAPSE_DURATION)
 from .geometry import Camera
 from .palette import (ARCANE, ASH, DUST, EMBER, FIRE, STONE, STRAW, UI, UI_ACCENT,
                       UI_DANGER, UI_MUTED, UI_POSITIVE)
@@ -169,25 +170,40 @@ class Particles:
                     break
 
         for burst in combat.defeat_bursts:
-            if not self._visible_source(camera, burst.x, burst.y, burst.z, 1.6):
+            if not self._visible_source(camera, burst.x, burst.y, burst.z, 2.35):
                 continue
             stats['particle_sources'] += 1
             age = DEFEAT_BURST_DURATION - burst.remaining
             phase_start = _seed(round(burst.x * 256), round(burst.y * 256), round(burst.z * 256), 1) % 8191
             phase_start *= math.tau / 8191
             grit, dust = (STONE, ASH) if burst.stone else (STRAW, DUST)
-            level = 14 - int(age / DEFEAT_BURST_DURATION * 9)
-            for index in range(16):
-                phase = phase_start + index * 2.399963229728653
-                spread = 0.22 + (index % 5) * 0.055 + age * (0.9 + (index % 4) * 0.4)
-                shard = index % 3 != 0
-                x, y = burst.x + math.cos(phase) * spread, burst.y + math.sin(phase) * spread
-                z = burst.z + (index % 7 - 3) * 0.16 + age * (0.35 + index % 3 * 0.75)
-                z -= age * age * (3.9 if shard else 1.2)
-                glyph = ("*" if burst.stone else "'") if shard and age < 0.27 else "."
-                if not emit(x, y, z, grit if shard else dust, level, glyph,
-                            'dynamic', self.EFFECT_RADIUS):
-                    break
+            if age < 0.72:
+                level = 14 - int(age / 0.72 * 9)
+                for index in range(16):
+                    phase = phase_start + index * 2.399963229728653
+                    spread = 0.22 + (index % 5) * 0.055 + age * (0.9 + (index % 4) * 0.4)
+                    shard = index % 3 != 0
+                    x, y = burst.x + math.cos(phase) * spread, burst.y + math.sin(phase) * spread
+                    z = burst.z + (index % 7 - 3) * 0.16 + age * (0.35 + index % 3 * 0.75)
+                    z -= age * age * (3.9 if shard else 1.2)
+                    glyph = ("*" if burst.stone else "'") if shard and age < 0.27 else "."
+                    if not emit(x, y, z, grit if shard else dust, level, glyph,
+                                'dynamic', self.EFFECT_RADIUS):
+                        break
+
+            # The body sheds fragments first, then the fall lifts a low cloud.
+            delay = WARDEN_COLLAPSE_DURATION * 0.72 if burst.stone else 0.10
+            if burst.base_z is not None and age >= delay:
+                wave = (age - delay) / (DEFEAT_BURST_DURATION - delay)
+                lift = math.sin(wave * math.pi)
+                for index in range(18):
+                    phase = phase_start + index * math.tau / 18 + (index % 3) * 0.10
+                    spread = 0.35 + wave * (1.10 + (index % 4) * 0.23)
+                    x, y = burst.x + math.cos(phase) * spread, burst.y + math.sin(phase) * spread
+                    z = burst.base_z + 0.11 + lift * (0.11 + (index % 3) * 0.08)
+                    if not emit(x, y, z, dust, 10 - int(wave * 7), "," if wave < 0.45 else ".",
+                                'dynamic', self.EFFECT_RADIUS):
+                        break
 
         for pickup in combat.pickups[:self.MAX_PICKUP_SOURCES]:
             if pickup.collected or not self._visible_source(camera, pickup.x, pickup.y, pickup.z + 0.9, 0.5):

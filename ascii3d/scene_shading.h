@@ -1,5 +1,5 @@
 /* Shade the already resolved GPU hits without visiting them again in Python.
-   Flag ambiguous hits and ordered water effects for the existing scene loop. */
+   Flag ambiguous hits, ordered water effects and local light samples for Python. */
 static const uint32_t SCENE_PANEL = UINT32_MAX - 1;
 
 typedef struct {
@@ -52,12 +52,23 @@ static double scene_wind_turn(double x, double y, double seconds, const SceneGus
     return dx + dy * 0.6;
 }
 
-EXPORT uint32_t monolith_shade_gpu_frame(const Hit *hits, const double *columns, const double *rows,
-                                       uint32_t width, uint32_t height, double cy, double sy,
-                                       double cp, double sp, const SurfaceLighting *lighting,
-                                       const SceneRoads *roads, const SceneGust *gusts, int gust_count,
-                                       int wind, double seconds, const double *panels, const double *combat,
-                                       uint32_t *tokens, double *depths, uint32_t *special) {
+static int scene_near_light(const ShadeSample *sample, const double *lights, int count,
+                           double radius_squared) {
+    for (int i = 0; i < count; ++i, lights += 3) {
+        double x = lights[0] - sample->x, y = lights[1] - sample->y, z = lights[2] - sample->z;
+        if (x * x + y * y + z * z <= radius_squared && sample->nx * x + sample->ny * y + sample->nz * z >= 0)
+            return 1;
+    }
+    return 0;
+}
+
+static uint32_t shade_gpu_frame(const Hit *hits, const double *columns, const double *rows,
+                                uint32_t width, uint32_t height, double cy, double sy,
+                                double cp, double sp, const SurfaceLighting *lighting,
+                                const SceneRoads *roads, const SceneGust *gusts, int gust_count,
+                                int wind, double seconds, const double *panels, const double *combat,
+                                uint32_t *tokens, double *depths, uint32_t *special,
+                                const double *lights, int light_count, double radius_squared) {
     uint32_t index = 0, count = 0;
     for (uint32_t y = 0; y < height; ++y) {
         double v = rows[y], forward = cp - v * sp;
@@ -88,15 +99,19 @@ EXPORT uint32_t monolith_shade_gpu_frame(const Hit *hits, const double *columns,
                     case 5: sample.ny = dy >= 0 ? -1.0 : 1.0; break;
                     case 6: sample.nz = dz >= 0 ? -1.0 : 1.0; break;
                     }
-                    if (material == SHADE_GRASS && sample.nz > 0) {
-                        if (scene_road_contains(roads, sample.x, sample.y))
-                            sample.material = SHADE_PATH;
-                        else if (wind)
-                            sample.foliage_turn = scene_wind_turn(sample.x, sample.y, seconds,
-                                                                 gusts, gust_count);
+                    /* Keep LOS and its sample budget in the original row order.
+                       The native shader only sees points that cannot be lit. */
+                    if (!scene_near_light(&sample, lights, light_count, radius_squared)) {
+                        if (material == SHADE_GRASS && sample.nz > 0) {
+                            if (scene_road_contains(roads, sample.x, sample.y))
+                                sample.material = SHADE_PATH;
+                            else if (wind)
+                                sample.foliage_turn = scene_wind_turn(sample.x, sample.y, seconds,
+                                                                     gusts, gust_count);
+                        }
+                        token = shade_surface(&sample, lighting);
+                        depth = distance;
                     }
-                    token = shade_surface(&sample, lighting);
-                    depth = distance;
                 }
             }
             tokens[index] = token;
@@ -106,4 +121,25 @@ EXPORT uint32_t monolith_shade_gpu_frame(const Hit *hits, const double *columns,
         }
     }
     return count;
+}
+
+EXPORT uint32_t monolith_shade_gpu_frame(const Hit *hits, const double *columns, const double *rows,
+                                       uint32_t width, uint32_t height, double cy, double sy,
+                                       double cp, double sp, const SurfaceLighting *lighting,
+                                       const SceneRoads *roads, const SceneGust *gusts, int gust_count,
+                                       int wind, double seconds, const double *panels, const double *combat,
+                                       uint32_t *tokens, double *depths, uint32_t *special) {
+    return shade_gpu_frame(hits, columns, rows, width, height, cy, sy, cp, sp, lighting, roads, gusts,
+                           gust_count, wind, seconds, panels, combat, tokens, depths, special, NULL, 0, 0);
+}
+
+EXPORT uint32_t monolith_shade_gpu_frame_firelight(
+        const Hit *hits, const double *columns, const double *rows, uint32_t width, uint32_t height,
+        double cy, double sy, double cp, double sp, const SurfaceLighting *lighting, const SceneRoads *roads,
+        const SceneGust *gusts, int gust_count, int wind, double seconds, const double *panels,
+        const double *combat, uint32_t *tokens, double *depths, uint32_t *special,
+        const double *lights, int light_count, double radius_squared) {
+    return shade_gpu_frame(hits, columns, rows, width, height, cy, sy, cp, sp, lighting, roads, gusts,
+                           gust_count, wind, seconds, panels, combat, tokens, depths, special,
+                           lights, light_count, radius_squared);
 }

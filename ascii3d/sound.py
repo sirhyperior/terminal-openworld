@@ -21,11 +21,11 @@ from .audio_output import BUFFER_COUNT, BUFFER_FRAMES, SAMPLE_RATE, StreamPacer,
 
 EFFECTS = {
     "step_stone": 0.18, "step_grass": 0.16, "step_wood": 0.20, "step_water": 0.25,
-    "step_gravel": 0.23, "step_metal": 0.27,
+    "step_gravel": 0.23, "step_metal": 0.27, "step_cobblestone": 0.20,
     "terrain_step": 0.18,
     "jump": 0.18, "land": 0.26, "water_splash": 0.32,
     "land_stone": 0.28, "land_grass": 0.27, "land_wood": 0.32,
-    "land_water": 0.38, "land_gravel": 0.31, "land_metal": 0.38,
+    "land_water": 0.38, "land_gravel": 0.31, "land_metal": 0.38, "land_cobblestone": 0.29,
     "door_open": 0.88, "door_close": 0.82, "door_blocked": 0.22,
     "sword_pickup": 0.42, "sword_swing": 0.29, "sword_hit": 0.34,
     "sword_miss": 0.18, "attack_empty": 0.15,
@@ -37,13 +37,13 @@ EFFECTS = {
     "enemy_miss": 0.22, "enemy_hurt": 0.28,
     "enemy_down": 0.85, "enemy_respawn": 0.90,
     "player_hurt": 0.30, "player_down": 0.80, "player_respawn": 0.60,
-    "dialogue_start": 0.22, "dialogue_line": 0.32, "dialogue_end": 0.18,
+    "dialogue_start": 0.22, "dialogue_line": 0.32, "dialogue_reveal": 0.12, "dialogue_end": 0.18,
     "interaction_miss": 0.10, "ui_map": 0.13, "ui_help": 0.14,
     "ui_pause": 0.16, "ui_reset": 0.25, "ui_exit": 0.18, "ui_toggle": 0.10,
-    "ui_dev_open": 0.14, "ui_dev_close": 0.12, "ui_dev_teleport": 0.26,
+    "ui_dev_open": 0.14, "ui_dev_close": 0.12, "ui_dev_teleport": 0.26, "ui_dev_report": 0.19,
 }
 LANDING_CUES = {surface: "land_" + surface
-                for surface in ("stone", "grass", "wood", "water", "gravel", "metal")}
+                for surface in ("stone", "grass", "wood", "water", "gravel", "metal", "cobblestone")}
 TERRAIN_STEP_CUES = {surface: "step_" + surface for surface in LANDING_CUES}
 
 # Relative start, length and slip frequency for each strain/release gesture.
@@ -105,6 +105,8 @@ def _door_creak(name, rng, rate, duration):
 # not pitched notes. The same model serves boots, debris, weapons and masonry.
 _MATERIAL_MODES = {
     "stone": ((91, 0.024, 0.65), (217, 0.016, 0.30), (563, 0.009, 0.12)),
+    "cobblestone": ((107, 0.022, 0.58), (311, 0.013, 0.33),
+                    (746, 0.007, 0.19), (1271, 0.004, 0.10)),
     "grass": ((73, 0.016, 0.50), (173, 0.009, 0.14)),
     "wood": ((106, 0.048, 0.64), (267, 0.024, 0.34), (631, 0.012, 0.12)),
     "water": ((133, 0.025, 0.25), (379, 0.014, 0.18)),
@@ -117,6 +119,7 @@ _CONTACT_TEXTURES = {
     "stone": (0.46, 0.16, 27), "grass": (0.22, 0.68, 17),
     "wood": (0.38, 0.24, 24), "water": (0.12, 0.95, 11),
     "gravel": (0.62, 0.38, 16), "metal": (0.33, 0.18, 31),
+    "cobblestone": (0.53, 0.27, 60),
 }
 
 
@@ -219,6 +222,15 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
                 value += (low * 1.8 + breath * 0.5) * math.exp(-t * 11)
             elif surface == "gravel":
                 value += (grit * chips * 1.6 + low * 0.35) * math.exp(-t * decay)
+            elif surface == "cobblestone":
+                # An uneven set of laid stones gives the heel and toe separate
+                # hard contacts, with a short scuff as the sole crosses a seam.
+                toe_start = (0.047 if landing else 0.065) + variation * 0.006
+                toe_strike = _gesture(t, toe_start, 0.016)
+                seam = _gesture(t, toe_start + 0.010, 0.030)
+                excitation += (noise + low * 0.35) * toe_strike * 0.74
+                value += (grit * 0.42 + low * 0.32) * toe_strike
+                value += (grit * 0.26 + breath * 0.35) * seam
             elif surface == "grass":
                 value += breath * (0.5 + chips) * math.exp(-t * decay)
             if name == "enemy_step":
@@ -295,13 +307,21 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
             value = (slow * 2.6 + low * 1.3 + grit * (0.55 if name == "enemy_hurt" else 0.22)) * transient
             value += breath * chips * math.exp(-t * 15)
         elif name == "enemy_down":
-            collapse = math.exp(-t * 9) + chips * math.exp(-t * 3) * 0.8
-            excitation = (noise * 0.75 + low) * collapse
-            value = (slow * 3.5 + low * 1.6 + grit * 0.23) * collapse
+            crack = math.exp(-t * 62)
+            grind = _gesture(t, 0.03, 0.25)
+            landing = _gesture(t, 0.26, 0.16)
+            settle = _gesture(t, 0.33, 0.50)
+            excitation = noise * (crack * 1.35 + grind * 0.21 + settle * chips * 0.62)
+            excitation += low * landing * 2.3
+            value = (low * 1.4 + grit * 0.72) * crack
+            value += (low * 0.65 + breath * 0.52) * grind
+            value += (slow * 5.3 + low * 0.88) * landing + (breath + grit * 0.30) * settle * chips
         elif name == "player_hurt":
-            excitation = noise * math.exp(-t * 36) * 1.0
-            value = (slow * 2.5 + low * 1.4 + grit * 0.22) * math.exp(-t * 28)
-            value += breath * _gesture(t, 0.04, 0.16) * 0.25
+            strike = math.exp(-t * 49)
+            flinch = _gesture(t, 0.026, 0.17)
+            excitation = noise * strike * 1.5 + low * flinch * 0.27
+            value = slow * math.exp(-t * 31) * 4.6 + (low * 1.9 + grit * 0.55) * strike
+            value += (breath * 1.0 + low * 0.32) * flinch
         elif name == "player_down":
             retreat = _gesture(t, 0.015, duration * 0.96) * math.exp(-t * 2)
             excitation = low * retreat * 1.2
@@ -315,6 +335,9 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
             voice = _gesture(t, 0.014, 0.13) + 0.65 * _gesture(t, 0.14, 0.16)
             pulse = 0.76 + 0.24 * math.sin(math.tau * (93 * t - 23 * t * t))
             value = (slow * 2.7 * pulse + low * 0.42 + breath * 0.16) * voice
+        elif name == "dialogue_reveal":
+            rustle = _gesture(t, 0.006, 0.084)
+            value = (low * 0.55 + breath * 0.85) * rustle + slow * math.exp(-t * 48)
         elif name in ("dialogue_start", "dialogue_end"):
             cloth = _gesture(t, 0.008, duration * 0.88)
             settle = math.exp(-t * (31 if name == "dialogue_start" else 46))

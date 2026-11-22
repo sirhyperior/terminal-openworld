@@ -88,6 +88,7 @@ class EnemyTests(unittest.TestCase):
         events += self.advance(0.02)
         self.assertEqual(self.player.hp, 8)
         self.assertEqual(sum(event.name == "player_hurt" for event in events), 1)
+        self.assertAlmostEqual(self.player.damage_bearing, math.pi / 2)
         self.advance(1.15)
         self.assertEqual(self.player.hp, 8)
         self.advance(0.65)

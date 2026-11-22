@@ -285,8 +285,9 @@ class GameLoopTests(unittest.TestCase):
                 script = [({"e", "attack", "space"}, held), ({"e"}, held),
                           ({"p", "e"}, held), ({"e"}, held), ({"p", "e"}, held),
                           ({"e"}, held), ({"r", "e", "m", "attack", "space"}, held),
-                          ({"e"}, held), ((), held), ({"e"}, ()),
-                          ({"e", "attack", "space"}, held), ((), {"w"})]
+                          ({"e"}, held), ((), held), ({"e"}, ()), ({"e"}, ()),
+                          ({"p", "e"}, held), ((), held), ({"p", "e"}, held),
+                          ({"e"}, ()), ({"e", "attack", "space"}, held), ((), {"w"})]
                 sizes = [(60, 20)] * len(script)
                 sizes[5] = (40, 10)
                 events, states, pauses, frames = self.run_frames(
@@ -295,18 +296,26 @@ class GameLoopTests(unittest.TestCase):
                     mouse=[(0, 0)] + [(35, 20)] * (len(script) - 1))
                 views = [frame[1]["dialogue"] for frame in frames]
                 self.assertTrue(all(view.text is None for view in views[:7]))
-                self.assertEqual([view.text for view in views[7:10]],
-                                 ["Hear the bell?", "Hear the bell?", "Count the strokes."])
-                self.assertTrue(views[9].last)
-                self.assertEqual(views[10:], [None, None])
+                self.assertEqual([view.text for view in views[7:15]],
+                                 ["Hear the bell?"] * 3 + ["Count the strokes."] * 5)
+                self.assertLess(views[7].visible_characters, views[8].visible_characters)
+                self.assertLess(views[8].visible_characters, len(views[8].text))
+                self.assertIsNone(views[9].visible_characters)
+                self.assertTrue(views[10].last)
+                self.assertEqual(views[10:13], [views[10]] * 3)
+                self.assertGreater(views[13].visible_characters, views[10].visible_characters)
+                self.assertIsNone(views[14].visible_characters)
+                self.assertEqual(views[15:], [None, None])
                 self.assertEqual([event.name for event in events],
                                  ["dialogue_start", "ui_pause", "ui_pause", "dialogue_line",
-                                  "dialogue_line", "dialogue_end"])
+                                  "dialogue_reveal", "dialogue_line", "ui_pause", "ui_pause",
+                                  "dialogue_reveal", "dialogue_end"])
                 self.assertTrue(all(not frame[0][4] for frame in frames))
-                self.assertEqual(pauses, [False, False, True, True, False, True] + [False] * 6)
-                self.assertEqual(self.player_positions[:11], [(8.5, 4.5, 1.0)] * 11)
+                self.assertEqual(pauses, [False, False, True, True, False, True] + [False] * 5
+                                 + [True, True] + [False] * 4)
+                self.assertEqual(self.player_positions[:16], [(8.5, 4.5, 1.0)] * 16)
                 self.assertNotEqual(self.player_positions[-1], self.player_positions[-2])
-                self.assertTrue(all(state[1] == 1.0 for state in states[:11]))
+                self.assertTrue(all(state[1] == 1.0 for state in states[:16]))
                 self.assertNotEqual(states[0][6], states[1][6])
                 self.assertEqual(states[1][6:8], states[2][6:8])
                 self.assertEqual(states[1][6:8], states[3][6:8])

@@ -107,6 +107,26 @@ class MapExpansionTests(unittest.TestCase):
         self.assertEqual(self.world.get(128, 111, 0), WOOD)
         self.assertEqual(self.world.surface_material(128.5, 66.5), PATH)
 
+    def test_riven_vale_shortcut_walks_and_sprints_in_both_directions(self):
+        for y in (305.2, 306.5, 307.8):
+            for start, end, yaw in ((326.5, 350.5, 0), (350.5, 326.5, math.pi)):
+                for keys in ({"w"}, {"w", "shift"}):
+                    with self.subTest(y=y, start=start, keys=keys):
+                        feet = self.world.surface_height(start, y)
+                        support = self.world.walk_support(start, y, feet, walking=True)
+                        self.assertIsNotNone(support)
+                        player = Player(x=start, y=y, z=support[0], yaw=yaw)
+                        speed = player.RUN_SPEED if "shift" in keys else player.WALK_SPEED
+                        for _ in range(math.ceil(abs(end - start) * 120 / speed) + 10):
+                            player.update(self.world, keys, 1 / 120)
+                            self.assertTrue(player.grounded)
+                            self.assertFalse(player.in_water)
+                            self.assertFalse(self.world.collides(player.x, player.y, player.z))
+                            if (player.x - end) * (end - start) >= 0:
+                                break
+                        else:
+                            self.fail(f"Shortcut stalled at {(player.x, player.y, player.z)}")
+
     def test_every_gate_uses_standard_targeting_and_sound(self):
         approaches = (("Ashgate south gate", 128.5, 70.5, math.pi / 2),
                       ("Ashgate north gate", 128.5, 121.5, -math.pi / 2),

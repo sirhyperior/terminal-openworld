@@ -112,8 +112,9 @@ class SoundTests(unittest.TestCase):
                     self.assertLessEqual(max(map(abs, clip)), 27000)
 
     def test_conversation_cues_are_distinct_and_click_free(self):
-        cues = [self.bank.clips[name][0] for name in ("dialogue_start", "dialogue_line", "dialogue_end")]
-        self.assertEqual(len({clip.tobytes() for clip in cues}), 3)
+        names = ("dialogue_start", "dialogue_line", "dialogue_reveal", "dialogue_end")
+        cues = [self.bank.clips[name][0] for name in names]
+        self.assertEqual(len({clip.tobytes() for clip in cues}), len(names))
         for clip in cues:
             self.assertEqual((clip[0], clip[-1]), (0, 0))
             rms = math.sqrt(sum(sample * sample for sample in clip) / len(clip))
@@ -136,6 +137,16 @@ class SoundTests(unittest.TestCase):
         self.assertEqual(len(mixer.voices), Mixer.MAX_VOICES)
         pcm = array("h", mixer.render(512))
         self.assertLessEqual(max(map(abs, pcm)), 32760)
+
+    def test_player_hurt_hits_early_and_warden_defeat_has_a_delayed_thud(self):
+        def rms(clip, start, end):
+            part = clip[round(start * SAMPLE_RATE):round(end * SAMPLE_RATE)]
+            return math.sqrt(sum(sample * sample for sample in part) / len(part))
+
+        for hurt, collapse in zip(self.bank.clips["player_hurt"], self.bank.clips["enemy_down"]):
+            self.assertGreater(rms(hurt, 0.0, 0.045), rms(hurt, 0.20, 0.29) * 3)
+            self.assertGreater(rms(collapse, 0.29, 0.40), rms(collapse, 0.10, 0.20) * 1.06)
+            self.assertGreater(rms(collapse, 0.42, 0.60), 500)
 
     def test_meadow_wind_is_a_quiet_continuous_layer_without_player_actions(self):
         world = World.empty(8, 8, 6)

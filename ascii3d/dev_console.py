@@ -2,11 +2,31 @@
 
 from collections import deque
 from collections.abc import Callable, Iterable, Mapping
+from datetime import datetime
+from pathlib import Path
 import shlex
 from textwrap import TextWrapper
 
 from .palette import UI, UI_MUTED
 from .presentation import PREVIEW_MIN_SIZE, StyledFrame
+
+
+BUG_REPORT_PATH = Path(__file__).resolve().parent.parent / "backlog.md"
+
+
+def append_bug_report(position: tuple[float, float, float], message: str) -> str:
+    """Append one location-tagged report to the project backlog."""
+    message = " ".join(message.split())
+    if not message:
+        raise ValueError("Usage: bug <message>")
+    x, y, z = position
+    timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
+    try:
+        with BUG_REPORT_PATH.open("a", encoding="utf-8") as backlog:
+            backlog.write(f"\n({x:.4f}, {y:.4f}, {z:.4f}) - {message}, {timestamp}\n")
+    except OSError as error:
+        raise ValueError(f"Could not save to {BUG_REPORT_PATH.name}: {error}") from None
+    return f"Saved bug report to {BUG_REPORT_PATH.name}."
 
 
 class DevConsole:
@@ -34,11 +54,14 @@ class DevConsole:
 
     def execute(self, line: str) -> str:
         """Run a console command. Handlers report invalid inputs via ValueError."""
-        lexer = shlex.shlex(line, posix=True)
-        lexer.whitespace_split = True
-        lexer.commenters = ""
-        lexer.escape = ""  # Keep literal backslashes in Windows paths.
         try:
+            head = line.split(maxsplit=1)
+            if head and head[0].lower() == "bug" and "bug" in self._commands:
+                return self._commands["bug"](head[1:])
+            lexer = shlex.shlex(line, posix=True)
+            lexer.whitespace_split = True
+            lexer.commenters = ""
+            lexer.escape = ""  # Keep literal backslashes in Windows paths.
             tokens = list(lexer)
             if not tokens:
                 return ""

@@ -5,91 +5,64 @@ Last reviewed **2026-11-23**. [Repository rules](AGENTS.md) ·
 
 ## Current checkpoint
 
-The rebuilt optional DLL shades resolved GPU hits at the full viewport size.
-Ambiguous rays use exact traversal and the combined native terrain/solid query
-when available. Explicit GPU uses the compiled paving sampler when installed.
-Road point queries keep exact boundaries and skip capsule tests in cells with
-proven coverage. Water and local firelight still follow the shared renderer.
+The developer console renders a live split view with FPS while the editor
+has focus. `bug <message>` appends the player's feet coordinates and local
+timestamp to the backlog. Dialogue reveals letters in place, with E to reveal
+the line and E again to continue. Combat has directional damage cues and a
+depth-tested Warden fall. Cobblestone contacts have dedicated Foley.
 
-At 240×80 with live audio, all 35 matched auto roles pass both relative timing
-gates. Thirteen meet 33.33 ms p95 before terminal writes. Paving drops from
-67.52/83.54 to 27.04/30.42 ms mean/p95. Thornwatch lodge drops from
-76.11/98.81 to 34.04/41.23 ms. All 105 matched frames and opaque depth
-buffers agree, and all 51 focused tests pass. In physical 213×60 conhost,
-Ashgate rises from 16.77 to 19.47 FPS and Thornwatch from 10.40 to 14.27 FPS.
-Live audio had zero underruns or recoveries. The 30+ FPS target remains open.
-[Fullscreen performance and validation](benchmarks/fullscreen-throughput-2026-11-23.md)
+The Riven Vale shortcut near (340.8, 306.5, Z10.7) and the third river bridge
+are walkable in both directions. The 1,040-contact test covers all 13 stair
+flights, including six transformed flights. The live native console replay
+passed report, FPS, motion, audio and restoration checks. All four matched
+120×40 gameplay roles pass the mean and p95 timing gates.
+[Backlog validation](benchmarks/backlog-validation-2026-11-23.md)
 
-Prior paving appearance and developer console checks are retained together.
-[Road relief and developer split validation](benchmarks/cobble-relief-dev-split-2026-11-23.md)
-The 120×40 Mael spawn and aimed-view p95 regressions remain open.
-[Mael and actor label timings](benchmarks/npc-labels-mael-2026-11-22.md)
+The rebuilt optional DLL also shades static GPU hits outside local firelight
+and leaves shared visibility checks in screen order. At 240×80 with live
+audio, the fireball role improves from **65.12/100.18 to 52.08/80.63 ms**
+mean/p95. All three sampled roles pass both regression gates. All 20 paired
+frames and depth buffers match.
+[Firelight timing](benchmarks/backlog-firelight-auto-240x80-2026-11-23.json) ·
+[Frame parity](benchmarks/backlog-firelight-parity-2026-11-23.json)
 
-## Verified evidence and limits
+The prior 240×80 full-grid comparison passed both relative gates on all 35
+auto roles. In physical 213×60 conhost, Ashgate reached 19.47 FPS and
+Thornwatch reached 14.27 FPS. These runs precede the current backlog work.
+[Fullscreen evidence](benchmarks/fullscreen-throughput-2026-11-23.md)
 
-The original `--dev` console passed native Windows checks for editing, live
-settings, teleport, sound and restoration. Renderer switches can take a few seconds.
-[Developer console validation](benchmarks/dev-console-2026-11-22.md)
+The native Windows suite ran 672 tests with GPU checks enabled. All 14
+failure records across four test methods reproduce on `0dcb8e6`. Two tests
+skipped. The remaining failures cover the stair benchmark's camera assertion,
+paving palette readability, scenery occlusion and an old grass fixture.
+[Native suite](benchmarks/backlog-validation-native-2026-11-23.txt) ·
+[Frozen control](benchmarks/backlog-validation-control-failures-2026-11-23.txt)
 
-The native Windows dialogue smoke verified keyboard targeting, all three lines
-of Iven's conversation, resumed movement, console restoration and live audio.
-[Dialogue smoke](benchmarks/npc-dialogue-native-2026-11-21.json) ·
-[NPC idle animation timings](benchmarks/npc-idle-animation-2026-11-22.md)
+## Open issues and resume
 
-The moonlit loading splash passed 42 focused loading and game-loop tests and a
-120×40 live-audio Windows GPU smoke with console restoration.
-[Startup evidence](benchmarks/loading-gatehouse-native-2026-11-21.json)
-
-`df643ea` establishes the palette, eye-level motes and sparse glints on the
-six-site world. The voxel moonlight map omits convex roofs. The broader
-blockiness work remains open. [Appearance evidence](benchmarks/moon-glints-2026-11-21.md)
-
-The third river bridge walk fails in both directions and reproduces on
-`b988df7`. The six-destination loop passed with the rotated joins. The
-ravine-to-Reliquary shortcut stalls near **(340.76, 306.5, Z10.64)** on
-`(326,306)->(350,306)`. [Map and sound evidence](benchmarks/darkworld-2026-11-17.md)
-
-The native Windows suite before NPC idle motion ran 626 tests with GPU checks
-enabled. There were 614 passes, two skips and the same ten failures as the prior
-full-detail suite. The prior control reproduced all ten on `427dc70`, including
-stair and road assumptions and the animated scenery comparison.
-[Suite log](benchmarks/backlog-native-tests-2026-11-21.txt) ·
-[Suite manifest](benchmarks/backlog-native-tests-2026-11-21.json) ·
-[Prior control](benchmarks/full-detail-windows-control-failing-tests-2026-11-21.txt)
-
-## Resume priorities
-
-1. Compare physical fullscreen presentation in Windows Terminal and classic
-   conhost with `--frame-timing` at the same grid size, cap and audio mode.
-   Heavy river, firelight and terrace views still need engine work. Rerun the
-   120×40 Mael poses and explicit GPU paving pose (128.5, 63.5, Z1), facing north
-   at pitch −0.28, against the frozen source.
-2. Repair the shortcut and third river bridge grades. Preserve slope limits and
-   rerun both route regressions before the full route group.
-3. Migrate the aggregate block-walking test. It assumes 13 axis-aligned entries
-   in `_stair_keys`. Current source has 7 there and 6 `(landmark, flight_key)`
-   entries in `_oriented_stairs`. Transform the latter through `to_world` and
-   add `landmark.angle` to movement headings. Preserve 1,040 contact checks.
-4. Continue building massing and map layout work.
+1. The **30+ FPS fullscreen target** remains open. Measure Windows Terminal
+   and classic conhost on the same physical grid, replay, cap and audio
+   configuration. River, firelight and terrace views still exceed the 33.33 ms
+   budget before terminal writes.
+2. Replay the 120×40 Mael spawn and aimed views against their frozen control
+   and the fixed-yaw explicit GPU paving pose (128.5, 63.5, Z1), north at
+   pitch −0.28. [Mael timing gates](benchmarks/npc-labels-mael-2026-11-22.md) ·
+   [Paving controls](benchmarks/cobble-relief-dev-split-2026-11-23.md)
+3. Continue building massing and map layout. The voxel moonlight map omits
+   convex roofs. Physical mouse, speaker review, POSIX held keys and Python
+   3.10 execution remain open.
+   [Appearance evidence](benchmarks/moon-glints-2026-11-21.md)
 
 ```powershell
 .\run-dev.bat
-.\run.bat --frame-timing fullscreen-full-detail-timing.json
-python -B main.py --keyboard-look --color-mode color
+.\run.bat --keyboard-look --demo --frames 60 --frame-timing fullscreen-ashgate-replay.json
+.\run.bat --keyboard-look --demo --region thornwatch --frames 60 --frame-timing fullscreen-thornwatch-replay.json
 $env:MONOLITH_GPU_TESTS='1'
-.\.venv-gpu\Scripts\python.exe -B -m unittest tests.test_particles tests.test_shading tests.test_color_integration tests.test_color_gpu_parity -v
-.\.venv-gpu\Scripts\python.exe -B -m unittest tests.test_roads tests.test_native_shading tests.test_player_health tests.test_particles tests.test_enemies -v
-python -B -m unittest tests.test_dev_build tests.test_dev_console tests.test_frame_timing -v
-python -B -m unittest tests.test_map_expansion.MapExpansionTests.test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height tests.test_outdoors.OutdoorMovementTests.test_all_river_bridges_connect_both_banks_without_jumping -v
-.\.venv-gpu\Scripts\python.exe -B validate_native_tmp.py
+.\.venv-gpu\Scripts\python.exe -B -m unittest tests.test_native_shading tests.test_color_gpu_parity tests.test_dev_build tests.test_game_loop tests.test_block_walking -v
+python -B -m unittest tests.test_map_expansion tests.test_outdoors.OutdoorMovementTests -v
 ```
 
-`validate_native_tmp.py` opens a hidden genuine console and reserves an unused
-report prefix. Use a new prefix after each run. `quality_native_smoke_tmp.py`
-supports 120x40 and 160x50 native output checks. For a matching appearance
-control, extract `git archive` of `b988df7 ascii3d tools` into a fresh directory.
-
-The archived lag camera `(215.2,187.4,Z10)` referred to replaced geometry.
-The Thornwatch approach supplies a repeatable replacement probe.
-Physical mouse, speaker review, POSIX held keys and Python 3.10
-execution remain open.
+Use unused timing filenames. Rebuild the optional DLL with the compiler command
+in the README before timing native shading. The native suite helper
+`validate_native_tmp.py` opens a hidden console and needs an unused report
+prefix for each run. [Benchmark index](benchmarks/README.md)

@@ -9,6 +9,7 @@ from .world import INDOOR_SPAWN, World
 
 
 DAMAGE_CUE_DURATION = 0.50
+DAMAGE_IMPACT_DURATION = 0.22
 
 
 @dataclass
@@ -30,6 +31,7 @@ class Player:
     _step_distance: float = field(default=0.0, repr=False)
     damage_remaining: float = 0.0
     last_damage: int = 0
+    damage_bearing: float | None = None
 
     RADIUS = 0.22
     HEIGHT = 1.7
@@ -60,17 +62,25 @@ class Player:
         self.vertical_speed = 0.0
         return True, stepped
 
-    def take_damage(self, amount: int) -> list[GameEvent]:
+    def take_damage(self, amount: int, *, source: tuple[float, float] | None = None) -> list[GameEvent]:
         """Apply one confirmed hit and report feedback once per living player."""
         if amount <= 0 or self.hp <= 0:
             return []
         self.last_damage = min(self.hp, amount)
         self.hp -= self.last_damage
         self.damage_remaining = DAMAGE_CUE_DURATION
+        self.damage_bearing = None
+        if source is not None and source != (self.x, self.y):
+            self.damage_bearing = math.atan2(source[1] - self.y, source[0] - self.x)
         events = [GameEvent("player_hurt", self.x, self.y)]
         if self.hp == 0:
             events.append(GameEvent("player_down", self.x, self.y))
         return events
+
+    @property
+    def damage_impact(self) -> float:
+        """The fast initial recoil under the longer health readout."""
+        return max(0.0, 1 - (DAMAGE_CUE_DURATION - self.damage_remaining) / DAMAGE_IMPACT_DURATION)
 
     @property
     def eye_z(self) -> float:

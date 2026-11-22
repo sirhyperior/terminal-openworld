@@ -15,8 +15,9 @@ def check_audio(volume=0.55, seconds=18.0):
     print("Playing meadow wind, river, surface Foley, doors, weapons and creature/player effects...")
     start = time.perf_counter()
     next_effect, effect = 2.0, 0
-    effects = ("step_stone", "step_grass", "step_wood", "step_water", "step_gravel", "step_metal",
-               "land_gravel", "land_metal", "door_open", "door_close", "door_blocked", "sword_pickup",
+    effects = ("step_stone", "step_cobblestone", "step_grass", "step_wood", "step_water",
+               "step_gravel", "step_metal", "land_cobblestone", "land_gravel", "land_metal",
+               "door_open", "door_close", "door_blocked", "sword_pickup",
                "sword_swing", "sword_hit", "sword_miss", "attack_empty", "dummy_down", "dummy_reset",
                "staff_pickup", "item_drop", "fireball_cast", "fireball_hit", "fireball_impact", "fireball_fizzle",
                "enemy_alert", "enemy_step", "enemy_attack", "enemy_miss", "enemy_hurt", "enemy_down",

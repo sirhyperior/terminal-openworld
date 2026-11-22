@@ -63,7 +63,7 @@ def _ink_from_code(result):
 
 
 class NativeShading:
-    def __init__(self, shade, shade_gpu_frame=None):
+    def __init__(self, shade, shade_gpu_frame=None, shade_gpu_frame_firelight=None):
         if (STONE, FLOOR, METAL, CRATE, GRASS, WATER, WOOD, LEAVES, PATH,
                 BRIDGE, FIRE, EMBER, ARCANE, STRAW, BONE) != tuple(range(1, 16)) or WIND_GRASS != 22:
             raise ValueError("Unsupported native shading material IDs")
@@ -82,19 +82,25 @@ class NativeShading:
         self._moon_buffer = None
         self._tokens = {0: " ", _PANEL: " ", _FALLBACK: " "}
         self._shade_gpu_frame = shade_gpu_frame
+        self._shade_gpu_frame_firelight = shade_gpu_frame_firelight
         self._roads = None
         self._road_data = _SceneRoads()
+        packed_args = (
+            POINTER(_Hit), POINTER(c_double), POINTER(c_double), c_uint32, c_uint32,
+            c_double, c_double, c_double, c_double, POINTER(_SurfaceLighting),
+            POINTER(_SceneRoads), POINTER(_SceneGust), c_int, c_int, c_double,
+            POINTER(c_double), POINTER(c_double), POINTER(c_uint32), POINTER(c_double), POINTER(c_uint32))
         if shade_gpu_frame is not None:
-            shade_gpu_frame.argtypes = (
-                POINTER(_Hit), POINTER(c_double), POINTER(c_double), c_uint32, c_uint32,
-                c_double, c_double, c_double, c_double, POINTER(_SurfaceLighting),
-                POINTER(_SceneRoads), POINTER(_SceneGust), c_int, c_int, c_double,
-                POINTER(c_double), POINTER(c_double), POINTER(c_uint32), POINTER(c_double), POINTER(c_uint32))
+            shade_gpu_frame.argtypes = packed_args
             shade_gpu_frame.restype = c_uint32
+        if shade_gpu_frame_firelight is not None:
+            shade_gpu_frame_firelight.argtypes = packed_args + (POINTER(c_double), c_int, c_double)
+            shade_gpu_frame_firelight.restype = c_uint32
 
-    def available(self, shading):
+    def available(self, shading, *, packed=False):
         return (type(shading) is Shading and "surface" not in vars(shading)
-                and shading.eye is not None and not shading.lights
+                and shading.eye is not None
+                and (not shading.lights or (packed and self._shade_gpu_frame_firelight is not None))
                 and (shading.moonlight is None or type(shading.moonlight) is VoxelMoonlight))
 
     def _lighting(self, shading):
@@ -141,10 +147,17 @@ class NativeShading:
         lighting = _SurfaceLighting(*self._lighting(shading))
         gusts = (_SceneGust * len(scenery._gusts))(
             *(_SceneGust(g.x, g.y, g.radius, g.strength, g.dx, g.dy) for g in scenery._gusts))
-        special_count = self._shade_gpu_frame(
+        args = (
             hits.hits, hits.columns, hits.rows, width, height, *rotation, lighting, self._road_data,
             gusts, len(gusts), scenery.wind is not None, scenery._seconds, *buffers,
             output, depth_output, specials)
+        if shading.lights:
+            count_lights = len(shading.lights)
+            lights = (c_double * (3 * count_lights))(*chain.from_iterable(shading.lights))
+            special_count = self._shade_gpu_frame_firelight(
+                *args, lights, count_lights, shading.FIRELIGHT_RADIUS_SQUARED)
+        else:
+            special_count = self._shade_gpu_frame(*args)
         tokens = self._tokens
         for code in set(codes).difference(tokens):
             tokens[code] = _ink_from_code(code)

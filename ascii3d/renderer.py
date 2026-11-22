@@ -265,7 +265,8 @@ class Renderer:
                     from .native_shading import NativeShading
 
                     self._native_shading = NativeShading(
-                        shader_library.shade_surfaces, getattr(shader_library, 'shade_gpu_frame', None))
+                        shader_library.shade_surfaces, getattr(shader_library, 'shade_gpu_frame', None),
+                        getattr(shader_library, 'shade_gpu_frame_firelight', None))
             except (AttributeError, OSError) as error:
                 if backend == 'native':
                     self.backend_error = str(error)
@@ -674,7 +675,7 @@ class Renderer:
 
         gpu_hits = None
         native_shading = self._native_shading
-        if native_shading is not None and not native_shading.available(self.shading):
+        if native_shading is not None and not native_shading.available(self.shading, packed=True):
             native_shading = None
         if self.ray_backend is not None:
             try:
@@ -694,7 +695,7 @@ class Renderer:
             pixels, depths, pending = native_shading.gpu_frame(
                 gpu_hits, self.shading, self.scenery, (cy, sy, cp, sp), door_pixels, door_depths, combat_depths)
         shade_samples = None
-        if native_shading is not None:
+        if native_shading is not None and not self.shading.lights:
             shade_samples = array("d")
             shade_destinations = []
 
@@ -1023,9 +1024,16 @@ class Renderer:
         view_height = height - 5
         pixels = self.scene(player, width, view_height, time_seconds, labels=dialogue is None)
         show_dialogue = dialogue is not None and dialogue.text is not None and not (help_open or paused)
+        damaged = player.damage_remaining > 1e-8
+        hit_side = None
+        if damaged and player.damage_bearing is not None:
+            turn = math.remainder(player.damage_bearing - player.yaw, math.tau)
+            hit_side = math.floor(turn / (math.pi / 2) + 0.5) % 4
         prompt = ""
         if dialogue is None:
             pixels[view_height // 2][width // 2] = "+"
+            if damaged and not (help_open or paused) and player.damage_impact > 0:
+                self._damage_marks(pixels, hit_side, player.damage_impact)
             if show_map:
                 self._map(pixels, player)
             if not preview:
@@ -1070,7 +1078,7 @@ class Renderer:
         bar = "#" * filled + "-" * (10 - filled)
         health_text = f"  HP [{bar}] {health}/{maximum}"
         title = health_text if preview else health_text + " / " + equipment
-        rate = "PREVIEW  " if preview else f"{fps:4.0f} FPS  "
+        rate = f"{fps:4.0f} FPS" if preview else f"{fps:4.0f} FPS  "
         if sound_on is not None:
             sound = "SND ON  " if sound_on else "SND OFF  "
             if not preview or len(title) + len(sound) + len(rate) + 1 <= width:
@@ -1115,12 +1123,14 @@ class Renderer:
             materials += [bytearray([255]) * width for _ in range(3)]
             effects += [bytearray(width) for _ in range(3)]
         health_end = min(width, len(health_text))
-        damaged = player.damage_remaining > 1e-8
         health_material = UI_DANGER if damaged or health * 3 <= maximum else UI_POSITIVE
         materials[0][2:health_end] = bytes([health_material]) * (health_end - 2)
         divider = "-" * width
         if damaged:
-            cue = f" [-{player.last_damage} HP] "
+            cue = f" [-{player.last_damage} HP]"
+            if hit_side is not None:
+                cue += "  " + ("FRONT", "LEFT", "BEHIND", "RIGHT")[hit_side]
+            cue += " "
             left = (width - len(cue)) // 2
             right = left + len(cue)
             divider = divider[:left] + cue + divider[right:]
@@ -1137,6 +1147,19 @@ class Renderer:
             lines += ["-" * width, status, controls]
         return [line[:width].ljust(width) for line in lines]
 
+    def _damage_marks(self, pixels: list[list[str]], side: int | None, impact: float) -> None:
+        """A short peripheral cue leaves aim, prompts and the map readable."""
+        height, width = len(pixels), len(pixels[0])
+        marks = ((width // 2 - 1, 1, "^"), (2, height // 2, "<"),
+                 (width // 2 - 1, height - 3, "v"), (width - 5, height // 2, ">"))
+        level = 7 + round(impact * 8)
+        if side is None:
+            locations = ((2, height // 2, "!"), (width - 5, height // 2, "!"))
+        else:
+            locations = (marks[side],)
+        for x, y, glyph in locations:
+            self._write(pixels, x, y, [ink(glyph, level, UI_DANGER)] * 3)
+
     def _interaction_prompt(self, player: Player) -> str:
         target = self.world.interaction_target(player)
         if isinstance(target, Door):
@@ -1151,10 +1174,21 @@ class Renderer:
         return f"[E] Collect {target.name}{suffix}"
 
     def _dialogue_panel(self, pixels: list[list[str]], dialogue: DialogueView) -> None:
-        width = min(70, len(pixels[0]) - 12)
-        body = textwrap.wrap(dialogue.text, width)
+        width = min(70, max(PREVIEW_MIN_SIZE[0] - 6, len(pixels[0]) - 12))
+        text = dialogue.text
+        body = textwrap.wrap(text, width)
+        if dialogue.visible_characters is not None:
+            # Wrap the authored line before masking it so each character stays
+            # in place when the rest of its word appears.
+            end = 0
+            for index, row in enumerate(body):
+                start = text.index(row, end)
+                body[index] = row[:max(0, dialogue.visible_characters - start)]
+                end = start + len(row)
+            hint = "[E] Reveal"
+        else:
+            hint = "[E] Finish" if dialogue.last else "[E] Continue"
         body.extend([""] * (3 - len(body)))
-        hint = "[E] Finish" if dialogue.last else "[E] Continue"
         speaker = dialogue.speaker[:width]
         x, y = self._panel(pixels, [speaker, *body, hint.rjust(width)], bottom=True)
         self._write(pixels, x + 3, y + 1, [ink(char, 15, UI_ACCENT) for char in speaker])

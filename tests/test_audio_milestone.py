@@ -16,7 +16,7 @@ from ascii3d.world import BRIDGE, CRATE, FLOOR, GRASS, METAL, PATH, STONE, WATER
 class SurfaceContactTests(unittest.TestCase):
     def test_player_emits_matching_steps_and_landing_metadata_on_each_ground_fixture(self):
         for material, surface in ((FLOOR, "stone"), (GRASS, "grass"), (WOOD, "wood"),
-                                  (WATER, "water"), (PATH, "stone"), (METAL, "metal")):
+                                  (WATER, "water"), (PATH, "cobblestone"), (METAL, "metal")):
             with self.subTest(material=material, surface=surface):
                 world = World.empty(20, 20, 8)
                 world.box(0, 0, 0, 20, 20, 1, material)
@@ -33,7 +33,7 @@ class SurfaceContactTests(unittest.TestCase):
 
     def test_supported_materials_have_explicit_foley_surfaces(self):
         for material, expected in ((STONE, "stone"), (FLOOR, "stone"),
-                                   (GRASS, "grass"), (PATH, "stone"),
+                                   (GRASS, "grass"), (PATH, "cobblestone"),
                                    (METAL, "metal"), (WOOD, "wood"),
                                    (CRATE, "wood"), (BRIDGE, "wood")):
             with self.subTest(material=material):
@@ -68,7 +68,7 @@ class SurfaceContactTests(unittest.TestCase):
         world.box(0, 0, 0, 8, 8, 1, GRASS)
         world.box(3, 3, 0, 4, 4, 1, PATH)
         self.assertEqual(surface_kind(world, 2.99, 3.5, 1), "grass")
-        self.assertEqual(surface_kind(world, 3.01, 3.5, 1), "stone")
+        self.assertEqual(surface_kind(world, 3.01, 3.5, 1), "cobblestone")
 
     def test_rotated_door_top_is_wood_but_side_is_not_support(self):
         world = World.empty(12, 12, 8)
@@ -122,6 +122,14 @@ class MilestoneCueTests(unittest.TestCase):
         mixer.add(SimpleNamespace(name="land", surface="grass", x=None, y=None, strength=1))
         self.assertIs(mixer.voices[-1].samples, bank.clips["land"][0])
 
+    def test_cobblestone_steps_use_the_same_cue_for_stride_and_terrain_contacts(self):
+        mixer = Mixer(self.bank)
+        versions = self.bank.clips["step_cobblestone"]
+        mixer.add(GameEvent("step_cobblestone"))
+        self.assertIs(mixer.voices[-1].samples, versions[0])
+        mixer.add(GameEvent("terrain_step", surface="cobblestone"))
+        self.assertIs(mixer.voices[-1].samples, versions[1])
+
     def test_all_surfaces_have_distinct_steps_and_landings_with_step_variation(self):
         steps, landings = set(), set()
         for surface, cue in LANDING_CUES.items():
@@ -129,8 +137,8 @@ class MilestoneCueTests(unittest.TestCase):
             self.assertEqual(len({clip.tobytes() for clip in variants}), 3)
             steps.add(variants[0].tobytes())
             landings.add(self.bank.clips[cue][0].tobytes())
-        self.assertEqual(len(steps), 6)
-        self.assertEqual(len(landings), 6)
+        self.assertEqual(len(steps), 7)
+        self.assertEqual(len(landings), 7)
 
     def test_combat_cues_are_original_reproducible_click_free_and_bounded(self):
         cues = ("sword_pickup", "sword_swing", "sword_hit", "sword_miss",

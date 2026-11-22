@@ -112,8 +112,9 @@ def terrain_height(x: float, y: float) -> float:
     if x0 <= x <= x1 and y0 <= y <= y1:
         cross = abs(x - 310)
         ends = _smooth_blend(min((y - y0) / 12, (y1 - y) / 12))
+        # Run the deck approaches out gradually enough to follow on foot.
         crossing = (_smooth_blend(1 - abs(y - 306) / 14)
-                    * _smooth_blend(min((x - x0) / 12, (x1 - x) / 12))
+                    * _smooth_blend(min((x - x0) / 20, (x1 - x) / 20))
                     * _smooth_blend(min((y - y0) / 8, (y1 - y) / 8)))
         height = height * (1 - crossing) + 9 * crossing
         height -= 12 * _smooth_blend(1 - cross / 16) * ends
@@ -127,6 +128,13 @@ def terrain_height(x: float, y: float) -> float:
         if distance < 36:
             blend = _smooth_blend(distance / 36)
             height = base * (1 - blend) + height * blend
+
+    # The Reliquary Bridge reaches onto a rising bank. Leave a level landing
+    # beside the deck and ease its shoulders into the highland slope.
+    for x0, y0, x1, y1 in NEW_BRIDGES:
+        distance = max(x0 - x, x - x1, y0 - 2 - y, y - y1 - 2, 0)
+        if distance < 10:
+            height = 1 + (height - 1) * _smooth_blend(distance / 10)
     return max(1.0, min(20.0, height))
 
 
