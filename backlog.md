@@ -3,3 +3,4 @@ When a milestone is complete, remove it from the list and reassign the numbering
 
 1. Optimization - pretty improved compared to before, but not quite enough. targetting 30+ fps in full screen without dramatic visual changes.
 2. Issue with new road - the new road design/texture seems to be causing quite a lot of frame drop. needs to be reviewed at once.
+3. Sound Replacement - since the roads now have a cobblestone material, the sound should change to a more fitting one
