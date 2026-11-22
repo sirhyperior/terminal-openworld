@@ -1,15 +1,16 @@
 """Sparse, seeded world-space particles sharing the opaque scene depth buffer.
 
-This is presentation only. Existing wind, pickup and fire events supply sound;
+This is presentation only. Wind, pickup, fire and defeat events supply sound;
 particle positions depend on simulation time and never advance gameplay state.
 """
 
 from collections import OrderedDict
 import math
 
-from .combat import BURST_DURATION, FIREBALL_RANGE, MAX_FIREBALLS
+from .combat import BURST_DURATION, DEFEAT_BURST_DURATION, FIREBALL_RANGE, MAX_FIREBALLS
 from .geometry import Camera
-from .palette import ARCANE, ASH, DUST, EMBER, FIRE, UI, UI_ACCENT, UI_DANGER, UI_MUTED, UI_POSITIVE
+from .palette import (ARCANE, ASH, DUST, EMBER, FIRE, STONE, STRAW, UI, UI_ACCENT,
+                      UI_DANGER, UI_MUTED, UI_POSITIVE)
 from .shading import Ink, ink
 
 
@@ -164,6 +165,27 @@ class Particles:
                 z = burst.z + (0.2 + index % 4 * 0.35) * age - age * age * 1.8
                 if not emit(x, y, z, FIRE if progress < 0.2 else EMBER,
                             15 - int(progress * 10), "*" if progress < 0.25 else ".",
+                            'dynamic', self.EFFECT_RADIUS):
+                    break
+
+        for burst in combat.defeat_bursts:
+            if not self._visible_source(camera, burst.x, burst.y, burst.z, 1.6):
+                continue
+            stats['particle_sources'] += 1
+            age = DEFEAT_BURST_DURATION - burst.remaining
+            phase_start = _seed(round(burst.x * 256), round(burst.y * 256), round(burst.z * 256), 1) % 8191
+            phase_start *= math.tau / 8191
+            grit, dust = (STONE, ASH) if burst.stone else (STRAW, DUST)
+            level = 14 - int(age / DEFEAT_BURST_DURATION * 9)
+            for index in range(16):
+                phase = phase_start + index * 2.399963229728653
+                spread = 0.22 + (index % 5) * 0.055 + age * (0.9 + (index % 4) * 0.4)
+                shard = index % 3 != 0
+                x, y = burst.x + math.cos(phase) * spread, burst.y + math.sin(phase) * spread
+                z = burst.z + (index % 7 - 3) * 0.16 + age * (0.35 + index % 3 * 0.75)
+                z -= age * age * (3.9 if shard else 1.2)
+                glyph = ("*" if burst.stone else "'") if shard and age < 0.27 else "."
+                if not emit(x, y, z, grit if shard else dust, level, glyph,
                             'dynamic', self.EFFECT_RADIUS):
                     break
 

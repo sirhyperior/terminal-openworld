@@ -26,6 +26,8 @@ FIREBALL_SPEED = 12.0
 FIREBALL_RANGE = 28.0
 MAX_FIREBALLS = 8
 BURST_DURATION = 0.22
+MAX_DEFEAT_BURSTS = 4
+DEFEAT_BURST_DURATION = 0.72
 
 
 @dataclass(frozen=True)
@@ -91,6 +93,15 @@ class FireBurst:
     y: float
     z: float
     remaining: float = BURST_DURATION
+
+
+@dataclass
+class DefeatBurst:
+    x: float
+    y: float
+    z: float
+    stone: bool
+    remaining: float = DEFEAT_BURST_DURATION
 
 
 @dataclass(frozen=True)
@@ -296,6 +307,7 @@ class CombatState:
     swing_remaining: float = 0.0
     fireballs: list[Fireball] = field(default_factory=list)
     bursts: list[FireBurst] = field(default_factory=list)
+    defeat_bursts: list[DefeatBurst] = field(default_factory=list)
 
     def collect(self, pickup: WeaponPickup, player: "Player", world: "World") -> list[GameEvent]:
         origin, direction = view_ray(player)
@@ -401,8 +413,9 @@ class CombatState:
         events.extend(self._damage(enemy, "sword_hit"))
         return events
 
-    @staticmethod
-    def _damage(enemy, cue):
+    def _damage(self, enemy, cue):
+        if not enemy.alive:
+            return []
         enemy.hp = max(0, enemy.hp - 1)
         enemy.hit_remaining = 0.18
         events = [GameEvent(cue, enemy.x, enemy.y)]
@@ -412,6 +425,10 @@ class CombatState:
             enemy.down_remaining = enemy.respawn_delay
             enemy.state = "down"
             enemy.attack_remaining = enemy.attack_cooldown = 0.0
+            self.defeat_bursts.append(DefeatBurst(enemy.x, enemy.y, enemy.z + enemy.height * 0.60,
+                                                 stone=enemy.behavior is not None))
+            if len(self.defeat_bursts) > MAX_DEFEAT_BURSTS:
+                del self.defeat_bursts[0]
             events.append(GameEvent("enemy_down" if enemy.behavior is not None else "dummy_down",
                                     enemy.x, enemy.y))
         return events
@@ -443,6 +460,10 @@ class CombatState:
         for burst in self.bursts:
             burst.remaining = max(0.0, burst.remaining - dt)
         self.bursts[:] = [burst for burst in self.bursts if burst.remaining > 1e-8]
+        if self.defeat_bursts:
+            for burst in self.defeat_bursts:
+                burst.remaining -= dt
+            self.defeat_bursts[:] = [burst for burst in self.defeat_bursts if burst.remaining > 1e-8]
         events.extend(self._advance_fireballs(world, dt))
         return events
 

@@ -12,7 +12,7 @@ from ascii3d import native_solids
 from ascii3d.native_solids import NativeSolidTree, SolidLibrary
 from ascii3d.orientation import rotate_solid
 from ascii3d.renderer import Renderer
-from ascii3d.surfaces import SolidBox
+from ascii3d.surfaces import HeightField, SolidBox
 from ascii3d.terrain import Landmark
 from ascii3d.world import FLOOR, STONE, World
 
@@ -124,6 +124,34 @@ class NativeSolidQueryTests(unittest.TestCase):
             changed = world.geometry_query(BOUNDS, (), solid_library=self.library)
             self.assertEqual(changed(origin, direction, limit), closest.ray_hit(origin, direction, limit))
             self.assertEqual(query(origin, direction, limit), expected)
+
+    def test_fused_world_query_preserves_terrain_solid_merge_and_edits(self):
+        if self.library.geometry_trace is None:
+            self.skipTest('prebuilt library has no fused geometry kernel')
+        world = World.empty(32, 32, 24)
+        world.heightfield = HeightField(32, 32, [4.0] * 33 ** 2)
+        for material in (STONE, FLOOR):
+            world.add_solid(SolidBox(5, 5, 2, 8, 8, 4, material))
+        shared_face = (6.5, 5.5, 7), (0, 0, -1), 12
+        changed_ground = (3.5, 3.5, 7), (0, 0, -1), 12
+        cases = [shared_face, changed_ground, (shared_face[0], shared_face[1], math.inf)]
+        rng = random.Random(39281)
+        cases.extend((tuple(rng.uniform(0, bound) for bound in (28, 28, 16)),
+                      tuple(rng.uniform(-1.5, 1.5) for _ in range(3)),
+                      rng.uniform(0, 48)) for _ in range(1000))
+
+        for solid_count in (2, 11):
+            with self.subTest(solids=solid_count):
+                if solid_count == 11:
+                    for x in range(15, 24):
+                        world.add_solid(SolidBox(x, 8, 3, x + 0.8, 9, 6, STONE))
+                with patch.object(self.library, 'geometry_trace', None):
+                    control = world.geometry_query(BOUNDS, (), solid_library=self.library)
+                fused = world.geometry_query(BOUNDS, (), solid_library=self.library)
+                self.assertEqual([fused(*case) for case in cases], [control(*case) for case in cases])
+                world.heightfield.paint_cell(3, 3, STONE)
+                self.assertEqual(fused(*changed_ground).material, STONE)
+                self.assertEqual(fused(*changed_ground), control(*changed_ground))
 
 
 if __name__ == '__main__':

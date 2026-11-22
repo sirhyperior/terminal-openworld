@@ -3,9 +3,9 @@
 A dark fantasy first-person exploration sandbox drawn entirely with
 **colored ASCII text on black**.
 
-Stone runs from graphite to pewter, timber has a muted wine tint, and pale
-gravel marks a route through heather-colored grass. Moonlight enters from the
-west. Walls, roofs and bridge decks cast shadows across floors and figures.
+Stone runs from graphite to pewter, timber has a muted wine tint, and subdued
+gray cobbles mark routes through heather-colored grass. Moonlight enters from
+the west. Walls, roofs and bridge decks cast shadows across floors and figures.
 Mortar, wood grain and armor bevels still catch enough light to read in shade.
 Distant silhouettes soften toward blue-gray against the black sky.
 
@@ -31,11 +31,13 @@ Explore a **512 by 512 world** with six connected dark-fantasy destinations:
 | Astral Reliquary (388,284) | Elevated galleries under a fractured octagonal roof |
 | Mourning Citadel (420,436) | Largest fortress, guarded terraces, three floors and a high overlook |
 
-Gravel roads form a loop between all six sites, with an Ashgate-Abbey shortcut
-and a crossing from the Abbey toward the Reliquary over the Riven Vale.
+Cobblestone roads form a loop between all six sites, with an Ashgate-Abbey
+shortcut and a crossing from the Abbey toward the Reliquary over the Riven Vale.
 Three timber bridges span the winding river through the middle of the map.
-Broad slopes blend into the roads and building approaches. Follow continuous
-hillsides and quarter-unit stone stair risers; jump to climb ordinary props.
+Uneven stones stand out against deep earth joints. Their beveled edges and
+rounded faces soften into the road bed in the distance. Broad slopes blend
+into the roads and building approaches. Follow continuous hillsides and
+quarter-unit stone stair risers and jump to climb ordinary props.
 The four highland buildings each have three usable floors, real stairs, windows,
 a balcony and a rooftop overlook. Ashgate's west steps reach the cloister roof
 and adjacent wall walk. Pointed arches, tapered octagonal spires and sloping
@@ -82,19 +84,23 @@ Press **left click** to swing the sword or fire the staff. Ashgate's three
 passive training dummies stand at `(115.5-123.5, 94.5)`. Sword reach is about 2.5 units;
 fireballs travel up to 28 units and stop at walls, doors, trunks or actors.
 The staff fires once per click with a 0.65-second cooldown and no ammo limit.
-Either weapon deals one damage. Three hits knock a dummy down; it resets after
-four seconds. Its fixed support stays solid while it is down.
+Either weapon deals one damage. Three hits knock a dummy down in a scatter of
+straw. It resets after four seconds, and its fixed support stays solid while
+it is down.
 
 A **Watchstone Warden** guards the western Gravewood clearing (`34-48, 242-256`).
 This four-HP stone guardian notices players within 7.5 units, follows them,
 and raises its fists before a close ground slam. Step away during the warning.
 It stays in its clearing and returns home when you leave. Defeat it with either
-weapon; it respawns at home after 12 seconds, waiting if that spot is occupied.
+weapon to send stone chips and dust scattering. It respawns at home after 12
+seconds, waiting if that spot is occupied.
 R returns you to your selected entrance with held item and world state preserved.
 
-The upper HUD shows your **10-point health bar**. A Warden hit costs two health.
-Defeat returns you to your starting entrance with full health, keeping your
-held item and world state. R also restores health when returning to the entrance.
+The upper HUD shows your **10-point health bar**. A Warden hit costs two health
+and briefly shows `[-2 HP]` beneath the bar in every display mode. In color mode,
+the bar also turns red. Defeat returns you to your starting entrance with full
+health, keeping your held item and world state. R also restores health when
+returning to the entrance.
 
 The renderer casts a real 3D ray through buildings and terrain for every character. The
 camera has perspective, pitch, height, textured surfaces, face lighting, and
@@ -249,12 +255,17 @@ saves up to the last 3,600 completed frames after restoring the terminal.
 
 ## Developer console
 
-Run `python main.py --dev` or `run.bat --dev` and press backtick (`` ` ``) to
-open the console. World simulation, dialogue and ambient audio pause while you
-type. Enter runs the command. The arrow keys edit the line or recall previous
-commands, and Page Up/Down scroll through output. Esc closes the console and
-restores the previous pause or help state. `resume` closes it and resumes play.
-Use `quit` or Ctrl+C to exit the game from the console.
+On Windows, double-click `run-dev.bat` or run it with any gameplay flags.
+You can also run `python main.py --dev`. Press backtick (`` ` ``) to open
+the console on the right. The left pane shows the game and updates after
+each command or resize. World simulation, dialogue and ambient audio pause
+while you type. A viewport smaller than 57 columns or 12 rows shows the editor
+by itself.
+
+Enter runs the command. The arrow keys edit the line or recall previous
+commands, and Page Up/Down scroll through output. Esc restores the full game
+view and the previous pause or help state. `resume` closes the console and
+resumes play. Use `quit` or Ctrl+C to exit the game from the console.
 
 | Command | Action |
 | --- | --- |
@@ -295,7 +306,7 @@ belong to their dedicated launch modes.
 ## Sound
 
 Original procedural sound now emphasizes dark-fantasy materials: heavy boot
-contacts on stone, grass, wood, water, gravel and metal; cloth movement; grit,
+contacts on stone, grass, wood, water and metal; cloth movement; grit,
 scrapes and damped body resonances. Weathered doors strain and release around
 wooden latches. Sword contacts have an immediate iron/wood impact, while the
 staff exhales cold spellfire with turbulent tails and crumbling embers.
@@ -307,8 +318,8 @@ flowing water use textured turbulence. All sounds are synthesized locally,
 without recordings.
 
 Footsteps and landings follow the actual supporting material, including stairs,
-raised crates and bridge tops. Recurring contacts and relic effects have
-repeatable variations. Effects overlap with distance attenuation and stereo
+cobblestones, raised crates and bridge tops. Recurring contacts and relic effects
+have repeatable variations. Effects overlap with distance attenuation and stereo
 positioning. Confirmed sword hits lead with the impact and a softer whoosh;
 misses keep the full air swing.
 Pause/help hush the environment while preserving menu feedback. F toggles sound;
@@ -424,10 +435,12 @@ renderer. `--renderer cpu` selects the standard-library Python path.
 
 The optional native library accelerates exact float64 voxel, solid and
 continuous terrain traversal, as well as exact refinement of GPU candidates.
-It also batches lighting for static opaque surfaces in scenes without local
-firelight. Coincident solid hits use the Python grid query. Build or rebuild
-the library from the repository root. The normal launcher picks up the result
-automatically.
+In scenes without local firelight, it batches lighting for static opaque
+surfaces, including cobblestones and wind-tinted grass. Both `auto` and `gpu`
+can shade resolved GPU hits in the compiled batch. Ambiguous hits still use
+exact traversal, and coincident solid hits use the Python grid query.
+Build or rebuild the library from the repository root. The normal launcher
+picks up the result automatically.
 
 ```bash
 cc -std=c11 -O3 -ffp-contract=off -fexcess-precision=standard -fPIC -shared \

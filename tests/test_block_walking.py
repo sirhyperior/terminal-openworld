@@ -11,7 +11,7 @@ from ascii3d.world import AIR, FLOOR, GRASS, PATH, STONE, World, build_world
 
 
 BLOCK_MATERIALS = (STONE, FLOOR, GRASS, PATH)
-SURFACES = {STONE: "stone", FLOOR: "stone", GRASS: "grass", PATH: "gravel"}
+SURFACES = {STONE: "stone", FLOOR: "stone", GRASS: "grass", PATH: "stone"}
 
 
 def fixture_world(material=STONE, rise=1.0, *, partial_terrain=False):

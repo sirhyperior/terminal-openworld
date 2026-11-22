@@ -17,6 +17,27 @@ static double shade_phase(double value) {
     return phase < 0 ? phase + 1.0 : phase;
 }
 
+/* Match the shared Python texture sampling at the same world-space hit. */
+static double shade_cobble_texture(const ShadeSample *sample, const uint8_t *tile,
+                                  int size, double scale, double fade, double distant_tone) {
+    double distance = sample->distance;
+    if (distance >= fade)
+        return distant_tone;
+    double x = sample->x * scale, y = sample->y * scale;
+    int64_t ix = (int64_t)floor(x), iy = (int64_t)floor(y);
+    double u = x - ix, v = y - iy;
+    /* The shared texture side is a power of two. */
+    uint64_t mask = size - 1;
+    uint64_t x0 = (uint64_t)ix & mask, x1 = (uint64_t)(ix + 1) & mask;
+    uint64_t y0 = ((uint64_t)iy & mask) * size, y1 = ((uint64_t)(iy + 1) & mask) * size;
+    double a = tile[y0 + x0], b = tile[y1 + x0];
+    double top = a + (tile[y0 + x1] - a) * u;
+    double bottom = b + (tile[y1 + x1] - b) * u;
+    double stone = (top + (bottom - top) * v) / 255.0;
+    double detail = fmin(1.0, (fade - distance) * 0.10);
+    return distant_tone + (stone - distant_tone) * detail;
+}
+
 static double shade_texture(const ShadeSample *sample, int material, int *pigment) {
     double x = sample->x, y = sample->y, z = sample->z;
     double a, b;
@@ -51,13 +72,9 @@ static double shade_texture(const ShadeSample *sample, int material, int *pigmen
     }
     int grain = 0;
     if (material == SHADE_STONE || material == SHADE_FLOOR || material == SHADE_GRASS
-            || material == SHADE_LEAVES || material == SHADE_PATH) {
+            || material == SHADE_LEAVES) {
         uint64_t ix = (int64_t)(x * 11), iy = (int64_t)(y * 11), iz = (int64_t)(z * 11);
         grain = (ix * 37 ^ iy * 19 ^ iz * 7) & 15;
-    }
-    if (material == SHADE_PATH) {
-        double texture = 0.70 + broad * 0.24 + grain * 0.022;
-        return grain < 2 ? texture * 0.42 : texture;
     }
     double fine = sin(x * 5.31 - y * 3.17 + z * 7.07);
     switch (material) {
@@ -130,53 +147,73 @@ static double shade_specular(const ShadeSample *sample, int material, double ex,
     return pow(specular > 0 ? specular : 0.0, material == SHADE_METAL ? 24 : 40) * 0.72;
 }
 
-/* Return packed glyph, level and fog indices. The Python path retains its
-   exact LOS work for frames with local lights, plus moving object textures. */
-EXPORT void monolith_shade_batch(const ShadeSample *samples, uint32_t *results, size_t count,
-                                  const uint32_t *moon, int span, int depth,
-                                  double ex, double ey, double ez, int ramp_max,
-                                  const double *albedos, int albedo_count) {
-    for (size_t i = 0; i < count; ++i) {
-        const ShadeSample *sample = &samples[i];
-        if (!(fabs(sample->x) <= 1e9 && fabs(sample->y) <= 1e9 && fabs(sample->z) <= 1e9
-                && fabs(sample->foliage_turn) <= 1e9
-                && fabs(sample->nx) <= 2 && fabs(sample->ny) <= 2 && fabs(sample->nz) <= 2)) {
-            results[i] = UINT32_MAX;
-            continue;
-        }
-        int material = (int)sample->material;
-        double distance = sample->distance;
-        double directional = -sample->nx * 0.38 - sample->ny * 0.48 + sample->nz * 0.79;
-        if (!(directional > 0.0))
-            directional = 0.0;
-        int emissive = material == SHADE_FIRE || material == SHADE_EMBER || material == SHADE_ARCANE;
-        double light = emissive ? 0.10 + directional * 0.90 : 0.30 + directional * 0.70;
-        if (material == SHADE_METAL || material == SHADE_WATER)
-            light += shade_specular(sample, material, ex, ey, ez);
-        if (moon && !emissive && shade_moon_blocked(sample, moon, span, depth))
-            light = 0.24 + (light - 0.24) * 0.42;
-        double albedo = 0 <= material && material < albedo_count ? albedos[material] : 0.65;
-        int pigment = material;
-        double texture = shade_texture(sample, material, &pigment);
-        texture = texture > 0.08 ? texture : 0.08;
-        double brightness = albedo * texture * light * 1.52 / (1 + (distance > 0 ? distance : 0) * 0.036);
-        brightness = brightness > 0.0 ? brightness : 0.0;
-        if (!(brightness < 1.0))
-            brightness = 1.0;
-        if (!emissive)
-            brightness = 0.24 + brightness * 0.76;
-        uint32_t level = (uint32_t)(brightness * 15 + 0.5);
-        if (level == 0)
-            level = 1;
-        uint32_t glyph = (uint32_t)(brightness * ramp_max);
-        if (material == SHADE_GRASS && sample->nz > 0) {
-            uint64_t ix = (int64_t)(sample->x * 6.0), iy = (int64_t)(sample->y * 6.0);
-            uint32_t noise = (ix * 73856093 ^ iy * 19349663) & 15;
-            uint32_t wind = (int64_t)((sample->foliage_turn + 0.6) * 3);
-            uint32_t band = level / 3;
-            glyph = ramp_max + 1 + 2 * (band > 3 ? 3 : band) + ((noise + wind) & 1);
-        }
-        uint32_t fog = distance < 12 ? 0 : distance < 24 ? 1 : distance < 36 ? 2 : 3;
-        results[i] = ((uint32_t)pigment << 16) | (fog << 12) | (level << 8) | glyph;
+typedef struct {
+    const uint32_t *moon;
+    int span, depth;
+    double ex, ey, ez;
+    int ramp_max;
+    const double *albedos;
+    int albedo_count;
+    const uint8_t *paving;
+    int paving_size;
+    double paving_scale, paving_fade, paving_distant_tone;
+} SurfaceLighting;
+
+/* Return packed glyph, level and fog indices. Moving textures and local
+   light visibility still use the shared Python renderer. */
+static uint32_t shade_surface(const ShadeSample *sample, const SurfaceLighting *lighting) {
+    if (!(fabs(sample->x) <= 1e9 && fabs(sample->y) <= 1e9 && fabs(sample->z) <= 1e9
+            && fabs(sample->foliage_turn) <= 1e9
+            && fabs(sample->nx) <= 2 && fabs(sample->ny) <= 2 && fabs(sample->nz) <= 2)) {
+        return UINT32_MAX;
     }
+    int material = (int)sample->material;
+    double distance = sample->distance;
+    double directional = -sample->nx * 0.38 - sample->ny * 0.48 + sample->nz * 0.79;
+    if (!(directional > 0.0))
+        directional = 0.0;
+    int emissive = material == SHADE_FIRE || material == SHADE_EMBER || material == SHADE_ARCANE;
+    double light = emissive ? 0.10 + directional * 0.90 : 0.30 + directional * 0.70;
+    if (material == SHADE_METAL || material == SHADE_WATER)
+        light += shade_specular(sample, material, lighting->ex, lighting->ey, lighting->ez);
+    if (lighting->moon && !emissive && shade_moon_blocked(sample, lighting->moon, lighting->span, lighting->depth))
+        light = 0.24 + (light - 0.24) * 0.42;
+    double albedo = 0 <= material && material < lighting->albedo_count ? lighting->albedos[material] : 0.65;
+    int pigment = material;
+    double texture = material == SHADE_PATH
+        ? shade_cobble_texture(sample, lighting->paving, lighting->paving_size,
+                               lighting->paving_scale, lighting->paving_fade, lighting->paving_distant_tone)
+        : shade_texture(sample, material, &pigment);
+    texture = texture > 0.08 ? texture : 0.08;
+    double brightness = albedo * texture * light * 1.52 / (1 + (distance > 0 ? distance : 0) * 0.036);
+    brightness = brightness > 0.0 ? brightness : 0.0;
+    if (!(brightness < 1.0))
+        brightness = 1.0;
+    if (!emissive)
+        brightness = 0.24 + brightness * 0.76;
+    uint32_t level = (uint32_t)(brightness * 15 + 0.5);
+    if (level == 0)
+        level = 1;
+    uint32_t glyph = (uint32_t)(brightness * lighting->ramp_max);
+    if (material == SHADE_GRASS && sample->nz > 0) {
+        uint64_t ix = (int64_t)(sample->x * 6.0), iy = (int64_t)(sample->y * 6.0);
+        uint32_t noise = (ix * 73856093 ^ iy * 19349663) & 15;
+        uint32_t wind = (int64_t)((sample->foliage_turn + 0.6) * 3);
+        uint32_t band = level / 3;
+        glyph = lighting->ramp_max + 1 + 2 * (band > 3 ? 3 : band) + ((noise + wind) & 1);
+    }
+    uint32_t fog = distance < 12 ? 0 : distance < 24 ? 1 : distance < 36 ? 2 : 3;
+    return ((uint32_t)pigment << 16) | (fog << 12) | (level << 8) | glyph;
+}
+
+EXPORT void monolith_shade_paving_batch(const ShadeSample *samples, uint32_t *results, size_t count,
+                                       const uint32_t *moon, int span, int depth,
+                                       double ex, double ey, double ez, int ramp_max,
+                                       const double *albedos, int albedo_count, const uint8_t *paving,
+                                       int paving_size, double paving_scale, double paving_fade,
+                                       double paving_distant_tone) {
+    SurfaceLighting lighting = {moon, span, depth, ex, ey, ez, ramp_max, albedos,
+                                albedo_count, paving, paving_size, paving_scale, paving_fade, paving_distant_tone};
+    for (size_t i = 0; i < count; ++i)
+        results[i] = shade_surface(&samples[i], &lighting);
 }

@@ -1,7 +1,8 @@
 """Optional float64 geometry queries through a prebuilt C library."""
 
 from array import array
-from ctypes import CDLL, POINTER, Structure, byref, c_double, c_int, c_int32, c_uint8, c_uint16, c_uint32
+from ctypes import (CDLL, POINTER, Structure, byref, c_double, c_int, c_int32, c_uint8, c_uint16,
+                    c_uint32, pointer)
 from itertools import chain
 from pathlib import Path
 import math
@@ -51,6 +52,15 @@ class _HeightFieldData(Structure):
                 ('materials', POINTER(c_uint8)), ('chunks', POINTER(_HeightChunk)),
                 ('width', c_int32), ('depth', c_int32), ('chunk_columns', c_int32),
                 ('chunk_rows', c_int32), ('chunk_size', c_int32), ('maximum', c_double)]
+
+
+class _GeometryQuery(Structure):
+    _fields_ = [('ground_bounds', POINTER(_Bounds)), ('solid_bounds', POINTER(_Bounds)),
+                ('nodes', POINTER(_Node)), ('shapes', POINTER(_Shape)), ('planes', POINTER(_Plane))]
+
+
+class _GeometryResult(Structure):
+    _fields_ = [('hit', _Hit), ('solid_entry', c_double)]
 
 
 class _VoxelPrism(Structure):
@@ -104,12 +114,20 @@ class SolidLibrary:
             self.heightfield_trace.argtypes = (POINTER(_HeightFieldData), c_double, c_double, c_double,
                                                c_double, c_double, c_double, c_double, c_double, POINTER(_Hit))
             self.heightfield_trace.restype = c_int
+        self.geometry_trace = getattr(library, 'monolith_geometry_hit', None)
+        if self.geometry_trace is not None:
+            self.geometry_trace.argtypes = (POINTER(_GeometryQuery), POINTER(_HeightFieldData),
+                                            *(c_double,) * 7, POINTER(_GeometryResult))
+            self.geometry_trace.restype = c_int
         self.voxel_frame = getattr(library, 'monolith_voxel_frame', None)
         if self.voxel_frame is not None:
             self.voxel_frame.argtypes = (POINTER(_VoxelGrid), *(c_double,) * 7, c_int, c_int, c_int,
                                          *(POINTER(c_double),) * 5, POINTER(c_uint16), POINTER(c_double))
             self.voxel_frame.restype = None
-        self.shade_surfaces = getattr(library, 'monolith_shade_batch', None)
+        self.shade_surfaces = (getattr(library, 'monolith_shade_paving_batch', None)
+                               or getattr(library, 'monolith_shade_cobble_batch', None)
+                               or getattr(library, 'monolith_shade_batch', None))
+        self.shade_gpu_frame = getattr(library, 'monolith_shade_gpu_frame', None)
         self.gpu_refine = getattr(library, 'monolith_gpu_refine', None)
         if self.gpu_refine is not None:
             self.gpu_refine.argtypes = (POINTER(_GPUScene), POINTER(c_uint32), POINTER(_Hit),
@@ -206,10 +224,39 @@ class NativeSolidTree:
         return SurfaceHit(hit.distance, hit.material, (normal[0], normal[1], normal[2])), bool(hit.tied)
 
 
+class NativeGPUHits:
+    """Refined GPU results. Exceptional cells can be read as ordinary hits."""
+    _record = struct.Struct('=4d2i')
+
+    def __init__(self, hits, columns, rows, miss):
+        self.hits, self.columns, self.rows, self.miss = hits, columns, rows, miss
+
+    def _hit(self, distance, nx, ny, nz, material, axis):
+        if axis < 0:
+            return None
+        if not material:
+            return self.miss
+        if axis >= 4:
+            return distance, material, None, axis - 4
+        return distance, material, (nx, ny, nz), axis
+
+    def __getitem__(self, index):
+        return self._hit(*self._record.unpack_from(self.hits, index * self._record.size))
+
+    def unpack(self):
+        miss = self.miss
+        return [None if axis < 0 else miss if not material else
+                (distance, material, None, axis - 4) if axis >= 4 else
+                (distance, material, (nx, ny, nz), axis)
+                for distance, nx, ny, nz, material, axis in self._record.iter_unpack(self.hits)]
+
+    def fallback_count(self):
+        # The C loop writes -1 for uncertainty and 0..6 for resolved axes.
+        return memoryview(self.hits).cast('B')[_Hit.tied.offset::self._record.size].tobytes().count(b'\xff')
+
+
 class NativeGPURefiner:
     """Refine a whole readback in one call, retaining exact Python fallbacks."""
-
-    _record = struct.Struct('=4d2i')
 
     def __init__(self, library, world, water_level):
         if library.gpu_refine is None or sys.byteorder != 'little':
@@ -233,7 +280,7 @@ class NativeGPURefiner:
     def invalidate_projection(self) -> None:
         self._size = None
 
-    def refine(self, raw, columns, rows, origin, cy, sy, cp, sp, miss):
+    def refine(self, raw, columns, rows, origin, cy, sy, cp, sp, miss, *, packed=False):
         width, height = len(columns), len(rows)
         if self._size != (width, height):
             self._columns = (c_double * width)(*columns)
@@ -244,10 +291,8 @@ class NativeGPURefiner:
         records = record_type.from_buffer_copy(raw) if memoryview(raw).readonly else record_type.from_buffer(raw)
         self._refine(byref(self._scene), records, self._output, self._columns, self._rows,
                      width, height, *origin, cy, sy, cp, sp)
-        return [None if axis < 0 else miss if not material else
-                (distance, material, None, axis - 4) if axis >= 4 else
-                (distance, material, (nx, ny, nz), axis)
-                for distance, nx, ny, nz, material, axis in self._record.iter_unpack(self._output)]
+        hits = NativeGPUHits(self._output, self._columns, self._rows, miss)
+        return hits if packed else hits.unpack()
 
 
 class NativeHeightField:
@@ -285,16 +330,51 @@ class NativeHeightField:
         return _HeightFieldData(heights, enabled, materials, chunks, width, depth,
                                 columns, rows, chunk_size, field._maximum)
 
+    def _prepared_data(self):
+        revision = self.field.revision
+        if self._revision != revision:
+            self._data = self._prepare()
+            self._revision = revision
+        return self._data
+
     def ray_hit(self, origin, direction, limit, minimum=0.0):
-        field = self.field
         if self._trace is not None:
-            revision = field.revision
-            if self._revision != revision:
-                self._data = self._prepare()
-                self._revision = revision
-            if self._data is not None:
+            data = self._prepared_data()
+            if data is not None:
                 hit = _Hit()
-                result = self._trace(byref(self._data), *origin, *direction, limit, minimum, byref(hit))
+                result = self._trace(byref(data), *origin, *direction, limit, minimum, byref(hit))
                 if result >= 0:
                     return SurfaceHit(hit.distance, hit.material, tuple(hit.normal)) if result else None
-        return field.ray_hit(origin, direction, limit, minimum=minimum)
+        return self.field.ray_hit(origin, direction, limit, minimum=minimum)
+
+
+def geometry_ray_query(trace, ground, ground_bounds, solids, solid_bounds, trace_grid, fallback):
+    """Combine the view slabs, exact terrain and solid BVH in one call."""
+    ground_box = pointer(_Bounds.from_box(ground_bounds)) if ground_bounds is not None else None
+    solid_box = pointer(_Bounds.from_box(solid_bounds)) if solid_bounds is not None else None
+    tree_buffers = (solids._nodes, solids._shapes, solids._planes) if solids is not None else (None, None, None)
+    geometry = _GeometryQuery(ground_box, solid_box, *tree_buffers)
+    query_data = byref(geometry)
+
+    def query(origin, direction, limit):
+        field = None
+        if ground is not None:
+            field = ground._prepared_data()
+            if field is None:
+                return fallback(origin, direction, limit)
+        output = _GeometryResult()
+        result = trace(query_data, field, *origin, *direction, limit, byref(output))
+        if result < 0:
+            return fallback(origin, direction, limit)
+        if not result:
+            return None
+        hit = output.hit
+        if result & 2:
+            solid = trace_grid(origin, direction, hit.distance if result & 1 else limit, output.solid_entry)
+            if solid is not None:
+                return solid
+        if result & 1:
+            return SurfaceHit(hit.distance, hit.material, tuple(hit.normal))
+        return None
+
+    return query

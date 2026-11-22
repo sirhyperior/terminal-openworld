@@ -1,0 +1,1515 @@
+{
+  "complete": true,
+  "passed": true,
+  "source_before": {
+    "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d/app.py": "842090841f963d2c434cbe7883eb2a7bb8dce15801d33ab5392d61fb7969dbd3",
+    "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+    "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d/audio_process.py": "481f8a129c80028d4674f29a4078b8298d210f4778c8067af009a4ba890380dc",
+    "ascii3d/combat.py": "0d3f1d426e9a4af0150489ee7d6b3af99e976fc5fe4904b833a6532e88870d8a",
+    "ascii3d/combat_render.py": "c14e2d88ab185b5b083980f966832c09782a18bcc9f6be61d0c2b5604c137817",
+    "ascii3d/dev_console.py": "b729ca4a099a33dd124f1bc61ec60f708d2e062b09e9b14517213be25dc61826",
+    "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+    "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+    "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d/frame_timing.py": "1012e568d280189aa7bab669acf0d7f81674526a6fe781f8ec404bce01c0d740",
+    "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+    "ascii3d/gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+    "ascii3d/gpu_renderer.py": "15547ce42707ea4759bc710aec73813de6efc825567a0db902412685e7f0a5b0",
+    "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+    "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+    "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+    "ascii3d/monolith_solid_bvh.dll": "936ca91e836fe039e52baeab438153055d9192ab97ba94d0c5f1ad312aae6954",
+    "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d/native_shading.py": "5cd3f06a309d373e22dcb49f4700ab6fe635c3f7e049180f3e8d908c8bce981c",
+    "ascii3d/native_solids.py": "0d1a5fbc84102b860d73c482f0c7f1e3bc63641f009b0879d1b1774d1a7cc07e",
+    "ascii3d/npc_render.py": "227d2c7f20ffee41fe2b0f4cebb06f9803ef4215db5e9b8b5b6e4885ae70ab2f",
+    "ascii3d/npcs.py": "e0480893d7be791b5bd109e7108fddd553978538547e025b0a2b62f21b962389",
+    "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+    "ascii3d/palette.py": "c5f582a2063f1a777766c2efccdf93246d461abee8959cba32e809c5edd8faef",
+    "ascii3d/particles.py": "caf368eebcec59216edcfd20f19918312ef887a75eb654d8b618e0b2131abd29",
+    "ascii3d/paving.py": "5949e14f0b495dc11dfbf66bb995afdbfed011a72077cb9578963b7aa85812a9",
+    "ascii3d/player.py": "7860a38bcb8ff007ad88ae87e9c8d07a7feec49a4cd58722cb241847e28071c7",
+    "ascii3d/presentation.py": "1af925aa5454f8b3d6ef8d7f31b611e6740803d1cc628c26170c1983625a43aa",
+    "ascii3d/renderer.py": "6a03c192063b230895a1a61b28d61034dfe8e8e6b60be5f61079a576877f2ae7",
+    "ascii3d/roads.py": "6f814d7a43e28e6cef0b22e43cc41e40fc7942bc59cd8d47bb13d9615f30ce67",
+    "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+    "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+    "ascii3d/shading.py": "9645a6f0b28c181456f58c50660b691f545258881473b4c22c06a0c9ca265045",
+    "ascii3d/solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+    "ascii3d/sound.py": "e3d4851d2f3f047ae64cf861cccceae747cebb7eaaf5513fd288578ef4c7b005",
+    "ascii3d/sound_surfaces.py": "c84e74fdec38cd7e5d30c63a251474faa2c9691cd4b9515c503c9db778c515c6",
+    "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d/surface_lighting.h": "5dd7282857a16dfbd06f4185c18d4d8552a1cb57721e78223bc3c919f4fb3d4a",
+    "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+    "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d/terminal.py": "6e47aafbdd3314320efea161d3e7248853c6c1dec7c7fd26c755c4223b48d80b",
+    "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+    "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+    "ascii3d/voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+    "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+  },
+  "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+  "steps": [
+    {
+      "stage": "start",
+      "frame": 1,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": false,
+      "sim_time": 0.0,
+      "scene_hash": "b4585105e67d16c451b3362f911a35f5eccf2c6b0c2861483a7be7d001f9ec19",
+      "preview_view": [
+        160,
+        50
+      ],
+      "color": "color",
+      "backend": "gpu",
+      "editor_last": null,
+      "render_count": 1,
+      "audio_paused": false
+    },
+    {
+      "stage": "opened_split",
+      "frame": 2,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": true,
+      "sim_time": 0.0,
+      "scene_hash": "4314720a528cc889c3bb3ec9e8d86291e594ec43f58155013a8b10ae0ce497f2",
+      "preview_view": [
+        106,
+        50
+      ],
+      "color": "color",
+      "backend": "gpu",
+      "editor_last": "> |",
+      "render_count": 2,
+      "audio_paused": true
+    },
+    {
+      "stage": "typing",
+      "frame": 3,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": true,
+      "sim_time": 0.0,
+      "scene_hash": "4314720a528cc889c3bb3ec9e8d86291e594ec43f58155013a8b10ae0ce497f2",
+      "preview_view": [
+        106,
+        50
+      ],
+      "color": "color",
+      "backend": "gpu",
+      "editor_last": "> w|",
+      "render_count": 2,
+      "audio_paused": true
+    },
+    {
+      "stage": "mono",
+      "frame": 4,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": true,
+      "sim_time": 0.0,
+      "scene_hash": "4314720a528cc889c3bb3ec9e8d86291e594ec43f58155013a8b10ae0ce497f2",
+      "preview_view": [
+        106,
+        50
+      ],
+      "color": "mono",
+      "backend": "gpu",
+      "editor_last": "> |",
+      "render_count": 3,
+      "audio_paused": true
+    },
+    {
+      "stage": "gray",
+      "frame": 5,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": true,
+      "sim_time": 0.0,
+      "scene_hash": "4314720a528cc889c3bb3ec9e8d86291e594ec43f58155013a8b10ae0ce497f2",
+      "preview_view": [
+        106,
+        50
+      ],
+      "color": "gray",
+      "backend": "gpu",
+      "editor_last": "> |",
+      "render_count": 4,
+      "audio_paused": true
+    },
+    {
+      "stage": "color",
+      "frame": 6,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": true,
+      "sim_time": 0.0,
+      "scene_hash": "4314720a528cc889c3bb3ec9e8d86291e594ec43f58155013a8b10ae0ce497f2",
+      "preview_view": [
+        106,
+        50
+      ],
+      "color": "color",
+      "backend": "gpu",
+      "editor_last": "> |",
+      "render_count": 5,
+      "audio_paused": true
+    },
+    {
+      "stage": "native_renderer",
+      "frame": 7,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": true,
+      "sim_time": 0.0,
+      "scene_hash": "a526ca59ec6fb1bb4ee04428f98b3b6998c6548da9388190c6db75fd95fb7705",
+      "preview_view": [
+        106,
+        50
+      ],
+      "color": "color",
+      "backend": "native",
+      "editor_last": "> |",
+      "render_count": 6,
+      "audio_paused": true
+    },
+    {
+      "stage": "auto_renderer",
+      "frame": 8,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": true,
+      "sim_time": 0.0,
+      "scene_hash": "a526ca59ec6fb1bb4ee04428f98b3b6998c6548da9388190c6db75fd95fb7705",
+      "preview_view": [
+        106,
+        50
+      ],
+      "color": "color",
+      "backend": "gpu",
+      "editor_last": "> |",
+      "render_count": 7,
+      "audio_paused": true
+    },
+    {
+      "stage": "teleported",
+      "frame": 9,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": true,
+      "sim_time": 0.0,
+      "scene_hash": "ad9f2e57caa73f3f6214297fb8439a990bfd074ff51e13437ce0ca8fbad4a789",
+      "preview_view": [
+        106,
+        50
+      ],
+      "color": "color",
+      "backend": "gpu",
+      "editor_last": "> |",
+      "render_count": 8,
+      "audio_paused": true
+    },
+    {
+      "stage": "budget",
+      "frame": 10,
+      "view": [
+        60,
+        20
+      ],
+      "draw_matches_native": true,
+      "split": true,
+      "sim_time": 0.0,
+      "scene_hash": "f4c1729b5f6608b9c4459800e454bcddd21535175ebbd74b98d1532273669cd1",
+      "preview_view": [
+        33,
+        20
+      ],
+      "color": "color",
+      "backend": "gpu",
+      "editor_last": "> |",
+      "render_count": 9,
+      "audio_paused": true
+    },
+    {
+      "stage": "budget_restored",
+      "frame": 11,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": true,
+      "sim_time": 0.0,
+      "scene_hash": "ad9f2e57caa73f3f6214297fb8439a990bfd074ff51e13437ce0ca8fbad4a789",
+      "preview_view": [
+        106,
+        50
+      ],
+      "color": "color",
+      "backend": "gpu",
+      "editor_last": "> |",
+      "render_count": 10,
+      "audio_paused": true
+    },
+    {
+      "stage": "closed_split",
+      "frame": 12,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": false,
+      "sim_time": 0.0,
+      "scene_hash": "9b38ffe542582cc91316523e499e741334ec4823c5da8f324237fdc9d015e73f",
+      "preview_view": [
+        160,
+        50
+      ],
+      "color": "color",
+      "backend": "gpu",
+      "editor_last": null,
+      "render_count": 11,
+      "audio_paused": true
+    },
+    {
+      "stage": "walk",
+      "frame": 13,
+      "view": [
+        160,
+        50
+      ],
+      "draw_matches_native": true,
+      "split": false,
+      "sim_time": 0.06666666666666667,
+      "scene_hash": "abe3523460a91d8ad4c62d4ade105a17d5ea17a04b61bfc3098f1e8105e71436",
+      "preview_view": [
+        160,
+        50
+      ],
+      "color": "color",
+      "backend": "gpu",
+      "editor_last": null,
+      "render_count": 12,
+      "audio_paused": false
+    }
+  ],
+  "renders": [
+    {
+      "preview": false,
+      "view": [
+        160,
+        50
+      ],
+      "position": [
+        128.5,
+        66.5,
+        1.0
+      ],
+      "backend": "gpu",
+      "color": "color",
+      "time_seconds": 0.0,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    },
+    {
+      "preview": true,
+      "view": [
+        106,
+        50
+      ],
+      "position": [
+        128.5,
+        66.5,
+        1.0
+      ],
+      "backend": "gpu",
+      "color": "color",
+      "time_seconds": 0.0,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    },
+    {
+      "preview": true,
+      "view": [
+        106,
+        50
+      ],
+      "position": [
+        128.5,
+        66.5,
+        1.0
+      ],
+      "backend": "gpu",
+      "color": "mono",
+      "time_seconds": 0.0,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    },
+    {
+      "preview": true,
+      "view": [
+        106,
+        50
+      ],
+      "position": [
+        128.5,
+        66.5,
+        1.0
+      ],
+      "backend": "gpu",
+      "color": "gray",
+      "time_seconds": 0.0,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    },
+    {
+      "preview": true,
+      "view": [
+        106,
+        50
+      ],
+      "position": [
+        128.5,
+        66.5,
+        1.0
+      ],
+      "backend": "gpu",
+      "color": "color",
+      "time_seconds": 0.0,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    },
+    {
+      "preview": true,
+      "view": [
+        106,
+        50
+      ],
+      "position": [
+        128.5,
+        66.5,
+        1.0
+      ],
+      "backend": "native",
+      "color": "color",
+      "time_seconds": 0.0,
+      "adapter": null
+    },
+    {
+      "preview": true,
+      "view": [
+        106,
+        50
+      ],
+      "position": [
+        128.5,
+        66.5,
+        1.0
+      ],
+      "backend": "gpu",
+      "color": "color",
+      "time_seconds": 0.0,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    },
+    {
+      "preview": true,
+      "view": [
+        106,
+        50
+      ],
+      "position": [
+        308.7175420964612,
+        118.27976689089735,
+        7.0
+      ],
+      "backend": "gpu",
+      "color": "color",
+      "time_seconds": 0.0,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    },
+    {
+      "preview": true,
+      "view": [
+        33,
+        20
+      ],
+      "position": [
+        308.7175420964612,
+        118.27976689089735,
+        7.0
+      ],
+      "backend": "gpu",
+      "color": "color",
+      "time_seconds": 0.0,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    },
+    {
+      "preview": true,
+      "view": [
+        106,
+        50
+      ],
+      "position": [
+        308.7175420964612,
+        118.27976689089735,
+        7.0
+      ],
+      "backend": "gpu",
+      "color": "color",
+      "time_seconds": 0.0,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    },
+    {
+      "preview": false,
+      "view": [
+        160,
+        50
+      ],
+      "position": [
+        308.7175420964612,
+        118.27976689089735,
+        7.0
+      ],
+      "backend": "gpu",
+      "color": "color",
+      "time_seconds": 0.0,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    },
+    {
+      "preview": false,
+      "view": [
+        160,
+        50
+      ],
+      "position": [
+        308.651271176724,
+        118.49652930224897,
+        7.0
+      ],
+      "backend": "gpu",
+      "color": "color",
+      "time_seconds": 0.06666666666666667,
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      }
+    }
+  ],
+  "events": [
+    "ui_dev_open",
+    "ui_dev_teleport",
+    "ui_dev_close",
+    "ui_exit"
+  ],
+  "checks": {
+    "native_draw_1": true,
+    "full_before_open": true,
+    "native_draw_2": true,
+    "split_frame_2": true,
+    "frozen_scene_2": true,
+    "side_by_side_106_53": true,
+    "native_draw_3": true,
+    "split_frame_3": true,
+    "frozen_scene_3": true,
+    "cached_while_typing": true,
+    "native_draw_4": true,
+    "split_frame_4": true,
+    "frozen_scene_4": true,
+    "mono_left_scene": true,
+    "native_draw_5": true,
+    "split_frame_5": true,
+    "frozen_scene_5": true,
+    "gray_left_scene": true,
+    "native_draw_6": true,
+    "split_frame_6": true,
+    "frozen_scene_6": true,
+    "color_left_scene": true,
+    "native_draw_7": true,
+    "split_frame_7": true,
+    "frozen_scene_7": true,
+    "native_renderer_in_preview": true,
+    "native_draw_8": true,
+    "split_frame_8": true,
+    "frozen_scene_8": true,
+    "gpu_renderer_in_preview": true,
+    "native_draw_9": true,
+    "split_frame_9": true,
+    "frozen_scene_9": true,
+    "teleport_redraws_preview": true,
+    "native_draw_10": true,
+    "split_frame_10": true,
+    "frozen_scene_10": true,
+    "compact_live_preview": true,
+    "native_draw_11": true,
+    "split_frame_11": true,
+    "frozen_scene_11": true,
+    "restored_split_budget": true,
+    "native_draw_12": true,
+    "esc_restores_full_view": true,
+    "native_draw_13": true,
+    "movement_and_simulation_resume": true,
+    "finished": true,
+    "source_unchanged": true,
+    "native_terminal_restoration": true,
+    "audio_healthy_and_closed": true,
+    "console_audio_cues": true
+  },
+  "font": {
+    "face": "Consolas",
+    "height": 16,
+    "api_accepted": true,
+    "error": 0
+  },
+  "native_console": true,
+  "console_before_enter": {
+    "input_mode": 503,
+    "output_mode": 3,
+    "width": 160,
+    "height": 50,
+    "buffer_width": 160,
+    "buffer_height": 50,
+    "attributes": 7,
+    "cursor_visible": true,
+    "cursor": [
+      0,
+      15
+    ],
+    "screen_hash": "bf46dd601a7093fb7c7599e18ea53e0c5b8d31285b99863f8bfa12fecd4d5b92",
+    "font": {
+      "face": "\uad74\ub9bc\uccb4",
+      "width": 8,
+      "height": 16
+    }
+  },
+  "split_ascii_frame": [
+    "  HP [##########] 10/10                                                                 SND OFF  PREVIEW  |DEVELOPER CONSOLE",
+    "----------------------------------------------------------------------------------------------------------|help  Esc close  PgUp/PgDn",
+    "rAAXXXxxxxxxAxxxxrxssrrrrrsss;srri;iiiiirrrrrsiiii;irrrssssssxrrsssixXXXXxxxxxXxXXXArXXXxxxxxxAX;;;;;:;;;;|",
+    "XA##;##AAXXrXXXXAAAXXXxxsssixxxxxxsss:rrrsssixssssrrrsssxssssisssssssx;XXXXXxxrxxxXXXA#AXXXxxxrxxXXXXXx;ss|",
+    "xxxXsXXXXXXxxssssxxxXrxssrrrrrrrrrrrr:;iiiiiirrrrrrrisi;irrsssssssssss;ixXXXXXXxxxxxXX#ArAXXXxxxxxxxXXX;xi|",
+    "XxxxAxXXXXrXXxxsssssXxxxxsirrriirrrrr;rriii;iiiirrrrrsriiiirisssxxxsss;ssxxXrrXXXXxxxxAXXXAAXrXxxxxxxxAxXx|",
+    "XXXXrxxxxXXXXXXxxsssi;ssxxxssrrriiirr:rrrrriiiiiiirrrxirrriirrrssxxxxx:ssssxxXXXXXXXXxArxXXXXAXXXXxxxxXxrx|",
+    "AAAXAXxxxxxxXXrXXxxxs;sssssssssirriii:irrrrrrii;iiiirsrrrrrrrrrrissxxx;xxxsssxxxXrXXXX;xxxxxXXXXXrXXxxXssx|",
+    "XXXA#AXXrxxxxxxXXXXxx;ssiissssssssrririii;rrrrrriiii;;irrrisrrrrrrrssx;xxxrxxxxxxxXXXA;XXXxrxxxXXXXXXXAxss|",
+    "xxrX#XAAXXXxxxxxxxrXX;xxssrrrrsssssirsiiiiiirrrrr;;;;.;;;rrrssssrrrris;sxxxxxxxxxxxxXr;AAXXXX;;;;;;;;:;;;;|",
+    "xxxxxXX#####s;AXXXXXAAAAAXXxx:ssxxxxxxxsssrrr:':;;;;::;;;;;;;xissssrrrrsssxxXX:xxxxxxxXXXAAAXX;rxxxxXXXXXX|",
+    "XXXxxxrxXXXXA;XXxxxsxxxrxxxxs;rrrrrrrssirr;:;;:::;;;;i;;;;;;;:;;sssssssrisssxx;XXXXxxxxxxrXXAA;XXxxxxxxXXr|",
+    "rXXXXXxxxxxXX;XXrXxxxsssxxxxxXsssirrrrr;;;;;;i;;;;;;;;;iiii;i;;;;;;sssssssssss;xXXrXXXxxx.xXXX;AAXXrxxxxxx|",
+    "xXXXArXXXxxxx;XXXXXXXxi.ssssxXxxsss;;;;;;:::;;;;;;;;;;:;;iiiii;:;;;;;iiixssssxssxxXXXXXrXxxxxx;XXAAXXXxxix|",
+    "xxxXXXAAXXXXxXxxrXXXXXXxxssssxss;i;;;;i;:;;;;;;;;:i;;;;i:;;;;iiiii;;;;iiiixxxXsssixxXXXXXXXxxx;xXXrXAXXXxx|",
+    "xxxxxxXXXrrXXAxxxxxxXXXXXxrss;i;iiiiii;;;;;:;i;:;i;:;i;:;i;:;;;iiiiiii:iii;iiXxxxsssxxxXXXXrXAxxxxxXXXXXXX|",
+    "XXxrxxxxXXXAA#XXXxxxrxxXXiiiiiiiiiiiiii;;;;:;i;:;i;:;i;:;;;;;;;;iiiiii:iii:iri'ii;;;;:;;;;;;;;;;;;;;;;s###|",
+    "XXXXXAxxxxxXXXrAXXXxxXxxxiir:iiiisiiiir;;;;i;i;:ri;:;i;:;s;;;;r;;i:sii:iri:irisrrxxxxXxxxxxXXXArXXXxxXxxXX|",
+    "xxXXX#XXrxxxxXXXXAAXXAxxiiii:iiiiiiiiii:;;;:*i;:;i;:;;;:;;;;;;;;;;:iii:iii:iriiirxxXXAxxxixxxXXXAAAXXAxxxr|",
+    "ssixxAXXXXXXxxxxXXrXA#XXxiii:iiiiiiiiii:ii;:;i;:;i;:*;;;;;;;;;:;;;:iii:iii:iiiiiissixAXXXXxxxxxxXXXrA#XXxx|",
+    "xsssxXxXXXXXrXXxxxxXX#XXXiii:iiiiiiiiii:ii;:;i;:;.;:;;;;;;;;;;:;i;:;ii:iii:iiirrissssXxXXXXXXrxxxxXXX#AAXX|",
+    "xxxxxx:xxXXXAAXXX.xxxArXXiii:iiiiiiiiii:iii:;i;:;i;:;;;;;;;;;;:;i;:;ii:iiiiiiirrrssssxsixXX.XXXXxxxxx;XrAA|",
+    "rxXXxx;xxxxxXXXArXXXxXxxxiii:iiiiiiiiii:iii:;i;:;i;;\\;;;;;;;i;:;i;:;i;:iiiiiiiir;ixxxXsssxxxXXXXXrXxx;xXXX|",
+    ";;;;;;;;;;:;;;;;;;;;;;;;;iii:iiiiiiiiii:iii:ii;:;;s;/\\;r;;:;i;:;i;:;i;:iiiiii:iiiXXXXXXXXssix;XXXXXXXxxxxx|",
+    "ssssixXXXXXxxx;xxXXXrAXXXiii:;;;;;;;;;;:;;;:;;;:::s:/+:r::::;:::;:::::;;;;;;;:iiirssxrxxxxxxx;xxXXXAXrXXxx|",
+    "ssssssxx'XXXXX:xxxxXXXXAAi;i:iiiiiiiiii:iii:iii:;;;;/\\;;;;:;i;:;i;:;;;;;iiiii:riirrrssxxxXXxx;xixxXXXAAXXX|",
+    "xxxsssssixxXXX;XXxxxxxXXr;ii:rri:iiiiii:iii:iii:;;;;/\\;;;;:;i;:;i;:;;;;;;iiii:iiissrrrssxrxXX;xxxxxxxXXXAr|",
+    "ssixxxxssssxxX;XXXrXxxxxxiiirrri:siiiir:iiirii.:s;;/#X\\;;s:;i;r'i;:r;;;;s:iiiriiississssssxxxXXXXxxrxxxXXX|",
+    "rrssxxxxxxxssiXxXXXXXXXxxxii:rrr:iiiiiiiiii:i.i:ii;/#X\\;;;:;i;:;i;:;;;;;;:;i.:i;rsssxsssssssrxxXXXXXXxxxxx|",
+    "r/rrssxr/xxxxxXxx/XXXAArXXri:rr.:ii'iiiiii.:iii.iii/#i\\;;;:;i;:;i;:;;;;|;:;ii:i;:::;;;:/;;;;;;;;;;;;;;:;;;|",
+    "/i///r//x//XXXx///x//X#X///s/s//r/r//sssirrrriiriir/#X\\;i;;;;;iiiiiii;;|\\|ii||ii|rr\\ss|/x|||xs//i|xX|XXXXX|",
+    "/\"/''/\"'/\"\"\"\"''\"\"///\"///\"''\"\"''//''irri;rsxssssi;rs/#X\\si;;isssr;;irri;;\\\"\";;\"\"|.\"|\"\"||''||'|\"/|;|'\"|/'\"\"||",
+    "''\"\"''''///''\"\"'//\"\"'//\"''\"/\"'/\"\"ssr;;xxxxxxsr;;XX/##XX\\;;Xxr;;sXXXxs;;sx'\";|\"\"|;;|\";|;;'|'\"|\"\";;\"|\"'\"\"\"'||",
+    "\"\"/'\"|\"''\"\"\"/'\"\"/'/\"//''\"\"/''\"\"ssssi;;;;;;;;;rrrii/##XX\\;;;ir;;;irxxxxxxr;;;;\"\"/|;\"\"/;;\"''\";\"\";|;\"\";;;|'|/|",
+    "\"/'''\"\"\"'//|/''|\"//'//\"\"''/\"\"xxxxr;;rxxxxxxsi;;sxx/##XX\\isxssssri;;xXXXXXxs;;;;/\"\"//;\"\"\"//\"/\";;|\"\";|;|\"\"|;|",
+    "'\"\"\"'''\"\"\"'|'\"\"|''\"/\"'''\"\"\"xxxr;iiii;;;irssssi;;;;/@#XA\\xxxxxxssrii;;;;;;iiii;;;;/\"\"\";;//'\"/;'\"\";;;|\"\";;|\"|",
+    "\"\"|'''\"\"\"''''\"|\"''/\"\"\"'''xxxsr;;sxxxxXXxxi;;========#=========sssssri;iXXxXXXXXxx\"\"';\"\"'''\"/;''\"\";;;/\"\";;;|",
+    "''|\"\"\"''''\"\"\"'|'\"\"\"\"''';;;ii;;;;;;;;;;;;;;sXxxXXXXxx#r;;;rsxxxxxxxxxsri;irsxXXXXXXx''/\"\"\"\"''/\"\"/\"\"\"\";;;\"\"\"|",
+    "'''\"|\"\"'''\"\"\"\"|'/\"\"\"\"xxxxxsi;rsXXxxxxxxri;;;;;;;;;;;#;;;;irii;;;;;;iii;issri;;;;iirri\"\"\"\"''/\"/\"/'\"\";;;;\"/\"|",
+    "'\\''|\"\"/'''\"\"\"|/'''XXXxxxr;irxXXXXXXXXXxr;;;rxxxxxxx#si;;ixxxxxxxxsri;;rsxxxxxxssrii;;i''''///\"'''\"/;;\"\"/\"|",
+    "\"'\\''\"\"/\"''''\"|\"\"XXXXxxsi;irxXXXXXXXXXxsi;;ixXXXXXXx#sri.;irsssssssr;;;isxxxxxxxxxxxsri;;'''/\"\"\"\"'//';;/;\"|",
+    "//''''\"\"\"/\"''''XXXxxxsi;;;sXXXXXXXXXXxsi;;;;iirrrss++++ri;;;;;;;;;;iii;;;irsxxxxsssrrrri;;;\"\"\"\"'''/'\"\"\"\"'\"|",
+    "''''\"\"\"\"//'''iiiii;;;;;;;irsxXXXXxsri;;;;;;;;;;;+++;;;;+++sxxxxxxxxXXXxxsri;;;;;;;;;;;;;;iiii\"\"\"\"\"/'/'\"\"\"\"|",
+    "\"'''''\"\"\"\"\"irrsssssssrri;;;;irii;;;;;isxssss++++sssssri;;;++++XXXXXXXXXXxri;;rsxxxxxxxxxxxxxxss'''''/\"\"\"\"'|",
+    "\"\"\"\"'''''ssxxxxxsssssssrri;;;;;;;;;;irxxxxxxx++xxxsssri;;;i++AXXXXXXXXXXXsi;;;rxXXXXXXXXXXXXxxxsr\"\"/\"\"''''|",
+    "\"\"'''''xxxxxxxxxxxsssssi;;;;irri;;;;;;irssxxxxx+++xssri;+++sXAAXXXXXXXXXXXsi;;;rxXXXXXXXXXXXXXXxxri\"\"\"\"\"''|",
+    "\"\"\"\"\"xxxxxxxxxxxxssssri;;;;rsxssrii;;;;;iirsxxxxxx++++++;;;rXAAXXXXXXXXXXxsr;;irsxXXXXXXXXXXXXxxsrii;'''''|",
+    "----------------------------------------------------------------------------------------------------------|",
+    "  THORN RIDGES / N                                                                                        |",
+    "  128.5, 66.5  Z 1.0                                                                                      |> |"
+  ],
+  "compact_ascii_frame": [
+    "  HP [##########] 10/10 PREVIEW  |DEVELOPER CONSOLE",
+    "---------------------------------|help  Esc close  PgUp/PgDn",
+    "srrr;iiirrrrrr:i:i:rrriiiiiisssxi|> set color-mode mono",
+    "siiiiiiiiiii:iiii:;;:;iiii:ixxxx;|color-mode = mono",
+    ";;;;;ii:;ii:iii:;;;;;;;;;;i;XX;AA|> set color-mode gray",
+    ";iii::;;iiiiiii:;;;;;;:::;iixX#AA|color-mode = gray",
+    ";;;s;;;:;;:;i:;;:;;.;'iii;;:xxAXX|> set color-mode color",
+    ";;ir:;;:;;;;;;:;;;;;.;.;:;;;XXAxx|color-mode = color",
+    ";;;;;;::;ir  :;  .;  i;;;@ rAA#AX|> set renderer native",
+    ":::ii;;;riixirir+s:;isxrsXriXXAAA|renderer = native",
+    ":;;rssrirrsxXxXAxxxrirrisxsXXXXAA|> set renderer auto",
+    ";;;;irsrr;sr;xXA##A#XA#;r;sssXXXX|renderer = auto (active:",
+    ";;;riirs;xxssxX%xi%AAA#'AXxiAsAXX|gpu)",
+    "i;\";\";;iir;Xx;s;;;;;xxr;xs'\"XA#AA|> teleport thornwatch",
+    "\\\"\\|'r;Xx;;si;;rs;ixs;XXXr;;#XA#s|Teleported to X 308.7175",
+    "\\\";;isr;rxsi;;;;sxs;xXXx;;riirsAA|Y 118.2798  Z 7.0000  |",
+    ";xxxssi;;isxxxxxsr;xXXXXXXxirxsx#|THORNWATCH",
+    "---------------------------------|> set max-cells 1200",
+    "  THORNWATCH / N                 |max-cells = 1200",
+    "  308.7, 118.3  Z 7.0            |> |"
+  ],
+  "audio_before_close": {
+    "available": true,
+    "error": "",
+    "blocks": 129,
+    "underruns": 0,
+    "recoveries": 0,
+    "max_write_gap_ms": 73.56810000010228
+  },
+  "audio_after_close": {
+    "available": false,
+    "error": "",
+    "blocks": 134,
+    "underruns": 0,
+    "recoveries": 0,
+    "max_write_gap_ms": 73.56810000010228
+  },
+  "audio_worker_stopped": true,
+  "console_after": {
+    "input_mode": 503,
+    "output_mode": 3,
+    "width": 160,
+    "height": 50,
+    "buffer_width": 160,
+    "buffer_height": 50,
+    "attributes": 7,
+    "cursor_visible": true,
+    "cursor": [
+      0,
+      15
+    ],
+    "screen_hash": "bf46dd601a7093fb7c7599e18ea53e0c5b8d31285b99863f8bfa12fecd4d5b92",
+    "font": {
+      "face": "\uad74\ub9bc\uccb4",
+      "width": 8,
+      "height": 16
+    }
+  },
+  "app_status": 0,
+  "phase_timing": {
+    "version": 1,
+    "python": "3.14.4",
+    "platform": "win32",
+    "settings": {
+      "fps_cap": 40,
+      "renderer_requested": "auto",
+      "color_mode": "color",
+      "max_cells": null,
+      "keyboard_look": true,
+      "start_muted": false
+    },
+    "exit_status": 0,
+    "frames_completed": 13,
+    "frames_retained": 13,
+    "measurement": {
+      "interval_ms": "frame start to next frame start, when observed",
+      "input_ms": "input, terminal sizing and mouse capture",
+      "audio_ms": "soundscape, audio controls and interface event dispatch",
+      "simulation_ms": "game simulation and its audio event dispatch",
+      "draw_ms": "terminal encoding, write and flush",
+      "gpu_stats": "GPU query stages and fallback rays when available",
+      "summary": "nearest-rank p95 of the retained frames"
+    },
+    "summary": {
+      "interval_ms": {
+        "count": 13,
+        "mean": 506.247469,
+        "p95": 3123.4604
+      },
+      "input_ms": {
+        "count": 13,
+        "mean": 446.896346,
+        "p95": 3053.6212
+      },
+      "audio_ms": {
+        "count": 13,
+        "mean": 0.082446,
+        "p95": 0.5596
+      },
+      "simulation_ms": {
+        "count": 13,
+        "mean": 0.140446,
+        "p95": 1.8143
+      },
+      "render_ms": {
+        "count": 13,
+        "mean": 30.953631,
+        "p95": 106.5305
+      },
+      "draw_ms": {
+        "count": 13,
+        "mean": 26.934969,
+        "p95": 80.3868
+      },
+      "encode_ms": {
+        "count": 13,
+        "mean": 0.863338,
+        "p95": 1.6521
+      },
+      "write_flush_ms": {
+        "count": 13,
+        "mean": 16.698046,
+        "p95": 74.2395
+      },
+      "output_bytes": {
+        "count": 13,
+        "mean": 34584.384615,
+        "p95": 62889
+      },
+      "work_ms": {
+        "count": 13,
+        "mean": 505.007838,
+        "p95": 3123.4195
+      },
+      "cap_requested_ms": {
+        "count": 13,
+        "mean": 1.156969,
+        "p95": 15.0406
+      },
+      "cap_actual_ms": {
+        "count": 13,
+        "mean": 1.183862,
+        "p95": 15.3902
+      }
+    },
+    "frames": [
+      {
+        "frame": 1,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          160,
+          45
+        ],
+        "backend": "gpu",
+        "active": true,
+        "sound_on": false,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 1.412600000094244,
+          "decode_ms": 0.002599999788799323,
+          "refine_ms": 1.6752999999880558,
+          "native_refinement": true,
+          "fallback_rays": 20,
+          "rebuilds": 0
+        },
+        "input_ms": 2.3036,
+        "audio_ms": 0.057,
+        "simulation_ms": 0.0052,
+        "render_ms": 35.7762,
+        "draw_ms": 23.7609,
+        "work_ms": 61.9029,
+        "encode_ms": 1.5719,
+        "write_flush_ms": 18.6435,
+        "output_bytes": 62889,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 61.9443,
+        "console_open": false,
+        "fps_cap": 40,
+        "color_mode": "color"
+      },
+      {
+        "frame": 2,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          106,
+          45
+        ],
+        "backend": "gpu",
+        "active": false,
+        "sound_on": false,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 0.8760000000620494,
+          "decode_ms": 0.002100000074278796,
+          "refine_ms": 0.7027000001471606,
+          "native_refinement": true,
+          "fallback_rays": 18,
+          "rebuilds": 0
+        },
+        "input_ms": 5.9645,
+        "audio_ms": 0.0577,
+        "simulation_ms": 0.0007,
+        "render_ms": 19.4048,
+        "draw_ms": 18.8383,
+        "work_ms": 44.266,
+        "encode_ms": 1.3521,
+        "write_flush_ms": 11.7403,
+        "output_bytes": 51041,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 44.3094,
+        "console_open": true,
+        "fps_cap": 40,
+        "color_mode": "color"
+      },
+      {
+        "frame": 3,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": null,
+        "backend": "gpu",
+        "active": false,
+        "sound_on": false,
+        "mouse_captured": null,
+        "gpu_stats": null,
+        "input_ms": 3.8791,
+        "audio_ms": 0.0353,
+        "simulation_ms": 0.0005,
+        "render_ms": 0.2204,
+        "draw_ms": 5.8241,
+        "work_ms": 9.9594,
+        "encode_ms": 0.0465,
+        "write_flush_ms": 1.7699,
+        "output_bytes": 75,
+        "cap_requested_ms": 15.0406,
+        "cap_actual_ms": 15.3902,
+        "interval_ms": 25.3895,
+        "console_open": true,
+        "fps_cap": 40,
+        "color_mode": "color"
+      },
+      {
+        "frame": 4,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          106,
+          45
+        ],
+        "backend": "gpu",
+        "active": false,
+        "sound_on": false,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 0.786800000241783,
+          "decode_ms": 0.0021999999262334313,
+          "refine_ms": 0.725599999896076,
+          "native_refinement": true,
+          "fallback_rays": 18,
+          "rebuilds": 0
+        },
+        "input_ms": 4.5735,
+        "audio_ms": 0.0388,
+        "simulation_ms": 0.0005,
+        "render_ms": 17.2553,
+        "draw_ms": 4.3041,
+        "work_ms": 26.1722,
+        "encode_ms": 0.0455,
+        "write_flush_ms": 1.0041,
+        "output_bytes": 8104,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 26.2082,
+        "console_open": true,
+        "fps_cap": 40,
+        "color_mode": "mono"
+      },
+      {
+        "frame": 5,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          106,
+          45
+        ],
+        "backend": "gpu",
+        "active": false,
+        "sound_on": false,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 0.7933000001685286,
+          "decode_ms": 0.00199999976757681,
+          "refine_ms": 0.6987000001572596,
+          "native_refinement": true,
+          "fallback_rays": 18,
+          "rebuilds": 0
+        },
+        "input_ms": 2.2027,
+        "audio_ms": 0.0322,
+        "simulation_ms": 0.0005,
+        "render_ms": 21.1696,
+        "draw_ms": 17.1723,
+        "work_ms": 40.5773,
+        "encode_ms": 0.7828,
+        "write_flush_ms": 12.5368,
+        "output_bytes": 50554,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 40.6192,
+        "console_open": true,
+        "fps_cap": 40,
+        "color_mode": "gray"
+      },
+      {
+        "frame": 6,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          106,
+          45
+        ],
+        "backend": "gpu",
+        "active": false,
+        "sound_on": false,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 0.7292000000234111,
+          "decode_ms": 0.0021999999262334313,
+          "refine_ms": 0.740100000257371,
+          "native_refinement": true,
+          "fallback_rays": 18,
+          "rebuilds": 0
+        },
+        "input_ms": 3.8725,
+        "audio_ms": 0.0354,
+        "simulation_ms": 0.0005,
+        "render_ms": 22.4818,
+        "draw_ms": 17.2695,
+        "work_ms": 43.6597,
+        "encode_ms": 1.1837,
+        "write_flush_ms": 12.5435,
+        "output_bytes": 51390,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 43.6992,
+        "console_open": true,
+        "fps_cap": 40,
+        "color_mode": "color"
+      },
+      {
+        "frame": 7,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          106,
+          45
+        ],
+        "backend": "native",
+        "active": false,
+        "sound_on": true,
+        "mouse_captured": null,
+        "gpu_stats": null,
+        "input_ms": 2719.7991,
+        "audio_ms": 0.0418,
+        "simulation_ms": 0.0009,
+        "render_ms": 27.1569,
+        "draw_ms": 0.7141,
+        "work_ms": 2747.7128,
+        "encode_ms": 0.0732,
+        "write_flush_ms": 0.1253,
+        "output_bytes": 331,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 2747.9343,
+        "console_open": true,
+        "fps_cap": 40,
+        "color_mode": "color"
+      },
+      {
+        "frame": 8,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          106,
+          45
+        ],
+        "backend": "gpu",
+        "active": false,
+        "sound_on": true,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 0.9583000000930042,
+          "decode_ms": 0.0015999999050109182,
+          "refine_ms": 0.868499999796768,
+          "native_refinement": true,
+          "fallback_rays": 18,
+          "rebuilds": 0
+        },
+        "input_ms": 3053.6212,
+        "audio_ms": 0.0354,
+        "simulation_ms": 0.0006,
+        "render_ms": 31.2867,
+        "draw_ms": 38.4756,
+        "work_ms": 3123.4195,
+        "encode_ms": 0.0762,
+        "write_flush_ms": 0.6254,
+        "output_bytes": 312,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 3123.4604,
+        "console_open": true,
+        "fps_cap": 40,
+        "color_mode": "color"
+      },
+      {
+        "frame": 9,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          106,
+          45
+        ],
+        "backend": "gpu",
+        "active": false,
+        "sound_on": true,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 1.713499999823398,
+          "decode_ms": 0.0027999999474559445,
+          "refine_ms": 1.3530000001082954,
+          "native_refinement": true,
+          "fallback_rays": 614,
+          "rebuilds": 0
+        },
+        "input_ms": 0.3751,
+        "audio_ms": 0.5596,
+        "simulation_ms": 0.0006,
+        "render_ms": 106.5305,
+        "draw_ms": 39.9393,
+        "work_ms": 147.4051,
+        "encode_ms": 1.6168,
+        "write_flush_ms": 35.8212,
+        "output_bytes": 47356,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 147.4465,
+        "console_open": true,
+        "fps_cap": 40,
+        "color_mode": "color"
+      },
+      {
+        "frame": 10,
+        "viewport": [
+          60,
+          20
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          33,
+          15
+        ],
+        "backend": "gpu",
+        "active": false,
+        "sound_on": true,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 1.1526000002959336,
+          "decode_ms": 0.00199999976757681,
+          "refine_ms": 0.2223999999841908,
+          "native_refinement": true,
+          "fallback_rays": 77,
+          "rebuilds": 0
+        },
+        "input_ms": 0.3242,
+        "audio_ms": 0.0319,
+        "simulation_ms": 0.0005,
+        "render_ms": 11.7426,
+        "draw_ms": 50.3643,
+        "work_ms": 62.4635,
+        "encode_ms": 0.2149,
+        "write_flush_ms": 4.6701,
+        "output_bytes": 8787,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 62.5186,
+        "console_open": true,
+        "fps_cap": 40,
+        "color_mode": "color"
+      },
+      {
+        "frame": 11,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          106,
+          45
+        ],
+        "backend": "gpu",
+        "active": false,
+        "sound_on": true,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 1.1973000000580214,
+          "decode_ms": 0.0016999997569655534,
+          "refine_ms": 2.005400000143709,
+          "native_refinement": true,
+          "fallback_rays": 614,
+          "rebuilds": 0
+        },
+        "input_ms": 0.6792,
+        "audio_ms": 0.0315,
+        "simulation_ms": 0.0004,
+        "render_ms": 38.2207,
+        "draw_ms": 22.5638,
+        "work_ms": 61.4956,
+        "encode_ms": 1.098,
+        "write_flush_ms": 16.6249,
+        "output_bytes": 50520,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 61.5394,
+        "console_open": true,
+        "fps_cap": 40,
+        "color_mode": "color"
+      },
+      {
+        "frame": 12,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          160,
+          45
+        ],
+        "backend": "gpu",
+        "active": false,
+        "sound_on": true,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 2.758499999799824,
+          "decode_ms": 0.0019000003703695256,
+          "refine_ms": 1.4696999996886007,
+          "native_refinement": true,
+          "fallback_rays": 1255,
+          "rebuilds": 0
+        },
+        "input_ms": 1.7957,
+        "audio_ms": 0.0651,
+        "simulation_ms": 0.0006,
+        "render_ms": 34.902,
+        "draw_ms": 30.5415,
+        "work_ms": 67.3049,
+        "encode_ms": 1.5097,
+        "write_flush_ms": 26.7301,
+        "output_bytes": 58451,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 67.3439,
+        "console_open": false,
+        "fps_cap": 40,
+        "color_mode": "color"
+      },
+      {
+        "frame": 13,
+        "viewport": [
+          160,
+          50
+        ],
+        "terminal": [
+          160,
+          50
+        ],
+        "scene_samples": [
+          160,
+          45
+        ],
+        "backend": "gpu",
+        "active": true,
+        "sound_on": true,
+        "mouse_captured": null,
+        "gpu_stats": {
+          "query_readback_ms": 1.967400000012276,
+          "decode_ms": 0.0018999999156221747,
+          "refine_ms": 1.2545999998110346,
+          "native_refinement": true,
+          "fallback_rays": 1319,
+          "rebuilds": 0
+        },
+        "input_ms": 10.2621,
+        "audio_ms": 0.0501,
+        "simulation_ms": 1.8143,
+        "render_ms": 36.2497,
+        "draw_ms": 80.3868,
+        "work_ms": 128.763,
+        "encode_ms": 1.6521,
+        "write_flush_ms": 74.2395,
+        "output_bytes": 59787,
+        "cap_requested_ms": 0.0,
+        "cap_actual_ms": 0.0,
+        "interval_ms": 128.8042,
+        "console_open": false,
+        "fps_cap": 40,
+        "color_mode": "color"
+      }
+    ]
+  },
+  "source_after": {
+    "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+    "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+    "ascii3d/app.py": "842090841f963d2c434cbe7883eb2a7bb8dce15801d33ab5392d61fb7969dbd3",
+    "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+    "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+    "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+    "ascii3d/audio_process.py": "481f8a129c80028d4674f29a4078b8298d210f4778c8067af009a4ba890380dc",
+    "ascii3d/combat.py": "0d3f1d426e9a4af0150489ee7d6b3af99e976fc5fe4904b833a6532e88870d8a",
+    "ascii3d/combat_render.py": "c14e2d88ab185b5b083980f966832c09782a18bcc9f6be61d0c2b5604c137817",
+    "ascii3d/dev_console.py": "b729ca4a099a33dd124f1bc61ec60f708d2e062b09e9b14517213be25dc61826",
+    "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+    "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+    "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+    "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+    "ascii3d/frame_timing.py": "1012e568d280189aa7bab669acf0d7f81674526a6fe781f8ec404bce01c0d740",
+    "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+    "ascii3d/gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+    "ascii3d/gpu_renderer.py": "15547ce42707ea4759bc710aec73813de6efc825567a0db902412685e7f0a5b0",
+    "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+    "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+    "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+    "ascii3d/monolith_solid_bvh.dll": "936ca91e836fe039e52baeab438153055d9192ab97ba94d0c5f1ad312aae6954",
+    "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+    "ascii3d/native_shading.py": "5cd3f06a309d373e22dcb49f4700ab6fe635c3f7e049180f3e8d908c8bce981c",
+    "ascii3d/native_solids.py": "0d1a5fbc84102b860d73c482f0c7f1e3bc63641f009b0879d1b1774d1a7cc07e",
+    "ascii3d/npc_render.py": "227d2c7f20ffee41fe2b0f4cebb06f9803ef4215db5e9b8b5b6e4885ae70ab2f",
+    "ascii3d/npcs.py": "e0480893d7be791b5bd109e7108fddd553978538547e025b0a2b62f21b962389",
+    "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+    "ascii3d/palette.py": "c5f582a2063f1a777766c2efccdf93246d461abee8959cba32e809c5edd8faef",
+    "ascii3d/particles.py": "caf368eebcec59216edcfd20f19918312ef887a75eb654d8b618e0b2131abd29",
+    "ascii3d/paving.py": "5949e14f0b495dc11dfbf66bb995afdbfed011a72077cb9578963b7aa85812a9",
+    "ascii3d/player.py": "7860a38bcb8ff007ad88ae87e9c8d07a7feec49a4cd58722cb241847e28071c7",
+    "ascii3d/presentation.py": "1af925aa5454f8b3d6ef8d7f31b611e6740803d1cc628c26170c1983625a43aa",
+    "ascii3d/renderer.py": "6a03c192063b230895a1a61b28d61034dfe8e8e6b60be5f61079a576877f2ae7",
+    "ascii3d/roads.py": "6f814d7a43e28e6cef0b22e43cc41e40fc7942bc59cd8d47bb13d9615f30ce67",
+    "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+    "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+    "ascii3d/shading.py": "9645a6f0b28c181456f58c50660b691f545258881473b4c22c06a0c9ca265045",
+    "ascii3d/solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+    "ascii3d/sound.py": "e3d4851d2f3f047ae64cf861cccceae747cebb7eaaf5513fd288578ef4c7b005",
+    "ascii3d/sound_surfaces.py": "c84e74fdec38cd7e5d30c63a251474faa2c9691cd4b9515c503c9db778c515c6",
+    "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+    "ascii3d/surface_lighting.h": "5dd7282857a16dfbd06f4185c18d4d8552a1cb57721e78223bc3c919f4fb3d4a",
+    "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+    "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+    "ascii3d/terminal.py": "6e47aafbdd3314320efea161d3e7248853c6c1dec7c7fd26c755c4223b48d80b",
+    "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+    "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+    "ascii3d/voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+    "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+  }
+}

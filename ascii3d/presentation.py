@@ -10,6 +10,7 @@ from .palette import COLOR_CODES, GRAY_LEVELS, UI
 # Empty samples use a space, so the raised foreground floor never lights sky.
 GRAY_CODES = tuple(f"\x1b[38;2;{level};{level};{level}m" for level in GRAY_LEVELS)
 WHITE_ON_BLACK = "\x1b[97;40m"
+PREVIEW_MIN_SIZE = (30, 12)
 _ASCII_ROW = re.compile(r"[ -~]*\Z")
 
 

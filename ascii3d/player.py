@@ -8,6 +8,9 @@ from .sound_surfaces import surface_kind
 from .world import INDOOR_SPAWN, World
 
 
+DAMAGE_CUE_DURATION = 0.50
+
+
 @dataclass
 class Player:
     x: float = INDOOR_SPAWN[0]
@@ -25,6 +28,8 @@ class Player:
     hp: int = 10
     events: list[GameEvent] = field(default_factory=list, repr=False)
     _step_distance: float = field(default=0.0, repr=False)
+    damage_remaining: float = 0.0
+    last_damage: int = 0
 
     RADIUS = 0.22
     HEIGHT = 1.7
@@ -59,7 +64,9 @@ class Player:
         """Apply one confirmed hit and report feedback once per living player."""
         if amount <= 0 or self.hp <= 0:
             return []
-        self.hp = max(0, self.hp - amount)
+        self.last_damage = min(self.hp, amount)
+        self.hp -= self.last_damage
+        self.damage_remaining = DAMAGE_CUE_DURATION
         events = [GameEvent("player_hurt", self.x, self.y)]
         if self.hp == 0:
             events.append(GameEvent("player_down", self.x, self.y))
@@ -82,6 +89,8 @@ class Player:
         self.events.clear()
         if not dt:
             return
+        if self.damage_remaining > 0:
+            self.damage_remaining = max(0.0, self.damage_remaining - dt)
         was_grounded, was_water = self.grounded, self.in_water
         landing_speed = 0.0
         turn = int("right" in keys) - int("left" in keys)

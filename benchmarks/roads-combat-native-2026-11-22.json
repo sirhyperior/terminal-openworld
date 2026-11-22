@@ -1,0 +1,1968 @@
+{
+  "initial_attempts": [
+    {
+      "role": "combat",
+      "importing": false,
+      "passed": false,
+      "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+      "native_console": true,
+      "source_before": {
+        "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+        "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+        "ascii3d/app.py": "375096807b4f7495405aac5d8551a500ac6df18680e6b5f03bc0d6e1a73a8be7",
+        "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+        "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+        "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+        "ascii3d/audio_process.py": "481f8a129c80028d4674f29a4078b8298d210f4778c8067af009a4ba890380dc",
+        "ascii3d/combat.py": "0d3f1d426e9a4af0150489ee7d6b3af99e976fc5fe4904b833a6532e88870d8a",
+        "ascii3d/combat_render.py": "c14e2d88ab185b5b083980f966832c09782a18bcc9f6be61d0c2b5604c137817",
+        "ascii3d/dev_console.py": "90f1399fdcdaa054cdfd43ae1514eaed508e6d1f298ccdd1f9240bd0a196ee73",
+        "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+        "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+        "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+        "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+        "ascii3d/frame_timing.py": "1012e568d280189aa7bab669acf0d7f81674526a6fe781f8ec404bce01c0d740",
+        "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+        "ascii3d/gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+        "ascii3d/gpu_renderer.py": "15547ce42707ea4759bc710aec73813de6efc825567a0db902412685e7f0a5b0",
+        "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+        "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+        "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+        "ascii3d/monolith_solid_bvh.dll": "7a8be0ecb990ed65309ac609377626aba4877ad3ce2c048b8504f4a5ea5668f5",
+        "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+        "ascii3d/native_shading.py": "3b040d63f72b95a26edf1fc92f7d7617222fa1b4ba69d4b0ad24e8b3760bdfeb",
+        "ascii3d/native_solids.py": "3b10c0b8d9830b45652637a188b0c984d0ccdc5378e4a676f50acfe1fee40c63",
+        "ascii3d/npc_render.py": "227d2c7f20ffee41fe2b0f4cebb06f9803ef4215db5e9b8b5b6e4885ae70ab2f",
+        "ascii3d/npcs.py": "e0480893d7be791b5bd109e7108fddd553978538547e025b0a2b62f21b962389",
+        "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+        "ascii3d/palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+        "ascii3d/particles.py": "caf368eebcec59216edcfd20f19918312ef887a75eb654d8b618e0b2131abd29",
+        "ascii3d/player.py": "7860a38bcb8ff007ad88ae87e9c8d07a7feec49a4cd58722cb241847e28071c7",
+        "ascii3d/presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+        "ascii3d/renderer.py": "afd02768f2e1233e3901404d156d6b3a187cfc3d71c17db459a83dd7bb769af4",
+        "ascii3d/roads.py": "6f814d7a43e28e6cef0b22e43cc41e40fc7942bc59cd8d47bb13d9615f30ce67",
+        "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+        "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+        "ascii3d/shading.py": "1fb312569f814959355c6616ee5f4f185ada7f50d9700299478c6d78736b115c",
+        "ascii3d/solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+        "ascii3d/sound.py": "e3d4851d2f3f047ae64cf861cccceae747cebb7eaaf5513fd288578ef4c7b005",
+        "ascii3d/sound_surfaces.py": "c84e74fdec38cd7e5d30c63a251474faa2c9691cd4b9515c503c9db778c515c6",
+        "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+        "ascii3d/surface_lighting.h": "7846b4c852eec086fc3ad0e0a85ef3f02f73501581a8976a98fb6b2e2e8fd57e",
+        "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+        "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+        "ascii3d/terminal.py": "6e47aafbdd3314320efea161d3e7248853c6c1dec7c7fd26c755c4223b48d80b",
+        "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+        "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+        "ascii3d/voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+        "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+      },
+      "events": [
+        "enemy_alert",
+        "enemy_attack",
+        "player_hurt",
+        "sword_swing",
+        "sword_hit",
+        "enemy_hurt",
+        "enemy_down"
+      ],
+      "observations": [
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 8,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 8,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 8,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 8,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        }
+      ],
+      "checks": {
+        "native_console": true,
+        "normal_exit": true,
+        "hardware_gpu": true,
+        "source_unchanged": true,
+        "restored": false,
+        "audio_healthy": true,
+        "damage_cue": true,
+        "native_attack": true,
+        "released_effect": true,
+        "defeat_and_damage_audio": true,
+        "warden_down": true
+      },
+      "font": {
+        "face": "Consolas",
+        "height": 16,
+        "api_accepted": true,
+        "error": 0
+      },
+      "console_before": {
+        "input_mode": 503,
+        "output_mode": 3,
+        "width": 120,
+        "height": 40,
+        "buffer_width": 120,
+        "buffer_height": 40,
+        "attributes": 7,
+        "cursor_visible": true,
+        "cursor": [
+          0,
+          0
+        ],
+        "screen_hash": "e6ac9cf026dcd2fa5e4aeba7c33542a10af717412a63948f964316ee8ee8ab25",
+        "font": {
+          "face": "\uad74\ub9bc\uccb4",
+          "width": 8,
+          "height": 16
+        }
+      },
+      "backend": "gpu",
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      },
+      "defeat_frame": [
+        "  HP [########--] 8/10 / IRON SWORD                                                                   SND ON    26 FPS",
+        "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+        "          srssssrrrrrrsrriii;;;                     srrxssssssirrirrrr                            srrrssssssrrrrsrsr",
+        "          rrrrrrrriiiiiriiii;;rii                  rirrsssrriiiiissrii;                          ssssrriiirrrrririrrs",
+        "           iiriiiiiii;ii;;;;;iiii;;                iirriirrii;;;iiiii;;;                       ssiiirrrriiiiiiiiirrrss;;",
+        "            ;;;i;;;;;iiii;;;iii;;:::                ;iiii;;;;;;;;i;;;;;rrsrriii   irrriiii    rir;iiiiiiiiiii;i;rii;rrii",
+        "       rrssrr;;;;;;i;;;;;;;i;;;;;;;;                 ;;;;;;;;;;;;;i;;;srriiirii;;rrrrri;ii;   iii;;;;;;;;;;;;;;;i;;rrr;;",
+        "      iriiirriii;;;;;;;;i;;;;;;;;;;;                rr;;;;;;;;;;i;;;srrirri;iiiiiiiiii;;;;;;i ;;;;;;;;;;;;;;;;;;;;iiii::",
+        "     ii;iii;;;;;;;;;;;;;;;;;;;;;;;;iiii       .    rrrii;;;s|ii  rrrrriii;;;ii;*;ii;;;;::;;;;  r;;;;;;;;;;;;;;;;iii;;;;r",
+        "      ;;;;;;;;;;;;; ;;;|;:i;;;;:::;;;;;;rr        iiii;;;;;x|i;:i;ii;;;;;;;;;;;;:;;;;;:;;:;;:srr.r;;;;;;;;;;;;;;;;iirrrr",
+        "     ;i;;::;;;;;;;     |i:;:;;;::;;;;;;;ri;;;;   . i;;;;;;;'|i:;i;:;;;;;i;i;;:;;;;;;:;;:;::;riiriii;   \\;.r;;i;;;;iii;i;",
+        "     ;;;;;::;;;;       |i::;;;;:::;;;:;;;;;;;:     ;;;;;.;:x|:;;;:: ;;\\;;;*;;;;::;::;|:    ;;;;';;;;  ;i.|i;;rsi;'ririii",
+        "      ;::;;|||;        |i;:.:;;|: :;;;;;;;;;;:       :;;;;:x|:;;::    /\\;;;;::.     ;|:      ;;;;     :;x|;;;;|i; rrrrrr",
+        "\";;;,;\"\"'::|||         |.;  |\";|:;;\";;;;;;:::\";\"\";;;.\"\";|:;'|;||\"\";\"\"\"\"\\;s|i|\"\"\";;\"\"r|;;;\"\"\"\"\"|||\"\"\";;;;x|::r.|;;;rirrrr",
+        ";;,,,;;.;\"||||;\"\";\";;\";|i;;;|,r|;\";\"\"\"|||.||;;;\";\"\"\";\";r|;\"s|;||;;;;;;\"/\\r|i|;;;\";;;r|;\"\"\";;;;|||\"\"\"\";;ss|||rr|;\"\"i:rrrs",
+        ";;\";;\",\"\";||||\"\"\";\";;;;si;;;|;r|;;\";;'||||||;\";\"\";\"\"\"\";r|;;s|;||\"\";;\";;/\\r|i|'\";\";\"rr|;\";\".\";\"|||;;\"\"\"\"r|i||rr|,\"ii:irrr",
+        "\";;;;,\";;;|\"|||\";\"\";\"\"\"r|;;;|;r|;;*;\"\"||||||;.\";\";\";\";*r|;\"s|;||;;\"\"\"\";/%\\|;|;\".\".;rri\";\"\".;\";|||;';;;.r.i||rri;\"rr:rrrr",
+        "\";;\"\"\"\"'\"\"|\"|||;;;;\"\";\"s|;;\"|;r|;;;\";;||||||\"';;\";\"\"\",\"r|;\"s|;||;\"\";;\";;/\\|;\";\";\"\"\"ir;;.\"\"\"'.'|||\"\",\";rr||||ir;Xxrssrrrr",
+        ";;;\";\";;\"\"\";|||.'\"\";;\";s|;;;|\"i|;;\"\";;|||;|;\"\";;\"\";\"\"\"\"i|;\"s|;||;;;;'';'/#\\;;;\"\"\"\";ir;\"\";;\"\";;|;\"\",;\"\"rr||.|i|;xXrrsssis",
+        "xx.;xxxxxxxxXXXrXXX;xxxxxXXXXXxrxss;sssxxxss.rr;iii:rrrrriii+iii;rr:rrrr/#\\rrrssixx;ssssssxxXXXXrXx;xxxxXXXXXXXxrxs;xxxx",
+        "ssx;xrxxxxxxxxXXXXX;XrxxxxxxXXXXXxx;sisssssssssrrii:i;rrrrr.iiiiiii:rrir/##\\irrrssx;xxisssssxxXXXXXXXxrxxxXXXXXXXxXxssix",
+        "rssXxxXXXXxrxxxxxXX;XXXXxxxix'xXXXX;xsssrrsisss'srr:iiiiirr;;rriiii:iirrr/#\\irrrrrssx.xxxxxsisxxXX#XXXXXxxxx'XXXXXAxxxss",
+        "sisxssxxxXXXXxxxxrxAXXXXXXXxxxxxxrx;Xxxs.srrrrs.sis;rriiiiiirrrrri;:iiiir/s#\\srrrrirsssxxxxxxxxxxxs.XXXXXXxxxxxxXXsXXxxx",
+        "xssx|ssisxxXXXXXxxxXxxXrXX/XXx|xxxx;xxxrxxssrrr::;;;;;:::::::::::::::::://s#\\;;;;;;:::;sixxxXxxxxxXxxXXX|XXXXxxxxxAXXXXX",
+        "\\s///||s/\\sX'/X.XXXx|x|x//X#|r|Xxxxssxx////;/i///r/r//s/.////i;//r//r/ri//#%%\\is|/ss/rr//s|xxXr|/xxx//|x||#|X|rxx|||xx||",
+        "\"\\/\"/||/'\\\\''/\"''\"//|\"|'//\"||\"//\"\"/'/\"''/\"'/\"//'/\"///\"/'/;\"/;;/\";;\"///\"\"/;/%%\\;////;/\";;/\";''\"/'/\"\"'//|'|\"/|'|\"'||\"|'|||",
+        "\\\\\"'\\|\"'|'||''//\\/'|'/\"'/\"\"|'//'''\"/''\"//'\"//''\"/''/\"'\"/;;//\"\"/'\"\"//\";/\"\";/%%%\\;\"//;\"/;/;\"\"\"\"/\"/|\"|\"/';|''//'|\"\"|'|/\"||\"",
+        "\"\"\\'\"\"\"'\\'|'\"\"/'\\\"\"\\'/\"\"''\"\"\\//\"\"//'\"\"'/'\"\"'/\"//''\"\"\"'//\"\"'///''';//\"*//'//%%%\\/;;\"\";/;\"\";///';;\"||/\";|;/'\"\"'''\"/'//\"\"/'",
+        "\\'\"\\\"\"\"'\\'\"\"'\\'\"\"\"'\\\"\"\"'|'||\\.'\".\"''\"/\"''//\"'/'\"\"'''\"\"//'\"/\"'''\";//';\"//'\"/@@@@\\*\"\"\"/;\"/\";//'//;;\"/\"\"//;/\"''\"\"'/'\"\"/'/\";",
+        "'\\'\\\"\"''\"\"\\''\\\"\"\"\"\"\"'''\"\"\"||\"\"\"'/'//\"'''\"/\"'''\"/\"''\"///''\"\"\"'''\"\"/'''\"=====/###\\=====\"/;;/'';/\"\"\";;;/\"\";;;\"\"\"\"\"\"\"'\"//\"\"\"",
+        "\"\\'\\\\\"\"'''\\\"\"\"//\"'''\\\"\"'''|\"\"'''\"\"/''/\"\"\"'*/'\"/\"'''/\"\"'''\"\"\"'''//\"''//\"\"//'\"###'\"\";;\"/'';/\"''\"/;;\"//;;;\"\"\";;;\"\"'/\";/''\";",
+        "''\\'\"\"\"'''''|'/\"\"'''|\"|\"'''\"\"\"''/\"\"\"\"/''\"\"//'''//\"'''/\"\"\"'/'/\"//'''/\"/''/\"\"/###'\";;''''//\"'''///\"//.;;;\"\"/;;/;\"//\"\";\"'\"\"",
+        "\"\"\"''\\\\\"\"\"''|'\"\"\"\"''|\"|\"\"''''/'///\"'/''\"\"\"/'''\"/\"\"\"\"/'''//\"/''/'\"\"\"//'/\"\"\"/'###\"\"/'''\"/\"''/'\"////'\";;;/\"//\";/;//\"'''';;/",
+        "\"//\"'\\'\\\"\"\"''\\'\"\"\"\"'''\\\"\"\"\"\"/\"''/'\"*\"/'''\"\"\"\"//'''''/\"\"\"/'''\"\"\"\"/'''/./''''/###''''/\"//''//\"\"\"///';;;\"\"\"/;\"\";'//'\"\"\";;/\"",
+        "\"/\"\"\\''\\\\\"\"\"'\\''\"\\\"\"''\\''''|//\"/''''//\"\"''''/\"\"\"\"\"//''''/\"\"\"''//\"\"\"\"//.'\"\"/\"###'\"\"\"\"/'''///\"''''\"\"\"\"''//;\"\"\"'\"///\"\"\"''//",
+        "'\"\"\"\\/''\\\\\"\"\"\"'''\\\"\"\"\"\"/\"\"|//'/\"\"\"///''\"\"\"\"/'''''/''\"\"\"/'//'\"/\"\"/'''/\"\"\"\"'''###//'//'\"//\"//'''\"///''''/\"\";\"'''/\"\"\"\"'''/\"",
+        "/'\"\"/\"\"''\\'\"\"\"\"\"''''''//\"\"\"/\"'/''/\"\"\"\"''''\"\"\"\"\"\"/\"//'''//\"\"\"'///\"\"\"\"\"''//\"\"\"###'///\"\"\"/''''\"\"\"\"/''''\"\"//'''//\"\"\"\"'''///\"",
+        "------------------------------------------------------------------------------------------------------------------------",
+        "  THE WATCHSTONES   /   N 000   /   WALK                                                            41.5, 248.8  Z 1.0",
+        "  WASD move  ARROWS look  ENTER attack  E interact  M map  H controls  P pause"
+      ],
+      "audio_before": {
+        "available": true,
+        "error": "",
+        "buffers": 43,
+        "underruns": 0,
+        "recoveries": 0,
+        "max_write_gap_ms": 55.51699999978155
+      },
+      "audio_after": {
+        "available": false,
+        "error": "",
+        "buffers": 47,
+        "underruns": 0,
+        "recoveries": 0,
+        "max_write_gap_ms": 55.51699999978155
+      },
+      "audio_worker_stopped": true,
+      "console_after": {
+        "input_mode": 503,
+        "output_mode": 3,
+        "width": 120,
+        "height": 40,
+        "buffer_width": 120,
+        "buffer_height": 40,
+        "attributes": 7,
+        "cursor_visible": true,
+        "cursor": [
+          0,
+          15
+        ],
+        "screen_hash": "3a4d27434ad3546fb15a23ddbe5206220f4b98de2649876ec12195500a7e9a59",
+        "font": {
+          "face": "\uad74\ub9bc\uccb4",
+          "width": 8,
+          "height": 16
+        }
+      },
+      "app_status": 0,
+      "source_after": {
+        "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+        "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+        "ascii3d/app.py": "375096807b4f7495405aac5d8551a500ac6df18680e6b5f03bc0d6e1a73a8be7",
+        "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+        "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+        "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+        "ascii3d/audio_process.py": "481f8a129c80028d4674f29a4078b8298d210f4778c8067af009a4ba890380dc",
+        "ascii3d/combat.py": "0d3f1d426e9a4af0150489ee7d6b3af99e976fc5fe4904b833a6532e88870d8a",
+        "ascii3d/combat_render.py": "c14e2d88ab185b5b083980f966832c09782a18bcc9f6be61d0c2b5604c137817",
+        "ascii3d/dev_console.py": "90f1399fdcdaa054cdfd43ae1514eaed508e6d1f298ccdd1f9240bd0a196ee73",
+        "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+        "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+        "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+        "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+        "ascii3d/frame_timing.py": "1012e568d280189aa7bab669acf0d7f81674526a6fe781f8ec404bce01c0d740",
+        "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+        "ascii3d/gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+        "ascii3d/gpu_renderer.py": "15547ce42707ea4759bc710aec73813de6efc825567a0db902412685e7f0a5b0",
+        "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+        "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+        "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+        "ascii3d/monolith_solid_bvh.dll": "7a8be0ecb990ed65309ac609377626aba4877ad3ce2c048b8504f4a5ea5668f5",
+        "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+        "ascii3d/native_shading.py": "3b040d63f72b95a26edf1fc92f7d7617222fa1b4ba69d4b0ad24e8b3760bdfeb",
+        "ascii3d/native_solids.py": "3b10c0b8d9830b45652637a188b0c984d0ccdc5378e4a676f50acfe1fee40c63",
+        "ascii3d/npc_render.py": "227d2c7f20ffee41fe2b0f4cebb06f9803ef4215db5e9b8b5b6e4885ae70ab2f",
+        "ascii3d/npcs.py": "e0480893d7be791b5bd109e7108fddd553978538547e025b0a2b62f21b962389",
+        "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+        "ascii3d/palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+        "ascii3d/particles.py": "caf368eebcec59216edcfd20f19918312ef887a75eb654d8b618e0b2131abd29",
+        "ascii3d/player.py": "7860a38bcb8ff007ad88ae87e9c8d07a7feec49a4cd58722cb241847e28071c7",
+        "ascii3d/presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+        "ascii3d/renderer.py": "afd02768f2e1233e3901404d156d6b3a187cfc3d71c17db459a83dd7bb769af4",
+        "ascii3d/roads.py": "6f814d7a43e28e6cef0b22e43cc41e40fc7942bc59cd8d47bb13d9615f30ce67",
+        "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+        "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+        "ascii3d/shading.py": "1fb312569f814959355c6616ee5f4f185ada7f50d9700299478c6d78736b115c",
+        "ascii3d/solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+        "ascii3d/sound.py": "e3d4851d2f3f047ae64cf861cccceae747cebb7eaaf5513fd288578ef4c7b005",
+        "ascii3d/sound_surfaces.py": "c84e74fdec38cd7e5d30c63a251474faa2c9691cd4b9515c503c9db778c515c6",
+        "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+        "ascii3d/surface_lighting.h": "7846b4c852eec086fc3ad0e0a85ef3f02f73501581a8976a98fb6b2e2e8fd57e",
+        "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+        "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+        "ascii3d/terminal.py": "6e47aafbdd3314320efea161d3e7248853c6c1dec7c7fd26c755c4223b48d80b",
+        "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+        "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+        "ascii3d/voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+        "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+      }
+    },
+    {
+      "role": "road",
+      "importing": false,
+      "passed": false,
+      "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+      "native_console": true,
+      "source_before": {
+        "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+        "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+        "ascii3d/app.py": "375096807b4f7495405aac5d8551a500ac6df18680e6b5f03bc0d6e1a73a8be7",
+        "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+        "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+        "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+        "ascii3d/audio_process.py": "481f8a129c80028d4674f29a4078b8298d210f4778c8067af009a4ba890380dc",
+        "ascii3d/combat.py": "0d3f1d426e9a4af0150489ee7d6b3af99e976fc5fe4904b833a6532e88870d8a",
+        "ascii3d/combat_render.py": "c14e2d88ab185b5b083980f966832c09782a18bcc9f6be61d0c2b5604c137817",
+        "ascii3d/dev_console.py": "90f1399fdcdaa054cdfd43ae1514eaed508e6d1f298ccdd1f9240bd0a196ee73",
+        "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+        "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+        "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+        "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+        "ascii3d/frame_timing.py": "1012e568d280189aa7bab669acf0d7f81674526a6fe781f8ec404bce01c0d740",
+        "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+        "ascii3d/gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+        "ascii3d/gpu_renderer.py": "15547ce42707ea4759bc710aec73813de6efc825567a0db902412685e7f0a5b0",
+        "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+        "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+        "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+        "ascii3d/monolith_solid_bvh.dll": "7a8be0ecb990ed65309ac609377626aba4877ad3ce2c048b8504f4a5ea5668f5",
+        "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+        "ascii3d/native_shading.py": "3b040d63f72b95a26edf1fc92f7d7617222fa1b4ba69d4b0ad24e8b3760bdfeb",
+        "ascii3d/native_solids.py": "3b10c0b8d9830b45652637a188b0c984d0ccdc5378e4a676f50acfe1fee40c63",
+        "ascii3d/npc_render.py": "227d2c7f20ffee41fe2b0f4cebb06f9803ef4215db5e9b8b5b6e4885ae70ab2f",
+        "ascii3d/npcs.py": "e0480893d7be791b5bd109e7108fddd553978538547e025b0a2b62f21b962389",
+        "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+        "ascii3d/palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+        "ascii3d/particles.py": "caf368eebcec59216edcfd20f19918312ef887a75eb654d8b618e0b2131abd29",
+        "ascii3d/player.py": "7860a38bcb8ff007ad88ae87e9c8d07a7feec49a4cd58722cb241847e28071c7",
+        "ascii3d/presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+        "ascii3d/renderer.py": "afd02768f2e1233e3901404d156d6b3a187cfc3d71c17db459a83dd7bb769af4",
+        "ascii3d/roads.py": "6f814d7a43e28e6cef0b22e43cc41e40fc7942bc59cd8d47bb13d9615f30ce67",
+        "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+        "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+        "ascii3d/shading.py": "1fb312569f814959355c6616ee5f4f185ada7f50d9700299478c6d78736b115c",
+        "ascii3d/solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+        "ascii3d/sound.py": "e3d4851d2f3f047ae64cf861cccceae747cebb7eaaf5513fd288578ef4c7b005",
+        "ascii3d/sound_surfaces.py": "c84e74fdec38cd7e5d30c63a251474faa2c9691cd4b9515c503c9db778c515c6",
+        "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+        "ascii3d/surface_lighting.h": "7846b4c852eec086fc3ad0e0a85ef3f02f73501581a8976a98fb6b2e2e8fd57e",
+        "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+        "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+        "ascii3d/terminal.py": "6e47aafbdd3314320efea161d3e7248853c6c1dec7c7fd26c755c4223b48d80b",
+        "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+        "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+        "ascii3d/voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+        "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+      },
+      "events": [
+        "step_stone"
+      ],
+      "observations": [
+        {
+          "road_glyph_counts": {
+            "s": 83,
+            "X": 374,
+            ";": 9,
+            "x": 168,
+            "i": 217,
+            "r": 88,
+            "A": 339,
+            "#": 87
+          },
+          "frame_size": [
+            120,
+            40
+          ],
+          "scene": [
+            "  HP [##########] 10/10 / UNARMED                                                                     SND ON     0 FPS",
+            "------------------------------------------------------------------------------------------------------------------------",
+            "irr;rrrrrssxxrxxssxxxXXXXxrxXxxXXXXxxssisxsss;;;::;:;;;;;;;;;;;;;;;;ii;:;;isssixsssxxXXXxxxi;xX.XXXxxsssi;xxxsrrrrrrrirr",
+            ";irxsssrrrrssixx;xxssxxXXXrXxxxxxxXXX.xs.x;iii:;;:;;:;;:;;;;;;;i;;i;;iiiii:iiixXsssssxxXXXrx;xxxXXXXXxxixssxxxssrrrr;:rr",
+            "::ii:rssssrrrs.xXxxxxixxxxXXX;Xxxxixxxxiiii:ii:;;:;;:;;:;':;;;;i;;i;;i;iiiiii:'.ix;;;:;;;;;;.;;;;;:;;;;;;;;;;;;;;;::::::",
+            "rrii;.irrsxsssrssixxXXx;xxxxXrXXXxxXsxi;:ii:ii:;r:;;s;;:r;:;;;;s;;ir;i;riiiiiiiirrxxxXssxxxXXrXxxxxxxXXXxxssss;ssssrri;i",
+            "irrr;riiirr;ssssisssxxXAXxxxxrxXXXXAxxii:ii:ii:i;:;;:;*:;;:;;:;;;;;;;i;;iiiiiiiiiisxx;xxxsxxrXXXXAxxxxxxrxxxssrrsssssiri",
+            ";iiirrrrriis;sssxxsssssXrXXXxxxxxxXXXrxi:ii:ii:ii:;;:;;:;;:*;:;;:;;:;;:;;iiiiiiiirrssxxrxxxxxxxXX;XrxxsxxxxxxXsrirrsssrr",
+            "iiiiiirr'rrrrrrrssxxxsssixxXXXXxxxxx:XXi:ii.ii:ii:;;:;;:;.:;;:;;:;;:;;:;;:ii:ii:rs.sssixxXXxxxxxxXrXXxxxssxxx;xisrrrrrrs",
+            ":rriiii;irrs;rrrrrssxxxx;ssxxxXXrXxx;xxi:ii:ii:ii:i;:;;:;;:\\;:;;:;;:;;:;;:;i:ii:iixsxssssxXXXrxxXxxXXXXxxsssXxxxxssrrr;r",
+            "iiirr.s;iiiirrsssrsirsxxAAXXXXXrAAAAAXXiiiiiiiiii:ii:;;:;sr/\\rr;:;;:;;:;;:;;:iiiissxxxssssXxrXXXxxxxxxAX'xxs.ssssxXsr;ii",
+            "ii;;iirrrriiiirisssssrrssxxr'xXxxxxXXXXriiriiiiiiiii:;;:;;:/\\:;;:;;:;;:;;;;;;iiiirrssxxxxs;sxxXXXXXxxx;xxXXxxsssisssssrr",
+            "rrrii;;:irrrriiiirr;sssssssxxXXXxxxxxxX;iiriiiiiiiiiii;:..:/\\:;;:;;';;;i;;i;;iiiirrrrssxxxxxxsxxxXXXXXxxxxxxxxxssxrsssss",
+            "iirrrrir;i;irrrrriisrsixxsssssx;XXrxxxxxiiiiiriiiiiiii.:r;:/\\:;r:;;;;;.i;;.;;iiissisrrrssXxxxxixxxxXXAXxxs.xxxxxs;rrrrss",
+            "iiiiirrr:i;iiiirrr.rrr;rsxxxxssxxxrXXXxx::ii:i.i'iiii.i:;;:/\\:;;:;;;;;;;;;i;;;::iisssssssxsxxrXxxxxxx;XXXxxsssxxXxssrrrr",
+            "\\rri\\\\iii\\|||i|//rrs/.|//rs/xxxx////xAX//ss//r/rrrrr;rii:i/Ax\\i;;;;;iiii;|:;i||i||r|ssss/||si|xX||/|x|xx//A/x./s//xiss//",
+            "\\\\;\"\"\\\"\";\"\\|\"\"|\"//|'\"''|/'/'/|\"\"'/\"|\"\"///'\"\"'\"\"sX;XXXxx;==/#=\\==XXXii;ixx\"\";\"|;\"\";/;\";;|;;|\"/|'|\"|'|''\"/'\"'|\"|/\"/'\"/'\"//",
+            "\"\\;\\;\"\"\\;\"\\;\"\";\"|;\\|\"|\"|\"|/\"\"'/\"|'\"|''//|\"\"''XXXrxAXXXX;XXX#X.iAXxi;isxxrXA\"\";;\"\"//\";;\"/;\"|;;|;||\";\"//|''\"''||'\"\"''/\"'\"\"",
+            "\\\\\\\"\\\\\"\"\\;\"\"|;\"\"|;\\\"\"/;''|\\''||''\"///\"\"'|\"\"xxrir;;;sxxxxsix#XXXXX;XXXXXxrXAAA\"\"''\"//\"//\"\"/;\"/;;\"/;;\"///\";/\"\";\"|/;;|\";;''",
+            "\\\"\\;\"\\;;\\\"\"\\;|\"\"|\";\"\"/;\"\"\";\\'|||'///'''\"\"XXXiXXXXXXXrrxx++++++++AAAAxiiiiriXXXX''\"\"\"'/;//'////;;//\"/;//;//;\"\";/;\"\"|;\"||;",
+            "\\\\\\\\;;''\\\\;;;\"\";;\"\\\";;//'|\"'\";///\"\"\"'''XiXXxxxxxxixXXXXXXXix###AAAXiiiirrixxxxxxx\"\"\"/'\"\"''//\"''////\";;;\"/;/////\";;|\"|;;\"",
+            "\"\"\\\\;;\"\";\\;\\\"\";;\\'\\/;/;/\"|;;;\"/'\"|'''xXXXXXXXiXAAAAAAAAixXXXXXXXXixAAAAxsiiiisxXXix\"\"\"''\"/\"''////''\"\"\"\"'\"\"//'//\"'\";;|\"//",
+            ";\"\\\";;\\\"\"';\\\"\"\";;;/;|\"\"/;;\"''\"\"\"'''xAAAxriiiisxAAAXisAXXXXXXXXisXXXXXXXxxiX##AAAAAAsi\"\"\"'/'/\"//'\"\"\"/''\"\"\"'''\"\"'''\"\"\"\"\"/;",
+            "\\;\"''\"\\\\;\"\"\\\\;;;/;\"\"|;;\\\\'\"\\\"\"'\"\"XXXXXXsiX######AAAsiXXsriiirsxXXXriXXXXXXXXXXirAAAAAAA\"\"\"/''\"\"\"''//\"\"'''\"\"\"'''\"\"\"'''/\"/",
+            "\"\";;;\"\"\";;;;\\;;\"\\'\"\"\"''';;;\\\"\"\"irsxXXXXxxxsixXXXXXXxxxxiiAAAAAAAAXXxisAAAAAAxsriiiirsxXsi'''\"\"\"\"''/\"\"\"/''\"\"\"'''//\"\"'/'\"\"",
+            "\";;;;\"\"\"\"\"\"\"\"\"\\\"\"\\\";;;\"\"\"\";;;irAXXXXXXXXXXriXXXXXXxsriiiiirsXXXsixXXXXXXXXXXxirAAAAAAAAXXXr\"\"\"'/''//\"/'''\"\"\"''//\"\"\"''''/",
+            "\"\\;;;\"\"\\\\\"\"';;\\\\\"\"\"\";;;\"\"\"\"iiiiiirrrirAAAAAAAAXXXXriXAAAAAAAAAAAsixAAAAAAAAXXXxisAAXsriiiiirs''''/\"\"''''//\"\"'''\"\"\"\"/'''\"",
+            "\"\\;;\\;''\\\";;;\"\"\\\\;;;;\"\"\"\"XXxxxxxxxxrixAAAAAAAAAAAAsix#######AXsriiiiirsxXXrixXXXXXXXxxxxxrixAAA'/''\"\"\"\"'/''/\"\"''''//\"\"''",
+            "\"\"\"\"\"\\\";;;;\\\\\"\"\\\\;;\"\"''XXXXXXXXXXXsirAAXxriiiiirssxXXXXXXXXxirAAAAAAAAAAAAAxirXXXXXXXXXXXXXsirAAA\"\"\"\"'//'\"//\"''''\"/\"\"'''",
+            "\"\"\"\";\\;;\"\"\"\"\\;;;\\\"\"''iiiiiiiisXXxxxxxxxxxxxsirXAAAAXXXXXXXXXsis########AAAAAAsisAAAAXxsriiiiiirssxX\"\"\"/''''/\"\"\"\"'//'\"\"\"/",
+            "\\\"\"\"\"\";\\;;\"\"\"\\'\"\";;AAAAAXxiixXXXXXXXXXxxxxxsirAAAAAAAAAAAAAXXrix##XxsriiiiirssxXAAAAXXXXXiixXXXXXXXXX''''\"/\"\"\"''''//\"\"//",
+            ";;;\"\"\\\"\\;;\"\"\"'\\\"\"AAAAAAAXiisXXXXXXXXXXXXXXXrirXXxsriiiiiirrssxxxxxxxxxxxrirAAAAAAAAAAAAAAAXrisAAAAAXXXX\"\"\"\"'''''\"//\"\"''/",
+            ";;;;;\"\\'''\"\"\";;AAAAAAAAXiisAXxsrriiiiiirssxXXXXXXXXXXXrirxXXXXXXXXxxxxxxxsiiX##AAAAAAAAAAAAAXrisAAAAAAAAA'''''\"\"\"/\"'''//",
+            "\"\"\"''\"\"\\;;;\"\"rriiiiiirsxXXAAAAAAAAsiixAAAAAXXXXXXXXXXXsiisXXXXXXXXXXXXXXXxsiix#########AAAAAXxiiiiiiiiiissx'''''/\"\"\"/'''",
+            "'\"\"\"\\;\"\"\"\"\"xsiisA#AAAAAAAAAAAAAAAXrisAAAAAAAAAAAAXXXXXxrirXXXXXXXXXXXXXXXXXsiiirriiiiiirrsxXAAAAAAAAAAxiisXXX\"\"\"\"\"'/'''\"",
+            "\"\"\"\"\\'\"\"\"xxsiix########AAAAAAAAAAsiixAAAAAAAAAAAAAAAAAXsiixAXXxsrriiiiiiirrsssxxxxxrirX#########AAAAAAAAXrirXAA\"\"\"/\"''''",
+            "\"';;;\\;;XxriiX##############AAAAXrirXAAAAAAAAAXxssriiiiiiirrsriiixXXXXXXXxxxxxxxxxxxsiix################AAAsiixA''''''\"\"",
+            "------------------------------------------------------------------------------------------------------------------------",
+            "  THORN RIDGES   /   N 000   /   WALK                                                               128.5, 63.5  Z 1.0",
+            "  WASD move  ARROWS look  ENTER attack  E interact  M map  H controls  P pause"
+          ],
+          "native_projection": "\"\"\\\\;;\"\";\\;\\\"\";;\\'\\/;/;/\"|;;;\"/'\"|'''xXXXXXXXiXAAAAAAAAixXXXXXXXXixAAAAxsiiiisxXXix\"\"\"''\"/\"''////''\"\"\"\"'\"\"//'//\"'\";;|\"//"
+        }
+      ],
+      "checks": {
+        "native_console": true,
+        "normal_exit": true,
+        "hardware_gpu": true,
+        "source_unchanged": true,
+        "restored": false,
+        "audio_healthy": true,
+        "visible_road": true,
+        "stone_foley": true,
+        "native_viewport": true
+      },
+      "font": {
+        "face": "Consolas",
+        "height": 16,
+        "api_accepted": true,
+        "error": 0
+      },
+      "console_before": {
+        "input_mode": 503,
+        "output_mode": 3,
+        "width": 120,
+        "height": 40,
+        "buffer_width": 120,
+        "buffer_height": 40,
+        "attributes": 7,
+        "cursor_visible": true,
+        "cursor": [
+          0,
+          0
+        ],
+        "screen_hash": "e6ac9cf026dcd2fa5e4aeba7c33542a10af717412a63948f964316ee8ee8ab25",
+        "font": {
+          "face": "\uad74\ub9bc\uccb4",
+          "width": 8,
+          "height": 16
+        }
+      },
+      "backend": "gpu",
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      },
+      "audio_before": {
+        "available": true,
+        "error": "",
+        "buffers": 19,
+        "underruns": 0,
+        "recoveries": 0,
+        "max_write_gap_ms": 56.42879999959405
+      },
+      "audio_after": {
+        "available": false,
+        "error": "",
+        "buffers": 23,
+        "underruns": 0,
+        "recoveries": 0,
+        "max_write_gap_ms": 56.42879999959405
+      },
+      "audio_worker_stopped": true,
+      "console_after": {
+        "input_mode": 503,
+        "output_mode": 3,
+        "width": 120,
+        "height": 40,
+        "buffer_width": 120,
+        "buffer_height": 40,
+        "attributes": 7,
+        "cursor_visible": true,
+        "cursor": [
+          0,
+          15
+        ],
+        "screen_hash": "3a4d27434ad3546fb15a23ddbe5206220f4b98de2649876ec12195500a7e9a59",
+        "font": {
+          "face": "\uad74\ub9bc\uccb4",
+          "width": 8,
+          "height": 16
+        }
+      },
+      "app_status": 0,
+      "source_after": {
+        "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+        "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+        "ascii3d/app.py": "375096807b4f7495405aac5d8551a500ac6df18680e6b5f03bc0d6e1a73a8be7",
+        "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+        "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+        "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+        "ascii3d/audio_process.py": "481f8a129c80028d4674f29a4078b8298d210f4778c8067af009a4ba890380dc",
+        "ascii3d/combat.py": "0d3f1d426e9a4af0150489ee7d6b3af99e976fc5fe4904b833a6532e88870d8a",
+        "ascii3d/combat_render.py": "c14e2d88ab185b5b083980f966832c09782a18bcc9f6be61d0c2b5604c137817",
+        "ascii3d/dev_console.py": "90f1399fdcdaa054cdfd43ae1514eaed508e6d1f298ccdd1f9240bd0a196ee73",
+        "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+        "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+        "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+        "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+        "ascii3d/frame_timing.py": "1012e568d280189aa7bab669acf0d7f81674526a6fe781f8ec404bce01c0d740",
+        "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+        "ascii3d/gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+        "ascii3d/gpu_renderer.py": "15547ce42707ea4759bc710aec73813de6efc825567a0db902412685e7f0a5b0",
+        "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+        "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+        "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+        "ascii3d/monolith_solid_bvh.dll": "7a8be0ecb990ed65309ac609377626aba4877ad3ce2c048b8504f4a5ea5668f5",
+        "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+        "ascii3d/native_shading.py": "3b040d63f72b95a26edf1fc92f7d7617222fa1b4ba69d4b0ad24e8b3760bdfeb",
+        "ascii3d/native_solids.py": "3b10c0b8d9830b45652637a188b0c984d0ccdc5378e4a676f50acfe1fee40c63",
+        "ascii3d/npc_render.py": "227d2c7f20ffee41fe2b0f4cebb06f9803ef4215db5e9b8b5b6e4885ae70ab2f",
+        "ascii3d/npcs.py": "e0480893d7be791b5bd109e7108fddd553978538547e025b0a2b62f21b962389",
+        "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+        "ascii3d/palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+        "ascii3d/particles.py": "caf368eebcec59216edcfd20f19918312ef887a75eb654d8b618e0b2131abd29",
+        "ascii3d/player.py": "7860a38bcb8ff007ad88ae87e9c8d07a7feec49a4cd58722cb241847e28071c7",
+        "ascii3d/presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+        "ascii3d/renderer.py": "afd02768f2e1233e3901404d156d6b3a187cfc3d71c17db459a83dd7bb769af4",
+        "ascii3d/roads.py": "6f814d7a43e28e6cef0b22e43cc41e40fc7942bc59cd8d47bb13d9615f30ce67",
+        "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+        "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+        "ascii3d/shading.py": "1fb312569f814959355c6616ee5f4f185ada7f50d9700299478c6d78736b115c",
+        "ascii3d/solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+        "ascii3d/sound.py": "e3d4851d2f3f047ae64cf861cccceae747cebb7eaaf5513fd288578ef4c7b005",
+        "ascii3d/sound_surfaces.py": "c84e74fdec38cd7e5d30c63a251474faa2c9691cd4b9515c503c9db778c515c6",
+        "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+        "ascii3d/surface_lighting.h": "7846b4c852eec086fc3ad0e0a85ef3f02f73501581a8976a98fb6b2e2e8fd57e",
+        "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+        "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+        "ascii3d/terminal.py": "6e47aafbdd3314320efea161d3e7248853c6c1dec7c7fd26c755c4223b48d80b",
+        "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+        "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+        "ascii3d/voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+        "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+      }
+    }
+  ],
+  "verified": [
+    {
+      "role": "combat",
+      "importing": false,
+      "passed": true,
+      "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+      "native_console": true,
+      "source_before": {
+        "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+        "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+        "ascii3d/app.py": "375096807b4f7495405aac5d8551a500ac6df18680e6b5f03bc0d6e1a73a8be7",
+        "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+        "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+        "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+        "ascii3d/audio_process.py": "481f8a129c80028d4674f29a4078b8298d210f4778c8067af009a4ba890380dc",
+        "ascii3d/combat.py": "0d3f1d426e9a4af0150489ee7d6b3af99e976fc5fe4904b833a6532e88870d8a",
+        "ascii3d/combat_render.py": "c14e2d88ab185b5b083980f966832c09782a18bcc9f6be61d0c2b5604c137817",
+        "ascii3d/dev_console.py": "90f1399fdcdaa054cdfd43ae1514eaed508e6d1f298ccdd1f9240bd0a196ee73",
+        "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+        "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+        "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+        "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+        "ascii3d/frame_timing.py": "1012e568d280189aa7bab669acf0d7f81674526a6fe781f8ec404bce01c0d740",
+        "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+        "ascii3d/gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+        "ascii3d/gpu_renderer.py": "15547ce42707ea4759bc710aec73813de6efc825567a0db902412685e7f0a5b0",
+        "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+        "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+        "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+        "ascii3d/monolith_solid_bvh.dll": "7a8be0ecb990ed65309ac609377626aba4877ad3ce2c048b8504f4a5ea5668f5",
+        "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+        "ascii3d/native_shading.py": "3b040d63f72b95a26edf1fc92f7d7617222fa1b4ba69d4b0ad24e8b3760bdfeb",
+        "ascii3d/native_solids.py": "3b10c0b8d9830b45652637a188b0c984d0ccdc5378e4a676f50acfe1fee40c63",
+        "ascii3d/npc_render.py": "227d2c7f20ffee41fe2b0f4cebb06f9803ef4215db5e9b8b5b6e4885ae70ab2f",
+        "ascii3d/npcs.py": "e0480893d7be791b5bd109e7108fddd553978538547e025b0a2b62f21b962389",
+        "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+        "ascii3d/palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+        "ascii3d/particles.py": "caf368eebcec59216edcfd20f19918312ef887a75eb654d8b618e0b2131abd29",
+        "ascii3d/player.py": "7860a38bcb8ff007ad88ae87e9c8d07a7feec49a4cd58722cb241847e28071c7",
+        "ascii3d/presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+        "ascii3d/renderer.py": "afd02768f2e1233e3901404d156d6b3a187cfc3d71c17db459a83dd7bb769af4",
+        "ascii3d/roads.py": "6f814d7a43e28e6cef0b22e43cc41e40fc7942bc59cd8d47bb13d9615f30ce67",
+        "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+        "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+        "ascii3d/shading.py": "1fb312569f814959355c6616ee5f4f185ada7f50d9700299478c6d78736b115c",
+        "ascii3d/solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+        "ascii3d/sound.py": "e3d4851d2f3f047ae64cf861cccceae747cebb7eaaf5513fd288578ef4c7b005",
+        "ascii3d/sound_surfaces.py": "c84e74fdec38cd7e5d30c63a251474faa2c9691cd4b9515c503c9db778c515c6",
+        "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+        "ascii3d/surface_lighting.h": "7846b4c852eec086fc3ad0e0a85ef3f02f73501581a8976a98fb6b2e2e8fd57e",
+        "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+        "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+        "ascii3d/terminal.py": "6e47aafbdd3314320efea161d3e7248853c6c1dec7c7fd26c755c4223b48d80b",
+        "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+        "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+        "ascii3d/voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+        "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+      },
+      "events": [
+        "enemy_alert",
+        "enemy_attack",
+        "player_hurt",
+        "sword_swing",
+        "sword_hit",
+        "enemy_hurt",
+        "enemy_down"
+      ],
+      "observations": [
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 1,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 8,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 8,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 9,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+          "damage_material": true,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 1
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        },
+        {
+          "player_damage_cue": "",
+          "damage_material": false,
+          "warden_hp": 0,
+          "stone_shards": 0,
+          "active_defeat_bursts": 0
+        }
+      ],
+      "checks": {
+        "native_console": true,
+        "normal_exit": true,
+        "hardware_gpu": true,
+        "source_unchanged": true,
+        "restored": true,
+        "audio_healthy": true,
+        "damage_cue": true,
+        "native_attack": true,
+        "released_effect": true,
+        "defeat_and_damage_audio": true,
+        "warden_down": true
+      },
+      "font": {
+        "face": "Consolas",
+        "height": 16,
+        "api_accepted": true,
+        "error": 0
+      },
+      "console_before": {
+        "input_mode": 503,
+        "output_mode": 3,
+        "width": 120,
+        "height": 40,
+        "buffer_width": 120,
+        "buffer_height": 40,
+        "attributes": 7,
+        "cursor_visible": true,
+        "cursor": [
+          0,
+          0
+        ],
+        "screen_hash": "e6ac9cf026dcd2fa5e4aeba7c33542a10af717412a63948f964316ee8ee8ab25",
+        "font": {
+          "face": "\uad74\ub9bc\uccb4",
+          "width": 8,
+          "height": 16
+        }
+      },
+      "backend": "gpu",
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      },
+      "console_before_enter": {
+        "input_mode": 503,
+        "output_mode": 3,
+        "width": 120,
+        "height": 40,
+        "buffer_width": 120,
+        "buffer_height": 40,
+        "attributes": 7,
+        "cursor_visible": true,
+        "cursor": [
+          0,
+          15
+        ],
+        "screen_hash": "3a4d27434ad3546fb15a23ddbe5206220f4b98de2649876ec12195500a7e9a59",
+        "font": {
+          "face": "\uad74\ub9bc\uccb4",
+          "width": 8,
+          "height": 16
+        }
+      },
+      "defeat_frame": [
+        "  HP [########--] 8/10 / IRON SWORD                                                                   SND ON    27 FPS",
+        "------------------------------------------------------- [-2 HP] --------------------------------------------------------",
+        "          srssssrrrrrrsrriii;;;                     srrxssssssirrirrrr                            srrrssssssrrrrsrsr",
+        "          rrrrrrrriiiiiriiii;;rii                  rirrsssrriiiiissrii;                          ssssrriiirrrrririrrs",
+        "           iiriiiiiii;ii;;;;;iiii;;                iirriirrii;;;iiiii;;;                       ssiiirrrriiiiiiiiirrrss;;",
+        "            ;;;i;;;;;iiii;;;iii;;:::                ;iiii;;;;;;;;i;;;;;rrsrriii   irrriiii    rir;iiiiiiiiiii;i;rii;rrii",
+        "       rrssrr;;;;;;i;;;;;;;i;;;;;;;;                 ;;;;;;;;;;;;;i;;;srriiirii;;rrrrri;ii;   iii;;;;;;;;;;;;;;;i;;rrr;;",
+        "      iriiirriii;;;;;;;;i;;;;;;;;;;;                rr;;;;;;;;;;i;;;srrirri;iiiiiiiiii;;;;;;i ;;;;;;;;;;;;;;;;;;;;iiii::",
+        "     ii;iii;;;;;;;;;;;;;;;;;;;;;;;;iiii       .    rrrii;;;s|ii  rrrrriii;;;ii;*;ii;;;;::;;;;  r;;;;;;;;;;;;;;;;iii;;;;r",
+        "      ;;;;;;;;;;;;; ;;;|;:i;;;;:::;;;;;;rr        iiii;;;;;x|i;:i;ii;;;;;;;;;;;;:;;;;;:;;:;;:srr.r;;;;;;;;;;;;;;;;iirrrr",
+        "     ;i;;::;;;;;;;     |i:;:;;;::;;;;;;;ri;;;;   . i;;;;;;;'|i:;i;:;;;;;i;;;;:;;;;;;:;;:;::;riiriii;   \\;.r;;i;;;;iii;i;",
+        "     ;;;;;::;;;;       |i::;;;;:::;;;:;;;;;;;:     ;;;;;.;:x|:;;;:: ;;\\;;;*;;;;::;::;|:    ;;;;';;;;  ;i.|i;;rsi;'ririii",
+        "      ;::;;|||;        |i;:.:;;|: :;;;;;;;;;;:       :;;;;:x|:;;::    /\\;;;;::.     ;|:      ;;;;     :;x|;;;;|i; rrrrrr",
+        "\";;;,;\"\"'::|||         |.;  |\";|:;;\";;;;;;:::\";\"\";;;.\"\";|:;'|;||\"\";\"\"\"\"\\;s|i|\"\"\";;\"\"r|;;;\"\"\"\"\"|||\"\"\";;;;x|::r.|;;;rirrrr",
+        "\";;,,;;.;\"||||;\"\";\";;\";|i;;;|,r|;\";\"\"\"|||.||;;;\";\"\"\";\";r|;\"s|;||;;;;;;\"/\\r|i|;;;\";;;r|;\"\"\";;;;|||\"\"\"\";;ss|||rr|;\"\"i:rrrs",
+        ";;\";;\",\"\";||||\"\"\";\";;;;si;;;|;r|;;\";;'||||||;\";\"\";\"\"\"\";r|;;s|;||\"\";;\";;/\\r|i|'\";\";\"rr|;\";\".\";\"|||;;\"\"\"\"r|i||rr|,\"ii:irrr",
+        "\";;;;,\";;;|\"|||\";\"\";\"\"\"r|;;;|;r|;\"*;\"\"||||||;.\";\";\";\";*r|;\"s|;||;;\"\"\"\";/%\\|;|;\".\".;rri\";\"\".;\";|||;';;;.r.i||rri;\"rr:rrrr",
+        ";;;\"\"\"\"'\"\"|\"|||;;;;\"\";\"s|;;\"|;r|;;;\";;||||||\"';;\";\"\"\",\"r|;\"s|;||;\"\";;\";;/\\|;\";\";\"\"\"ir;;.\"\"\"'.'|||\"\",\";rr||||ir;Xxrssrrrr",
+        ";;;\";\";;\"\"\";|||.'\"\";;\";s|;;;|\"i|;;\"\";;|||;|;\"\";;\"\";\"\"\"\"i|;\"s|;||;;;;'';'/#\\;;;\"\"\"\";ir;\"\";;\"\";;|;\"\",;\"\"rr||.|i|;xXrrsssis",
+        "xx.;xxxxxxxxXXXrXXX;xxxxxXXXXXxrxss;sssxxxss.rr;iii:rrrrriii+iii;rr:rrrr/#\\rrrssixx;ssssssxxXXXXrXx;xxxxXXXXXXXxrxs;xxxx",
+        "ssx;xrxxxxxxxxXXXXX;XrxxxxxxXXXXXxx;sisssssssssrrii:i;rrrrr.iiiiiii:rrir/##\\irrrssx;xxisssssxxXXXXXXXxrxxxXXXXXXXxXxssix",
+        "rssXxxXXXXxrxxxxxXX;XXXXxxxix'xXXXX;xsssrrsisss'srr:iiiiirr;;rriiii:iirrr/#\\irrrrrssx.xxxxxsisxxXX#XXXXXxxxx'XXXXXAxxxss",
+        "sisxssxxxXXXXxxxxrxAXXXXXXXxxxxxxrx;Xxxs.srrrrs.sis;rriiiiiirrrrri;:iiiir/s#\\srrrrirsssxxxxxxxxxxxs.XXXXXXxxxxxxXXsXXxxx",
+        "xssx|ssisxxXXXXXxxxXxxXrXX/XXx|xxxx;xxxrxxssrrr::;;;;;:::::::::::::::::://s#\\;;;;;;:::;sixxxXxxxxxXxxXXX|XXXXxxxxxAXXXXX",
+        "\\s///||s/\\sX'/X.XXXx|x|x//X#|r|Xxxxssxx////;/i///r/r//s/.////i;//r//r/ri//#%%\\is//ss/rr//s|xxXr//xxx//|x||#|X|rxx||\\xx||",
+        "\"\\/\"/|\\/'\\\\''/\"''/\"/|\"|'//\"||\"//\"\"/'/\"''/\"'/\"//'/\"///\"/'/;\"/;;/\";;\"///\"\"/;/%%\\;////;/\";;/\";''\"/'/\"\"'//|'|\"\"/'|\"'||\"\\'|||",
+        "\\\\\"'\\|\"'|'||''//\\/'|'/\"'/\"\"|'//'''\"/''\"//'\"//''\"/''/\"'\"/;;//\"\"/'\"\"//\";/\"\";/%%%\\;\"//;\"/;/;\"\"\"\"/\"/|\"/\"/';|''//'|\"\"|'|/\"||\"",
+        "\"\"\\'\"\"\"'\\'|'\"\"/'\\\"\"\\'/\"\"''\"\"\\//\"\"//'\"\"'/'\"\"'/\"//''\"\"\"'//\"\"'///''';//\"*//'//%%%\\/;;\"\";/;\"\";///';;\"///\";|;/'\"\"'''\"/'//\"\"/'",
+        "\\'\"\\\"\"\"'\\'\"\"'\\'\"\"\"'\\\"\"\"'|'||\\.'\".\"''\"/\"''//\"'/'\"\"'''\"\"//'\"/\"'''\";//';\"//'\"/@@@@\\*\"\"\"/;\"/\";//''/;;\"/\"\"//;/\"''\"\"'/'\"\"/'/\";",
+        "'\\'\\\"\"''\"\"\\''\\\"\"\"\"\"\"'''\"\"\"||\"\"\"'/'//\"'''\"/\"'''\"/\"''\"///''\"\"\"'''\"\"/''''=====/###\\=====;/;;/'';/\"\"\";;;/\"\";;;\"\"\"\"\"\"\"'\"//\"\"\"",
+        "\"\\'\\\\\"\"'''\\\"\"\"//\"'''\\\"\"'''|\"\"'''\"\"/''/\"\"\"'*/'\"/\"'''/\"\"'''\"\"\"'''//\"''//''//\"'###\";;\"\"'/\"\";/\"''\"/\";\"//;;;\"\"\";;;\"\"'/\";/''\";",
+        "''\\'\"\"\"'''''|'/\"\"'''|\"/\"'''\"\"\"''/\"\"\"\"/''\"\"//'''//\"'''/\"\"\"'/'/\"//'''/\"/\"\"/''/###\"'\"'\"\"\"\"//''''///\"//.;;;\"\"/;;/;\"//\"\";\"'\"\"",
+        "\"\"\"''\\\\\"\"\"''|'\"\"\"\"''|\"/\"\"''''/'///\"'/''\"\"\"/'''\"/\"'''/\"\"\"//'/\"\"/\"'''//\"/\"\"\"/'###\"\"/'''\"/\"''/'\"////'\";;;/\"//\";/;//''''';;/",
+        "\"//\"'\\'\\\"\"\"'\\\\'\"\"\"\"'''\\\"\"\"\"\"/\"''/'\"*\"/'''\"\"\"\"//''\"\"\"/'''/\"\"\"''''/\"\"\"/./''''/###''''/\"//''/\"\"\"\"///';;;\"\"\"/;\"\";'//'\"\"\"\";/\"",
+        "\"/\"\"\\''\\\\\"\"\"'\\''\"\\\"\"''\\''''|//\"/''''//\"\"''''/\"\"\"''//\"\"\"\"/'''\"\"//''''/\".\"\"\"/\"###'\"\"\"\"/'''///\"''''\"\"\"\"''//;\"\"\"'\"///\"\"\"''//",
+        "'\"\"\"\\/''\\\"\"\"\"\"'''\\\"\"\"\"\"/\"\"|//'/\"\"\"///''\"\"\"\"/'''\"\"/\"\"'''/\"//\"'/''/\"\"\"/'''''''###//'//'\"//\"//'''\"///''''/\"\";\"'''/\"\"\"\"'''/\"",
+        "/'\"\"/\"\"''\\'\"\"\"\"\"''''''/'\"\"\"/\"'/''/\"\"\"\"''''\"\"\"\"\"'/'//\"\"\"//'''\"///'''''\"\"//\"\"\"###'///\"\"\"/''''\"\"\"//''''\"\"//'''//\"\"\"\"'''///\"",
+        "------------------------------------------------------------------------------------------------------------------------",
+        "  THE WATCHSTONES   /   N 000   /   WALK                                                            41.5, 248.8  Z 1.0",
+        "  WASD move  ARROWS look  ENTER attack  E interact  M map  H controls  P pause"
+      ],
+      "audio_before": {
+        "available": true,
+        "error": "",
+        "buffers": 42,
+        "underruns": 0,
+        "recoveries": 0,
+        "max_write_gap_ms": 58.53290000004563
+      },
+      "audio_after": {
+        "available": false,
+        "error": "",
+        "buffers": 47,
+        "underruns": 0,
+        "recoveries": 0,
+        "max_write_gap_ms": 58.53290000004563
+      },
+      "audio_worker_stopped": true,
+      "console_after": {
+        "input_mode": 503,
+        "output_mode": 3,
+        "width": 120,
+        "height": 40,
+        "buffer_width": 120,
+        "buffer_height": 40,
+        "attributes": 7,
+        "cursor_visible": true,
+        "cursor": [
+          0,
+          15
+        ],
+        "screen_hash": "3a4d27434ad3546fb15a23ddbe5206220f4b98de2649876ec12195500a7e9a59",
+        "font": {
+          "face": "\uad74\ub9bc\uccb4",
+          "width": 8,
+          "height": 16
+        }
+      },
+      "app_status": 0,
+      "source_after": {
+        "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+        "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+        "ascii3d/app.py": "375096807b4f7495405aac5d8551a500ac6df18680e6b5f03bc0d6e1a73a8be7",
+        "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+        "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+        "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+        "ascii3d/audio_process.py": "481f8a129c80028d4674f29a4078b8298d210f4778c8067af009a4ba890380dc",
+        "ascii3d/combat.py": "0d3f1d426e9a4af0150489ee7d6b3af99e976fc5fe4904b833a6532e88870d8a",
+        "ascii3d/combat_render.py": "c14e2d88ab185b5b083980f966832c09782a18bcc9f6be61d0c2b5604c137817",
+        "ascii3d/dev_console.py": "90f1399fdcdaa054cdfd43ae1514eaed508e6d1f298ccdd1f9240bd0a196ee73",
+        "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+        "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+        "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+        "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+        "ascii3d/frame_timing.py": "1012e568d280189aa7bab669acf0d7f81674526a6fe781f8ec404bce01c0d740",
+        "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+        "ascii3d/gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+        "ascii3d/gpu_renderer.py": "15547ce42707ea4759bc710aec73813de6efc825567a0db902412685e7f0a5b0",
+        "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+        "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+        "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+        "ascii3d/monolith_solid_bvh.dll": "7a8be0ecb990ed65309ac609377626aba4877ad3ce2c048b8504f4a5ea5668f5",
+        "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+        "ascii3d/native_shading.py": "3b040d63f72b95a26edf1fc92f7d7617222fa1b4ba69d4b0ad24e8b3760bdfeb",
+        "ascii3d/native_solids.py": "3b10c0b8d9830b45652637a188b0c984d0ccdc5378e4a676f50acfe1fee40c63",
+        "ascii3d/npc_render.py": "227d2c7f20ffee41fe2b0f4cebb06f9803ef4215db5e9b8b5b6e4885ae70ab2f",
+        "ascii3d/npcs.py": "e0480893d7be791b5bd109e7108fddd553978538547e025b0a2b62f21b962389",
+        "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+        "ascii3d/palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+        "ascii3d/particles.py": "caf368eebcec59216edcfd20f19918312ef887a75eb654d8b618e0b2131abd29",
+        "ascii3d/player.py": "7860a38bcb8ff007ad88ae87e9c8d07a7feec49a4cd58722cb241847e28071c7",
+        "ascii3d/presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+        "ascii3d/renderer.py": "afd02768f2e1233e3901404d156d6b3a187cfc3d71c17db459a83dd7bb769af4",
+        "ascii3d/roads.py": "6f814d7a43e28e6cef0b22e43cc41e40fc7942bc59cd8d47bb13d9615f30ce67",
+        "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+        "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+        "ascii3d/shading.py": "1fb312569f814959355c6616ee5f4f185ada7f50d9700299478c6d78736b115c",
+        "ascii3d/solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+        "ascii3d/sound.py": "e3d4851d2f3f047ae64cf861cccceae747cebb7eaaf5513fd288578ef4c7b005",
+        "ascii3d/sound_surfaces.py": "c84e74fdec38cd7e5d30c63a251474faa2c9691cd4b9515c503c9db778c515c6",
+        "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+        "ascii3d/surface_lighting.h": "7846b4c852eec086fc3ad0e0a85ef3f02f73501581a8976a98fb6b2e2e8fd57e",
+        "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+        "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+        "ascii3d/terminal.py": "6e47aafbdd3314320efea161d3e7248853c6c1dec7c7fd26c755c4223b48d80b",
+        "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+        "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+        "ascii3d/voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+        "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+      }
+    },
+    {
+      "role": "road",
+      "importing": false,
+      "passed": true,
+      "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+      "native_console": true,
+      "source_before": {
+        "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+        "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+        "ascii3d/app.py": "375096807b4f7495405aac5d8551a500ac6df18680e6b5f03bc0d6e1a73a8be7",
+        "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+        "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+        "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+        "ascii3d/audio_process.py": "481f8a129c80028d4674f29a4078b8298d210f4778c8067af009a4ba890380dc",
+        "ascii3d/combat.py": "0d3f1d426e9a4af0150489ee7d6b3af99e976fc5fe4904b833a6532e88870d8a",
+        "ascii3d/combat_render.py": "c14e2d88ab185b5b083980f966832c09782a18bcc9f6be61d0c2b5604c137817",
+        "ascii3d/dev_console.py": "90f1399fdcdaa054cdfd43ae1514eaed508e6d1f298ccdd1f9240bd0a196ee73",
+        "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+        "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+        "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+        "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+        "ascii3d/frame_timing.py": "1012e568d280189aa7bab669acf0d7f81674526a6fe781f8ec404bce01c0d740",
+        "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+        "ascii3d/gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+        "ascii3d/gpu_renderer.py": "15547ce42707ea4759bc710aec73813de6efc825567a0db902412685e7f0a5b0",
+        "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+        "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+        "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+        "ascii3d/monolith_solid_bvh.dll": "7a8be0ecb990ed65309ac609377626aba4877ad3ce2c048b8504f4a5ea5668f5",
+        "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+        "ascii3d/native_shading.py": "3b040d63f72b95a26edf1fc92f7d7617222fa1b4ba69d4b0ad24e8b3760bdfeb",
+        "ascii3d/native_solids.py": "3b10c0b8d9830b45652637a188b0c984d0ccdc5378e4a676f50acfe1fee40c63",
+        "ascii3d/npc_render.py": "227d2c7f20ffee41fe2b0f4cebb06f9803ef4215db5e9b8b5b6e4885ae70ab2f",
+        "ascii3d/npcs.py": "e0480893d7be791b5bd109e7108fddd553978538547e025b0a2b62f21b962389",
+        "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+        "ascii3d/palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+        "ascii3d/particles.py": "caf368eebcec59216edcfd20f19918312ef887a75eb654d8b618e0b2131abd29",
+        "ascii3d/player.py": "7860a38bcb8ff007ad88ae87e9c8d07a7feec49a4cd58722cb241847e28071c7",
+        "ascii3d/presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+        "ascii3d/renderer.py": "afd02768f2e1233e3901404d156d6b3a187cfc3d71c17db459a83dd7bb769af4",
+        "ascii3d/roads.py": "6f814d7a43e28e6cef0b22e43cc41e40fc7942bc59cd8d47bb13d9615f30ce67",
+        "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+        "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+        "ascii3d/shading.py": "1fb312569f814959355c6616ee5f4f185ada7f50d9700299478c6d78736b115c",
+        "ascii3d/solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+        "ascii3d/sound.py": "e3d4851d2f3f047ae64cf861cccceae747cebb7eaaf5513fd288578ef4c7b005",
+        "ascii3d/sound_surfaces.py": "c84e74fdec38cd7e5d30c63a251474faa2c9691cd4b9515c503c9db778c515c6",
+        "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+        "ascii3d/surface_lighting.h": "7846b4c852eec086fc3ad0e0a85ef3f02f73501581a8976a98fb6b2e2e8fd57e",
+        "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+        "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+        "ascii3d/terminal.py": "6e47aafbdd3314320efea161d3e7248853c6c1dec7c7fd26c755c4223b48d80b",
+        "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+        "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+        "ascii3d/voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+        "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+      },
+      "events": [
+        "step_stone"
+      ],
+      "observations": [
+        {
+          "road_glyph_counts": {
+            "s": 83,
+            "X": 374,
+            ";": 9,
+            "x": 168,
+            "i": 217,
+            "r": 88,
+            "A": 339,
+            "#": 87
+          },
+          "frame_size": [
+            120,
+            40
+          ],
+          "scene": [
+            "  HP [##########] 10/10 / UNARMED                                                                     SND ON     0 FPS",
+            "------------------------------------------------------------------------------------------------------------------------",
+            "irr;rrrrrssxxrxxssxxxXXXXxrxXxxXXXXxxssisxsss;;;::;:;;;;;;;;;;;;;;;;ii;:;;isssixsssxxXXXxxxi;xX.XXXxxsssi;xxxsrrrrrrrirr",
+            ";irxsssrrrrssixx;xxssxxXXXrXxxxxxxXXX.xs.x;iii:;;:;;:;;:;;;;;;;i;;i;;iiiii:iiixXsssssxxXXXrx;xxxXXXXXxxixssxxxssrrrr;:rr",
+            "::ii:rssssrrrs.xXxxxxixxxxXXX;Xxxxixxxxiiii:ii:;;:;;:;;:;':;;;;i;;i;;i;iiiiii:'.ix;;;:;;;;;;.;;;;;:;;;;;;;;;;;;;;;::::::",
+            "rrii;.irrsxsssrssixxXXx;xxxxXrXXXxxXsxi;:ii:ii:;r:;;s;;:r;:;;;;s;;ir;i;riiiiiiiirrxxxXssxxxXXrXxxxxxxXXXxxssss;ssssrri;i",
+            "irrr;riiirr;ssssisssxxXAXxxxxrxXXXXAxxii:ii:ii:i;:;;:;*:;;:;;:;;;;;;;i;;iiiiiiiiiisxx;xxxsxxrXXXXAxxxxxxrxxxssrrsssssiri",
+            ";iiirrrrriis;sssxxsssssXrXXXxxxxxxXXXrxi:ii:ii:ii:;;:;;:;;:*;:;;:;;:;;:;;iiiiiiiirrssxxrxxxxxxxXX;XrxxsxxxxxxXsrirrsssrr",
+            "iiiiiirr'rrrrrrrssxxxsssixxXXXXxxxxx:XXi:ii.ii:ii:;;:;;:;.:;;:;;:;;:;;:;;:ii:ii:rs.sssixxXXxxxxxxXrXXxxxssxxx;xisrrrrrrs",
+            ":rriiii;irrs;rrrrrssxxxx;ssxxxXXrXxx;xxi:ii:ii:ii:i;:;;:;;:\\;:;;:;;:;;:;;:;i:ii:iixsxssssxXXXrxxXxxXXXXxxsssXxxxxssrrr;r",
+            "iiirr.s;iiiirrsssrsirsxxAAXXXXXrAAAAAXXiiiiiiiiii:ii:;;:;sr/\\rr;:;;:;;:;;:;;:iiiissxxxssssXxrXXXxxxxxxAX'xxs.ssssxXsr;ii",
+            "ii;;iirrrriiiirisssssrrssxxr'xXxxxxXXXXriiriiiiiiiii:;;:;;:/\\:;;:;;:;;:;;;;;;iiiirrssxxxxs;sxxXXXXXxxx;xxXXxxsssisssssrr",
+            "rrrii;;:irrrriiiirr;sssssssxxXXXxxxxxxX;iiriiiiiiiiiii;:..:/\\:;;:;;';;;i;;i;;iiiirrrrssxxxxxxsxxxXXXXXxxxxxxxxxssxrsssss",
+            "iirrrrir;i;irrrrriisrsixxsssssx;XXrxxxxxiiiiiriiiiiiii.:r;:/\\:;r:;;;;;.i;;.;;iiissisrrrssXxxxxixxxxXXAXxxs.xxxxxs;rrrrss",
+            "iiiiirrr:i;iiiirrr.rrr;rsxxxxssxxxrXXXxx::ii:i.i'iiii.i:;;:/\\:;;:;;;;;;;;;i;;;::iisssssssxsxxrXxxxxxx;XXXxxsssxxXxssrrrr",
+            "\\rri\\\\iii\\|||i|//rrs/.|//rs/xxxx////xAX//ss//r/rrrrr;rii:i/Ax\\i;;;;;iiii;|:;i||i||r|ssss/||si|xX||/|x|xx//A/x./s//xiss//",
+            "\\\\;\"\"\\\"\";\"\\|\"\"|\"//|'\"''|/'/'/|\"\"'/\"|\"\"///'\"\"'\"\"sX;XXXxx;==/#=\\==XXXii;ixx\"\";\"|;\"\";/;\";;|;;|\"/|'|\"|'|''\"/'\"'|\"|/\"/'\"/'\"//",
+            "\"\\;\\;\"\"\\;\"\\;\"\";\"|;\\|\"|\"|\"|/\"\"'/\"|'\"|''//|\"\"''XXXrxAXXXX;XXX#X.iAXxi;isxxrXA\"\";;\"\"//\";;\"/;\"|;;|;||\";\"//|''\"''||'\"\"''/\"'\"\"",
+            "\\\\\\\"\\\\\"\"\\;\"\"|;\"\"|;\\\"\"/;''|\\''||''\"///\"\"'|\"\"xxrir;;;sxxxxsix#XXXXX;XXXXXxrXAAA\"\"''\"//\"//\"\"/;\"/;;\"/;;\"///\";/\"\";\"|/;;|\";;''",
+            "\\\"\\;\"\\;;\\\"\"\\;|\"\"|\";\"\"/;\"\"\";\\'|||'///'''\"\"XXXiXXXXXXXrrxx++++++++AAAAxiiiiriXXXX''\"\"\"'/;//'////;;//\"/;//;//;\"\";/;\"\"|;\"||;",
+            "\\\\\\\\;;''\\\\;;;\"\";;\"\\\";;//'|\"'\";///\"\"\"'''XiXXxxxxxxixXXXXXXXix###AAAXiiiirrixxxxxxx\"\"\"/'\"\"''//\"''////\";;;\"/;/////\";;|\"|;;\"",
+            "\"\"\\\\;;\"\";\\;\\\"\";;\\'\\/;/;/\"|;;;\"/'\"|'''xXXXXXXXiXAAAAAAAAixXXXXXXXXixAAAAxsiiiisxXXix\"\"\"''\"/\"''////''\"\"\"\"'\"\"//'//\"'\";;|\"//",
+            ";\"\\\";;\\\"\"';\\\"\"\";;;/;|\"\"/;;\"''\"\"\"'''xAAAxriiiisxAAAXisAXXXXXXXXisXXXXXXXxxiX##AAAAAAsi\"\"\"'/'/\"//'\"\"\"/''\"\"\"'''\"\"'''\"\"\"\"\"/;",
+            "\\;\"''\"\\\\;\"\"\\\\;;;/;\"\"|;;\\\\'\"\\\"\"'\"\"XXXXXXsiX######AAAsiXXsriiirsxXXXriXXXXXXXXXXirAAAAAAA\"\"\"/''\"\"\"''//\"\"'''\"\"\"'''\"\"\"'''/\"/",
+            "\"\";;;\"\"\";;;;\\;;\"\\'\"\"\"''';;;\\\"\"\"irsxXXXXxxxsixXXXXXXxxxxiiAAAAAAAAXXxisAAAAAAxsriiiirsxXsi'''\"\"\"\"''/\"\"\"/''\"\"\"'''//\"\"'/'\"\"",
+            "\";;;;\"\"\"\"\"\"\"\"\"\\\"\"\\\";;;\"\"\"\";;;irAXXXXXXXXXXriXXXXXXxsriiiiirsXXXsixXXXXXXXXXXxirAAAAAAAAXXXr\"\"\"'/''//\"/'''\"\"\"''//\"\"\"''''/",
+            "\"\\;;;\"\"\\\\\"\"';;\\\\\"\"\"\";;;\"\"\"\"iiiiiirrrirAAAAAAAAXXXXriXAAAAAAAAAAAsixAAAAAAAAXXXxisAAXsriiiiirs''''/\"\"''''//\"\"'''\"\"\"\"/'''\"",
+            "\"\\;;\\;''\\\";;;\"\"\\\\;;;;\"\"\"\"XXxxxxxxxxrixAAAAAAAAAAAAsix#######AXsriiiiirsxXXrixXXXXXXXxxxxxrixAAA'/''\"\"\"\"'/''/\"\"''''//\"\"''",
+            "\"\"\"\"\"\\\";;;;\\\\\"\"\\\\;;\"\"''XXXXXXXXXXXsirAAXxriiiiirssxXXXXXXXXxirAAAAAAAAAAAAAxirXXXXXXXXXXXXXsirAAA\"\"\"\"'//'\"//\"''''\"/\"\"'''",
+            "\"\"\"\";\\;;\"\"\"\"\\;;;\\\"\"''iiiiiiiisXXxxxxxxxxxxxsirXAAAAXXXXXXXXXsis########AAAAAAsisAAAAXxsriiiiiirssxX\"\"\"/''''/\"\"\"\"'//'\"\"\"/",
+            "\\\"\"\"\"\";\\;;\"\"\"\\'\"\";;AAAAAXxiixXXXXXXXXXxxxxxsirAAAAAAAAAAAAAXXrix##XxsriiiiirssxXAAAAXXXXXiixXXXXXXXXX''''\"/\"\"\"''''//\"\"//",
+            ";;;\"\"\\\"\\;;\"\"\"'\\\"\"AAAAAAAXiisXXXXXXXXXXXXXXXrirXXxsriiiiiirrssxxxxxxxxxxxrirAAAAAAAAAAAAAAAXrisAAAAAXXXX\"\"\"\"'''''\"//\"\"''/",
+            ";;;;;\"\\'''\"\"\";;AAAAAAAAXiisAXxsrriiiiiirssxXXXXXXXXXXXrirxXXXXXXXXxxxxxxxsiiX##AAAAAAAAAAAAAXrisAAAAAAAAA'''''\"\"\"/\"'''//",
+            "\"\"\"''\"\"\\;;;\"\"rriiiiiirsxXXAAAAAAAAsiixAAAAAXXXXXXXXXXXsiisXXXXXXXXXXXXXXXxsiix#########AAAAAXxiiiiiiiiiissx'''''/\"\"\"/'''",
+            "'\"\"\"\\;\"\"\"\"\"xsiisA#AAAAAAAAAAAAAAAXrisAAAAAAAAAAAAXXXXXxrirXXXXXXXXXXXXXXXXXsiiirriiiiiirrsxXAAAAAAAAAAxiisXXX\"\"\"\"\"'/'''\"",
+            "\"\"\"\"\\'\"\"\"xxsiix########AAAAAAAAAAsiixAAAAAAAAAAAAAAAAAXsiixAXXxsrriiiiiiirrsssxxxxxrirX#########AAAAAAAAXrirXAA\"\"\"/\"''''",
+            "\"';;;\\;;XxriiX##############AAAAXrirXAAAAAAAAAXxssriiiiiiirrsriiixXXXXXXXxxxxxxxxxxxsiix################AAAsiixA''''''\"\"",
+            "------------------------------------------------------------------------------------------------------------------------",
+            "  THORN RIDGES   /   N 000   /   WALK                                                               128.5, 63.5  Z 1.0",
+            "  WASD move  ARROWS look  ENTER attack  E interact  M map  H controls  P pause"
+          ],
+          "native_projection": "\"\"\\\\;;\"\";\\;\\\"\";;\\'\\/;/;/\"|;;;\"/'\"|'''xXXXXXXXiXAAAAAAAAixXXXXXXXXixAAAAxsiiiisxXXix\"\"\"''\"/\"''////''\"\"\"\"'\"\"//'//\"'\";;|\"//"
+        }
+      ],
+      "checks": {
+        "native_console": true,
+        "normal_exit": true,
+        "hardware_gpu": true,
+        "source_unchanged": true,
+        "restored": true,
+        "audio_healthy": true,
+        "visible_road": true,
+        "stone_foley": true,
+        "native_viewport": true
+      },
+      "font": {
+        "face": "Consolas",
+        "height": 16,
+        "api_accepted": true,
+        "error": 0
+      },
+      "console_before": {
+        "input_mode": 503,
+        "output_mode": 3,
+        "width": 120,
+        "height": 40,
+        "buffer_width": 120,
+        "buffer_height": 40,
+        "attributes": 7,
+        "cursor_visible": true,
+        "cursor": [
+          0,
+          0
+        ],
+        "screen_hash": "e6ac9cf026dcd2fa5e4aeba7c33542a10af717412a63948f964316ee8ee8ab25",
+        "font": {
+          "face": "\uad74\ub9bc\uccb4",
+          "width": 8,
+          "height": 16
+        }
+      },
+      "backend": "gpu",
+      "adapter": {
+        "vendor": "NVIDIA",
+        "architecture": "",
+        "device": "NVIDIA GeForce RTX 3080 Laptop GPU",
+        "description": "621.24",
+        "stackgroup_min_size": 4,
+        "stackgroup_max_size": 128,
+        "vendor_id": 4318,
+        "device_id": 9372,
+        "adapter_type": "DiscreteGPU",
+        "backend_type": "Vulkan"
+      },
+      "console_before_enter": {
+        "input_mode": 503,
+        "output_mode": 3,
+        "width": 120,
+        "height": 40,
+        "buffer_width": 120,
+        "buffer_height": 40,
+        "attributes": 7,
+        "cursor_visible": true,
+        "cursor": [
+          0,
+          15
+        ],
+        "screen_hash": "3a4d27434ad3546fb15a23ddbe5206220f4b98de2649876ec12195500a7e9a59",
+        "font": {
+          "face": "\uad74\ub9bc\uccb4",
+          "width": 8,
+          "height": 16
+        }
+      },
+      "audio_before": {
+        "available": true,
+        "error": "",
+        "buffers": 19,
+        "underruns": 0,
+        "recoveries": 0,
+        "max_write_gap_ms": 57.13160000004791
+      },
+      "audio_after": {
+        "available": false,
+        "error": "",
+        "buffers": 23,
+        "underruns": 0,
+        "recoveries": 0,
+        "max_write_gap_ms": 57.13160000004791
+      },
+      "audio_worker_stopped": true,
+      "console_after": {
+        "input_mode": 503,
+        "output_mode": 3,
+        "width": 120,
+        "height": 40,
+        "buffer_width": 120,
+        "buffer_height": 40,
+        "attributes": 7,
+        "cursor_visible": true,
+        "cursor": [
+          0,
+          15
+        ],
+        "screen_hash": "3a4d27434ad3546fb15a23ddbe5206220f4b98de2649876ec12195500a7e9a59",
+        "font": {
+          "face": "\uad74\ub9bc\uccb4",
+          "width": 8,
+          "height": 16
+        }
+      },
+      "app_status": 0,
+      "source_after": {
+        "ascii3d/__init__.py": "f3a7d99f497dd6d982eea86a90fa45f9c11469534781c31302d33aa2f5694ae2",
+        "ascii3d/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+        "ascii3d/app.py": "375096807b4f7495405aac5d8551a500ac6df18680e6b5f03bc0d6e1a73a8be7",
+        "ascii3d/architecture.py": "4654421b1ae12e9f9c35d2a870603c84408a0ffa5493f15c077e5bf3ca1bca1a",
+        "ascii3d/audio_check.py": "38b814eecb95402c0b6175a7b779997cd3012bb9c59ffd3df882ede28cb5e599",
+        "ascii3d/audio_output.py": "218983f98db2f5b82fa16a4a7ef31b9d380e398bd3e2074a4cb14619df66e2aa",
+        "ascii3d/audio_process.py": "481f8a129c80028d4674f29a4078b8298d210f4778c8067af009a4ba890380dc",
+        "ascii3d/combat.py": "0d3f1d426e9a4af0150489ee7d6b3af99e976fc5fe4904b833a6532e88870d8a",
+        "ascii3d/combat_render.py": "c14e2d88ab185b5b083980f966832c09782a18bcc9f6be61d0c2b5604c137817",
+        "ascii3d/dev_console.py": "90f1399fdcdaa054cdfd43ae1514eaed508e6d1f298ccdd1f9240bd0a196ee73",
+        "ascii3d/dialogue.py": "7f66fa64b5221739e1d4f3383646ee225ae91cf97c56718ad3b9c655f88d358d",
+        "ascii3d/door_render.py": "3f1bc87ce8f918d693ad9f792295264c779bd1196e4dd7d751f3f722c0d55713",
+        "ascii3d/doors.py": "b092eb31e429872e8a583971d4d49eb2af29d14b7d73aa08ce509d43be513d21",
+        "ascii3d/events.py": "8d7f329482ece1a50a8a8800d3b3cb51c584958c445e531e53cda3435ad6d7f0",
+        "ascii3d/frame_timing.py": "1012e568d280189aa7bab669acf0d7f81674526a6fe781f8ec404bce01c0d740",
+        "ascii3d/geometry.py": "2605700c9dd4024b8f9c1a9ca6ef53e76650ed4cb859719a26789f2fa5370bce",
+        "ascii3d/gpu_refine.h": "1b40fa422040cee08ceff3d71ccc8cb2ec9d0bf8f56189eca6c693bcce7ff4db",
+        "ascii3d/gpu_renderer.py": "15547ce42707ea4759bc710aec73813de6efc825567a0db902412685e7f0a5b0",
+        "ascii3d/gpu_static.wgsl": "162a5ae1cdee1353970004c5d6e26d943c847153afa7fed92513826cf3b803b0",
+        "ascii3d/loading.py": "ffcaa54eff163993c51736512b3afd3eb22ff4a2d5d5bd0afede1df5d8118dc5",
+        "ascii3d/map_expansion.py": "89f032a559eae1406d8524e1bde992ca4614460d0c6ac25a48f1793e881ff5e7",
+        "ascii3d/monolith_solid_bvh.dll": "7a8be0ecb990ed65309ac609377626aba4877ad3ce2c048b8504f4a5ea5668f5",
+        "ascii3d/mouse_capture.py": "6e63b9a9b8a1e91c45684ab25598510eb5dfc24eb72cf8ca3561e376b45ff3d1",
+        "ascii3d/native_shading.py": "3b040d63f72b95a26edf1fc92f7d7617222fa1b4ba69d4b0ad24e8b3760bdfeb",
+        "ascii3d/native_solids.py": "3b10c0b8d9830b45652637a188b0c984d0ccdc5378e4a676f50acfe1fee40c63",
+        "ascii3d/npc_render.py": "227d2c7f20ffee41fe2b0f4cebb06f9803ef4215db5e9b8b5b6e4885ae70ab2f",
+        "ascii3d/npcs.py": "e0480893d7be791b5bd109e7108fddd553978538547e025b0a2b62f21b962389",
+        "ascii3d/orientation.py": "a45c1fdabc1d5ae42efc39a7aa668dcfa816e3e750a581c09f3c66d9823cda78",
+        "ascii3d/palette.py": "159ff15cbb987402443e7fef52e447efe87048c9868923028951c3f9f43ff714",
+        "ascii3d/particles.py": "caf368eebcec59216edcfd20f19918312ef887a75eb654d8b618e0b2131abd29",
+        "ascii3d/player.py": "7860a38bcb8ff007ad88ae87e9c8d07a7feec49a4cd58722cb241847e28071c7",
+        "ascii3d/presentation.py": "352396bb9c6356b154132176f4d64dfe887faf8f41bd42d090f754a05dab17a7",
+        "ascii3d/renderer.py": "afd02768f2e1233e3901404d156d6b3a187cfc3d71c17db459a83dd7bb769af4",
+        "ascii3d/roads.py": "6f814d7a43e28e6cef0b22e43cc41e40fc7942bc59cd8d47bb13d9615f30ce67",
+        "ascii3d/rocks.py": "cd24863302f26b404ec77c64b952a4bee10dde5ff429c54f565f7ca29f89faa0",
+        "ascii3d/scenery.py": "202457e4c176ccd44425d605c509580034fd1c9cf2f9b9729b4eb7fbe0a803c9",
+        "ascii3d/shading.py": "1fb312569f814959355c6616ee5f4f185ada7f50d9700299478c6d78736b115c",
+        "ascii3d/solid_bvh.c": "e497564e702a8c418268459ae5ec5367d45a927a37d1560e8535ae629664524f",
+        "ascii3d/sound.py": "e3d4851d2f3f047ae64cf861cccceae747cebb7eaaf5513fd288578ef4c7b005",
+        "ascii3d/sound_surfaces.py": "c84e74fdec38cd7e5d30c63a251474faa2c9691cd4b9515c503c9db778c515c6",
+        "ascii3d/soundscape.py": "81167ec16103ab0de0f6c238d9f440dcc1e819ca80f1e161d4313e8e03e0c6c7",
+        "ascii3d/surface_lighting.h": "7846b4c852eec086fc3ad0e0a85ef3f02f73501581a8976a98fb6b2e2e8fd57e",
+        "ascii3d/surfaces.py": "3fd56282678736edf93b5e0c98b0e79fbd382a2029fe899e7c079f1a605c20b2",
+        "ascii3d/targeting.py": "23783730617dbd341bcc5d58748bc297293433e6526985eb75993a3fe888031d",
+        "ascii3d/terminal.py": "6e47aafbdd3314320efea161d3e7248853c6c1dec7c7fd26c755c4223b48d80b",
+        "ascii3d/terrain.py": "7cb25972fb32a63c0039b4ac5e3accda7ba71bc59964e0c14662c242d0da22b6",
+        "ascii3d/trees.py": "438c808316f5bcc92e462c7880bf9b11956d7e92a1de42887a9a04d0756c091e",
+        "ascii3d/voxel_trace.h": "d7df2f2ad4b649d02954d763f92b951309cf264f8227e37f049b6e9389ed25a0",
+        "ascii3d/world.py": "08c2c930c49b91c410fffb9485aa867ee64e7458509ac0e1543b962203329b96"
+      }
+    }
+  ]
+}

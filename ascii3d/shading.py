@@ -11,6 +11,7 @@ import math
 
 from .world import BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, STONE, WATER, WOOD
 from .palette import ARCANE, BONE, EMBER, FIRE, STRAW, WIND_GRASS, WIND_LEAVES
+from .paving import cobble_texture
 
 
 RAMP = "..,:;irsxXA#%@"
@@ -20,7 +21,7 @@ ALBEDO = (0.0, 0.72, 0.64, 0.85, 0.59, 0.58, 0.74, 0.58, 0.54, 0.61, 0.64,
           1.0, 0.80, 0.90, 0.67, 0.90, 0.95, 0.95, 0.95, 0.70, 0.80, 0.65)
 _ALBEDO_COUNT = len(ALBEDO)
 _TEXTURE_AXES = frozenset((STONE, FLOOR, WOOD, BRIDGE, CRATE, STRAW, BONE, METAL))
-_TEXTURE_GRAIN = frozenset((STONE, FLOOR, GRASS, LEAVES, PATH))
+_TEXTURE_GRAIN = frozenset((STONE, FLOOR, GRASS, LEAVES))
 GRASS_GLYPHS = (".,", ",;", ';"', "\"'")
 
 
@@ -126,7 +127,7 @@ class Shading:
             normal_texture = normal if texture_normal is None else texture_normal
             ax, ay, az = abs(normal_texture[0]), abs(normal_texture[1]), abs(normal_texture[2])
             a, b = (ty, tz) if ax > ay and ax > az else ((tx, tz) if ay > az else (tx, ty))
-        broad = math.sin(tx * 0.83 + ty * 0.57 + tz * 0.39)
+        broad = math.sin(tx * 0.83 + ty * 0.57 + tz * 0.39) if material != PATH else 0.0
         fine = (math.sin(tx * 5.31 - ty * 3.17 + tz * 7.07)
                 if material not in (WOOD, BRIDGE, CRATE, PATH, STRAW) else 0.0)
         if material in _TEXTURE_GRAIN:
@@ -160,9 +161,7 @@ class Shading:
             if grain == 0:
                 texture *= 0.55
         elif material == PATH:
-            texture = 0.70 + broad * 0.24 + grain * 0.022
-            if grain < 2:
-                texture *= 0.42
+            texture = cobble_texture(tx, ty, distance)
         elif material in (GRASS, LEAVES):
             texture = 0.80 + broad * 0.24 + fine * 0.10 + grain * 0.008
             if foliage_turn is not None:

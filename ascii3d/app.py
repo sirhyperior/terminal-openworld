@@ -263,6 +263,8 @@ def main(argv: list[str] | None = None) -> int:
             dev_console = None
             console_open = False
             console_request = ""
+            preview = None
+            preview_size = (0, 0)
             ui_events: list[GameEvent] = []
 
             def begin_talk(npc: NPC) -> None:
@@ -436,6 +438,8 @@ def main(argv: list[str] | None = None) -> int:
                         if not keys.pressed & {"escape", "blur", "interrupt"}:
                             for key in keys.text_events:
                                 dev_console.handle((key,))
+                                if key == "enter":
+                                    preview = None
                                 if console_request:
                                     break
                         if console_request == "resume":
@@ -445,6 +449,7 @@ def main(argv: list[str] | None = None) -> int:
                             pressed.add("escape")
                         if console_request or "escape" in keys.pressed:
                             console_open = False
+                            preview = None
                             terminal.keyboard.set_text_input(False)
                             ui_events.append(GameEvent("ui_dev_close"))
                         console_request = ""
@@ -581,7 +586,20 @@ def main(argv: list[str] | None = None) -> int:
                     simulation_end = time.perf_counter()
                 mouse_captured = terminal.mouse_captured if not keyboard_look and not args.demo else None
                 if console_open:
-                    frame = dev_console.frame(width, height)
+                    scene_samples = None
+                    game_width = dev_console.preview_width(width, height)
+                    if game_width:
+                        # Simulation is frozen. Reuse the scene as the command
+                        # line changes, then redraw for commands or a resize.
+                        if preview is None or preview_size != (game_width, height):
+                            preview = renderer.styled_frame(player, game_width, height, preview=True,
+                                                            time_seconds=simulation_time, sound_on=audio.enabled,
+                                                            color_mode=args.color_mode)
+                            preview_size = game_width, height
+                            scene_samples = game_width, height - 5
+                        frame = dev_console.split_frame(preview, width, height)
+                    else:
+                        frame = dev_console.frame(width, height)
                 else:
                     frame = renderer.styled_frame(player, width, height, fps, show_map, help_open, paused,
                                                   time_seconds=simulation_time,
@@ -589,6 +607,7 @@ def main(argv: list[str] | None = None) -> int:
                                                   keyboard_look=keyboard_look,
                                                   mouse_captured=mouse_captured, color_mode=args.color_mode,
                                                   dialogue=conversation.view if conversation is not None else None)
+                    scene_samples = (width, height - 5) if playable else None
                 if timing is not None:
                     render_end = time.perf_counter()
                 terminal.draw(frame)
@@ -605,10 +624,10 @@ def main(argv: list[str] | None = None) -> int:
                     gpu = getattr(renderer, "ray_backend", None)
                     timing_sample = timing.record(
                         frame=frame_count, viewport=(width, height), terminal=terminal._terminal_size,
-                        scene_samples=(width, height - 5) if playable and not console_open else None,
+                        scene_samples=scene_samples,
                         backend=renderer.backend_name, active=active, sound_on=audio.enabled,
                         mouse_captured=mouse_captured,
-                        gpu_stats=dict(gpu.last_stats) if gpu is not None and not console_open else None,
+                        gpu_stats=dict(gpu.last_stats) if gpu is not None and scene_samples is not None else None,
                         input_ms=milliseconds(input_end - start - audio_toggle_seconds),
                         audio_ms=milliseconds(audio_end - input_end + audio_toggle_seconds),
                         simulation_ms=milliseconds(simulation_end - audio_end),

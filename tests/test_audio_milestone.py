@@ -14,10 +14,10 @@ from ascii3d.world import BRIDGE, CRATE, FLOOR, GRASS, METAL, PATH, STONE, WATER
 
 
 class SurfaceContactTests(unittest.TestCase):
-    def test_player_emits_matching_steps_and_landing_metadata_on_all_six_surfaces(self):
+    def test_player_emits_matching_steps_and_landing_metadata_on_each_ground_fixture(self):
         for material, surface in ((FLOOR, "stone"), (GRASS, "grass"), (WOOD, "wood"),
-                                  (WATER, "water"), (PATH, "gravel"), (METAL, "metal")):
-            with self.subTest(surface=surface):
+                                  (WATER, "water"), (PATH, "stone"), (METAL, "metal")):
+            with self.subTest(material=material, surface=surface):
                 world = World.empty(20, 20, 8)
                 world.box(0, 0, 0, 20, 20, 1, material)
                 player = Player(x=8.5, y=4.5)
@@ -33,7 +33,7 @@ class SurfaceContactTests(unittest.TestCase):
 
     def test_supported_materials_have_explicit_foley_surfaces(self):
         for material, expected in ((STONE, "stone"), (FLOOR, "stone"),
-                                   (GRASS, "grass"), (PATH, "gravel"),
+                                   (GRASS, "grass"), (PATH, "stone"),
                                    (METAL, "metal"), (WOOD, "wood"),
                                    (CRATE, "wood"), (BRIDGE, "wood")):
             with self.subTest(material=material):
@@ -68,7 +68,7 @@ class SurfaceContactTests(unittest.TestCase):
         world.box(0, 0, 0, 8, 8, 1, GRASS)
         world.box(3, 3, 0, 4, 4, 1, PATH)
         self.assertEqual(surface_kind(world, 2.99, 3.5, 1), "grass")
-        self.assertEqual(surface_kind(world, 3.01, 3.5, 1), "gravel")
+        self.assertEqual(surface_kind(world, 3.01, 3.5, 1), "stone")
 
     def test_rotated_door_top_is_wood_but_side_is_not_support(self):
         world = World.empty(12, 12, 8)

@@ -11,6 +11,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 from ascii3d.app import main
 from ascii3d.player import Player
+from ascii3d.presentation import StyledFrame
 from ascii3d.sound import EFFECTS
 from ascii3d.terminal import Keys
 from ascii3d.world import FLOOR, STONE, World
@@ -21,14 +22,14 @@ def typed(command):
 
 
 class DevBuildTests(unittest.TestCase):
-    def play(self, script, *options):
+    def play(self, script, *options, sizes=None):
         world = World.empty(24, 24, 12)
         world.box(0, 0, 0, 24, 24, 1, FLOOR)
         world.box(3, 3, 1, 4, 4, 4, STONE)
         self.terminal = terminal = MagicMock()
         terminal.__enter__.return_value = terminal
         terminal.keyboard.poll.side_effect = script
-        terminal.size.return_value = (60, 20)
+        terminal.size.side_effect = sizes or [(60, 20)] * len(script)
         terminal._terminal_size = (60, 20)
         terminal.output_timing = (None, None, None)
         terminal.mouse_captured = False
@@ -36,6 +37,7 @@ class DevBuildTests(unittest.TestCase):
         self.audio = audio = MagicMock(enabled=True, available=True)
         audio.__enter__.return_value = audio
         self.renderers = []
+        self.renders = []
 
         def spawn(outside):
             return Player(x=8.5, y=8.5, hp=6)
@@ -43,8 +45,17 @@ class DevBuildTests(unittest.TestCase):
         def make_renderer(world, aspect, *, backend):
             renderer = Mock(backend_name="cpu" if backend == "gpu" else backend, ray_backend=None)
             renderer.backend_error = "no GPU"
-            renderer.styled_frame.side_effect = lambda player, *args, **kwargs: (
-                (player.x, player.y, player.z, player.hp), kwargs["time_seconds"], kwargs["color_mode"])
+
+            def render(player, width, height, *args, preview=False, time_seconds, color_mode, **kwargs):
+                self.renders.append(((player.x, player.y, player.z, player.hp), time_seconds,
+                                     color_mode, (width, height), preview))
+                rows = [f"{player.x:.1f}, {player.y:.1f}".ljust(width)] + [" " * width] * (height - 1)
+                if color_mode == "mono":
+                    return rows
+                return StyledFrame(width, height, rows, [bytearray([7]) * width for _ in rows],
+                                   color_mode=color_mode)
+
+            renderer.styled_frame.side_effect = render
             self.renderers.append(renderer)
             return renderer
 
@@ -71,13 +82,17 @@ class DevBuildTests(unittest.TestCase):
             typed("set cell-aspect 0.7"), typed("set volume 0.25"), typed("set mute on"),
             Keys(pressed={"escape", "attack"}, down={"w"}), Keys(down={"w"}),
         ])
-        text = "\n".join(row for frame in frames[:-2] for row in frame)
+        text = " ".join(row[34:].strip() for frame in frames[:-2] for row in frame.rows)
         self.assertIn("Destination is obstructed", text)
         self.assertIn("Coordinates must be finite", text)
         self.assertIn("gpu renderer unavailable", text)
-        self.assertEqual(frames[-2], ((5.5, 6.5, 1., 6), 0., "gray"))
-        self.assertGreater(frames[-1][0][1], 6.5)
-        self.assertGreater(frames[-1][1], 0)
+        self.assertEqual(self.renders[-2], ((5.5, 6.5, 1., 6), 0., "gray", (60, 20), False))
+        self.assertGreater(self.renders[-1][0][1], 6.5)
+        self.assertGreater(self.renders[-1][1], 0)
+        self.assertEqual(self.renders[3], ((5.5, 6.5, 1., 6), 0., "color", (33, 20), True))
+        self.assertEqual(frames[6].color_mode, "gray")
+        self.assertEqual(frames[6].rows[0][:12].strip(), "5.5, 6.5")
+        self.assertTrue(frames[6].rows[0][33:].startswith("|DEVELOPER CONSOLE"))
         self.assertEqual([call.args for call in self.terminal.keyboard.set_text_input.call_args_list],
                          [(True,), (False,)])
         self.assertTrue(all(call.args == (False,) for call in self.terminal.set_mouse_capture.call_args_list[:-2]))
@@ -92,19 +107,38 @@ class DevBuildTests(unittest.TestCase):
         rejected.styled_frame.assert_not_called()
         active.set_cell_aspect.assert_called_once_with(0.7)
 
+    def test_split_reuses_preview_while_typing_and_handles_resize_and_mono(self):
+        frames = self.play([
+            Keys(pressed={"console"}), Keys(text_events=("s",)), Keys(text_events=("backspace",)),
+            typed("set color-mode mono"), Keys(), Keys(), Keys(pressed={"escape"}),
+        ], sizes=[(120, 40)] * 4 + [(56, 18), (60, 20), (120, 40)])
+        self.assertEqual([render[2:] for render in self.renders], [
+            ("color", (79, 40), True), ("mono", (79, 40), True),
+            ("mono", (33, 20), True), ("mono", (120, 40), False),
+        ])
+        first, typing, cleared, mono, tiny, compact, closed = frames
+        self.assertEqual(first.rows, cleared.rows)
+        self.assertEqual([row[:80] for row in first.rows], [row[:80] for row in typing.rows])
+        self.assertIn("> s|", typing.rows[-1])
+        self.assertIn("|DEVELOPER CONSOLE", mono[0])
+        self.assertTrue(tiny[0].startswith("DEVELOPER CONSOLE"))
+        self.assertEqual(compact[0][33], "|")
+        self.assertNotIn("DEVELOPER CONSOLE", closed[0])
+
     def test_live_timing_stops_and_resumes_without_counting_gap(self):
         with TemporaryDirectory() as directory:
             path = Path(directory) / "quoted path.json"
             self.play([
-                Keys(pressed={"console"}), typed(f'set frame-timing "{path}"'), typed("where"),
+                Keys(pressed={"console"}), typed(f'set frame-timing "{path}"'), Keys(), typed("where"),
                 typed("set frame-timing off"), typed("where"), typed(f'set frame-timing "{path}"'),
                 Keys(pressed={"escape"}), Keys(),
             ])
             data = json.loads(path.read_text(encoding="utf-8"))
         frames = data["frames"]
-        self.assertEqual([frame["frame"] for frame in frames], [3, 4, 7, 8])
-        self.assertIsNone(frames[1]["interval_ms"])
+        self.assertEqual([frame["frame"] for frame in frames], [3, 4, 5, 8, 9])
+        self.assertIsNone(frames[2]["interval_ms"])
         self.assertIsNone(frames[0]["scene_samples"])
+        self.assertEqual(frames[1]["scene_samples"], [33, 15])
         self.assertTrue(frames[0]["console_open"])
         self.assertFalse(frames[-1]["console_open"])
         self.assertEqual(frames[-1]["scene_samples"], [60, 15])

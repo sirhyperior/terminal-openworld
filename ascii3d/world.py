@@ -293,20 +293,22 @@ class World:
             solid_tree = tree_for(selected, enclosing(selected)) if len(selected) > 8 else None
             self._solid_query_cache = selection_key, chunks, solid_cell_size, solid_tree
         solid_bounds = solid_tree[0] if solid_tree is not None else enclosing(selected)
-        trace_solids = None
+        native_tree = trace_solids = None
         if solid_tree is not None and solid_library is not None:
             cached = self._native_solid_cache
             if cached is None or cached[0] is not solid_library or cached[1] is not solid_tree:
                 from .native_solids import NativeSolidTree
 
                 try:
-                    trace_solids = NativeSolidTree(solid_library, solid_tree).ray_hit
+                    native_tree = NativeSolidTree(solid_library, solid_tree)
                 except TypeError:
                     # Custom Python solid subclasses own their ray semantics.
                     pass
-                self._native_solid_cache = solid_library, solid_tree, trace_solids
+                self._native_solid_cache = solid_library, solid_tree, native_tree
             else:
-                trace_solids = cached[2]
+                native_tree = cached[2]
+            if native_tree is not None:
+                trace_solids = native_tree.ray_hit
         ground_boxes = []
         ground = self.heightfield
         if ground is not None:
@@ -322,6 +324,7 @@ class World:
         ground_bounds = enclosing(ground_boxes)
         if solid_bounds is None and ground_bounds is None:
             return None
+        native_ground = None
         if ground_bounds is not None:
             trace_ground = ground.ray_hit
             if solid_library is not None and solid_library.heightfield_trace is not None:
@@ -330,14 +333,17 @@ class World:
                     from .native_solids import NativeHeightField
 
                     try:
-                        native_ground = NativeHeightField(solid_library, ground).ray_hit
+                        native_ground = NativeHeightField(solid_library, ground)
                     except TypeError:
                         native_ground = None
                     self._native_heightfield_cache = solid_library, ground, native_ground
                 else:
                     native_ground = cached[2]
                 if native_ground is not None:
-                    trace_ground = native_ground
+                    trace_ground = native_ground.ray_hit
+
+        def trace_grid(origin, direction, limit, entry):
+            return self._solid_hit(origin, direction, limit, chunks, entry, solid_cell_size)
 
         def query(origin, direction, limit):
             hit = None
@@ -364,10 +370,18 @@ class World:
                         if tied:
                             # Preserve the grid's original coincident-face
                             # order, including configured overlapping solids.
-                            solid = self._solid_hit(origin, direction, limit, chunks, entry, solid_cell_size)
+                            solid = trace_grid(origin, direction, limit, entry)
                         if solid is not None:
                             hit = solid
             return hit
+
+        geometry_trace = getattr(solid_library, 'geometry_trace', None)
+        if (geometry_trace is not None and (ground_bounds is None or native_ground is not None)
+                and (solid_tree is None or native_tree is not None)):
+            from .native_solids import geometry_ray_query
+
+            query = geometry_ray_query(geometry_trace, native_ground, ground_bounds, native_tree,
+                                       solid_bounds, trace_grid, query)
 
         query.bounds = (*selected, *ground_boxes)
         query.minimum_depth = 0.0

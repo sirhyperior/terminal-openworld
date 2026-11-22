@@ -5,9 +5,10 @@ import heapq
 import math
 import textwrap
 
-from .player import Player
+from .player import DAMAGE_CUE_DURATION, Player
 from .dialogue import DialogueView
 from .doors import Door
+from .native_solids import NativeGPUHits
 from .npcs import NPC
 from .door_render import draw_doors
 from .combat_render import draw_combat, large_opaque_enemy
@@ -17,6 +18,7 @@ from .palette import UI_ACCENT, UI_DANGER, UI_POSITIVE, WATER_CREST
 from .npc_render import draw_npcs
 from .scenery import Scenery
 from .particles import Particles
+from .presentation import PREVIEW_MIN_SIZE
 from .world import (AIR, BRIDGE, CRATE, FLOOR, GRASS, LEAVES, METAL, PATH, WATER,
                     WATER_LEVEL, WOOD, World, river_center)
 
@@ -243,10 +245,6 @@ class Renderer:
 
                 self.solid_library = SolidLibrary()
                 self.backend_name = 'native'
-                if self.solid_library.shade_surfaces is not None:
-                    from .native_shading import NativeShading
-
-                    self._native_shading = NativeShading(self.solid_library.shade_surfaces)
             except (AttributeError, OSError) as error:
                 if backend == 'native':
                     self.backend_error = str(error)
@@ -257,6 +255,20 @@ class Renderer:
                 self.backend_name = 'gpu'
             except Exception as error:
                 self.backend_error = str(error)
+
+        shader_library = self.solid_library
+        if backend == 'gpu' and self.ray_backend is not None:
+            shader_library = getattr(self.ray_backend, '_native_library', None)
+        if shader_library is not None:
+            try:
+                if shader_library.shade_surfaces is not None:
+                    from .native_shading import NativeShading
+
+                    self._native_shading = NativeShading(
+                        shader_library.shade_surfaces, getattr(shader_library, 'shade_gpu_frame', None))
+            except (AttributeError, OSError) as error:
+                if backend == 'native':
+                    self.backend_error = str(error)
 
     def close(self):
         if self.ray_backend is not None:
@@ -558,11 +570,6 @@ class Renderer:
         shade_surface = self.shading.surface
         self._update_chunks()
         moonlight = self.shading.moonlight
-        native_shading = self._native_shading
-        shade_samples = None
-        if native_shading is not None and native_shading.available(self.shading):
-            shade_samples = array("d")
-            shade_destinations = []
         river_glints = {}
         chunk_tops, chunks_x = self._chunk_tops, (world.width + 1) // 2
         empty_bounds, chunk_count = self._empty_bounds, len(chunk_tops)
@@ -641,10 +648,6 @@ class Renderer:
                         analytic_slope = analytic_horizon[azimuth] * horizontal_squared
                 horizontal_rays.append((dx, dy, sx, sy_step, ddx, ddy, initial_x, initial_y,
                                         horizon, analytic_slope))
-        ramp = RAMP
-        ramp_max = len(ramp) - 1
-        pixels = []
-        depths = []
         # Dynamic opaque panels supply an early ray limit. Static architecture
         # can still win in front, but hidden geometry behind a door is not traced.
         door_pixels = [[" "] * width for _ in range(height)] if world.doors else None
@@ -670,13 +673,30 @@ class Renderer:
                 self.combat_prepass_used = True
 
         gpu_hits = None
+        native_shading = self._native_shading
+        if native_shading is not None and not native_shading.available(self.shading):
+            native_shading = None
         if self.ray_backend is not None:
             try:
-                gpu_hits = self.ray_backend.render(player, width, height)
+                if (native_shading is not None and hasattr(type(self.ray_backend), "render_packed")
+                        and native_shading.can_shade_gpu_frame(world, self.scenery)):
+                    gpu_hits = self.ray_backend.render_packed(player, width, height)
+                else:
+                    gpu_hits = self.ray_backend.render(player, width, height)
             except Exception as error:
                 self.backend_error = str(error)
                 self.close()
                 self.backend_name = 'native' if self.solid_library is not None else 'cpu'
+                if self.backend_name == 'cpu':
+                    self._native_shading = native_shading = None
+        pending = None
+        if isinstance(gpu_hits, NativeGPUHits):
+            pixels, depths, pending = native_shading.gpu_frame(
+                gpu_hits, self.shading, self.scenery, (cy, sy, cp, sp), door_pixels, door_depths, combat_depths)
+        shade_samples = None
+        if native_shading is not None:
+            shade_samples = array("d")
+            shade_destinations = []
 
         native_voxels = None
         if gpu_hits is None and skip_empty and self.solid_library is not None:
@@ -693,9 +713,15 @@ class Renderer:
             voxel_depths, voxel_faces, first_empty = native_voxels
         voxel_iterations = range(110) if native_voxels is None else ()
 
+        all_columns = range(width)
+        if pending is None:
+            pixels = [[" "] * width for _ in self._rows]
+            depths = [[math.inf] * width for _ in self._rows]
         for row_index, v in enumerate(self._rows):
-            row = []
-            depth_row = []
+            columns = all_columns if pending is None else pending[row_index]
+            if not columns:
+                continue
+            row, depth_row = pixels[row_index], depths[row_index]
             panel_row = door_pixels[row_index] if door_pixels is not None else None
             panel_depth_row = door_depths[row_index] if door_depths is not None else None
             combat_depth_row = combat_depths[row_index] if combat_depths is not None else None
@@ -710,7 +736,8 @@ class Renderer:
             analytic_rising = analytic_horizon is not None and dz > 0
             dz_squared = dz * dz
 
-            for column_index, u in enumerate(self._columns):
+            for column_index in columns:
+                u = self._columns[column_index]
                 panel_depth = panel_depth_row[column_index] if panel_depth_row is not None else math.inf
                 ray_limit = panel_depth if panel_depth < 48 else 48
                 if combat_depth_row is not None and combat_depth_row[column_index] < ray_limit:
@@ -736,8 +763,8 @@ class Renderer:
                             query_analytic = False
                         if rising and dz_squared > horizon:
                             if not query_analytic:
-                                row.append(panel_row[column_index] if panel_row is not None else " ")
-                                depth_row.append(panel_depth)
+                                row[column_index] = panel_row[column_index] if panel_row is not None else " "
+                                depth_row[column_index] = panel_depth
                                 continue
                             voxel_sky = True
                     else:
@@ -751,8 +778,8 @@ class Renderer:
                                 query_analytic = False
                             if rising and dz_squared > sky_horizon[azimuth] * horizontal_squared:
                                 if not query_analytic:
-                                    row.append(panel_row[column_index] if panel_row is not None else " ")
-                                    depth_row.append(panel_depth)
+                                    row[column_index] = panel_row[column_index] if panel_row is not None else " "
+                                    depth_row[column_index] = panel_depth
                                     continue
                                 voxel_sky = True
                         step_x, step_y = (1 if dx >= 0 else -1), (1 if dy >= 0 else -1)
@@ -911,10 +938,10 @@ class Renderer:
                     ax, ay, az = abs(normal[0]), abs(normal[1]), abs(normal[2])
                     axis = 0 if ax >= ay and ax >= az else (1 if ay >= az else 2)
                 if not material:
-                    row.append(panel_row[column_index] if panel_row is not None else " ")
-                    depth_row.append(panel_depth)
+                    row[column_index] = panel_row[column_index] if panel_row is not None else " "
+                    depth_row[column_index] = panel_depth
                     continue
-                depth_row.append(distance)
+                depth_row[column_index] = distance
                 # Sample just inside the surface so equivalent traversal paths
                 # choose the same texel/wind cell at integer grid boundaries.
                 sample_distance = distance + 1e-8
@@ -952,8 +979,8 @@ class Renderer:
                                 and (moonlight is None or not moonlight.blocked(hx, hy, hz + 1e-5))):
                             river_glints[stripe] = (column_index, row_index)
                             level, glyph = 15, "+"
-                    row.append(ink(glyph, max(MIN_SURFACE_LEVEL, min(15, level)),
-                                   WATER_CREST if crest else WATER, tone.effects))
+                    row[column_index] = ink(glyph, max(MIN_SURFACE_LEVEL, min(15, level)),
+                                            WATER_CREST if crest else WATER, tone.effects)
                 else:
                     grass_surface = material == GRASS and normal[2] > 0
                     turn = 0.0
@@ -963,14 +990,11 @@ class Renderer:
                     if shade_samples is not None and 0 <= material <= 255:
                         shade_samples.extend((hx, hy, hz, *normal, distance, material, turn))
                         shade_destinations.append((row, column_index))
-                        row.append(" ")
                     elif grass_surface:
                         tone = shade_surface(material, hx, hy, hz, normal, distance, foliage_turn=turn)
-                        row.append(grass_ink(tone, hx, hy, turn))
+                        row[column_index] = grass_ink(tone, hx, hy, turn)
                     else:
-                        row.append(shade_surface(material, hx, hy, hz, normal, distance))
-            pixels.append(row)
-            depths.append(depth_row)
+                        row[column_index] = shade_surface(material, hx, hy, hz, normal, distance)
         if shade_samples is not None:
             native_shading.finish(self.shading, shade_samples, shade_destinations)
         self.scenery.draw(pixels, depths, player, time_seconds, self._focal, self.cell_aspect)
@@ -989,10 +1013,11 @@ class Renderer:
               show_map: bool = False, help_open: bool = False, paused: bool = False,
               time_seconds: float = 0.0, notice: str = "", sound_on: bool | None = None,
               keyboard_look: bool = False, mouse_captured: bool | None = None,
-              dialogue: DialogueView | None = None) -> list[str]:
+              dialogue: DialogueView | None = None, *, preview: bool = False) -> list[str]:
         width, height = max(1, width), max(1, height)
-        if width < 60 or height < 20:
-            lines = ["MONOLITH / TERMINAL 3D", "", "Enlarge the terminal to at least 60 x 20.",
+        min_width, min_height = PREVIEW_MIN_SIZE if preview else (60, 20)
+        if width < min_width or height < min_height:
+            lines = ["MONOLITH / TERMINAL 3D", "", f"Enlarge the terminal to at least {min_width} x {min_height}.",
                      f"Current size: {width} x {height}", "", "ESC to exit"]
             return [line[:width].ljust(width) for line in (lines + [""] * height)[:height]]
         view_height = height - 5
@@ -1003,7 +1028,8 @@ class Renderer:
             pixels[view_height // 2][width // 2] = "+"
             if show_map:
                 self._map(pixels, player)
-            prompt = notice or self._interaction_prompt(player)
+            if not preview:
+                prompt = notice or self._interaction_prompt(player)
         if prompt and not help_open and not paused:
             prompt = "  " + prompt[:width - 6] + "  "
             self._write(pixels, (width - len(prompt)) // 2, view_height - 2, prompt)
@@ -1042,15 +1068,22 @@ class Renderer:
         health = max(0, min(player.hp, maximum))
         filled = math.ceil(health * 10 / maximum)
         bar = "#" * filled + "-" * (10 - filled)
-        title = f"  HP [{bar}] {health}/{maximum} / " + equipment
-        rate = f"{fps:4.0f} FPS  "
+        health_text = f"  HP [{bar}] {health}/{maximum}"
+        title = health_text if preview else health_text + " / " + equipment
+        rate = "PREVIEW  " if preview else f"{fps:4.0f} FPS  "
         if sound_on is not None:
-            rate = ("SND ON  " if sound_on else "SND OFF  ") + rate
+            sound = "SND ON  " if sound_on else "SND OFF  "
+            if not preview or len(title) + len(sound) + len(rate) + 1 <= width:
+                rate = sound + rate
         top = title + " " * max(1, width - len(title) - len(rate)) + rate
-        status = f"  {self.world.area(player.x, player.y)}   /   {compass} {heading:03.0f}   /   {state}"
+        area = self.world.area(player.x, player.y)
+        status = f"  {area}   /   {compass} {heading:03.0f}   /   {state}"
         position = f"{player.x:04.1f}, {player.y:04.1f}  Z {player.z:.1f}  "
         status += " " * max(1, width - len(status) - len(position)) + position
-        if help_open:
+        if preview:
+            status = f"  {area} / {compass}"
+            controls = "  " + position
+        elif help_open:
             controls = "  H back  P resume  ESC quit"
         elif paused:
             controls = "  P resume  H controls  ESC quit"
@@ -1081,14 +1114,25 @@ class Renderer:
             styles += [bytearray([6]) * width, bytearray([12]) * width, bytearray([10]) * width]
             materials += [bytearray([255]) * width for _ in range(3)]
             effects += [bytearray(width) for _ in range(3)]
-        health_end = min(width, len(f"  HP [{bar}] {health}/{maximum}"))
-        materials[0][2:health_end] = bytes([UI_DANGER if health * 3 <= maximum else UI_POSITIVE]) * max(0, health_end - 2)
+        health_end = min(width, len(health_text))
+        damaged = player.damage_remaining > 1e-8
+        health_material = UI_DANGER if damaged or health * 3 <= maximum else UI_POSITIVE
+        materials[0][2:health_end] = bytes([health_material]) * (health_end - 2)
+        divider = "-" * width
+        if damaged:
+            cue = f" [-{player.last_damage} HP] "
+            left = (width - len(cue)) // 2
+            right = left + len(cue)
+            divider = divider[:left] + cue + divider[right:]
+            level = 10 + min(5, int(player.damage_remaining / DAMAGE_CUE_DURATION * 6))
+            styles[1][left:right] = bytes([level]) * len(cue)
+            materials[1][left:right] = bytes([UI_DANGER]) * len(cue)
         if prompt and not help_open and not paused and "[E]" in prompt:
             start = max(0, (width - len(prompt)) // 2 + prompt.index("[E]"))
             end = min(width, start + 3)
             materials[view_height][start:end] = bytes([UI_ACCENT]) * (end - start)
         self._frame_styles, self._frame_materials, self._frame_effects = styles, materials, effects
-        lines = [top, "-" * width] + ["".join(row) for row in pixels]
+        lines = [top, divider] + ["".join(row) for row in pixels]
         if not show_dialogue:
             lines += ["-" * width, status, controls]
         return [line[:width].ljust(width) for line in lines]

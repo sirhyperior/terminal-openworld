@@ -1,9 +1,12 @@
-"""Command dispatch and a bounded ASCII editor for the developer console."""
+"""Command dispatch, a bounded ASCII editor and its split view."""
 
 from collections import deque
 from collections.abc import Callable, Iterable, Mapping
 import shlex
 from textwrap import TextWrapper
+
+from .palette import UI, UI_MUTED
+from .presentation import PREVIEW_MIN_SIZE, StyledFrame
 
 
 class DevConsole:
@@ -136,10 +139,29 @@ class DevConsole:
             self._line = self._history[index]
         self._cursor = len(self._line)
 
+    @staticmethod
+    def preview_width(width: int, height: int) -> int:
+        """Leave enough room to read command output beside the game."""
+        game_width = width - max(26, width // 3) - 1
+        min_width, min_height = PREVIEW_MIN_SIZE
+        return game_width if game_width >= min_width and height >= min_height else 0
+
+    def split_frame(self, game: list[str] | StyledFrame, width: int, height: int) -> list[str] | StyledFrame:
+        game_rows = game.rows if isinstance(game, StyledFrame) else game
+        panel_width = width - len(game_rows[0]) - 1
+        console_rows = self.frame(panel_width, height)
+        rows = [left + "|" + right for left, right in zip(game_rows, console_rows)]
+        if not isinstance(game, StyledFrame):
+            return rows
+        styles = [row + b"\x06" + bytes([15]) * panel_width for row in game.styles]
+        materials = None if game.materials is None else [
+            row + bytes([UI_MUTED]) + bytes([UI]) * panel_width for row in game.materials]
+        effects = None if game.effects is None else [row + bytes(panel_width + 1) for row in game.effects]
+        return StyledFrame(width, height, rows, styles, materials, effects, game.color_mode)
+
     def frame(self, width: int, height: int) -> list[str]:
-        """Compose a full viewport with a fixed prompt and scrolling output."""
-        header = ["MONOLITH / DEVELOPER CONSOLE",
-                  "help lists commands | Esc closes | PgUp/PgDn scroll"][:height - 1]
+        """Lay out the editor's fixed prompt and scrolling output."""
+        header = ["DEVELOPER CONSOLE", "help  Esc close  PgUp/PgDn"][:height - 1]
         self._page_rows = height - len(header) - 1
         wrapper = TextWrapper(width=width)
         output = [fragment for line in self._output for fragment in wrapper.wrap(line) or [""]]

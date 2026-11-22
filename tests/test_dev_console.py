@@ -1,6 +1,8 @@
 import unittest
 
 from ascii3d.dev_console import DevConsole
+from ascii3d.palette import PATH, UI_MUTED
+from ascii3d.presentation import StyledFrame
 
 
 class DevConsoleTests(unittest.TestCase):
@@ -69,3 +71,18 @@ class DevConsoleTests(unittest.TestCase):
         console.handle("long input")
         self.assertEqual(console.frame(7, 1), ["> nput|"])
         self.assertEqual(console.frame(1, 1), ["|"])
+
+    def test_split_frame_preserves_game_foregrounds_and_effects(self):
+        styles = [bytearray([8, 9])] * 3
+        materials = [bytearray([PATH, PATH])] * 3
+        effects = [bytearray([3, 5])] * 3
+        for mode in ("color", "gray"):
+            with self.subTest(mode=mode):
+                game = StyledFrame(2, 3, ["#."] * 3, styles, materials, effects, mode)
+                combined = self.console.split_frame(game, 30, 3)
+                self.assertEqual(combined.color_mode, mode)
+                self.assertTrue(combined.rows[0].startswith("#.|DEVELOPER CONSOLE"))
+                self.assertEqual(combined.styles[0][:3], bytearray([8, 9, 6]))
+                self.assertEqual(combined.materials[0][:3], bytearray([PATH, PATH, UI_MUTED]))
+                self.assertEqual(combined.effects[0][:3], bytearray([3, 5, 0]))
+                self.assertEqual(game.width, 2)

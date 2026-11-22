@@ -4,9 +4,10 @@ import math
 import unittest
 from unittest.mock import patch
 
-from ascii3d.combat import FIRE_STAFF, Fireball, FireBurst, WeaponPickup
+from ascii3d.combat import (DEFEAT_BURST_DURATION, FIRE_STAFF, MAX_DEFEAT_BURSTS, WARDEN_BEHAVIOR,
+                            Enemy, Fireball, FireBurst, WeaponPickup)
 from ascii3d.geometry import Camera
-from ascii3d.palette import ARCANE, ASH, DUST, EMBER, FIRE, UI_ACCENT
+from ascii3d.palette import ARCANE, ASH, DUST, EMBER, FIRE, STRAW, UI_ACCENT
 from ascii3d.particles import Particles
 from ascii3d.player import Player
 from ascii3d.renderer import Renderer
@@ -63,6 +64,34 @@ class ParticleTests(unittest.TestCase):
         self.assertEqual(self.tokens(first), self.tokens(fresh))
         materials = {char.material for row in first for char in row if isinstance(char, Ink)}
         self.assertTrue(materials <= {DUST, ASH})
+
+    def test_defeat_scatter_respects_depth_and_expires_in_simulation(self):
+        combat = self.world.combat
+        particles = Particles(self.world)
+        for behavior, material, cue in ((WARDEN_BEHAVIOR, STONE, "enemy_down"), (None, STRAW, "dummy_down")):
+            with self.subTest(cue=cue):
+                enemy = Enemy("Target", 32.5, 32.5, hp=1, behavior=behavior)
+                events = combat._damage(enemy, "sword_hit")
+                self.assertEqual(events[-1].name, cue)
+                self.assertIn(cue, EFFECTS)
+                first, depths = self.draw(particles, width=60, height=15)
+                visible = [cell for row in first for cell in row if isinstance(cell, Ink)]
+                self.assertGreaterEqual(sum(cell.material == material for cell in visible), 5)
+                self.assertTrue(all(value == math.inf for row in depths for value in row))
+                hidden, _ = self.draw(particles, width=60, height=15, depth=0.5)
+                self.assertTrue(all(cell == " " for row in hidden for cell in row))
+                self.assertEqual(combat.update(0, self.world), [])
+                self.assertEqual(self.tokens(first), self.tokens(self.draw(particles, seconds=3, width=60, height=15)[0]))
+                combat.update(0.2, self.world)
+                self.assertNotEqual(self.tokens(first), self.tokens(self.draw(particles, width=60, height=15)[0]))
+                combat.update(DEFEAT_BURST_DURATION, self.world)
+                self.assertFalse(combat.defeat_bursts)
+
+    def test_defeat_scatter_keeps_only_the_latest_bounded_sources(self):
+        combat = self.world.combat
+        for index in range(MAX_DEFEAT_BURSTS + 2):
+            combat._damage(Enemy("Target", index, 30, hp=1), "sword_hit")
+        self.assertEqual([burst.x for burst in combat.defeat_bursts], list(range(2, MAX_DEFEAT_BURSTS + 2)))
 
     def test_particle_world_positions_do_not_follow_camera_motion(self):
         self.world.combat.fireballs = [Fireball(32.5, 34, 2.5, (1, 0, 0))]

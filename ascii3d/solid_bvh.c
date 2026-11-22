@@ -402,3 +402,5 @@ EXPORT int monolith_heightfield_hit(const HeightFieldData *field, double ox, dou
 
 #include "gpu_refine.h"
 #include "surface_lighting.h"
+#include "scene_shading.h"
+#include "geometry_query.h"

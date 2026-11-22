@@ -43,7 +43,7 @@ def make_residents() -> list[NPC]:
         NPC("Iven Ashward", 130.35, 80.5, 1.0, math.radians(210), (
             "Easy there, traveler. I'm Iven. I've kept this gate since the ash first fell.",
             "There's an iron sword by the entrance. The dummies in the west yard won't mind a few swings.",
-            "Take the north road for Gravewood. Keep to the gravel after you cross the river.",
+            "Take the north road for Gravewood. Keep to the cobbles after you cross the river.",
         )),
         NPC("Mael Veyr", 126.9, 79.5, 1.0, math.radians(298), (
             "I'm Mael Veyr. Keep your voice low. The ash remembers names.",

@@ -307,7 +307,10 @@ class GPUBackend:
         if self._native_refiner is not None:
             self._native_refiner.invalidate_projection()
 
-    def render(self, player, width, height):
+    def render_packed(self, player, width, height):
+        return self.render(player, width, height, packed=True)
+
+    def render(self, player, width, height, *, packed=False):
         if self.gpu._signature() != self.gpu.signature:
             self.gpu.close()
             self.gpu = StaticGPU(self.world, self.adapter_info['backend_type'], self.cell_aspect, compact=True)
@@ -335,8 +338,8 @@ class GPUBackend:
         cp, sp = math.cos(player.pitch), math.sin(player.pitch)
         if self._native_refiner is not None:
             results = self._native_refiner.refine(raw, self._columns, self._rows, origin,
-                                                  cy, sy, cp, sp, self.MISS)
-            fallbacks = results.count(None)
+                                                  cy, sy, cp, sp, self.MISS, packed=packed)
+            fallbacks = results.fallback_count() if packed else results.count(None)
         else:
             records = _COMPACT_RECORD.iter_unpack(raw)
             results, fallbacks = [], 0

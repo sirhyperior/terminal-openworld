@@ -218,8 +218,8 @@ class SmoothMovementTests(unittest.TestCase):
         self.assertAlmostEqual(player.z, 1.25, places=5)
         self.assertEqual(next(e.surface for e in events if e.name == "land"), "wood")
 
-    def test_fractional_support_materials_feed_grass_and_gravel_footsteps(self):
-        for material, cue in ((GRASS, "grass"), (PATH, "gravel")):
+    def test_fractional_support_materials_feed_grass_and_cobble_footsteps(self):
+        for material, cue in ((GRASS, "grass"), (PATH, "stone")):
             with self.subTest(material=material):
                 world = slope_world(material)
                 player = supported_player(world)

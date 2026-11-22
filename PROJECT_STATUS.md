@@ -1,53 +1,35 @@
 # Project Status
 
-Last reviewed **2026-11-22**. [Repository rules](AGENTS.md) ·
+Last reviewed **2026-11-23**. [Repository rules](AGENTS.md) ·
 [User backlog](backlog.md) · [Launch and controls](README.md).
 
 ## Current checkpoint
 
-`python main.py --dev` enables a backtick console with live renderer, display,
-input, sound, spawn and timing settings. `teleport` accepts named entrances or
-coordinates and checks destination collision. The console freezes simulation,
-releases the mouse and isolates typing from play. See the
-[developer console commands](README.md#developer-console).
+The rebuilt optional DLL shades resolved GPU hits at the full viewport size.
+Ambiguous rays use exact traversal and the combined native terrain/solid query
+when available. Explicit GPU uses the compiled paving sampler when installed.
+Road point queries keep exact boundaries and skip capsule tests in cells with
+proven coverage. Water and local firelight still follow the shared renderer.
 
-Native Windows checks covered command editing and history, GPU/CPU switching,
-viewport changes, teleport, sound controls and console restoration. Live audio
-had zero underruns or recoveries. In the matched 120×40 GPU run with the
-console closed, work mean rose from 20.64 to 20.99 ms and p95 from 24.43 to
-24.86 ms. Both stayed within the 15% gate. Renderer changes can take a few
-seconds while the selected backend prepares. Hardware parity and a native
-follow-up verified changing cell aspect at an unchanged viewport size.
-The focused suite passed 137 tests with 12 skips. A separate native console
-input and viewport run passed 55 tests with one POSIX-only skip.
-[Developer console validation](benchmarks/dev-console-2026-11-22.md)
+At 240×80 with live audio, all 35 matched auto roles pass both relative timing
+gates. Thirteen meet 33.33 ms p95 before terminal writes. Paving drops from
+67.52/83.54 to 27.04/30.42 ms mean/p95. Thornwatch lodge drops from
+76.11/98.81 to 34.04/41.23 ms. All 105 matched frames and opaque depth
+buffers agree, and all 51 focused tests pass. In physical 213×60 conhost,
+Ashgate rises from 16.77 to 19.47 FPS and Thornwatch from 10.40 to 14.27 FPS.
+Live audio had zero underruns or recoveries. The 30+ FPS target remains open.
+[Fullscreen performance and validation](benchmarks/fullscreen-throughput-2026-11-23.md)
 
-Mael Veyr is visible from the default Ashgate spawn, both starting routes are
-clear, and all four residents are reachable. The crosshair labels the nearest
-visible actor. Matched live-audio tests for Mael's hood and actor labels passed
-at 240×80. At 120×40, spawn p95 rose from 15.52 to 22.33 ms and the aimed view
-from 14.84 to 17.28 ms. Small-viewport cost remains open.
+Prior paving appearance and developer console checks are retained together.
+[Road relief and developer split validation](benchmarks/cobble-relief-dev-split-2026-11-23.md)
+The 120×40 Mael spawn and aimed-view p95 regressions remain open.
 [Mael and actor label timings](benchmarks/npc-labels-mael-2026-11-22.md)
 
-The renderer traces every native scene cell. The previous full-detail Windows
-optimization batches exact GPU candidate refinement, CPU voxel traversal and
-static surface lighting. Its rebuilt DLL is active. Before the NPC changes, all
-102 styled frame pairs at 240×80 matched `427dc70`, including opaque depths.
-
-With an RTX 3080 Laptop GPU and live audio, all 34 matched 240×80 roles
-pass both relative performance gates. Mean time falls 12–58% and p95 falls
-10–54%. None reaches the 33.33 ms p95 target at that size. The live Windows
-console reached 38.46 FPS at 160×50 Ashgate with 29.29 ms p95. At 240×80,
-Ashgate reached 20.20 FPS and Thornwatch 10.71 FPS. Physical fullscreen
-and 30+ FPS across scenes remain open.
-[Windows timing and parity evidence](benchmarks/full-detail-windows-2026-11-21.md)
-
-Follow-up 240×80 live-audio benchmarks tested native voxel traversal on GPU
-fallback rays and reuse of static GPU hits at a fixed camera pose. Both were
-withdrawn after missing the existing p95 gate. The optimization backlog entry
-remains open. [Follow-up measurements](benchmarks/exact-gpu-follow-up-2026-11-21.md)
-
 ## Verified evidence and limits
+
+The original `--dev` console passed native Windows checks for editing, live
+settings, teleport, sound and restoration. Renderer switches can take a few seconds.
+[Developer console validation](benchmarks/dev-console-2026-11-22.md)
 
 The native Windows dialogue smoke verified keyboard targeting, all three lines
 of Iven's conversation, resumed movement, console restoration and live audio.
@@ -77,10 +59,11 @@ stair and road assumptions and the animated scenery comparison.
 
 ## Resume priorities
 
-1. Capture a physical fullscreen run with `--frame-timing`. Use the
-   [Windows measurements](benchmarks/full-detail-windows-2026-11-21.md) to
-   compare remaining per-cell CPU work, fallback rays and console output. Use
-   the Mael benchmark's fixed spawn and talk camera poses for 120×40 follow-up.
+1. Compare physical fullscreen presentation in Windows Terminal and classic
+   conhost with `--frame-timing` at the same grid size, cap and audio mode.
+   Heavy river, firelight and terrace views still need engine work. Rerun the
+   120×40 Mael poses and explicit GPU paving pose (128.5, 63.5, Z1), facing north
+   at pitch −0.28, against the frozen source.
 2. Repair the shortcut and third river bridge grades. Preserve slope limits and
    rerun both route regressions before the full route group.
 3. Migrate the aggregate block-walking test. It assumes 13 axis-aligned entries
@@ -90,12 +73,13 @@ stair and road assumptions and the animated scenery comparison.
 4. Continue building massing and map layout work.
 
 ```powershell
-.\run.bat --dev
+.\run-dev.bat
 .\run.bat --frame-timing fullscreen-full-detail-timing.json
 python -B main.py --keyboard-look --color-mode color
 $env:MONOLITH_GPU_TESTS='1'
 .\.venv-gpu\Scripts\python.exe -B -m unittest tests.test_particles tests.test_shading tests.test_color_integration tests.test_color_gpu_parity -v
-python -B -m unittest tests.test_dev_build tests.test_dev_console tests.test_mouse_input -v
+.\.venv-gpu\Scripts\python.exe -B -m unittest tests.test_roads tests.test_native_shading tests.test_player_health tests.test_particles tests.test_enemies -v
+python -B -m unittest tests.test_dev_build tests.test_dev_console tests.test_frame_timing -v
 python -B -m unittest tests.test_map_expansion.MapExpansionTests.test_six_destinations_have_dry_walkable_routes_with_real_collision_and_height tests.test_outdoors.OutdoorMovementTests.test_all_river_bridges_connect_both_banks_without_jumping -v
 .\.venv-gpu\Scripts\python.exe -B validate_native_tmp.py
 ```
@@ -107,5 +91,5 @@ control, extract `git archive` of `b988df7 ascii3d tools` into a fresh directory
 
 The archived lag camera `(215.2,187.4,Z10)` referred to replaced geometry.
 The Thornwatch approach supplies a repeatable replacement probe.
-Physical mouse, speaker/fullscreen review, POSIX held keys and Python 3.10
+Physical mouse, speaker review, POSIX held keys and Python 3.10
 execution remain open.

@@ -2,5 +2,4 @@ The following is NOT listed according to priority, but the user may choose a cer
 When a milestone is complete, remove it from the list and reassign the numbering to any remaining tasks.
 
 1. Optimization - pretty improved compared to before, but not quite enough. targetting 30+ fps in full screen without dramatic visual changes.
-2. Improve overall combat - there should be some indication when the player takes damage, and some kind of effect when an enemy dies.
-3. Road improvement - make the roads cobblestone roads, like skyrim.
+2. Issue with new road - the new road design/texture seems to be causing quite a lot of frame drop. needs to be reviewed at once.
