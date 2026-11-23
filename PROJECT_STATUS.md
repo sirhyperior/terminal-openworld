@@ -5,45 +5,47 @@ Last reviewed **2026-11-23**. [Repository rules](AGENTS.md) ·
 
 ## Current checkpoint
 
-The developer console renders a live split view with FPS while the editor
-has focus. `bug <message>` appends the player's feet coordinates and local
-timestamp to the backlog. Dialogue reveals letters in place, with E to reveal
-the line and E again to continue. Combat has directional damage cues and a
-depth-tested Warden fall. Cobblestone contacts have dedicated Foley.
+NPCs support opt-in `PatrolStop` routes with timed stops, walking animation,
+collision and surface footsteps. Conversations stop the patrol, and natural
+letter reveals have low-volume 25 ms cues. Immediate reveal plays one rustle.
+The live native replay verified patrol, dialogue, pause, resume and terminal
+restoration. The two matched 120×40 roles pass both timing gates. The active
+level spread across ten ordinary audio cues fell from 8.53 to 1.00 dB in PCM.
+After play feedback, all door cues gained 3 dB. The 36 focused sound and door
+tests passed, and live playback had zero underruns or recoveries.
+[Door level verification](benchmarks/patrol-dialogue-fireball-2026-11-23.md#door-level-follow-up)
 
-The Riven Vale shortcut near (340.8, 306.5, Z10.7) and the third river bridge
-are walkable in both directions. The 1,040-contact test covers all 13 stair
-flights, including six transformed flights. The live native console replay
-passed report, FPS, motion, audio and restoration checks. All four matched
-120×40 gameplay roles pass the mean and p95 timing gates.
-[Backlog validation](benchmarks/backlog-validation-2026-11-23.md)
+The rebuilt DLL keeps compiled base shading on resolved hits after the
+shared firelight shadow budget fills. At 240×80 with live audio, the p95
+cast frame falls from **71.49 to 47.71 ms** in the Ashgate yard and from
+**82.82 to 56.67 ms** in the gatehouse. All 24 paired frames, opaque depths
+and surface shadow results match.
+[Current timing and validation](benchmarks/patrol-dialogue-fireball-2026-11-23.md)
 
-The rebuilt optional DLL also shades static GPU hits outside local firelight
-and leaves shared visibility checks in screen order. At 240×80 with live
-audio, the fireball role improves from **65.12/100.18 to 52.08/80.63 ms**
-mean/p95. All three sampled roles pass both regression gates. All 20 paired
-frames and depth buffers match.
-[Firelight timing](benchmarks/backlog-firelight-auto-240x80-2026-11-23.json) ·
-[Frame parity](benchmarks/backlog-firelight-parity-2026-11-23.json)
+The previous checkpoint verified the live developer console, the Riven Vale
+and Reliquary Bridge repairs, 1,040 stair contacts, combat feedback and
+cobblestone audio. [Prior validation](benchmarks/backlog-validation-2026-11-23.md)
 
 The prior 240×80 full-grid comparison passed both relative gates on all 35
 auto roles. In physical 213×60 conhost, Ashgate reached 19.47 FPS and
 Thornwatch reached 14.27 FPS. These runs precede the current backlog work.
 [Fullscreen evidence](benchmarks/fullscreen-throughput-2026-11-23.md)
 
-The native Windows suite ran 672 tests with GPU checks enabled. All 14
-failure records across four test methods reproduce on `0dcb8e6`. Two tests
-skipped. The remaining failures cover the stair benchmark's camera assertion,
-paving palette readability, scenery occlusion and an old grass fixture.
-[Native suite](benchmarks/backlog-validation-native-2026-11-23.txt) ·
-[Frozen control](benchmarks/backlog-validation-control-failures-2026-11-23.txt)
+The native Windows suite ran 683 tests with GPU checks enabled. Its 14
+failure records match the prior suite. Two frame-timing tests initially
+errored because their mock lacked the NPC update result. After correcting
+the fixture, all 39 frame-timing, developer console and game-loop tests
+passed. Two platform tests skipped in the full run.
+[Native suite](benchmarks/backlog-patrol-audio-fireball-native-2026-11-23.txt) ·
+[Prior failure replay](benchmarks/backlog-validation-control-failures-2026-11-23.txt)
 
 ## Open issues and resume
 
 1. The **30+ FPS fullscreen target** remains open. Measure Windows Terminal
    and classic conhost on the same physical grid, replay, cap and audio
-   configuration. River, firelight and terrace views still exceed the 33.33 ms
-   budget before terminal writes.
+   configuration. Profile the remaining early-flight spike with the new DLL.
+   River, firelight and terrace views still exceed the 33.33 ms budget before
+   terminal writes.
 2. Replay the 120×40 Mael spawn and aimed views against their frozen control
    and the fixed-yaw explicit GPU paving pose (128.5, 63.5, Z1), north at
    pitch −0.28. [Mael timing gates](benchmarks/npc-labels-mael-2026-11-22.md) ·
@@ -58,8 +60,8 @@ paving palette readability, scenery occlusion and an old grass fixture.
 .\run.bat --keyboard-look --demo --frames 60 --frame-timing fullscreen-ashgate-replay.json
 .\run.bat --keyboard-look --demo --region thornwatch --frames 60 --frame-timing fullscreen-thornwatch-replay.json
 $env:MONOLITH_GPU_TESTS='1'
-.\.venv-gpu\Scripts\python.exe -B -m unittest tests.test_native_shading tests.test_color_gpu_parity tests.test_dev_build tests.test_game_loop tests.test_block_walking -v
-python -B -m unittest tests.test_map_expansion tests.test_outdoors.OutdoorMovementTests -v
+.\.venv-gpu\Scripts\python.exe -B -m unittest tests.test_native_shading tests.test_color_gpu_parity tests.test_combat tests.test_doors -v
+python -B -m unittest tests.test_npcs tests.test_npc_render tests.test_game_loop tests.test_sound -v
 ```
 
 Use unused timing filenames. Rebuild the optional DLL with the compiler command

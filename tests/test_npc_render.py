@@ -83,6 +83,18 @@ class NPCRenderingTests(unittest.TestCase):
             with self.subTest(seconds=seconds):
                 self.assertEqual(renderer.scene(self.player, 90, 30, seconds), empty)
 
+    def test_walk_phase_moves_limbs_and_a_stop_restores_the_idle_pose(self):
+        idle = self.draw()
+        self.npc.walk_blend = 1.0
+        self.npc.walk_phase = math.pi / 2
+        leading = self.draw()
+        self.npc.walk_phase += math.pi
+        trailing = self.draw()
+        self.assertNotEqual(idle, leading)
+        self.assertNotEqual(leading, trailing)
+        self.npc.walk_blend = 0.0
+        self.assertEqual(self.draw(), idle)
+
     def test_viewport_budget_limits_visible_npcs(self):
         pixels = [[" "] * 40 for _ in range(12)]
         depths = [[math.inf] * 40 for _ in range(12)]

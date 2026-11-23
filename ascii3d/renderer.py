@@ -266,7 +266,8 @@ class Renderer:
 
                     self._native_shading = NativeShading(
                         shader_library.shade_surfaces, getattr(shader_library, 'shade_gpu_frame', None),
-                        getattr(shader_library, 'shade_gpu_frame_firelight', None))
+                        getattr(shader_library, 'shade_gpu_frame_firelight', None),
+                        getattr(shader_library, 'shade_gpu_frame_light_budget', None))
             except (AttributeError, OSError) as error:
                 if backend == 'native':
                     self.backend_error = str(error)
@@ -718,6 +719,9 @@ class Renderer:
         if pending is None:
             pixels = [[" "] * width for _ in self._rows]
             depths = [[math.inf] * width for _ in self._rows]
+        visible_points = None
+        visibility = self.shading._visibility
+        shadow_budget = self.shading.MAX_SHADOW_SAMPLES
         for row_index, v in enumerate(self._rows):
             columns = all_columns if pending is None else pending[row_index]
             if not columns:
@@ -738,6 +742,23 @@ class Renderer:
             dz_squared = dz * dz
 
             for column_index in columns:
+                if column_index < 0:
+                    column_index = ~column_index
+                    if len(visibility) >= shadow_budget:
+                        if visible_points is None:
+                            # Full-budget hits can only reuse an exact visible
+                            # ray. A matching point still goes through Python
+                            # to check the light index and surface normal.
+                            visible_points = {key[1:4] for key, visible in visibility.items() if visible}
+                        if not visible_points:
+                            continue
+                        u = self._columns[column_index]
+                        sample_distance = depth_row[column_index] + 1e-8
+                        sample = (px + (base_x + u * sy) * sample_distance,
+                                  py + (base_y - u * cy) * sample_distance,
+                                  pz + dz * sample_distance)
+                        if sample not in visible_points:
+                            continue
                 u = self._columns[column_index]
                 panel_depth = panel_depth_row[column_index] if panel_depth_row is not None else math.inf
                 ray_limit = panel_depth if panel_depth < 48 else 48

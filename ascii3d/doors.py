@@ -91,19 +91,20 @@ class Door:
         self.target_open = not self.target_open
         return GameEvent("door_open" if self.target_open else "door_close", self.x, self.y)
 
-    def update(self, player, dt):
+    def update(self, player, dt, *, residents=()):
         target = float(self.target_open)
         if self.openness == target:
             return None
         delta = min(max(0, dt), 0.05) * 1.8
         next_value = min(1.0, self.openness + delta) if self.target_open else max(0.0, self.openness - delta)
         # Test the actual swept motion in small angular increments; either an
-        # opening or closing leaf can otherwise push the player into a wall.
+        # opening or closing leaf can otherwise push an actor into a wall.
+        actors = [(player.x, player.y, player.z, player.RADIUS + 0.02, player.HEIGHT)]
+        actors.extend((npc.x, npc.y, npc.z, npc.radius + 0.02, npc.height) for npc in residents)
         steps = max(1, math.ceil(abs(next_value - self.openness) / 0.01))
         for step in range(1, steps + 1):
             value = self.openness + (next_value - self.openness) * step / steps
-            if any(panel.collides(player.x, player.y, player.z, player.RADIUS + 0.02, player.HEIGHT)
-                   for panel in self.panels_at(value)):
+            if any(panel.collides(*actor) for panel in self.panels_at(value) for actor in actors):
                 # Reverse a closing door; stop an opening door at its safe pose.
                 self.target_open = True
                 event = None if self._blocked else GameEvent("door_blocked", self.x, self.y)

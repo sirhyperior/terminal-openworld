@@ -7,7 +7,10 @@ matched hardware, Python, dimensions, frames and audio mode. Camera roles across
 different maps are not identical geometry. Git checkpoint `f27e9ff` retains the
 longer historical narrative removed from the main handoff during cleanup.
 
-The latest backlog work covers the live developer console, route repairs,
+Latest backlog work measures shot onset, NPC patrols, and dialogue audio.
+[Patrol, dialogue audio, and fireball validation (2026-11-23)](patrol-dialogue-fireball-2026-11-23.md)
+
+The previous backlog work covers the live developer console, route repairs,
 gameplay and firelight timings, and exact frame comparisons.
 [Backlog validation (2026-11-23)](backlog-validation-2026-11-23.md)
 

@@ -97,6 +97,12 @@ character's controls pause during the conversation. Lines appear one character
 at a time. Press **E** to reveal the rest of the current line, then press **E**
 again to continue or finish. **P** and **H** still open pause and help.
 
+The four residents have stationary posts. To author a patrol for a future
+resident, set its `patrol` to an ordered tuple of `PatrolStop(x, y, pause)`
+entries in `ascii3d/npcs.py`. The pause is in seconds. Connect each stop and
+the return to the first stop with dry, walkable ground. The resident waits
+for an obstruction to clear or a conversation to finish, then continues.
+
 Collect the upright **iron sword with E** near either Ashgate starting entrance.
 Find the **fire staff** on the western timber floor inside Gravewood Chapel
 (`68.5, 248.5`). **You can hold only one item**: collecting another drops the
@@ -333,8 +339,9 @@ scrapes and damped body resonances. Weathered doors strain and release around
 wooden latches. Sword contacts have an immediate iron/wood impact, while the
 staff exhales cold spellfire with turbulent tails and crumbling embers.
 The Warden uses low, inharmonic stone weight for movement, warnings, impacts,
-collapse and return. Player damage and respawn use their own cues. Resident
-conversations use soft cloth and breath cues for turning, speaking and parting.
+collapse and return. Player damage and respawn use their own cues. Each letter
+that appears during a conversation plays a quiet blip. Revealing the rest of a
+line with E plays a short rustle.
 Interface feedback is subdued parchment/leather movement. Gusting wind and
 flowing water use textured turbulence. All sounds are synthesized locally,
 without recordings.
@@ -342,8 +349,10 @@ without recordings.
 Footsteps and landings follow the actual supporting material, including stairs,
 cobblestones, raised crates and bridge tops. Cobbled paths have dry heel and toe
 clacks with a short sole scuff. Recurring contacts and relic effects have
-repeatable variations. Effects overlap with distance attenuation and stereo
-positioning. Confirmed sword hits lead with the impact and a softer whoosh.
+repeatable variations. Short-window levels keep sudden effects closer in
+volume. Impacts remain clear over softer footfalls and menu sounds. Effects
+overlap with distance attenuation and stereo positioning. Confirmed sword
+hits lead with the impact and a softer whoosh.
 Misses keep the full air swing.
 Pause/help hush the environment while preserving menu feedback. F toggles sound;
 the header shows its state. Mute, pause, volume changes, and stopped voices fade
@@ -460,8 +469,9 @@ The optional native library accelerates exact float64 voxel, solid and
 continuous terrain traversal, as well as exact refinement of GPU candidates.
 It batches lighting for static opaque surfaces, including cobblestones and
 wind-tinted grass. Both `auto` and `gpu` can shade resolved GPU hits in the
-compiled batch, including surfaces that fireballs cannot light. Local
-firelight uses the shared visibility query in screen order. Ambiguous hits
+compiled batch. Firelight runs the shared visibility query in screen order,
+and resolved hits that cannot contribute after the shadow budget fills keep
+their compiled base shading. Ambiguous hits
 still use exact traversal, and coincident solid hits use the Python grid query.
 Build or rebuild the library from the repository root. The normal launcher
 picks up the result automatically.

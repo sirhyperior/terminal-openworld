@@ -499,7 +499,7 @@ class World:
 
     def collides(self, x: float, y: float, feet: float,
                  radius: float = 0.22, height: float = 1.7,
-                 ignore_enemy=None) -> bool:
+                 ignore_enemy=None, *, ignore_npc: NPC | None = None) -> bool:
         # Water is a volume to wade through, with an implicit shallow riverbed.
         if x - radius < 0 or y - radius < 0:
             return True
@@ -525,7 +525,8 @@ class World:
                         return True
         return (any(panel.collides(x, y, feet, radius, height)
                     for door in self.doors for panel in door.panels)
-                or any(npc.collides(x, y, feet, radius, height) for npc in self.npcs)
+                or any(npc is not ignore_npc and npc.collides(x, y, feet, radius, height)
+                       for npc in self.npcs)
                 or self.combat.collides(x, y, feet, radius, height,
                                         ignore_enemy=ignore_enemy))
 
@@ -547,24 +548,30 @@ class World:
         geometry = self.geometry_hit(origin, direction, limit) if self.geometry_present else None
         if geometry is not None:
             limit = geometry.distance
-        cell = [math.floor(value) for value in origin]
-        steps = [1 if value >= 0 else -1 for value in direction]
-        deltas = [abs(1 / value) if abs(value) > 1e-12 else math.inf
-                  for value in direction]
-        crossings = [((cell[i] + 1 - origin[i]) if steps[i] > 0
-                      else (origin[i] - cell[i])) * deltas[i]
-                     if math.isfinite(deltas[i]) else math.inf for i in range(3)]
+        ox, oy, oz = origin
+        dx, dy, dz = direction
+        x, y, z = math.floor(ox), math.floor(oy), math.floor(oz)
+        sx, sy, sz = (1 if dx >= 0 else -1), (1 if dy >= 0 else -1), (1 if dz >= 0 else -1)
+        tx = abs(1 / dx) if abs(dx) > 1e-12 else math.inf
+        ty = abs(1 / dy) if abs(dy) > 1e-12 else math.inf
+        tz = abs(1 / dz) if abs(dz) > 1e-12 else math.inf
+        cx = (x + 1 - ox if sx > 0 else ox - x) * tx if tx < math.inf else math.inf
+        cy = (y + 1 - oy if sy > 0 else oy - y) * ty if ty < math.inf else math.inf
+        cz = (z + 1 - oz if sz > 0 else oz - z) * tz if tz < math.inf else math.inf
         travelled, nearest = 0.0, geometry.distance if geometry is not None else None
         while True:
-            if self.get(*cell) not in (AIR, WATER):
+            if self.get(x, y, z) not in (AIR, WATER):
                 nearest = travelled
                 break
-            axis = min(range(3), key=lambda i: crossings[i])
-            if crossings[axis] > limit:
+            # Equal crossings visit X, then Y, then Z as in the voxel tracer.
+            if cx <= cy and cx <= cz:
+                travelled, cx, x = cx, cx + tx, x + sx
+            elif cy <= cz:
+                travelled, cy, y = cy, cy + ty, y + sy
+            else:
+                travelled, cz, z = cz, cz + tz, z + sz
+            if travelled > limit:
                 break
-            travelled = crossings[axis]
-            cell[axis] += steps[axis]
-            crossings[axis] += deltas[axis]
         limit = limit if nearest is None else nearest
         for door in self.doors:
             if door is ignore_door:
@@ -621,12 +628,18 @@ class World:
             return self.combat.collect(target, player, self)
         if isinstance(target, NPC):
             if on_talk is not None:
+                target.walk_blend = 0.0
                 on_talk(target)
             return [GameEvent("dialogue_start", target.x, target.y)]
         return [GameEvent("interaction_miss")]
 
     def update_doors(self, player, dt):
-        return [event for door in self.doors if (event := door.update(player, dt)) is not None]
+        return [event for door in self.doors
+                if (event := door.update(player, dt, residents=self.npcs)) is not None]
+
+    def update_npcs(self, player, dt):
+        return [event for npc in self.npcs if npc.patrol
+                if (event := npc.update(self, player, dt)) is not None]
 
     def in_water(self, x: float, y: float, feet: float) -> bool:
         return feet < WATER_LEVEL and self.get(math.floor(x), math.floor(y), 0) == WATER

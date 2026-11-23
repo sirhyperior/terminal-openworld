@@ -96,18 +96,22 @@ def _draw_npc(npc: NPC, camera: Camera, pixels, depths, time_seconds: float):
         face(rings[-1], material, emission=emission)
 
     # The enclosed volumes provide silhouettes and hide scenery from every side.
+    stride = npc.walk_blend * math.sin(npc.walk_phase)
     for side in (-1, 1):
-        solid(LEATHER, side * 0.105, 0.025, (0.067, 0.105, 0.01),
-              (0.068, 0.066, 0.14))
-        solid(CLOTH, side * 0.102, 0, (0.059, 0.053, 0.12),
+        swing = side * stride
+        lift = 0.07 * max(0.0, swing)
+        solid(LEATHER, side * 0.105, 0.025 + swing * 0.09, (0.067, 0.105, 0.01 + lift),
+              (0.068, 0.066, 0.14 + lift))
+        solid(CLOTH, side * 0.102, swing * 0.065, (0.059, 0.053, 0.12 + lift * 0.5),
               (0.070, 0.074, outfit.hem + 0.12))
+        arm_swing = -swing * 0.09
         if shadow_hood:
-            solid(outfit.coat, side * 0.23, 0, (0.054, 0.063, 0.76),
+            solid(outfit.coat, side * 0.23, arm_swing, (0.054, 0.063, 0.76),
                   (0.066, 0.074, 1.29))
         else:
-            solid(outfit.coat, side * 0.234, 0, (0.046, 0.049, 0.88),
+            solid(outfit.coat, side * 0.234, arm_swing, (0.046, 0.049, 0.88),
                   (0.065, 0.071, 1.29))
-            solid(SKIN, side * 0.234, 0.011, (0.033, 0.036, 0.80),
+            solid(SKIN, side * 0.234, 0.011 + arm_swing, (0.033, 0.036, 0.80),
                   (0.044, 0.043, 0.90))
     solid(outfit.coat, 0, 0, (outfit.hem_width, 0.129, outfit.hem), *outfit.drape,
           (0.162, 0.109, 0.96), (0.210, 0.130, 1.30))

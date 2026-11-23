@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch
 
 from ascii3d.app import FrameRateCounter, main
 from ascii3d.combat import FIRE_STAFF, CombatState, Enemy, WeaponPickup
-from ascii3d.npcs import NPC
+from ascii3d.npcs import NPC, PatrolStop
 from ascii3d.player import Player
 from ascii3d.sound import EFFECTS
 from ascii3d.terminal import Keys, WindowsMouse
@@ -28,6 +28,7 @@ class GameLoopTests(unittest.TestCase):
         captures = self.capture_states
         terminal_budgets = self.terminal_budgets = []
         player_positions = self.player_positions = []
+        npc_poses = self.npc_poses = []
         native_states = self.native_capture_states = []
         clock = 0.0
 
@@ -81,6 +82,7 @@ class GameLoopTests(unittest.TestCase):
                 frames.append(frame)
                 live_player = frame[0][0]
                 player_positions.append((live_player.x, live_player.y, live_player.z))
+                npc_poses.append(tuple((npc.x, npc.y, npc.z, npc.walk_blend) for npc in world.npcs))
                 combat = world.combat
                 states.append((combat.held_item is not None, combat.cooldown, combat.swing_remaining,
                                combat.enemies[0].down_remaining, combat.enemies[0].hp,
@@ -306,10 +308,17 @@ class GameLoopTests(unittest.TestCase):
                 self.assertGreater(views[13].visible_characters, views[10].visible_characters)
                 self.assertIsNone(views[14].visible_characters)
                 self.assertEqual(views[15:], [None, None])
-                self.assertEqual([event.name for event in events],
+                self.assertEqual([event.name for event in events if event.name != "dialogue_letter"],
                                  ["dialogue_start", "ui_pause", "ui_pause", "dialogue_line",
                                   "dialogue_reveal", "dialogue_line", "ui_pause", "ui_pause",
                                   "dialogue_reveal", "dialogue_end"])
+                expected_letters = 0
+                for index in (7, 8, 10, 13):
+                    previous = views[index - 1]
+                    view = views[index]
+                    start = previous.visible_characters if previous.text == view.text else 0
+                    expected_letters += sum(character.isalpha() for character in view.text[start:view.visible_characters])
+                self.assertEqual(sum(event.name == "dialogue_letter" for event in events), expected_letters)
                 self.assertTrue(all(not frame[0][4] for frame in frames))
                 self.assertEqual(pauses, [False, False, True, True, False, True] + [False] * 5
                                  + [True, True] + [False] * 4)
@@ -323,6 +332,25 @@ class GameLoopTests(unittest.TestCase):
                 self.assertAlmostEqual(states[7][6], math.pi / 2)
                 self.assertAlmostEqual(states[7][7], math.atan2(npc.eye_z - (1 + Player.EYE), 1.1))
                 self.assertAlmostEqual(npc.yaw, 3 * math.pi / 2)
+
+    def test_patrol_stops_during_pause_and_dialogue_then_continues_route(self):
+        world = self.make_world()
+        npc = NPC("Bell Keeper", 8.5, 5.6, 1, math.pi / 2, ("Good evening.",),
+                  patrol=(PatrolStop(8.5, 7.6),))
+        world.npcs.append(npc)
+        script = [((), ()), ({"p"}, ()), ((), ()), ({"p"}, ()), ({"e"}, ()),
+                  *[((), ())] * 4, ({"e"}, ()), ({"e"}, ()), *[((), ())] * 10]
+        events, _, _, frames = self.run_frames(
+            script, world, Player(x=8.5, y=4.5), keyboard_look=True, clock_tick=0.1)
+        poses = [frame[0] for frame in self.npc_poses]
+        self.assertGreater(poses[0][1], 5.6)
+        self.assertEqual(poses[:3], [poses[0]] * 3)
+        self.assertGreater(poses[3][1], poses[0][1])
+        self.assertGreater(poses[3][3], 0.0)
+        self.assertEqual(poses[4:11], [(*poses[3][:3], 0.0)] * 7)
+        self.assertIsNotNone(frames[4][1]["dialogue"])
+        self.assertIn("dialogue_end", [event.name for event in events])
+        self.assertGreater(poses[-1][1], poses[3][1])
 
     def test_demo_does_not_start_a_conversation_by_itself(self):
         world = self.make_world()

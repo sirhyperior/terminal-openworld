@@ -69,6 +69,7 @@ class FrameTimingTests(unittest.TestCase):
         world = Mock()
         world.combat.update.return_value = ()
         world.update_doors.return_value = ()
+        world.update_npcs.return_value = ()
         player = SimpleNamespace(x=8, y=8, z=1, yaw=0, hp=10, events=(),
                                  update=lambda *args, **kwargs: advance(0.001))
         args = ["--keyboard-look", "--frames", "2"]

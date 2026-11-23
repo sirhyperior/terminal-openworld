@@ -7,9 +7,9 @@ from ascii3d.combat import SWORD, WeaponPickup
 from ascii3d.dialogue import CHARACTERS_PER_SECOND, TURN_SECONDS, Conversation
 from ascii3d.doors import Door
 from ascii3d.events import GameEvent
-from ascii3d.npcs import NPC
+from ascii3d.npcs import NPC, PatrolStop
 from ascii3d.player import Player
-from ascii3d.world import FLOOR, World, build_world
+from ascii3d.world import AIR, FLOOR, STONE, WATER, World, build_world
 
 
 class NPCTargetingTests(unittest.TestCase):
@@ -64,23 +64,132 @@ class ConversationTests(unittest.TestCase):
         npc = NPC("Keeper", 8.5, 7.0, 1.0, 0.0, ("Evening.", "Farewell."))
         conversation = Conversation(npc, player)
         self.assertIsNone(conversation.view.text)
-        self.assertEqual(conversation.update(player, TURN_SECONDS).name, "dialogue_line")
+        self.assertEqual([event.name for event in conversation.update(player, TURN_SECONDS)],
+                         ["dialogue_line", "dialogue_letter"])
         self.assertEqual(conversation.view.visible_characters, 1)
+        letters = []
         for _ in range(4):
-            self.assertIsNone(conversation.update(player, 1 / (2 * CHARACTERS_PER_SECOND)))
+            letters.extend(conversation.update(player, 1 / (2 * CHARACTERS_PER_SECOND)))
+        self.assertEqual([event.name for event in letters], ["dialogue_letter"] * 2)
         self.assertEqual(conversation.view.visible_characters, 3)
-        self.assertIsNone(conversation.update(player, 0.5))
+        self.assertEqual([event.name for event in conversation.update(player, 0.5)], ["dialogue_letter"] * 4)
         self.assertIsNone(conversation.view.visible_characters)
-        self.assertEqual(conversation.update(player, 0.0, advance=True).name, "dialogue_line")
+        self.assertEqual([event.name for event in conversation.update(player, 0.0, advance=True)],
+                         ["dialogue_line", "dialogue_letter"])
         self.assertEqual(conversation.view.visible_characters, 1)
         self.assertTrue(conversation.view.last)
 
         # A press on the frame that would finish revealing still reveals the
         # current line. The next press dismisses it.
-        self.assertEqual(conversation.update(player, 0.5, advance=True).name, "dialogue_reveal")
+        self.assertEqual([event.name for event in conversation.update(player, 0.5, advance=True)],
+                         ["dialogue_reveal"])
         self.assertFalse(conversation.finished)
-        self.assertEqual(conversation.update(player, 0.0, advance=True).name, "dialogue_end")
+        self.assertEqual([event.name for event in conversation.update(player, 0.0, advance=True)], ["dialogue_end"])
         self.assertTrue(conversation.finished)
+
+    def test_letter_events_preserve_spacing_and_leave_punctuation_and_skip_silent(self):
+        player = Player(8.5, 5.3, 1.0)
+        npc = NPC("Keeper", 8.5, 7.0, 1.0, 0.0, ("A, so be it.",))
+        conversation = Conversation(npc, player)
+        self.assertEqual(conversation.update(player, TURN_SECONDS / 2), ())
+        line, first = conversation.update(player, TURN_SECONDS / 2)
+        self.assertEqual(line.name, "dialogue_line")
+        self.assertEqual(first, GameEvent("dialogue_letter", npc.x, npc.y))
+        later = conversation.update(player, 4 / CHARACTERS_PER_SECOND)
+        self.assertEqual([event.name for event in later], ["dialogue_letter", "dialogue_letter"])
+        self.assertEqual([event.delay for event in later], [2 / CHARACTERS_PER_SECOND, 3 / CHARACTERS_PER_SECOND])
+        self.assertEqual(conversation.view.visible_characters, 5)
+        self.assertEqual([event.name for event in conversation.update(player, 0.1, advance=True)],
+                         ["dialogue_reveal"])
+        self.assertEqual(conversation.update(player, 0.1), ())
+
+
+class NPCPatrolTests(unittest.TestCase):
+    def setUp(self):
+        self.world = World.empty(16, 16, 8)
+        self.world.box(0, 0, 0, 16, 16, 1, FLOOR)
+        self.npc = NPC("Traveling keeper", 4.5, 4.5, 1.0, 0, ("Good evening.",),
+                       patrol=(PatrolStop(6.5, 4.5, 0.5), PatrolStop(4.5, 4.5)))
+        self.world.npcs.append(self.npc)
+        self.player = Player(2.5, 2.5, 1.0)
+
+    def advance(self, ticks):
+        events = []
+        for _ in range(ticks):
+            events.extend(self.world.update_npcs(self.player, 1 / 120))
+        return events
+
+    def test_configured_loop_pauses_and_emits_footsteps_only_for_contact(self):
+        still = NPC("Keeper", 7.5, 7.5, 1, 0, ("Welcome.",))
+        self.world.npcs.append(still)
+        events = self.advance(147)
+        self.assertEqual((self.npc.x, self.npc.y), (6.5, 4.5))
+        self.assertGreater(self.npc.walk_blend, 0)
+        self.assertEqual([event.name for event in events], ["npc_step", "npc_step"])
+        self.assertTrue(all(event.y == 4.5 and event.surface == "stone"
+                            and 0 < event.strength < 1 for event in events))
+        self.assertEqual(self.advance(48), [])
+        self.assertEqual((self.npc.x, self.npc.y, self.npc.walk_blend), (6.5, 4.5, 0.0))
+        self.advance(120)
+        self.assertLess(self.npc.x, 6.0)
+        self.assertAlmostEqual(self.npc.yaw, math.pi)
+        self.advance(200)
+        self.assertGreater(self.npc.x, 4.5)
+        self.assertAlmostEqual(math.remainder(self.npc.yaw, math.tau), 0.0)
+        self.assertEqual((still.x, still.y, still.yaw, still.walk_blend), (7.5, 7.5, 0, 0.0))
+
+    def test_blocking_actors_stop_the_route_until_they_move(self):
+        self.player.x, self.player.y = 6.0, 4.5
+        self.advance(270)
+        self.assertLessEqual(self.npc.x, 6.0 - self.player.RADIUS - self.npc.radius)
+        self.assertEqual(self.npc.walk_blend, 0)
+        self.player.y = 2.5
+        other = NPC("Guard", 6.5, 4.5, 1, 0, ("Halt.",))
+        self.world.npcs.append(other)
+        self.advance(120)
+        self.assertLessEqual(self.npc.x, 6.5 - self.npc.radius - other.radius)
+        self.assertEqual(self.npc.walk_blend, 0)
+        other.y = 6.5
+        self.advance(120)
+        self.assertEqual((self.npc.x, self.npc.y), (6.5, 4.5))
+
+    def test_walls_holes_and_water_wait_at_safe_edge(self):
+        for material in (STONE, AIR, WATER):
+            with self.subTest(material=material):
+                self.setUp()
+                self.npc.patrol = (PatrolStop(9.5, 4.5),)
+                if material == STONE:
+                    self.world.box(6, 3, 1, 10, 6, 2)
+                else:
+                    self.world.box(6, 3, 0, 10, 6, 1, material)
+                self.advance(360)
+                expected_edge = 6 + (self.npc.radius if material != STONE else -self.npc.radius)
+                self.assertAlmostEqual(self.npc.x, expected_edge, delta=0.02)
+                self.assertEqual(self.npc.z, 1)
+                self.assertFalse(self.world.in_water(self.npc.x, self.npc.y, self.npc.z))
+                self.assertEqual(self.advance(120), [])
+
+    def test_authored_stairs_are_walkable_both_ways(self):
+        self.npc.x = 2.5
+        self.npc.patrol = (PatrolStop(9.5, 4.5, 1.0), PatrolStop(2.5, 4.5, 1.0))
+        self.world.add_stair_flight(4, 2, 4, 6, 1, 3, axis="x", material=FLOOR)
+        self.advance(520)
+        self.assertEqual((self.npc.x, self.npc.z), (9.5, 3.0))
+        self.advance(715)
+        self.assertEqual((self.npc.x, self.npc.z), (2.5, 1.0))
+
+    def test_shared_door_sweep_reverses_before_hitting_resident(self):
+        self.npc.x, self.npc.y = 5.05, 4.8
+        door = Door("Guardhouse door", 4.0, 4.0, 2.0, double=False, openness=1.0)
+        self.world.doors.append(door)
+        events = []
+        for _ in range(100):
+            events.extend(self.world.update_doors(self.player, 1 / 120))
+            self.assertFalse(self.world.collides(self.npc.x, self.npc.y, self.npc.z,
+                                                self.npc.radius, self.npc.height, ignore_npc=self.npc))
+        self.assertEqual(sum(event.name == "door_blocked" for event in events), 1)
+        self.assertTrue(door.target_open)
+        self.assertEqual(door.openness, 1.0)
 
 
 class NPCPlacementTests(unittest.TestCase):

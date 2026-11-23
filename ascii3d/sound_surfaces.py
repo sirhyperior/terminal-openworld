@@ -13,10 +13,11 @@ _CONTACT_RADIUS = 0.22
 _CONTACT_TOLERANCE = 0.06
 
 
-def surface_kind(world, x: float, y: float, feet: float, in_water: bool = False) -> str:
+def surface_kind(world, x: float, y: float, feet: float, in_water: bool = False, *,
+                 radius: float = _CONTACT_RADIUS) -> str:
     """Resolve support for a step/landing; do not call on every physics frame.
 
-    Sample the same circular footprint as player collision, rather than only
+    Sample the same circular footprint as actor collision, rather than only
     the center cell: a player can stand on a crate/bridge edge with air below
     their center. Only surfaces at foot height count, so ground below a raised
     bridge and nearby walls cannot supply its material. Water takes precedence
@@ -27,7 +28,7 @@ def surface_kind(world, x: float, y: float, feet: float, in_water: bool = False)
     if in_water or (feet < WATER_LEVEL and world.get(cx, cy, 0) == WATER):
         return "water"
 
-    material = world.contact_material(x, y, feet, _CONTACT_RADIUS, _CONTACT_TOLERANCE)
+    material = world.contact_material(x, y, feet, radius, _CONTACT_TOLERANCE)
     if material in _MATERIALS:
         return _MATERIALS[material]
 
@@ -37,9 +38,9 @@ def surface_kind(world, x: float, y: float, feet: float, in_water: bool = False)
         material = world.ground_material(x, y, world.get(cx, cy, cz))
         if material in _MATERIALS:
             return _MATERIALS[material]
-        nearest, surface = _CONTACT_RADIUS ** 2, None
-        for sy in range(math.floor(y - _CONTACT_RADIUS), math.floor(y + _CONTACT_RADIUS) + 1):
-            for sx in range(math.floor(x - _CONTACT_RADIUS), math.floor(x + _CONTACT_RADIUS) + 1):
+        nearest, surface = radius ** 2, None
+        for sy in range(math.floor(y - radius), math.floor(y + radius) + 1):
+            for sx in range(math.floor(x - radius), math.floor(x + radius) + 1):
                 dx = max(sx - x, 0.0, x - (sx + 1))
                 dy = max(sy - y, 0.0, y - (sy + 1))
                 distance = dx * dx + dy * dy
@@ -58,6 +59,6 @@ def surface_kind(world, x: float, y: float, feet: float, in_water: bool = False)
             v = -dx * panel.uy + dy * panel.ux
             du = max(-u, 0.0, u - panel.length)
             dv = max(abs(v) - panel.thickness / 2, 0.0)
-            if du * du + dv * dv < _CONTACT_RADIUS ** 2:
+            if du * du + dv * dv < radius ** 2:
                 return "wood"
     return "stone"

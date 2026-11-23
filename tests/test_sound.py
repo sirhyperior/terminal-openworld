@@ -22,7 +22,7 @@ class SoundTests(unittest.TestCase):
         for name, variants in self.bank.clips.items():
             for clip in variants:
                 self.assertEqual(clip.typecode, "h")
-                self.assertGreater(len(clip), SAMPLE_RATE * 0.08)
+                self.assertEqual(len(clip), round(EFFECTS[name] * SAMPLE_RATE))
                 self.assertGreater(max(map(abs, clip)), 100)
                 self.assertLessEqual(max(map(abs, clip)), 32767)
         self.assertEqual(self.bank.clips["door_open"][0], synthesize("door_open"))
@@ -121,6 +121,57 @@ class SoundTests(unittest.TestCase):
             self.assertGreater(rms, 500)
             self.assertLessEqual(max(map(abs, clip)), 27000)
 
+    def test_letter_blips_are_quiet_and_play_at_the_scheduled_samples(self):
+        clips = self.bank.clips["dialogue_letter"]
+        self.assertEqual(len({clip.tobytes() for clip in clips}), 3)
+        for variation, clip in enumerate(clips):
+            self.assertEqual(clip, synthesize("dialogue_letter", variation))
+            self.assertEqual((clip[0], clip[-1]), (0, 0))
+            self.assertGreater(max(map(abs, clip)), 500)
+            self.assertLess(max(map(abs, clip)), 2800)
+        delay = round(SAMPLE_RATE / 36)
+        mixer = Mixer(self.bank, volume=1)
+        mixer.add(GameEvent("dialogue_letter"))
+        mixer.add(GameEvent("dialogue_letter", delay=delay / SAMPLE_RATE))
+        first = mixer.render(512) + mixer.render(delay - 512)
+        second = mixer.render(delay)
+        self.assertNotEqual(first[:len(clips[0]) * 4], bytes(len(clips[0]) * 4))
+        self.assertEqual(first[len(clips[0]) * 4:], bytes((delay - len(clips[0])) * 4))
+        self.assertNotEqual(second, bytes(len(second)))
+
+        mixer.add(GameEvent("dialogue_letter", delay=0.05))
+        mixer.render(512)
+        mixer.release_all()
+        self.assertEqual(mixer.render(2048), bytes(2048 * 4))
+
+    def test_active_levels_balance_common_cues_and_emphasize_doors(self):
+        names = ("sword_pickup", "staff_pickup", "fireball_cast",
+                 "enemy_alert", "enemy_respawn", "player_respawn", "dummy_reset", "land")
+        door_targets = {"door_open": -17, "door_close": -17, "door_blocked": -20}
+        window = round(SAMPLE_RATE * 0.04)
+        levels = []
+        for name in (*names, *door_targets):
+            for clip in self.bank.clips[name]:
+                active_energy = max(sum(sample * sample for sample in clip[start:start + window])
+                                    for start in range(0, len(clip) - window + 1, window // 2))
+                rms = math.sqrt(active_energy / window)
+                if name in door_targets:
+                    with self.subTest(effect=name):
+                        self.assertAlmostEqual(20 * math.log10(rms / 32768), door_targets[name], delta=0.1)
+                        self.assertLessEqual(max(map(abs, clip)), 12000)
+                else:
+                    levels.append(rms)
+        self.assertLess(max(levels) / min(levels), 1.25)
+
+    def test_npc_footsteps_share_surface_samples_without_competing_with_hits(self):
+        mixer = Mixer(self.bank)
+        mixer.add(GameEvent("npc_step", strength=0.42, surface="cobblestone"))
+        npc = mixer.voices[-1]
+        self.assertIs(npc.samples, self.bank.clips["step_cobblestone"][0])
+        self.assertEqual(npc.priority, 0)
+        mixer.add(GameEvent("step_cobblestone", strength=0.7))
+        self.assertLess(npc.left, mixer.voices[-1].left)
+
     def test_player_damage_and_enemy_attack_survive_low_priority_footfalls(self):
         mixer = Mixer(self.bank)
         for _ in range(Mixer.MAX_VOICES):
@@ -186,6 +237,9 @@ class SoundTests(unittest.TestCase):
         self.assertGreater(voice.right, voice.left)
         mixer.add(GameEvent("door_open", 20, 0), (0, 0, math.pi / 2))
         self.assertLess(mixer.voices[1].left + mixer.voices[1].right, voice.left + voice.right)
+        mixer.add(GameEvent("door_open", 0, 2), (0, 0, math.pi / 2))
+        centered = mixer.voices[-1]
+        self.assertAlmostEqual(math.hypot(voice.left, voice.right), math.hypot(centered.left, centered.right))
 
     def test_personal_damage_and_respawn_feedback_follow_the_listener_after_teleport(self):
         for cue in ("player_hurt", "player_down", "player_respawn"):

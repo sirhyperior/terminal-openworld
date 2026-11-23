@@ -94,6 +94,18 @@ class NativeShadingTests(unittest.TestCase):
         self.assertEqual(pending, [[0, 3], [0, 2]])
         self.assertEqual((depths[0][1], depths[0][2], depths[1][3]), (4, 30, 12))
 
+        if library.shade_gpu_frame_light_budget is not None:
+            budgeted = NativeShading(library.shade_surfaces, library.shade_gpu_frame,
+                                     library.shade_gpu_frame_firelight, library.shade_gpu_frame_light_budget)
+            pixels, depths, pending = budgeted.gpu_frame(
+                packed, renderer.shading, renderer.scenery, (1, 0, 1, 0), None, None, None)
+            # The lit candidates carry base pixels and depths, yet retain their
+            # place among water and ambiguous rays in the ordered fallback.
+            self.assertEqual(pending, [[~0, 3], [0, ~2]])
+            self.assertEqual((depths[0][0], depths[1][2]), (4, 12))
+            self.assertEqual((pixels[0][0].material, pixels[1][2].material), (STONE, STONE))
+            self.assertEqual((pixels[0][0].effects & 3, pixels[1][2].effects & 3), (0, 0))
+
     def test_matches_python_with_cobbles_grass_metal_an_edited_shadow_and_firelight(self):
         world = World.empty(24, 24, 10)
         world.outdoor_bounds = (0, 0, 24, 24)

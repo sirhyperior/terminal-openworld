@@ -10,3 +10,4 @@ class GameEvent:
     y: float | None = None
     strength: float = 1.0
     surface: str | None = None
+    delay: float = 0.0  # Seconds after this update's first cue.

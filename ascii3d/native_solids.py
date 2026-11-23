@@ -129,6 +129,7 @@ class SolidLibrary:
                                or getattr(library, 'monolith_shade_batch', None))
         self.shade_gpu_frame = getattr(library, 'monolith_shade_gpu_frame', None)
         self.shade_gpu_frame_firelight = getattr(library, 'monolith_shade_gpu_frame_firelight', None)
+        self.shade_gpu_frame_light_budget = getattr(library, 'monolith_shade_gpu_frame_light_budget', None)
         self.gpu_refine = getattr(library, 'monolith_gpu_refine', None)
         if self.gpu_refine is not None:
             self.gpu_refine.argtypes = (POINTER(_GPUScene), POINTER(c_uint32), POINTER(_Hit),

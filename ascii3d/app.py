@@ -522,8 +522,8 @@ def main(argv: list[str] | None = None) -> int:
                 if timing is not None:
                     audio_end = time.perf_counter()
                 if active and conversation is not None:
-                    event = conversation.update(player, elapsed, advance="e" in keys.pressed and not input_transition)
-                    if event is not None:
+                    advance = "e" in keys.pressed and not input_transition
+                    for event in conversation.update(player, elapsed, advance=advance):
                         audio.emit(event)
                     if conversation.finished:
                         conversation = None
@@ -580,6 +580,8 @@ def main(argv: list[str] | None = None) -> int:
                             audio.emit(event)
                             if event.name == "door_blocked":
                                 notice, notice_until = "Doorway obstructed", simulation_time + 1.5
+                        for event in world.update_npcs(player, step):
+                            audio.emit(event)
                         simulation_time += step
                         jump_pending = attack_pending = False
                         accumulator -= step

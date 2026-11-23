@@ -18,6 +18,7 @@ _GLYPHS = RAMP + "".join(GRASS_GLYPHS)
 _SAMPLE_SIZE = 9
 _FALLBACK = 0xffffffff
 _PANEL = _FALLBACK - 1
+_DEFERRED_LIGHT = 0x80000000
 
 
 class _SurfaceLighting(Structure):
@@ -63,7 +64,8 @@ def _ink_from_code(result):
 
 
 class NativeShading:
-    def __init__(self, shade, shade_gpu_frame=None, shade_gpu_frame_firelight=None):
+    def __init__(self, shade, shade_gpu_frame=None, shade_gpu_frame_firelight=None,
+                 shade_gpu_frame_light_budget=None):
         if (STONE, FLOOR, METAL, CRATE, GRASS, WATER, WOOD, LEAVES, PATH,
                 BRIDGE, FIRE, EMBER, ARCANE, STRAW, BONE) != tuple(range(1, 16)) or WIND_GRASS != 22:
             raise ValueError("Unsupported native shading material IDs")
@@ -82,7 +84,7 @@ class NativeShading:
         self._moon_buffer = None
         self._tokens = {0: " ", _PANEL: " ", _FALLBACK: " "}
         self._shade_gpu_frame = shade_gpu_frame
-        self._shade_gpu_frame_firelight = shade_gpu_frame_firelight
+        self._shade_gpu_frame_firelight = shade_gpu_frame_light_budget or shade_gpu_frame_firelight
         self._roads = None
         self._road_data = _SceneRoads()
         packed_args = (
@@ -93,9 +95,9 @@ class NativeShading:
         if shade_gpu_frame is not None:
             shade_gpu_frame.argtypes = packed_args
             shade_gpu_frame.restype = c_uint32
-        if shade_gpu_frame_firelight is not None:
-            shade_gpu_frame_firelight.argtypes = packed_args + (POINTER(c_double), c_int, c_double)
-            shade_gpu_frame_firelight.restype = c_uint32
+        if self._shade_gpu_frame_firelight is not None:
+            self._shade_gpu_frame_firelight.argtypes = packed_args + (POINTER(c_double), c_int, c_double)
+            self._shade_gpu_frame_firelight.restype = c_uint32
 
     def available(self, shading, *, packed=False):
         return (type(shading) is Shading and "surface" not in vars(shading)
@@ -158,19 +160,27 @@ class NativeShading:
                 *args, lights, count_lights, shading.FIRELIGHT_RADIUS_SQUARED)
         else:
             special_count = self._shade_gpu_frame(*args)
+        pending = [[] for _ in range(height)]
+        panels = []
+        for index in specials[:special_count]:
+            y, x = divmod(index, width)
+            code = codes[index]
+            if code == _PANEL:
+                panels.append((y, x))
+            elif code != _FALLBACK and code & _DEFERRED_LIGHT:
+                codes[index] = code ^ _DEFERRED_LIGHT
+                # A complemented column already has an unlit token and depth.
+                pending[y].append(~x)
+            else:
+                pending[y].append(x)
         tokens = self._tokens
         for code in set(codes).difference(tokens):
             tokens[code] = _ink_from_code(code)
         pixels = [list(map(tokens.__getitem__, codes[start:start + width]))
                   for start in range(0, count, width)]
+        for y, x in panels:
+            pixels[y][x] = door_pixels[y][x]
         depth_rows = [depths[start:start + width].tolist() for start in range(0, count, width)]
-        pending = [[] for _ in range(height)]
-        for index in specials[:special_count]:
-            y, x = divmod(index, width)
-            if codes[index] == _PANEL:
-                pixels[y][x] = door_pixels[y][x]
-            else:
-                pending[y].append(x)
         return pixels, depth_rows, pending
 
     def finish(self, shading, samples, destinations):

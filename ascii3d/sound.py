@@ -22,7 +22,7 @@ from .audio_output import BUFFER_COUNT, BUFFER_FRAMES, SAMPLE_RATE, StreamPacer,
 EFFECTS = {
     "step_stone": 0.18, "step_grass": 0.16, "step_wood": 0.20, "step_water": 0.25,
     "step_gravel": 0.23, "step_metal": 0.27, "step_cobblestone": 0.20,
-    "terrain_step": 0.18,
+    "terrain_step": 0.18, "npc_step": 0.18,
     "jump": 0.18, "land": 0.26, "water_splash": 0.32,
     "land_stone": 0.28, "land_grass": 0.27, "land_wood": 0.32,
     "land_water": 0.38, "land_gravel": 0.31, "land_metal": 0.38, "land_cobblestone": 0.29,
@@ -38,6 +38,7 @@ EFFECTS = {
     "enemy_down": 0.85, "enemy_respawn": 0.90,
     "player_hurt": 0.30, "player_down": 0.80, "player_respawn": 0.60,
     "dialogue_start": 0.22, "dialogue_line": 0.32, "dialogue_reveal": 0.12, "dialogue_end": 0.18,
+    "dialogue_letter": 0.025,
     "interaction_miss": 0.10, "ui_map": 0.13, "ui_help": 0.14,
     "ui_pause": 0.16, "ui_reset": 0.25, "ui_exit": 0.18, "ui_toggle": 0.10,
     "ui_dev_open": 0.14, "ui_dev_close": 0.12, "ui_dev_teleport": 0.26, "ui_dev_report": 0.19,
@@ -45,6 +46,18 @@ EFFECTS = {
 LANDING_CUES = {surface: "land_" + surface
                 for surface in ("stone", "grass", "wood", "water", "gravel", "metal", "cobblestone")}
 TERRAIN_STEP_CUES = {surface: "step_" + surface for surface in LANDING_CUES}
+
+# Targets for the loudest 40 ms of one-shots. Keep impact, warning and
+# confirmation cues distinct while preventing short attacks from dominating.
+_ACTIVE_LEVELS = {
+    "door_open": -17, "door_close": -17, "door_blocked": -20,
+    "sword_swing": -21, "sword_hit": -14.5,
+    "sword_miss": -26, "attack_empty": -27, "interaction_miss": -27,
+    "fireball_hit": -17, "fireball_impact": -18, "fireball_fizzle": -22,
+    "enemy_attack": -17, "enemy_down": -18, "enemy_hurt": -22,
+    "player_hurt": -17, "player_down": -18,
+    "dialogue_letter": -33,
+}
 
 # Relative start, length and slip frequency for each strain/release gesture.
 # All doors share one friction model; event differences are configuration.
@@ -149,6 +162,25 @@ def _gesture(t, start, length):
     return math.sin(math.pi * progress) ** 2 if 0 < progress < 1 else 0.0
 
 
+def _cue_gain(name, samples, rate):
+    window, peak_limit = len(samples), 12000
+    if name in ("wind", "river"):
+        target_db = -17 if name == "river" else -19
+        peak_limit = 27000
+    elif name.startswith("step_") or name in ("terrain_step", "npc_step", "enemy_step"):
+        target_db = -24 if name == "enemy_step" else -21
+    else:
+        default = -29 if name.startswith("ui_") else -28 if name.startswith("dialogue_") else -19
+        target_db = _ACTIVE_LEVELS.get(name, default)
+        window = min(window, max(1, round(0.04 * rate)))
+    stride = max(1, window // 2)
+    peak_energy = max(sum(sample * sample for sample in samples[start:start + window])
+                      for start in range(0, len(samples) - window + 1, stride))
+    rms = math.sqrt(peak_energy / window)
+    return min(3.0, 32768 * 10 ** (target_db / 20) / max(1, rms),
+               peak_limit / max(1, max(map(abs, samples))))
+
+
 def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
     """Build original weathered Foley, cold spellfire and turbulent ambience.
 
@@ -210,7 +242,7 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
             eddy = 0.5 + 0.5 * math.sin(math.tau * t * 7 / duration + 1.3)
             value = (slow * 2.2 + low * 1.15 + breath * 0.22) * flow
             excitation = (breath * eddy + noise * max(0, abs(noise) - 0.84) * 0.25) * 0.45
-        elif name.startswith(("step_", "land_")) or name in ("terrain_step", "land", "enemy_step"):
+        elif name.startswith(("step_", "land_")) or name in ("terrain_step", "npc_step", "land", "enemy_step"):
             landing = name.startswith("land")
             crack, scrape, decay = _CONTACT_TEXTURES[surface]
             heel = math.exp(-t * (28 if landing else 42))
@@ -335,6 +367,11 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
             voice = _gesture(t, 0.014, 0.13) + 0.65 * _gesture(t, 0.14, 0.16)
             pulse = 0.76 + 0.24 * math.sin(math.tau * (93 * t - 23 * t * t))
             value = (slow * 2.7 * pulse + low * 0.42 + breath * 0.16) * voice
+        elif name == "dialogue_letter":
+            # A soft, slightly falling throat sound with a breathy attack.
+            phase = math.tau * pitch * (350 * t - 1450 * t * t)
+            voice = 0.19 * math.sin(phase) + 0.06 * math.sin(phase * 2.08)
+            value = (voice + breath * 0.25) * _gesture(t, 0.001, duration - 0.001)
         elif name == "dialogue_reveal":
             rustle = _gesture(t, 0.006, 0.084)
             value = (low * 0.55 + breath * 0.85) * rustle + slow * math.exp(-t * 48)
@@ -389,18 +426,7 @@ def synthesize(name: str, variation: int = 0, rate: int = SAMPLE_RATE) -> array:
             amount = index / (fade - 1)
             result[index] = round(result[index] * amount)
             result[-1 - index] = round(result[-1 - index] * amount)
-    rms = math.sqrt(sum(sample * sample for sample in result) / max(1, len(result)))
-    target_db = (-17 if name == "river" else -19) if ambient else (-28 if name.startswith("ui_") or name in ("interaction_miss", "attack_empty", "sword_miss") else -21)
-    if name == "sword_hit":
-        target_db = -18
-    elif name in ("player_hurt", "enemy_attack"):
-        target_db = -19
-    elif name in ("enemy_step", "enemy_hurt"):
-        target_db = -24
-    elif name.startswith("dialogue_"):
-        target_db = -26
-    gain = min(3.0, 32768 * 10 ** (target_db / 20) / max(1, rms),
-               27000 / max(1, max(map(abs, result))))
+    gain = _cue_gain(name, result, rate)
     return array("h", (round(sample * gain) for sample in result))
 
 
@@ -410,7 +436,7 @@ class SoundBank:
                   "fireball_impact", "staff_pickup", "item_drop", "water_splash",
                   "dummy_down", "dummy_reset", "enemy_step", "enemy_hurt",
                   "enemy_attack", "enemy_alert", "enemy_down", "enemy_respawn",
-                  "player_hurt", *_DOOR_STRAINS}
+                  "player_hurt", "dialogue_letter", *_DOOR_STRAINS}
         self.clips = {name: tuple(synthesize(name, v)
                                  for v in range(3 if name.startswith("step_") or name in varied else 1))
                       for name in EFFECTS}
@@ -445,6 +471,7 @@ class Voice:
     right: float
     position: int = 0
     priority: int = 0
+    delay: int = 0
 
 
 class Mixer:
@@ -470,6 +497,8 @@ class Mixer:
         self._tail_position = 0
 
     def _release(self, voice):
+        if voice.position == 0:
+            return
         count = min(self.RELEASE_FRAMES, len(voice.samples) - voice.position)
         for index in range(count):
             slot = (self._tail_position + index) % self.RELEASE_FRAMES
@@ -493,8 +522,8 @@ class Mixer:
 
     def add(self, event, listener=(0.0, 0.0, math.pi / 2)):
         name = LANDING_CUES.get(getattr(event, "surface", None), "land") if event.name == "land" else event.name
-        if event.name == "terrain_step":
-            name = TERRAIN_STEP_CUES.get(getattr(event, "surface", None), "terrain_step")
+        if event.name in ("terrain_step", "npc_step"):
+            name = TERRAIN_STEP_CUES.get(getattr(event, "surface", None), event.name)
         # Custom/test banks can keep the original generic landing clip.
         if name not in self.bank.clips:
             name = event.name
@@ -510,11 +539,14 @@ class Mixer:
             distance = math.hypot(dx, dy)
             gain /= 1 + distance * 0.16
             pan = max(-0.85, min(0.85, (dx * math.sin(listener[2]) - dy * math.cos(listener[2])) / max(2.0, distance)))
+            # Equal stereo power for a cue at the same distance and strength.
+            gain /= math.hypot(1.0, pan)
         priority = (3 if event.name in ("player_hurt", "player_down")
                     else 2 if event.name in ("sword_hit", "fireball_hit", "fireball_impact",
                                              "enemy_attack", "enemy_down", "player_respawn")
                     or event.name.startswith("door_")
-                    else 0 if event.name.startswith("step_") or event.name in ("enemy_step", "terrain_step")
+                    else 0 if event.name.startswith("step_") or event.name in (
+                        "enemy_step", "terrain_step", "npc_step", "dialogue_letter")
                     else 1)
         if len(self.voices) >= self.MAX_VOICES:
             oldest = min(self.voices, key=lambda voice: voice.priority)
@@ -522,7 +554,9 @@ class Mixer:
                 return
             self.voices.remove(oldest)
             self._release(oldest)
-        self.voices.append(Voice(samples, gain * (1 - pan) * 0.65, gain * (1 + pan) * 0.65, priority=priority))
+        delay = max(0, round(SAMPLE_RATE * getattr(event, "delay", 0.0)))
+        self.voices.append(Voice(samples, gain * (1 - pan) * 0.65, gain * (1 + pan) * 0.65,
+                                 priority=priority, delay=delay))
 
     def render(self, frames, ambient=(0.0, 0.0), enabled=True):
         if not enabled and self._enabled_last:
@@ -543,9 +577,12 @@ class Mixer:
             self._tail_left[slot] = self._tail_right[slot] = 0.0
         self._tail_position = (self._tail_position + frames) % self.RELEASE_FRAMES
         for voice in self.voices:
-            count = min(frames, len(voice.samples) - voice.position)
-            for i in range(count):
-                sample = voice.samples[voice.position + i]
+            start = min(frames, voice.delay)
+            voice.delay -= start
+            count = min(frames - start, len(voice.samples) - voice.position)
+            offset = voice.position - start
+            for i in range(start, start + count):
+                sample = voice.samples[offset + i]
                 left[i] += sample * voice.left
                 right[i] += sample * voice.right
             voice.position += count
